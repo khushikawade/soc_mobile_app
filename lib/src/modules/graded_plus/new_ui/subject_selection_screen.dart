@@ -1000,7 +1000,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           : 15
                       : 20,
                   mainAxisSpacing: pageIndex.value == 1 ? 15 : 15),
-              itemCount: page == 1 ? list.length : list.length + 1,
+              itemCount: page == 1 ? list.length : list.length + 2, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
@@ -1215,54 +1215,115 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           ),
                         ),
                       )
-                    : Bouncing(
-                        child: InkWell(
-                          onTap: () {
-                            // if (pageIndex.value == 0) {
-                            //   subjectIndex1.value = index;
-                            // }
-                            addCustomSubjectBottomSheet();
-                          },
-                          child: AnimatedContainer(
-                            padding: EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color:
-                                  // (subjectIndex1.value == index &&
-                                  //         pageIndex.value == 0)
-                                  //     ? AppTheme.kSelectedColor
-                                  //     :
-                                  Colors.grey,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
+                    : (index == list.length
+                        ? OfflineBuilder(
+                            child: Container(),
+                            connectivityBuilder: (BuildContext context,
+                                ConnectivityResult connectivity, Widget child) {
+                              final bool connected =
+                                  connectivity != ConnectivityResult.none;
+
+                              return Bouncing(
+                                child: InkWell(
+                                  onTap: () {
+                                    subjectIndex1.value = index;
+                                    subject = 'No Standard';
+                                    Utility.updateLogs(
+                                        activityType: 'GRADED+',
+                                        activityId: '18',
+                                        description:
+                                            'No Standard subject selection process',
+                                        operationResult: 'Success');
+                                    updateExcelSheetOnDriveAndNavigate(
+                                        isSkip: true, connected: connected);
+                                    //   floatingButtonOnTap();
+                                    //addCustomSubjectBottomSheet();
+                                  },
+                                  child: AnimatedContainer(
+                                    padding: EdgeInsets.only(bottom: 5),
+                                    decoration: BoxDecoration(
+                                      color: (subjectIndex1.value == index &&
+                                                  pageIndex.value == 0) ||
+                                              (nycIndex1.value == index &&
+                                                  pageIndex.value == 1)
+                                          ? AppTheme.kSelectedColor
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                    ),
+                                    duration: Duration(microseconds: 100),
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      alignment: Alignment.center,
+                                      child: Utility.textWidget(
+                                          text: 'No Standard',
+                                          textTheme: Theme.of(context)
+                                              .textTheme
+                                              .headline2!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold),
+                                          context: context),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffF7F8F9)
+                                              : Color(0xff111C20),
+                                          border: Border.all(
+                                            color:
+                                                (subjectIndex1.value == index &&
+                                                        pageIndex.value == 0)
+                                                    ? AppTheme.kSelectedColor
+                                                    : Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            })
+                        : Bouncing(
+                            child: InkWell(
+                            onTap: () {
+                              addCustomSubjectBottomSheet();
+                            },
+                            child: AnimatedContainer(
+                              padding: EdgeInsets.only(bottom: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              duration: Duration(microseconds: 100),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                alignment: Alignment.center,
+                                child: Utility.textWidget(
+                                    text: '+',
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .headline2!
+                                        .copyWith(fontWeight: FontWeight.bold),
+                                    context: context),
+                                decoration: BoxDecoration(
+                                    color: Color(0xff000000) !=
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffF7F8F9)
+                                        : Color(0xff111C20),
+                                    border: Border.all(
+                                      color: (subjectIndex1.value == index &&
+                                              pageIndex.value == 0)
+                                          ? AppTheme.kSelectedColor
+                                          : Colors.grey,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8)),
                               ),
                             ),
-                            duration: Duration(microseconds: 100),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              alignment: Alignment.center,
-                              child: Utility.textWidget(
-                                  text: '+',
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                  context: context),
-                              decoration: BoxDecoration(
-                                  color: Color(0xff000000) !=
-                                          Theme.of(context).backgroundColor
-                                      ? Color(0xffF7F8F9)
-                                      : Color(0xff111C20),
-                                  border: Border.all(
-                                    color: (subjectIndex1.value == index &&
-                                            pageIndex.value == 0)
-                                        ? AppTheme.kSelectedColor
-                                        : Colors.grey,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8)),
-                            ),
-                          ),
-                        ),
-                      );
+                          )));
               }),
         );
       },
@@ -1677,7 +1738,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           // questionImage:
           //     questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          createdAsPremium: Globals.isPremiumUser,
+          
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,

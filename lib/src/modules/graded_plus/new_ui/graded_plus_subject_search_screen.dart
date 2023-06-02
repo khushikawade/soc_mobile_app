@@ -876,7 +876,7 @@ class _GradedPlusSearchScreenPageState extends State<GradedPlusSearchScreenPage>
         // questionImage: widget.questionImage == ''
         //     ? 'NA'
         //     : widget.questionImage ?? 'NA',
-        createdAsPremium: Globals.isPremiumUser,
+     
         assessmentName: Globals.assessmentName!,
         fileId: Globals.googleExcelSheetId,
         isLoading: true,

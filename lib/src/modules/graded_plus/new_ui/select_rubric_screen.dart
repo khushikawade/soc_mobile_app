@@ -127,84 +127,89 @@ class _GradedPlusConstructedResponseState
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
-      child: ListView(
-        // physics: NeverScrollableScrollPhysics(),
-        children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
-          PlusScreenTitleWidget(
-            kLabelSpacing: 0,
-            text: 'Points Possible',
-            backButton: true,
-          ),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          pointPossibleButton(),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              PlusScreenTitleWidget(
-                  kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                  text: 'Scoring Rubric'),
-              BlocConsumer(
-                bloc: _bloc,
-                builder: (BuildContext context, Object? state) {
-                  return Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        padding: EdgeInsets.only(top: 2),
-                        onPressed: () {
-                          _bloc.add(GetRubricPdf());
-                        },
-                        icon: Icon(
-                          Icons.info,
-                          size: Globals.deviceType == 'tablet' ? 35 : null,
-                          color: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9), //Colors.grey.shade400,
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        final isSmallDevice = constraints.maxHeight <= 600;
+        return ListView(
+          physics: !isSmallDevice ? NeverScrollableScrollPhysics() : null,
+          children: [
+            SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+            PlusScreenTitleWidget(
+              kLabelSpacing: 0,
+              text: 'Points Possible',
+              backButton: true,
+            ),
+            SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+            pointPossibleButton(),
+            SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                PlusScreenTitleWidget(
+                    kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                    text: 'Scoring Rubric'),
+                BlocConsumer(
+                  bloc: _bloc,
+                  builder: (BuildContext context, Object? state) {
+                    return Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          padding: EdgeInsets.only(top: 2),
+                          onPressed: () {
+                            _bloc.add(GetRubricPdf());
+                          },
+                          icon: Icon(
+                            Icons.info,
+                            size: Globals.deviceType == 'tablet' ? 35 : null,
+                            color: Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xff111C20)
+                                : Color(0xffF7F8F9), //Colors.grey.shade400,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                listener: (BuildContext context, Object? state) {
-                  if (state is OcrLoading) {
-                    Utility.showLoadingDialog(context: context, isOCR: true);
-                  }
-                  if (state is GetRubricPdfSuccess) {
-                    Navigator.pop(context);
-                    if (state.objList == null || state.objList!.isEmpty) {
-                      Utility.currentScreenSnackBar("no pdf link ", null);
-                    } else if (state.objList!.length > 1) {
-                      showRubricList(state.objList);
-                    } else {
-                      navigateToPdfViewer(pdfObject: state.objList![0]);
+                    );
+                  },
+                  listener: (BuildContext context, Object? state) {
+                    if (state is OcrLoading) {
+                      Utility.showLoadingDialog(context: context, isOCR: true);
                     }
-                  }
-                  if (state is OcrErrorReceived) {
-                    print(state.err);
-                    Navigator.pop(context);
-                    Utility.currentScreenSnackBar(state.err.toString(), null);
-                  }
+                    if (state is GetRubricPdfSuccess) {
+                      Navigator.pop(context);
+                      if (state.objList == null || state.objList!.isEmpty) {
+                        Utility.currentScreenSnackBar("no pdf link ", null);
+                      } else if (state.objList!.length > 1) {
+                        showRubricList(state.objList);
+                      } else {
+                        navigateToPdfViewer(pdfObject: state.objList![0]);
+                      }
+                    }
+                    if (state is OcrErrorReceived) {
+                      print(state.err);
+                      Navigator.pop(context);
+                      Utility.currentScreenSnackBar(state.err.toString(), null);
+                    }
 
-                  if (state is NoRubricAvailable) {
-                    Navigator.pop(context);
-                    Utility.currentScreenSnackBar('No Rubric Available', null);
-                  }
-                },
-              )
-            ],
-          ),
-          SpacerWidget(_KVertcalSpace / 4),
-          Container(
-              height: Globals.deviceType == 'tablet'
-                  ? MediaQuery.of(context).size.height * 0.6
-                  : MediaQuery.of(context).size.height * 0.47,
-              child: scoringRubric()),
-        ],
-      ),
+                    if (state is NoRubricAvailable) {
+                      Navigator.pop(context);
+                      Utility.currentScreenSnackBar(
+                          'No Rubric Available', null);
+                    }
+                  },
+                )
+              ],
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            Container(
+                height: Globals.deviceType == 'tablet'
+                    ? MediaQuery.of(context).size.height * 0.6
+                    : MediaQuery.of(context).size.height * 0.47,
+                child: scoringRubric()),
+          ],
+        );
+      }),
     );
   }
 
@@ -642,7 +647,7 @@ class _GradedPlusConstructedResponseState
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));
@@ -660,7 +665,7 @@ class _GradedPlusConstructedResponseState
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));
