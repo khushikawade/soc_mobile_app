@@ -1082,9 +1082,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                         description:
                                             'No Standard subject selection process',
                                         operationResult: 'Success');
-                                    updateExcelSheetOnDriveAndNavigate(
-                                        // isSkip: true,
-                                        connected: connected);
+                                    floatingButtonOnTap();
                                     //   floatingButtonOnTap();
                                     //addCustomSubjectBottomSheet();
                                   },
