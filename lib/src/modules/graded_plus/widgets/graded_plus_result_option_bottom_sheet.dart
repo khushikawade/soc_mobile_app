@@ -92,59 +92,7 @@ class _GradedPlusResultOptionBottomSheetState
         ));
   }
 
-  // Widget _listTileMenu({required ResultSummaryIcons element}) {
-  //   return ValueListenableBuilder(
-  //       valueListenable: widget.classroomUrlStatus,
-  //       child: Container(),
-  //       builder: (BuildContext context, bool value, Widget? child) {
-  //         String? url =
-  //             widget.getURlForResultSummaryIcons(title: element.title!);
-  //         return Opacity(
-  //           opacity:
-  //               //((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 :
-  //               1.0,
-  //           child: ListTile(
-  //             dense: true,
-  //             contentPadding: EdgeInsets.zero,
-  //             horizontalTitleGap: 20,
-  //             leading: (element.title == "Class" &&
-  //                     !widget.classroomUrlStatus.value)
-  //                 ? Container(
-  //                     padding: EdgeInsets.all(3),
-  //                     width: Globals.deviceType == "phone" ? 28 : 50,
-  //                     height: Globals.deviceType == "phone" ? 28 : 50,
-  //                     alignment: Alignment.center,
-  //                     child: CircularProgressIndicator(
-  //                       strokeWidth:
-  //                           MediaQuery.of(context).size.shortestSide * 0.005,
-  //                       color: Theme.of(context).colorScheme.primaryVariant,
-  //                     ))
-  //                 : SvgPicture.asset(element.svgPath!,
-  //                     height: 30,
-  //                     width: 30,
-  //                     color: element.title == "Dashboard"
-  //                         ? Color(0xff000000) ==
-  //                                 Theme.of(context).backgroundColor
-  //                             ? Color(0xffF7F8F9)
-  //                             : Color(0xff111C20)
-  //                         : null),
-  //             title: Utility.textWidget(
-  //                 text: element.title!,
-  //                 context: context,
-  //                 textTheme: Theme.of(context).textTheme.headline3!),
-  //             onTap: () {
-  //               widget.resultSummaryIconsOnTap(
-  //                   title: element.title ?? '', url: url ?? '');
-  //               ;
-  //             },
-  //           ),
-  //         );
-  //       });
-  // }
-
   Widget _listTileMenu({required ResultSummaryIcons element}) {
-
-
     return ListTile(
         dense: true,
         contentPadding: EdgeInsets.zero,
@@ -187,26 +135,6 @@ class _GradedPlusResultOptionBottomSheetState
           Share.share(url);
         }
         break;
-
-      // case 'History':
-      //   String historyLogMsg =
-      //       'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-      //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-      //       historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-      //   Utility.updateLogs(
-      //       activityType: 'GRADED+',
-      //       activityId: '15',
-      //       description: historyLogMsg,
-      //       operationResult: 'Success');
-
-      //   _showDataSavedPopup(
-      //       historyAssessmentSection: true,
-      //       title: 'Are you sure?',
-      //       msg:
-      //           'If you exit now, you will not be able to return to this page. Continue?',
-      //       noActionText: 'No',
-      //       yesActionText: 'Yes, Take Me There');
-      //   break;
       case 'Dashboard':
         break;
       case 'Slides':

@@ -9,7 +9,6 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment_screen.dart';
-
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/scan_result_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
@@ -281,7 +280,29 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                 : _studentAssessmentInfoDb,
                       ));
                     } else {
-                      _navigatetoResultSection();
+                      // _navigatetoResultSection();
+
+                      // Trigger this when user scanning more records from history assignment section
+                      if (widget.isFromHistoryAssessmentScanMore == true) {
+                        _saveResultAssignmentsToDashboard(
+                            assessmentId: GoogleClassroomGlobals
+                                    .studentAssessmentAndClassroomObj
+                                    .assessmentCId ??
+                                '',
+                            googleSpreadsheetUrl: Globals.shareableLink ?? '',
+                            assessmentName: Globals.historyAssessmentName ?? '',
+                            studentAssessmentInfoDb:
+                                _historystudentAssessmentInfoDb);
+                      } else {
+                        // Trigger this when user scanning more from new assignment on result summary
+                        _saveResultAssignmentsToDashboard(
+                            assessmentId: Globals.currentAssessmentId ?? '',
+                            googleSpreadsheetUrl: Globals.shareableLink ?? '',
+                            //subjectId: '',
+                            assessmentName: Globals.assessmentName ?? '',
+                            // fileId: Globals.googleExcelSheetId ?? '',
+                            studentAssessmentInfoDb: _studentAssessmentInfoDb);
+                      }
                     }
                   }
                   if (state is ErrorState) {
@@ -365,6 +386,26 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         fileId: Globals.historyAssessmentFileId,
                         isLoading: true,
                         studentData: state.list));
+                  }
+                }),
+        widget.onlyForPicture
+            ? Container()
+            : BlocListener<OcrBloc, OcrState>(
+                bloc: _ocrBloc,
+                child: Container(),
+                listener: (context, state) {
+                  print("state ------------------$state");
+                  if (state is GradedPlusSaveResultToDashboardSuccess) {
+                    _navigatetoResultSection();
+                  }
+
+                  if (state is OcrErrorReceived) {
+                    Navigator.of(context).pop();
+                    Utility.currentScreenSnackBar(
+                        state.err == 'NO_CONNECTION'
+                            ? "No Internet Connection"
+                            : 'Something went wrong' ?? "",
+                        null);
                   }
                 }),
         widget.onlyForPicture
@@ -937,18 +978,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         ..pop()
         ..pop();
 
-      if (!Overrides.STANDALONE_GRADED_APP) {
-        _saveResultAssignmentsToDashboard(
-            assessmentId: GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomObj.assessmentCId ??
-                '',
-            googleSpreadsheetUrl: Globals.shareableLink ?? '',
-            //subjectId: '',
-            assessmentName: Globals.historyAssessmentName ?? '',
-            //fileId: Globals.googleExcelSheetId ?? '',
-            studentAssessmentInfoDb: _historystudentAssessmentInfoDb);
-      }
-
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
@@ -975,15 +1004,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           await _studentAssessmentInfoDb.putAt(i, object);
         },
       );
-      if (!Overrides.STANDALONE_GRADED_APP) {
-        _saveResultAssignmentsToDashboard(
-            assessmentId: Globals.currentAssessmentId ?? '',
-            googleSpreadsheetUrl: Globals.shareableLink ?? '',
-            //subjectId: '',
-            assessmentName: Globals.assessmentName ?? '',
-            // fileId: Globals.googleExcelSheetId ?? '',
-            studentAssessmentInfoDb: _studentAssessmentInfoDb);
-      }
 
       setEnabledSystemUIMode();
       Navigator.push(
@@ -1016,60 +1036,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
               classSuggestions: suggestionList)),
     );
   }
-
-  // notPresentStudentsPopupModal(
-  //     {required List<StudentAssessmentInfo>
-  //         notPresentStudentsInSelectedClass}) async {
-  //   showDialog(
-  //       context: context,
-  //       builder: (showDialogContext) => NonCourseGoogleClassroomNonCourseGoogleClassroomStudentPopup(
-  //             key: _dialogKey,
-  //             notPresentStudentsInSelectedClass:
-  //                 notPresentStudentsInSelectedClass,
-  //             title: 'Action Required!',
-  //             message:
-  //                 "A few students not found in the selected course . Do you still want to continue with these students?",
-  //             studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
-  //                 ? _historystudentAssessmentInfoDb
-  //                 : _studentAssessmentInfoDb,
-  //             onTapCallback: () {
-  //               // Close the dialog from outside
-  //               if (_dialogKey.currentState != null) {
-  //                 _dialogKey.currentState!.closeDialog();
-  //               }
-  //               preparingGoogleSlideFiles();
-  //             },
-  //           ));
-  // }
-
-  // Future<void> preparingGoogleSlideFiles() async {
-  //   if (widget.isFromHistoryAssessmentScanMore == true) {
-  //     _driveBloc.add(UpdateGoogleSlideOnScanMore(
-  //         studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
-  //         isMcqSheet: widget.isMcqSheet ?? false,
-  //         assessmentName: widget.assessmentName ?? '',
-  //         isFromHistoryAssessment: widget.isFromHistoryAssessmentScanMore,
-  //         lastAssessmentLength: widget.lastAssessmentLength ?? 0,
-  //         slidePresentationId: Globals.googleSlidePresentationId!));
-  //   } else if (!widget.isFromHistoryAssessmentScanMore &&
-  //       widget.isScanMore == true) {
-  //     _driveBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
-  //         isScanMore: true,
-  //         slidePresentationId: Globals.googleSlidePresentationId,
-  //         studentInfoDb: LocalDatabase(Strings.studentInfoDbName)));
-  //     //
-  //   } else {
-  //     if (Overrides.STANDALONE_GRADED_APP == true) {
-  //       //Prepare suggestion chips for create screen //course list
-  //       Utility.showLoadingDialog(context: context, isOCR: true);
-  //       List<String> suggestionList = await getSuggestionChips();
-  //       Navigator.of(context).pop();
-
-  //       _navigateToCreateAssessment(suggestionList: suggestionList);
-  //     } else {
-  //       List<String> classSuggestions = await _localDb.getData();
-  //       LocalDatabase<String> classSectionLocalDb =
-  //           LocalDatabase('class_section_list');
 
   notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
@@ -1161,6 +1127,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//Graded+ Standalone Classroom
   String getCourse() {
     // Extract the course name from the assessment name, which is in the format "assessment_math"
 
@@ -1171,43 +1138,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     return course.contains("_") ? course.split("_")[1] : '';
   }
 
-//   Future removeStudentRecordFromStudentInfoDB() async {
-//     List<StudentAssessmentInfo> studentinfo =
-//         await _studentAssessmentInfoDb.getData();
-
-  //       // Compares 2 list and update the changes in local database.
-  //       bool isClassChanges = false;
-  //       for (int i = 0; i < classList.length; i++) {
-  //         if (!localSectionList.contains(classList[i])) {
-  //           isClassChanges = true;
-  //           break;
-  //         }
-  //       }
-
-  //       if (localSectionList.isEmpty || isClassChanges) {
-  //         //print("local db is empty");
-  //         classSectionLocalDb.clear();
-  //         classList.forEach((String e) {
-  //           classSectionLocalDb.addData(e);
-  //         });
-  //       } else {
-  //         //print("local db is not empty");
-  //         classList = [];
-  //         classList.addAll(localSectionList);
-  //       }
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (context) => CreateAssessment(
-  //                 isMcqSheet: widget.isMcqSheet,
-  //                 selectedAnswer: widget.selectedAnswer,
-  //                 customGrades: classList,
-  //                 classSuggestions: classSuggestions)),
-  //       );
-  //     }
-  //   }
-  // }
-
   void _saveResultAssignmentsToDashboard(
       {required String assessmentId,
       required String googleSpreadsheetUrl,
@@ -1215,7 +1145,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       required String assessmentName,
       //required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
+    _ocrBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
