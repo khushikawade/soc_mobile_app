@@ -80,7 +80,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
     excelSheetPrepared: false,
     slidePrepared: false,
-    saveAssessmentToDashboard: false,
+    saveAssessmentResultToDashboard: false,
   ));
 
   static const double _KVerticalSpace = 60.0;
@@ -261,161 +261,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             slideBlocListener(),
             classRoomBlocListener(),
             ocrAssessmentBlocListener()
-
-            // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-            //     bloc: _googleDriveBloc,
-            //     child: Container(),
-            //     listener: (context, state) async {
-            //       if (state is GoogleSuccess) {
-            //         Utility.updateLogs(
-            //             activityType: 'GRADED+',
-            //             activityId: '45',
-            //             description: 'G-Excel File Updated',
-            //             operationResult: 'Success');
-            //         showDialogSetState!(() {
-            //           GradedGlobals.loadingMessage = 'Preparing Google Slide';
-            //         });
-
-            //         List<StudentAssessmentInfo> getSortedStudentInfoList =
-            //             await OcrUtility.getSortedStudentInfoList(
-            //                 tableName: 'student_info');
-
-            //         //Updating very first slide with the assignment details
-            //         _googleDriveBloc.add(UpdateAssignmentDetailsOnSlide(
-            //             slidePresentationId: Globals.googleSlidePresentationId,
-            //             studentAssessmentInfoDB: _studentAssessmentInfoDb));
-            //       }
-
-            //       if (state is ErrorState) {
-            //         if (state.errorMsg == 'ReAuthentication is required') {
-            //           await Utility.refreshAuthenticationToken(
-            //               isNavigator: true,
-            //               errorMsg: state.errorMsg!,
-            //               context: context,
-            //               scaffoldKey: _scaffoldKey);
-
-            //           //calling API
-
-            //           // updateExcelSheetOnDriveAndNavigate(connected: ,isSkip: false)
-            //           // updateDocOnDrive(
-            //           //   widget.isMcqSheet,
-            //           //   // widget.questionImageUrl
-            //           // );
-            //         } else {
-            //           Navigator.of(context).pop();
-            //           Utility.currentScreenSnackBar(
-            //               'Something went wrong' ?? "", null);
-            //         }
-            //       }
-
-            //       if (state is GoogleSlideCreated) {
-            //         FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            //             "google_slide_presentation_added");
-
-            //         Globals.googleSlidePresentationId = state.slideFiledId;
-
-            //         _googleDriveBloc.add(GetShareLink(
-            //             fileId: Globals.googleSlidePresentationId,
-            //             slideLink: true));
-            //       }
-
-            //       if (state is ShareLinkReceived) {
-            //         Globals.googleSlidePresentationLink = state.shareLink;
-            //         _googleDriveBloc.add(
-            //             AddAndUpdateAssessmentImageToSlidesOnDrive(
-            //                 studentInfoDb: _studentAssessmentInfoDb,
-            //                 slidePresentationId:
-            //                     Globals.googleSlidePresentationId));
-            //       }
-
-            //       if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            //         Utility.updateLogs(
-            //             activityType: 'GRADED+',
-            //             activityId: '44',
-            //             description: 'G-Slide Updated',
-            //             operationResult: 'Success');
-            //         FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            //             "assessment_detail_added_first_slide");
-
-            //         Globals.currentAssessmentId = '';
-            //         showDialogSetState!(() {
-            //           GradedGlobals.loadingMessage =
-            //               'Assignment Detail is Updating';
-            //         });
-            //         List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-            //             await OcrUtility.getSortedStudentInfoList(
-            //                 tableName: 'student_info');
-
-            //         _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
-            //             isMcqSheet: widget.isMcqSheet ?? false,
-            //             assessmentQueImage: studentAssessmentInfoDblist
-            //                     ?.first?.questionImgUrl ??
-            //                 '',
-            //             assessmentName:
-            //                 Globals.assessmentName ?? 'Assessment Name',
-            //             rubricScore: Globals.scoringRubric ?? '2',
-            //             subjectName: widget.isSearchPage == true
-            //                 ? widget.selectedSubject ?? ''
-            //                 : subject ??
-            //                     '', //Student Id will not be there in case of custom subject
-            //             domainName: widget.isSearchPage == true
-            //                 ? widget.domainNameC ?? ''
-            //                 : learningStandard ?? '',
-            //             subDomainName: subLearningStandard ?? '',
-            //             grade: widget.selectedClass ?? '',
-            //             schoolId: Globals.appSetting.schoolNameC ?? '',
-            //             standardId: standardId ?? '',
-            //             scaffoldKey: _scaffoldKey,
-            //             context: context,
-            //             fileId:
-            //                 Globals.googleExcelSheetId ?? 'Excel Id not found',
-            //             sessionId: Globals.sessionId,
-            //             teacherContactId: Globals.teacherId,
-            //             teacherEmail: Globals.teacherEmailId,
-            //             classroomCourseId: GoogleClassroomGlobals
-            //                     ?.studentAssessmentAndClassroomObj?.courseId ??
-            //                 '',
-            //             classroomCourseWorkId: GoogleClassroomGlobals
-            //                     ?.studentAssessmentAndClassroomObj
-            //                     ?.courseWorkId ??
-            //                 ''));
-            //       }
-            //     }),
-            // BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
-            //     bloc: _googleClassroomBloc,
-            //     child: Container(),
-            //     listener: (context, state) async {
-            //       if (state is CreateClassroomCourseWorkSuccess) {
-            //         Utility.updateLogs(
-            //             activityType: 'GRADED+',
-            //             activityId: '34',
-            //             description: 'G-Classroom Created',
-            //             operationResult: 'Success');
-            //         _navigateToResultSection();
-            //       }
-
-            //       if (state is GoogleClassroomErrorState) {
-            //         if (state.errorMsg == 'ReAuthentication is required') {
-            //           await Utility.refreshAuthenticationToken(
-            //               isNavigator: true,
-            //               errorMsg: state.errorMsg!,
-            //               context: context,
-            //               scaffoldKey: _scaffoldKey);
-
-            //           _googleClassroomBloc.add(CreateClassRoomCourseWork(
-            //               studentAssessmentInfoDb:
-            //                   LocalDatabase('student_info'),
-            //               pointPossible: Globals.pointPossible ?? '0',
-            //               studentClassObj: GoogleClassroomGlobals
-            //                   .studentAssessmentAndClassroomObj!,
-            //               title: Globals.assessmentName ?? ''));
-            //         } else {
-            //           Navigator.of(context).pop();
-            //           Utility.currentScreenSnackBar(
-            //               state.errorMsg?.toString() ?? "", null);
-            //         }
-            //       }
-            //     })
           ],
         ),
       ),
@@ -1000,7 +845,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           : 15
                       : 20,
                   mainAxisSpacing: pageIndex.value == 1 ? 15 : 15),
-              itemCount: page == 1 ? list.length : list.length + 2, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
+              itemCount: page == 1
+                  ? list.length
+                  : list.length +
+                      2, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
@@ -1235,7 +1083,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                             'No Standard subject selection process',
                                         operationResult: 'Success');
                                     updateExcelSheetOnDriveAndNavigate(
-                                        isSkip: true, connected: connected);
+                                        // isSkip: true,
+                                        connected: connected);
                                     //   floatingButtonOnTap();
                                     //addCustomSubjectBottomSheet();
                                   },
@@ -1738,7 +1587,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           // questionImage:
           //     questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          
+
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,
@@ -1915,8 +1764,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             // if (Globals.googleSlidePresentationId!.isNotEmpty &&
             //     (Globals.googleSlidePresentationLink == null ||
             //         Globals.googleSlidePresentationLink!.isEmpty)) {
-              googleBloc.add(GetShareLink(
-                  fileId: Globals.googleSlidePresentationId, slideLink: true));
+            googleBloc.add(GetShareLink(
+                fileId: Globals.googleSlidePresentationId, slideLink: true));
             // }
             Utility.updateLogs(
                 activityType: 'GRADED+',
@@ -2067,7 +1916,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       listener: (context, state) {
         print("state is $state");
         if (state is AssessmentIdSuccess) {
-          assessmentStatus.value.saveAssessmentToDashboard = true;
+          assessmentStatus.value.saveAssessmentResultToDashboard = true;
           navigateToResultSummery();
         } else if (state is OcrErrorReceived) {
           Navigator.of(context).pop();
@@ -2083,7 +1932,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     // check all process is done or not
     if (assessmentStatus.value.excelSheetPrepared == true &&
         assessmentStatus.value.slidePrepared == true &&
-        assessmentStatus.value.saveAssessmentToDashboard == true) {
+        assessmentStatus.value.saveAssessmentResultToDashboard == true) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -2149,7 +1998,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         slidePresentationId: Globals.googleSlidePresentationId,
       ));
     }
-    if (assessmentStatus.value.saveAssessmentToDashboard == false) {
+    if (assessmentStatus.value.saveAssessmentResultToDashboard == false) {
       Globals.currentAssessmentId = '';
       List<StudentAssessmentInfo> studentAssessmentInfoDblist =
           await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
