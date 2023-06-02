@@ -350,21 +350,34 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               builder: (BuildContext context,
                                   AsyncSnapshot<List<StudentAssessmentInfo>>
                                       snapshot) {
-                                if (snapshot.hasData) {
-                                  if (snapshot.data!.length != 0) {
-                                    questionImageUrl =
-                                        snapshot.data![0].questionImgUrl;
-                                  }
-
-                                  return listView(
-                                    snapshot.data!,
-                                  );
-                                }
-                                return Globals.isAndroid!
-                                    ? CircularProgressIndicator()
-                                    : CupertinoActivityIndicator(
-                                        //color: Colors.white,
+                                if (snapshot.hasData &&
+                                        widget.assessmentDetailPage == true
+                                    ? isGoogleSheetStateReceived.value
+                                    : !isGoogleSheetStateReceived.value) {
+                                  lastAssessmentLength =
+                                      snapshot?.data?.length ?? 0;
+                                  return snapshot.data != null
+                                      ? Tooltip(
+                                          message:
+                                              "Total Scanned ${lastAssessmentLength == 0 ? 'Sheet' : 'Sheets'}",
+                                          child: IconButton(
+                                            onPressed: (() {}),
+                                            icon: Text(
+                                                '${snapshot.data!.length}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline3),
+                                          ),
+                                        )
+                                      : Container(
+                                          width: 10,
+                                          height: 10,
                                         );
+                                }
+                                return Container(
+                                  width: 10,
+                                  height: 10,
+                                );
                               });
                         });
                   }),
