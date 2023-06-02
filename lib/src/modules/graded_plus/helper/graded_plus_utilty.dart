@@ -180,14 +180,15 @@ class OcrUtility {
     if (students == null || students.isEmpty) {
       return;
     }
-
+    //Saving first student because its having all common details of subject, learning standard and other required info
     StudentAssessmentInfo firstStudent = students[0];
+
     // Sort by marks (descending) first, then by last name
     students.sort((a, b) {
-      // Sort by marks in descending order
-      int marksComparison = b.studentGrade!.compareTo(a.studentGrade!);
-      if (marksComparison != 0) {
-        return marksComparison;
+      // Sort by Earned Points in descending order
+      int studentEarnPoints = b.studentGrade!.compareTo(a.studentGrade!);
+      if (studentEarnPoints != 0) {
+        return studentEarnPoints;
       }
 
       String lastNameA = '';
@@ -200,6 +201,7 @@ class OcrUtility {
           lastNameA = a.studentName!.toLowerCase();
         }
       }
+
       if (b.studentName != null && b.studentName!.isNotEmpty) {
         if (b.studentName!.contains(' ')) {
           lastNameB = b.studentName!.split(' ').last.toLowerCase();
@@ -236,18 +238,19 @@ class OcrUtility {
     });
   }
 
-  static Future<List<StudentAssessmentInfo>> getStudentInfoList(
+  static Future<List<StudentAssessmentInfo>> getSortedStudentInfoList(
       {required String tableName, bool? isEdit}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
+    List<StudentAssessmentInfo> _studentInfoListDb = [];
+    _studentInfoListDb = await _studentInfoDb.getData();
+
     if (isEdit == true) {
       await sortStudents(
         tableName: tableName,
       );
     }
 
-    List<StudentAssessmentInfo> _studentInfoListDb = [];
-    _studentInfoListDb = await _studentInfoDb.getData();
     if (_studentInfoListDb.isNotEmpty) {
       if (_studentInfoListDb[0].studentId == 'Id' ||
           _studentInfoListDb[0].studentId == 'Name') {

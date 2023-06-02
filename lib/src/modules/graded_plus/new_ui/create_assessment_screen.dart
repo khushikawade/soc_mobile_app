@@ -990,7 +990,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await OcrUtility.getStudentInfoList(
+        await OcrUtility.getSortedStudentInfoList(
             tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
@@ -1099,6 +1099,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
   void sortStudents() async {
     await OcrUtility.sortStudents(
-        tableName: Strings.studentInfoDbName,);
+      tableName: Strings.studentInfoDbName,
+    );
   }
 }

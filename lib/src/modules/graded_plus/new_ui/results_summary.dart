@@ -165,6 +165,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     });
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   @override
   void dispose() {
     _scrollController.removeListener(() {
@@ -174,6 +175,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     super.dispose();
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   _scrollListener() async {
     bool isTop = _scrollController.position.pixels < 150;
     if (isTop) {
@@ -185,6 +187,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -298,7 +301,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                 if (state is GetClassroomCourseWorkURLSuccess) {
                   if (!state.isLinkAvailable!) {
-                 
                     Utility.currentScreenSnackBar(
                         "Please check your internet connection and try again",
                         null);
@@ -314,6 +316,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget body() {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -340,7 +343,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         builder: (BuildContext context, int listCount,
                             Widget? child) {
                           return FutureBuilder(
-                              future: OcrUtility.getStudentInfoList(
+                              future: OcrUtility.getSortedStudentInfoList(
                                   tableName: widget.assessmentDetailPage == true
                                       ? 'history_student_info'
                                       : 'student_info'),
@@ -418,12 +421,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                 builder: (BuildContext context, int listCount,
                                     Widget? child) {
                                   return FutureBuilder(
-                                      future: OcrUtility.getStudentInfoList(
-                                          tableName:
-                                              widget.assessmentDetailPage ==
-                                                      true
-                                                  ? 'history_student_info'
-                                                  : 'student_info'),
+                                      future:
+                                          OcrUtility.getSortedStudentInfoList(
+                                              tableName:
+                                                  widget.assessmentDetailPage ==
+                                                          true
+                                                      ? 'history_student_info'
+                                                      : 'student_info'),
                                       builder: (BuildContext context,
                                           AsyncSnapshot<
                                                   List<StudentAssessmentInfo>>
@@ -490,7 +494,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   isLoading: true,
                                   studentData:
                                       //list2
-                                      await OcrUtility.getStudentInfoList(
+                                      await OcrUtility.getSortedStudentInfoList(
                                           tableName:
                                               widget.assessmentDetailPage ==
                                                       true
@@ -541,7 +545,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             children: [
                               resultTitle(),
                               FutureBuilder(
-                                  future: OcrUtility.getStudentInfoList(
+                                  future: OcrUtility.getSortedStudentInfoList(
                                       tableName:
                                           widget.assessmentDetailPage == true
                                               ? 'history_student_info'
@@ -723,7 +727,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         description: 'Save to dashboard success',
                         operationResult: 'Success');
                     List<StudentAssessmentInfo> studentInfo =
-                        await OcrUtility.getStudentInfoList(
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName: widget.assessmentDetailPage == true
                                 ? 'history_student_info'
                                 : 'student_info');
@@ -737,8 +741,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       await _studentAssessmentInfoDb.putAt(index, element);
                     });
 
-                    List list = await OcrUtility.getStudentInfoList(
+                    List list = await OcrUtility.getSortedStudentInfoList(
                         tableName: 'student_info');
+
                     assessmentCount.value = list.length;
 
                     Globals.scanMoreStudentInfoLength = list.length;
@@ -756,7 +761,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   if (state is AssessmentDashboardStatus) {
                     if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
                         false) {
-                      List list = await OcrUtility.getStudentInfoList(
+                      List list = await OcrUtility.getSortedStudentInfoList(
                           tableName: 'history_student_info');
 
                       if (isGoogleSheetStateReceived.value == true) {
@@ -805,6 +810,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget resultTitle() {
     return Center(
       child: ClipRRect(
@@ -848,6 +854,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget listView(List<StudentAssessmentInfo> _list) {
     return ValueListenableBuilder<bool>(
         valueListenable: disableSlidableAction,
@@ -934,6 +941,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         });
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {
     return _list[index].studentName == 'Name'
         ? Container()
@@ -994,112 +1002,50 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-  Widget _scanFloatingWidget() {
-    return ValueListenableBuilder<bool>(
-        valueListenable: isScrolling,
-        child: Container(),
-        builder: (BuildContext context, bool value, Widget? child) {
-          return Container(
-            //margin: EdgeInsets.only(left: 15),
-            alignment: Alignment.center,
-            // width: isScrolling.value ? null : 130,
-            child: FloatingActionButton.extended(
-                isExtended: !isScrolling.value,
-                backgroundColor: AppTheme.kButtonColor,
-                onPressed: () async {
-                  if (Overrides.STANDALONE_GRADED_APP) {
-                    List<GoogleClassroomCourses> _localData =
-                        await _googleClassRoomlocalDb.getData();
-                    if (_localData.isEmpty) {
-                      Utility.currentScreenSnackBar(
-                          "You need to import roster first", null);
-                      return;
-                    }
-                  }
-                  // print('perform scan more');
-                  performScanMore();
-                },
-                icon: Icon(
-                    IconData(0xe875,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Theme.of(context).backgroundColor,
-                    size: 16),
-                label: Utility.textWidget(
-                    text: isScrolling.value ? '' : 'Scan More',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).backgroundColor))),
-          );
-        });
-  }
-
-  // Widget _bottomButtons(context, List iconsList, List iconName,
-  //     {required String webContentLink}) {
-  //   return Container(
-  //       alignment: Alignment.center,
-  //       decoration: BoxDecoration(
-  //           color: Theme.of(context).backgroundColor == Color(0xff000000)
-  //               ? Color(0xff162429)
-  //               : Color(0xffF7F8F9),
-  //           // color: Theme.of(context).backgroundColor,
-  //           boxShadow: [
-  //             new BoxShadow(
-  //               color: Color.fromRGBO(0, 0, 0, 0.2),
-  //               blurRadius: 20.0,
-  //             ),
-  //           ],
-  //           borderRadius: BorderRadius.circular(4)),
-  //       margin: widget.assessmentDetailPage!
-  //           ? EdgeInsets.only(
-  //               left: MediaQuery.of(context).size.width * 0.15,
-  //               right: MediaQuery.of(context).size.width * 0.15)
-  //           : !widget.assessmentDetailPage!
-  //               ? EdgeInsets.only(
-  //                   left: MediaQuery.of(context).size.width * 0.0,
-  //                   right: MediaQuery.of(context).size.width * 0.0)
-  //               : Globals.deviceType == 'tablet'
-  //                   ? EdgeInsets.only(
-  //                       right: MediaQuery.of(context).size.width * 0.03)
-  //                   : null,
-  //       padding: Globals.deviceType == 'tablet'
-  //           ? EdgeInsets.symmetric(horizontal: 20)
-  //           : EdgeInsets.symmetric(horizontal: 8),
-  //       height: MediaQuery.of(context).orientation == Orientation.portrait
-  //           ? MediaQuery.of(context).size.height * 0.086
-  //           : MediaQuery.of(context).size.width * 0.086,
-  //       width:
-  //           //  Overrides.STANDALONE_GRADED_APP == true
-  //           //     ? (widget.assessmentDetailPage == true
-  //           //         ? MediaQuery.of(context).size.width * 0.5
-  //           //         : MediaQuery.of(context).size.width * 0.7)
-  //           //  :
-  //           widget.assessmentDetailPage!
-  //               ? MediaQuery.of(context).size.width * 0.7
-  //               : MediaQuery.of(context).size.width * 0.9,
-  //       child: Row(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: Overrides.STANDALONE_GRADED_APP
-  //             ? widget.assessmentDetailPage!
-  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //             : widget.assessmentDetailPage!
-  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList(),
-  //       ));
+//--------------------------------------------------------------------------------------------------------------------------
+  // Widget _scanFloatingWidget() {
+  //   return ValueListenableBuilder<bool>(
+  //       valueListenable: isScrolling,
+  //       child: Container(),
+  //       builder: (BuildContext context, bool value, Widget? child) {
+  //         return Container(
+  //           //margin: EdgeInsets.only(left: 15),
+  //           alignment: Alignment.center,
+  //           // width: isScrolling.value ? null : 130,
+  //           child: FloatingActionButton.extended(
+  //               isExtended: !isScrolling.value,
+  //               backgroundColor: AppTheme.kButtonColor,
+  //               onPressed: () async {
+  //                 if (Overrides.STANDALONE_GRADED_APP) {
+  //                   List<GoogleClassroomCourses> _localData =
+  //                       await _googleClassRoomlocalDb.getData();
+  //                   if (_localData.isEmpty) {
+  //                     Utility.currentScreenSnackBar(
+  //                         "You need to import roster first", null);
+  //                     return;
+  //                   }
+  //                 }
+  //                 // print('perform scan more');
+  //                 performScanMore();
+  //               },
+  //               icon: Icon(
+  //                   IconData(0xe875,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                   color: Theme.of(context).backgroundColor,
+  //                   size: 16),
+  //               label: Utility.textWidget(
+  //                   text: isScrolling.value ? '' : 'Scan More',
+  //                   context: context,
+  //                   textTheme: Theme.of(context)
+  //                       .textTheme
+  //                       .headline2!
+  //                       .copyWith(color: Theme.of(context).backgroundColor))),
+  //         );
+  //       });
   // }
 
+//--------------------------------------------------------------------------------------------------------------------------
   _showDataSavedPopup(
       {required bool? historyAssessmentSection,
       required String? title,
@@ -1271,6 +1217,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             }));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   getGoogleFolderPath() async {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
@@ -1285,9 +1232,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         refreshToken: _profileData[0].refreshToken));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   performEditAndDelete(BuildContext context, int index, bool? edit) async {
     List<StudentAssessmentInfo> studentInfo =
-        await OcrUtility.getStudentInfoList(tableName: 'student_info');
+        await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
     if (edit!) {
       String editingLogMsg = "Teacher edited the record";
 
@@ -1333,6 +1281,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   editBottomSheet(
       {required TextEditingController controllerOne,
       required TextEditingController controllerTwo,
@@ -1376,32 +1325,33 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   {required TextEditingController name,
                   required TextEditingController id,
                   required TextEditingController score,
-                  String? studentResonance}) async {
+                  String? studentResponse}) async {
                 List<StudentAssessmentInfo> _list =
-                    await OcrUtility.getStudentInfoList(
+                    await OcrUtility.getSortedStudentInfoList(
                         tableName: 'student_info');
                 StudentAssessmentInfo studentInfo = _list[index];
 
+                //Checking if matches with existing data
                 if (studentInfo.studentName == name.text &&
                     studentInfo.studentId == id.text &&
                     studentInfo.studentGrade == score.text &&
-                    studentInfo.studentResponseKey == studentResonance) {
+                    studentInfo.studentResponseKey == studentResponse) {
                   Navigator.pop(context, false);
 
                   return;
                 }
 
+                //In case of changed found in student details
                 bool isEditScoreOrName = false;
                 if (studentInfo.studentName != name.text ||
                     studentInfo.studentGrade != score.text) {
-               
                   isEditScoreOrName = true;
                 }
 
                 studentInfo.studentName = name.text;
                 studentInfo.studentId = id.text;
                 studentInfo.studentGrade = score.text;
-                studentInfo.studentResponseKey = studentResonance;
+                studentInfo.studentResponseKey = studentResponse;
                 studentInfo.isgoogleClassRoomStudentProfileUpdated = false;
                 _studentAssessmentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
@@ -1417,25 +1367,24 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
-                  studentData: await OcrUtility.getStudentInfoList(
+                  studentData: await OcrUtility.getSortedStudentInfoList(
                       isEdit: isEditScoreOrName,
                       tableName: Strings.studentInfoDbName),
                 ));
-             
 
                 //to update the slides details .
-                _driveBloc.add(EditSlideFromPresentation(
+                _driveBloc.add(EditSlideDetailsToGooglePresentation(
                     slidePresentationId: Globals.googleSlidePresentationId,
                     studentAssessmentInfo: studentInfo,
                     oldSlideIndex: isEditScoreOrName ? index : null));
                 if (isEditScoreOrName) {
-           
                   isEditPerform.value = !isEditPerform.value;
                 }
               },
             ));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   _deletePopUP({required String studentName, required int index}) {
     return showDialog(
         context: context,
@@ -1537,7 +1486,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             }),
                         onPressed: () async {
                           List<StudentAssessmentInfo> _list =
-                              await OcrUtility.getStudentInfoList(
+                              await OcrUtility.getSortedStudentInfoList(
                                   tableName: 'student_info');
 
                           await _studentAssessmentInfoDb.deleteAt(index);
@@ -1577,7 +1526,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
 
-                          // List _list = await OcrUtility.getStudentInfoList(
+                          // List _list = await OcrUtility.getSortedStudentInfoList(
                           //     tableName: 'student_info');
                           assessmentCount.value = _list.length - 1;
                           await updateCount();
@@ -1595,8 +1544,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
-                              studentData: await OcrUtility.getStudentInfoList(
-                                  tableName: 'student_info')));
+                              studentData:
+                                  await OcrUtility.getSortedStudentInfoList(
+                                      tableName: 'student_info')));
 
                           _driveBloc.add(DeleteSlideFromPresentation(
                               slidePresentationId:
@@ -1613,6 +1563,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             }));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   popupModal({required String message, required String? title}) {
     return showDialog(
         context: context,
@@ -1626,8 +1577,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             }));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Future _method() async {
-    List list = await OcrUtility.getStudentInfoList(tableName: 'student_info');
+    List list =
+        await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
     assessmentCount.value = list.length;
 
     if (Globals.scanMoreStudentInfoLength != null) {
@@ -1637,11 +1590,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Future<void> updateCount() async {
     _listCount.value =
         await OcrUtility.getStudentInfoListLength(tableName: 'student_info');
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget detailsPageActionWithDashboard(index) {
     return BlocConsumer(
       bloc: _driveBloc,
@@ -1697,6 +1652,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget detailPageActionButtons(iconName, index) {
     return Container(
       margin: EdgeInsets.only(bottom: 5.0),
@@ -1770,8 +1726,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               tableName: 'student_info') -
                           1;
                 } else {
-                  List list = await OcrUtility.getStudentInfoList(
+                  List list = await OcrUtility.getSortedStudentInfoList(
                       tableName: 'student_info');
+
                   if (widget.isScanMore == true &&
                       widget.assessmentListLength != null &&
                       widget.assessmentListLength! < list.length) {
@@ -1781,31 +1738,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         description:
                             'Save to dashboard pressed in case for scan more',
                         operationResult: 'Success');
-                    //print(
-                    // 'if     calling is scanMore -------------------------->');
-                    //print(widget.assessmentListLenght);
-                    // _ocrBloc.add(SaveAssessmentToDashboard(
-                    //     assessmentId: !widget.assessmentDetailPage!
-                    //         ? Globals.currentAssessmentId
-                    //         : historyAssessmentId ?? '',
-                    //     assessmentSheetPublicURL: widget.shareLink,
-                    //     resultList: await OcrUtility.getStudentInfoList(
-                    //         tableName: widget.assessmentDetailPage == true
-                    //             ? 'history_student_info'
-                    //             : 'student_info'),
-                    //     previouslyAddedListLength: widget.assessmentListLength,
-                    //     assessmentName: widget.assessmentName!,
-                    //     rubricScore: widget.rubricScore ?? '',
-                    //     subjectId: widget.subjectId ?? '',
-                    //     schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                    //     // standardId: widget.standardId ?? '',
-                    //     scaffoldKey: scaffoldKey,
-                    //     context: context,
-                    //     isHistoryAssessmentSection:
-                    //         widget.assessmentDetailPage!));
                   } else {
-                    //print(
-                    // 'else      calling is noramal -------------------------->');
                     // Adding the non saved record of dashboard in the list
                     List<StudentAssessmentInfo> _listRecord = [];
 
@@ -1818,29 +1751,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       //
                       _listRecord = historyRecordList;
                     }
-
-                    // _ocrBloc.add(SaveAssessmentToDashboard(
-                    //   assessmentId: !widget.assessmentDetailPage!
-                    //       ? Globals.currentAssessmentId
-                    //       : historyAssessmentId ?? '',
-                    //   assessmentSheetPublicURL: widget.shareLink,
-                    //   resultList: !widget.assessmentDetailPage!
-                    //       ? wait OcrUtility.getStudentInfoList(
-                    //           taableName: 'student_info')
-                    //       : _listRecord,
-                    //   assessmentName: widget.assessmentName!,
-                    //   rubricScore: !widget.assessmentDetailPage!
-                    //       ? widget.rubricScore ?? ''
-                    //       : sheetRubricScore ?? '',
-                    //   subjectId: widget.subjectId ?? '',
-                    //   schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                    //   // standardId: widget.standardId ?? '',
-                    //   scaffoldKey: scaffoldKey,
-                    //   context: context,
-                    //   isHistoryAssessmentSection: widget.assessmentDetailPage!,
-                    //   fileId: widget.fileId ?? '',
-                    // )
-                    // );
                   }
                 }
               } else {
@@ -1876,6 +1786,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget detailPageActionsWithoutDashboard({required int index}) {
     if (Overrides.STANDALONE_GRADED_APP == true &&
         iconsName[index] == 'Sheet') {
@@ -1927,6 +1838,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
     showDialog(
         barrierDismissible: true,
@@ -1947,14 +1859,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         });
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget infoWidget() {
     return IconButton(
       padding: EdgeInsets.only(top: 2),
       onPressed: () async {
-        List<StudentAssessmentInfo> list = await OcrUtility.getStudentInfoList(
-            tableName: widget.assessmentDetailPage == true
-                ? 'history_student_info'
-                : 'student_info');
+        List<StudentAssessmentInfo> list =
+            await OcrUtility.getSortedStudentInfoList(
+                tableName: widget.assessmentDetailPage == true
+                    ? 'history_student_info'
+                    : 'student_info');
         _showPopUp(
           studentAssessmentInfo: list.first,
         );
@@ -1969,12 +1883,14 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Future<String> _getpointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
-        await OcrUtility.getStudentInfoList(tableName: tableName);
+        await OcrUtility.getSortedStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   // Custom Slidable Widget use to translation wrapping issue
   Widget customSlidableDecorationWidget(
       {required String label, required IconData icon}) {
@@ -2013,6 +1929,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Widget _slidableDecorationWidget(
       {required String label, required IconData icon}) {
     final children = <Widget>[];
@@ -2050,9 +1967,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
     Utility.updateAssessmentToDb(
-      studentInfoList: await OcrUtility.getStudentInfoList(
+      studentInfoList: await OcrUtility.getSortedStudentInfoList(
           tableName: widget.assessmentDetailPage == true
               ? 'history_student_info'
               : 'student_info'),
@@ -2060,213 +1978,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
-  // Widget bottomIcon(ResultSummaryIcons element) {
-  //   return Expanded(
-  //     child: ValueListenableBuilder(
-  //         valueListenable: classroomUrlStatus,
-  //         child: Container(),
-  //         builder: (BuildContext context, bool value, Widget? child) {
-  //           return ValueListenableBuilder(
-  //               valueListenable: isShareLinkReceived,
-  //               child: Container(),
-  //               builder: (BuildContext context, dynamic value, Widget? child) {
-  //                 return ValueListenableBuilder(
-  //                     valueListenable: dashboardState,
-  //                     child: Container(),
-  //                     builder:
-  //                         (BuildContext context, dynamic value, Widget? child) {
-  //                       return Column(
-  //                           mainAxisSize: MainAxisSize.max,
-  //                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                           children: [
-  //                             //text building for all icons
-  //                             Utility.textWidget(
-  //                                 text: element.title!,
-  //                                 context: context,
-  //                                 textTheme: Theme.of(context)
-  //                                     .textTheme
-  //                                     .subtitle2!
-  //                                     .copyWith(fontWeight: FontWeight.bold)),
-
-  //                             //Loading indicator dashboard
-  //                             if ((element.title == "Dashboard" &&
-  //                                     dashboardState.value == "Loading") ||
-  //                                 (element.title == "Share" &&
-  //                                     !isShareLinkReceived.value) ||
-  //                                 (element.title == "Class" &&
-  //                                     !classroomUrlStatus.value))
-  //                               Container(
-  //                                   padding: EdgeInsets.all(3),
-  //                                   width:
-  //                                       Globals.deviceType == "phone" ? 28 : 50,
-  //                                   height:
-  //                                       Globals.deviceType == "phone" ? 28 : 50,
-  //                                   alignment: Alignment.center,
-  //                                   child: CircularProgressIndicator(
-  //                                     strokeWidth: MediaQuery.of(context)
-  //                                             .size
-  //                                             .shortestSide *
-  //                                         0.005,
-  //                                     color: Theme.of(context)
-  //                                         .colorScheme
-  //                                         .primaryVariant,
-  //                                   ))
-
-  //                             //Tick mark icons
-  //                             else if (element.title == "Dashboard" &&
-  //                                 dashboardState.value == "Success")
-  //                               SvgPicture.asset(
-  //                                   'assets/ocr_result_section_bottom_button_icons/Done.svg',
-  //                                   width:
-  //                                       Globals.deviceType == "phone" ? 28 : 50,
-  //                                   height:
-  //                                       Globals.deviceType == "phone" ? 28 : 50,
-  //                                   color: AppTheme.kButtonColor)
-
-  //                             //building all icons here
-  //                             else
-  //                               Builder(builder: (context) {
-  //                                 String? url = getURlForBottomIcons(
-  //                                     title: element.title ?? '');
-
-  //                                 return Opacity(
-  //                                   opacity: ((url?.isEmpty ?? true) ||
-  //                                           (url == 'NA'))
-  //                                       ? 0.3
-  //                                       : 1.0,
-  //                                   child: InkWell(
-  //                                     child: SvgPicture.asset(element.svgPath!,
-  //                                         width: Globals.deviceType == "phone"
-  //                                             ? 28
-  //                                             : 50,
-  //                                         height: Globals.deviceType == "phone"
-  //                                             ? 28
-  //                                             : 50,
-  //                                         color: Theme.of(context)
-  //                                                         .backgroundColor ==
-  //                                                     Color(0xff000000) &&
-  //                                                 element.title == "Dashboard"
-  //                                             ? Color(0xffF7F8F9)
-  //                                             : null),
-  //                                     onTap: (() async {
-  //                                       bottomIconsOnTap(
-  //                                           title: element.title ?? '',
-  //                                           url: url ?? '');
-  //                                     }),
-  //                                   ),
-  //                                 );
-  //                               }),
-  //                           ]);
-  //                     });
-  //               });
-  //         }),
-  //   );
-  // }
-
-  // bottomIconsOnTap({required String title, required String url}) async {
-  //   switch (title) {
-  //     case 'Share':
-  //       String shareLogMsg =
-  //           'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //           shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-  //       Utility.updateLogs(
-  //           activityType: 'GRADED+',
-  //           activityId: '13',
-  //           sessionId: widget.assessmentDetailPage == true
-  //               ? widget.obj!.sessionId
-  //               : '',
-  //           description: shareLogMsg,
-  //           operationResult: 'Success');
-  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-  //         Share.share(url);
-  //       }
-  //       break;
-
-  //     case 'History':
-  //       String historyLogMsg =
-  //           'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //           historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-  //       Utility.updateLogs(
-  //           activityType: 'GRADED+',
-  //           activityId: '15',
-  //           description: historyLogMsg,
-  //           operationResult: 'Success');
-
-  //       _showDataSavedPopup(
-  //           historyAssessmentSection: true,
-  //           title: 'Are you sure?',
-  //           msg:
-  //               'If you exit now, you will not be able to return to this page. Continue?',
-  //           noActionText: 'No',
-  //           yesActionText: 'Yes, Take Me There');
-  //       break;
-  //     case 'Dashboard':
-  //       break;
-  //     case 'Slides':
-  //       String slidesLogMsg =
-  //           "Slide Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-
-  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //           slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-  //       Fluttertoast.cancel();
-
-  //       Utility.updateLogs(
-  //           activityType: 'GRADED+',
-  //           activityId: '31',
-  //           sessionId: widget.assessmentDetailPage == true
-  //               ? widget.obj!.sessionId ?? ''
-  //               : '',
-  //           description: slidesLogMsg,
-  //           operationResult: 'Success');
-
-  //       // Globals.googleSlidePresentationLink != null &&
-  //       //         Globals.googleSlidePresentationLink!.isNotEmpty
-  //       //     ? Utility.launchUrlOnExternalBrowser(
-  //       //         Globals.googleSlidePresentationLink!)
-  //       //     : Utility.currentScreenSnackBar(
-  //       //         'Assessment do not have slides', null);
-  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-  //         Utility.launchUrlOnExternalBrowser(url);
-  //       }
-
-  //       break;
-  //     case "Sheet":
-  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-  //         String sheetLogMsg =
-  //             "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-  //         FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //             sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-  //         await Utility.launchUrlOnExternalBrowser(url);
-  //       }
-  //       break;
-  //     case "Class":
-  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-  //         Utility.launchUrlOnExternalBrowser(url);
-  //       }
-  //       break;
-
-  //     default:
-  //       print(title);
-  //   }
-  //   if (((url?.isEmpty ?? true) || (url == 'NA'))) {
-  //     Utility.currentScreenSnackBar('$title is Not available ', null);
-  //   }
-  // }
-
+//--------------------------------------------------------------------------------------------------------------------------
   void performScanMore() async {
-    // if ((widget.assessmentDetailPage == true) &&
-    //     ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
-    //         (widget.createdAsPremium == false &&
-    //             Globals.isPremiumUser == true))) {
-    //   popupModal(
-    //       title: 'Alert!',
-    //       message: Globals.isPremiumUser == true
-    //           ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-    //           : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-    //   return;
-    // }
     String scanMoreLogMsg =
         'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
 
@@ -2300,9 +2013,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
-                createdAsPremium: widget.assessmentDetailPage == true
-                    ? createdAsPremium
-                    : Globals.isPremiumUser,
+                createdAsPremium: true,
+                // widget.assessmentDetailPage == true
+                //     ? createdAsPremium
+                //     : Globals.isPremiumUser,
                 oneTimeCamera: widget.assessmentDetailPage!,
                 isFromHistoryAssessmentScanMore: widget.assessmentDetailPage!,
                 onlyForPicture: false,
@@ -2313,6 +2027,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     : '2')));
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
       // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
@@ -2338,15 +2053,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     } else {
       updateAssessmentToDb();
 
-      // if (widget.isScanMore != true) {
-      //   // print("Shared Link called");
-      //   _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
-      // } else {
-      //   //TODO : REMOVE GLOBAL ACCESS : IMPROVE
-
-      //   widget.shareLink = Globals.shareableLink;
-      //   // isShareLinkReceived.value = true;
-      // }
       widget.shareLink = Globals.shareableLink;
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
@@ -2358,21 +2064,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
-  // getURlForBottomIcons({required String title}) {
-  //   Map map = {
-  //     'Share': widget.shareLink,
-  //     'Drive': Globals.googleDriveFolderPath,
-  //     'History': 'History',
-  //     'Dashboard': 'Dashboard',
-  //     'Slides': Globals.googleSlidePresentationLink,
-  //     'Sheet': widget.shareLink,
-  //     'Class':
-  //         GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseWorkURL,
-  //   };
-
-  //   return map[title] ?? '';
-  // }
-
+//--------------------------------------------------------------------------------------------------------------------------
   Widget fabButton(
     BuildContext context,
   ) =>
@@ -2387,6 +2079,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     : Container();
               });
 
+//--------------------------------------------------------------------------------------------------------------------------
   Future<void> _saveAndShareBottomSheetMenu() async {
     showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -2414,18 +2107,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         .standAloneHistoryResultSummaryIconsModalList
                     : ResultSummaryIcons.resultSummaryIconsModalList,
 
-                //  Overrides.STANDALONE_GRADED_APP
-                //     ? widget.assessmentDetailPage!
-                //         ? ResultSummaryIcons
-                //             .standAloneHistoryResultSummaryIconsModalList
-                //         : ResultSummaryIcons
-                //             .standAloneResultSummaryIconsModalList
-                //     : widget.assessmentDetailPage!
-                //         ? ResultSummaryIcons
-                //             .standAloneHistoryResultSummaryIconsModalList
-
-                // : ResultSummaryIcons.resultSummaryIconsModalList,
-                // classroomUrlStatus: classroomUrlStatus,
                 allUrls: {
                   'Share': widget.shareLink ?? '',
                   'Drive': Globals.googleDriveFolderPath ?? '',
@@ -2443,6 +2124,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         });
   }
 
+//--------------------------------------------------------------------------------------------------------------------------
   Row buildScanMoreAndShareFabButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -2480,20 +2162,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             onPressed: _saveAndShareBottomSheetMenu,
           ),
         )
-        // Padding(
-        //   padding: const EdgeInsets.only(right: 10),
-        //   child: GradedPlusCustomFloatingActionButton(
-        //     heroTag: 'share_tag',
-        //     icon: Icon(
-        //         IconData(0xe868,
-        //             fontFamily: Overrides.kFontFam,
-        //             fontPackage: Overrides.kFontPkg),
-        //         color: Theme.of(context).backgroundColor),
-        //     isExtended: false,
-        //     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-        //     onPressed: _saveAndShareBottomSheetMenu,
-        //   ),
-        // ),
       ],
     );
   }

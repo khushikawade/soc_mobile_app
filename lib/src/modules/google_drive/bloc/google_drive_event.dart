@@ -249,11 +249,11 @@ class DeleteSlideFromPresentation extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class EditSlideFromPresentation extends GoogleDriveEvent {
+class EditSlideDetailsToGooglePresentation extends GoogleDriveEvent {
   final String? slidePresentationId;
   final StudentAssessmentInfo studentAssessmentInfo;
   final oldSlideIndex;
-  EditSlideFromPresentation(
+  EditSlideDetailsToGooglePresentation(
       {required this.slidePresentationId,
       required this.studentAssessmentInfo,
       required this.oldSlideIndex});

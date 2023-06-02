@@ -253,8 +253,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       GradedGlobals.loadingMessage = 'Preparing Google Slide';
                     });
 
-                    List<StudentAssessmentInfo> getStudentInfoList =
-                        await OcrUtility.getStudentInfoList(
+                    List<StudentAssessmentInfo> getSortedStudentInfoList =
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName: 'student_info');
 
                     //Updating very first slide with the assignment details
@@ -320,7 +320,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           'Assignment Detail is Updating';
                     });
                     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                        await OcrUtility.getStudentInfoList(
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName: 'student_info');
 
                     _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
@@ -1584,7 +1584,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         }
 
         List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-            await OcrUtility.getStudentInfoList(tableName: 'student_info');
+            await OcrUtility.getSortedStudentInfoList(
+                tableName: 'student_info');
 
         //Updating remaining common details of assignment
         StudentAssessmentInfo element = studentAssessmentInfoDblist.first;
@@ -1656,8 +1657,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,
-          studentData:
-              await OcrUtility.getStudentInfoList(tableName: 'student_info')
+          studentData: await OcrUtility.getSortedStudentInfoList(
+              tableName: 'student_info')
           //list2
           //Globals.studentInfo!
           ),

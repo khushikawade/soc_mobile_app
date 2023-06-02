@@ -912,7 +912,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   : 'student_info');
 
           List<StudentAssessmentInfo> studentInfo =
-              await OcrUtility.getStudentInfoList(
+              await OcrUtility.getSortedStudentInfoList(
                   tableName: event.isHistoryAssessmentSection == true
                       ? 'history_student_info'
                       : 'student_info');
@@ -1124,7 +1124,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     }
 
-    if (event is EditSlideFromPresentation) {
+    if (event is EditSlideDetailsToGooglePresentation) {
       try {
         //updating the student record on sldies
         List<UserInformation> _userProfileLocalData =
@@ -1135,7 +1135,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // if (event.oldSlideIndex != null) {
         //   print("olde index is available ${event.oldSlideIndex}");
         //   List<StudentAssessmentInfo> allStudents =
-        //       await OcrUtility.getStudentInfoList(
+        //       await OcrUtility.getSortedStudentInfoList(
         //           isEdit: true, tableName: Strings.studentInfoDbName);
 
         //   allStudents
@@ -2991,7 +2991,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
 //get all stduents records
         List<StudentAssessmentInfo> allStudents =
-            await OcrUtility.getStudentInfoList(
+            await OcrUtility.getSortedStudentInfoList(
                 isEdit: true, tableName: Strings.studentInfoDbName);
 
 //check the old and new index
