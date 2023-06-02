@@ -2800,7 +2800,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             slideRequiredObjectsList.add(obj);
           }
           // print(slideRequiredObjectsList);
-// Preparing table and structure for each student slide
+          // Preparing table and structure for each student slide
           Map table = {
             "createTable": {
               "rows": listOfFields.length, //pass no. of names
@@ -3233,14 +3233,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     required final List<ClassroomCourse> classroomCourseworkList,
   }) {
     try {
-      // print(classroomCourseworkList.length);
-      // classroomCourseworkList.forEach((element) {
-      //   print(element.name);
-      // });
       return classroomCourseworkList.map((course) {
         return {
           // 'range': '${course.name}!A1:E${course.students!.length + 1}',
-
           //Checking the tab is either for Student or for Courses and adding the columns accordingly
           'range':
               '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
@@ -3254,12 +3249,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         };
       }).toList();
     } catch (e) {
-      // print("errorr ------------------->>");
-      // print(classroomCourseworkList.length);
-      // classroomCourseworkList.forEach((element) {
-      //   print(element.name);
-      // });
-      // print("errorr ------------------->>");
+      print("errorr ------------------->> $e");
       return [];
     }
   }
@@ -3278,21 +3268,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         headingRowName.insert(1, 'Course');
       }
 
-      // return [
-      //   // always first row for the Headings
-      //   ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
-
-      //   //stduent information
-      //   ...students.map((student) => [
-      //         student.profile!.name!.fullName,
-      //         student.profile!.engaged,
-      //         student.profile!.niceWork,
-      //         student.profile!.helpful,
-      //         student.profile!.engaged! +
-      //             student.profile!.niceWork! +
-      //             student.profile!.helpful!,
-      //       ]),
-      // ];
       return [
         // always first row for the Headings
         headingRowName,
@@ -3309,20 +3284,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   student.profile!.helpful!,
             ]),
       ];
-
-      // students
-      //     .map((ClassroomStudents student) => [
-      //           student.profile!.name!.fullName,
-      //           student.profile!.engaged,
-      //           student.profile!.niceWork,
-      //           student.profile!.helpful,
-      //           student.profile!.engaged! +
-      //               student.profile!.niceWork! +
-      //               student.profile!.helpful!,
-      //           if (course == true)
-      //             student.profile!.courseName, // Add this line
-      //         ])
-      //     .toList();
     } catch (e) {
       return [];
     }
