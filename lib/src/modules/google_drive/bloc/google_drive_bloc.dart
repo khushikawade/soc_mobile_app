@@ -2773,11 +2773,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {
-          String pageObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          String pageObjectuniqueId = "pageObjectId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
 
-          String tableObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          String tableObjectuniqueId = "tableObjectId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
           print(pageObjectuniqueId);
           print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images
