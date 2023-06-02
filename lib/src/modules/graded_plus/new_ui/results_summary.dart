@@ -1358,8 +1358,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                 await updateCount();
                 _method();
+
                 disableSlidableAction.value = true;
+
                 Navigator.pop(context, false);
+
                 Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
