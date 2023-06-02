@@ -89,6 +89,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
+
+    sortStudents();
+
     super.initState();
   }
 
@@ -987,7 +990,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
+        await OcrUtility.getSortedStudentInfoList(
+            tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {
@@ -1091,5 +1095,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           title: Globals.assessmentName ?? '',
           pointPossible: Globals.pointPossible ?? "0"));
     }
+  }
+
+  void sortStudents() async {
+    await OcrUtility.sortStudents(
+      tableName: Strings.studentInfoDbName,
+    );
   }
 }

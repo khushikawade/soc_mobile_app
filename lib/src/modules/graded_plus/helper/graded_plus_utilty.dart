@@ -158,4 +158,124 @@ class OcrUtility {
       return [];
     }
   }
+
+  static Future sortStudents({
+    required tableName,
+  }) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+
+    //get all students
+    List<StudentAssessmentInfo> students = await _studentInfoDb.getData();
+
+//remove id and name demo object for list and DB
+    if (students.isNotEmpty) {
+      if (students[0].studentId == 'Id' || students[0].studentId == 'Name') {
+        students.removeAt(0);
+        await _studentInfoDb.deleteAt(0);
+      }
+    }
+
+//IF LIST IS EMPTY RETURN THE FUNCTION
+    if (students == null || students.isEmpty) {
+      return;
+    }
+    //Saving first student because its having all common details of subject, learning standard and other required info
+    StudentAssessmentInfo firstStudent = students[0];
+
+    // Sort by marks (descending) first, then by last name
+    students.sort((a, b) {
+      // Sort by Earned Points in descending order
+      int studentEarnPoints = b.studentGrade!.compareTo(a.studentGrade!);
+      if (studentEarnPoints != 0) {
+        return studentEarnPoints;
+      }
+
+      String lastNameA = '';
+      String lastNameB = '';
+      // Sort by last name in alphabetical order
+      if (a.studentName != null && a.studentName!.isNotEmpty) {
+        if (a.studentName!.contains(' ')) {
+          lastNameA = a.studentName!.split(' ').last.toLowerCase();
+        } else {
+          lastNameA = a.studentName!.toLowerCase();
+        }
+      }
+
+      if (b.studentName != null && b.studentName!.isNotEmpty) {
+        if (b.studentName!.contains(' ')) {
+          lastNameB = b.studentName!.split(' ').last.toLowerCase();
+        } else {
+          lastNameB = b.studentName!.toLowerCase();
+        }
+      }
+      return lastNameA.compareTo(lastNameB);
+    });
+
+//clean the Local DB
+    await _studentInfoDb.clear();
+
+//Ading the sorted list
+    students.asMap().forEach((int index, StudentAssessmentInfo element) async {
+      StudentAssessmentInfo studentObj = element;
+      // TO make sure all comman data is available on first index on edit or scan more
+      if (index == 0) {
+        studentObj
+          ..className = firstStudent.className
+          ..subject = firstStudent.subject
+          ..learningStandard = firstStudent.learningStandard
+          ..subLearningStandard = firstStudent.subLearningStandard
+          ..scoringRubric = firstStudent.scoringRubric
+          ..customRubricImage = firstStudent.customRubricImage
+          ..grade = firstStudent.grade
+          ..questionImgUrl = firstStudent.questionImgUrl
+          ..googleSlidePresentationURL = firstStudent.googleSlidePresentationURL
+          ..standardDescription = firstStudent.standardDescription
+          ..questionImgFilePath = firstStudent.questionImgFilePath;
+      }
+
+      await _studentInfoDb.addData(studentObj);
+    });
+  }
+
+  static Future<List<StudentAssessmentInfo>> getSortedStudentInfoList(
+      {required String tableName, bool? isEdit}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    List<StudentAssessmentInfo> _studentInfoListDb = [];
+    _studentInfoListDb = await _studentInfoDb.getData();
+
+    if (isEdit == true) {
+      await sortStudents(
+        tableName: tableName,
+      );
+    }
+
+    if (_studentInfoListDb.isNotEmpty) {
+      if (_studentInfoListDb[0].studentId == 'Id' ||
+          _studentInfoListDb[0].studentId == 'Name') {
+        _studentInfoListDb.removeAt(0);
+      }
+    }
+
+    return _studentInfoListDb;
+  }
+
+  static Future<int> getStudentInfoListLength(
+      {required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    List<StudentAssessmentInfo> _studentInfoListDb =
+        await _studentInfoDb.getData();
+
+    if (_studentInfoListDb.isNotEmpty) {
+      if (_studentInfoListDb[0].studentId == 'Id' ||
+          _studentInfoListDb[0].studentId == 'Name') {
+        _studentInfoListDb.removeAt(0);
+        await _studentInfoDb.deleteAt(0);
+      }
+    }
+
+    return _studentInfoListDb.length;
+  }
 }

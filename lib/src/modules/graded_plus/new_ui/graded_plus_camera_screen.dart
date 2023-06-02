@@ -85,11 +85,9 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
 
     if (state == AppLifecycleState.inactive) {
-      //print(' inside     AppLifecycleState.inactive');
       // Free up memory when camera not active
       //   cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
-      //print(' inside    AppLifecycleState.resumed');
       // Reinitialize the camera with same properties
       onNewCameraSelected(cameraController.description);
     }
@@ -139,41 +137,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   ValueNotifier<bool>? removeLoading = ValueNotifier<bool>(false);
-  @override
-  void initState() {
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
-    // widget.isFlashOn!.value = widget.isFlashOn;
-    Wakelock.enable();
-
-    Globals.isCameraPopup
-        ? WidgetsBinding.instance
-            .addPostFrameCallback((_) => _showStartDialog())
-        : null;
-    SystemChrome.setEnabledSystemUIOverlays([]);
-    // Hide the status bar
-    // SystemChrome.ssEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    // widget.isScanMore == true
-    //     ? scanMoreAssessmentList = Globals.studentInfo!.length
-    //     : null;
-
-    onNewCameraSelected(cameras[0]);
-    // _checkPermission();
-    FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
-    FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'camera_screen', screenClass: 'CameraScreen');
-    OcrOverrides.gradedPlusNavBarIsHide.value = true;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    Wakelock.disable();
-    controller?.dispose();
-    setEnabledSystemUIMode();
-    OcrOverrides.gradedPlusNavBarIsHide.value = false;
-    super.dispose();
-  }
-
   ValueNotifier<bool> showFocusCircle = ValueNotifier<bool>(false);
 
   double x = 0;
@@ -184,6 +147,49 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   OcrBloc _ocrBloc = OcrBloc();
 
   @override
+  void initState() {
+    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
+    // widget.isFlashOn!.value = widget.isFlashOn;
+    initMethod();
+    super.initState();
+  }
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  void initMethod() {
+    Wakelock.enable();
+
+    Globals.isCameraPopup
+        ? WidgetsBinding.instance
+            .addPostFrameCallback((_) => _showStartDialog())
+        : null;
+    SystemChrome.setEnabledSystemUIOverlays([]);
+
+    onNewCameraSelected(cameras[0]);
+    // _checkPermission();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'camera_screen', screenClass: 'CameraScreen');
+    //Used to hide bottom-navbar from camera screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrOverrides.gradedPlusNavBarIsHide.value = true;
+    });
+  }
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  @override
+  void dispose() {
+    Wakelock.disable();
+    controller?.dispose();
+    setEnabledSystemUIMode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrOverrides.gradedPlusNavBarIsHide.value = false;
+    });
+
+    super.dispose();
+  }
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
@@ -191,6 +197,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     );
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   AppBar appBar() {
     return AppBar(
       toolbarHeight:
@@ -199,7 +206,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       leading: Row(
         children: [
           FutureBuilder(
-              future: _getStudentInfoList(),
+              future: _getSortedStudentInfoList(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<StudentAssessmentInfo>> snapshot) {
                 if (snapshot.hasData) {
@@ -320,11 +327,13 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           assessmentName: Globals.historyAssessmentName,
                           fileId: Globals.historyAssessmentFileId,
                           isLoading: true,
-                          studentData: await Utility.getStudentInfoList(
-                              tableName:
-                                  widget.isFromHistoryAssessmentScanMore == true
-                                      ? Strings.historyStudentInfoDbName
-                                      : Strings.studentInfoDbName)));
+                          studentData:
+                              await OcrUtility.getSortedStudentInfoList(
+                                  tableName:
+                                      widget.isFromHistoryAssessmentScanMore ==
+                                              true
+                                          ? Strings.historyStudentInfoDbName
+                                          : Strings.studentInfoDbName)));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -335,7 +344,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   if (state
                       is AddAndUpdateStudentAssessmentDetailsToSlideSuccess) {
                     List<StudentAssessmentInfo> studentAssessmentInfoDb =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName:
                                 widget.isFromHistoryAssessmentScanMore == true
                                     ? Strings.historyStudentInfoDbName
@@ -363,7 +372,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         studentAssessmentInfoDb.first.questionImgUrl;
 
                     await _studentAssessmentInfoDb.putAt(0, element);
-                    // List l = await Utility.getStudentInfoList(
+                    // List l = await Utility.getSortedStudentInfoList(
                     //     tableName: Strings.studentInfoDbName);
 
                     _driveBloc.add(UpdateDocOnDrive(
@@ -373,7 +382,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         assessmentName: Globals.assessmentName!,
                         fileId: Globals.googleExcelSheetId,
                         isLoading: true,
-                        studentData: await Utility.getStudentInfoList(
+                        studentData: await OcrUtility.getSortedStudentInfoList(
                             tableName: Strings.studentInfoDbName)));
                   }
                   if (state is GoogleSheetUpdateOnScanMoreSuccess) {
@@ -477,7 +486,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         operationResult: 'Success');
 
                     List<StudentAssessmentInfo> studentAssessmentInfoDb =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName:
                                 widget.isFromHistoryAssessmentScanMore == true
                                     ? Strings.historyStudentInfoDbName
@@ -511,8 +520,15 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           return;
                         }
                       }
-
-                      preparingGoogleSlideFiles();
+                      //--------------------------------------------------------------
+                      if (widget.isFromHistoryAssessmentScanMore == true ||
+                          (!widget.isFromHistoryAssessmentScanMore &&
+                              widget.isScanMore == true)) {
+                        preparingStudentAssessmentImageUpdateToSlideFiles();
+                      } else {
+                        prepareClassSuggestionListForCreateAssessmentScreen();
+                      }
+                      //--------------------------------------------------------------
                     } else {
                       Utility.showSnackBar(
                           _scaffoldKey,
@@ -523,7 +539,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   },
                 )),
         FutureBuilder(
-            future: _getStudentInfoList(),
+            future: _getSortedStudentInfoList(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<StudentAssessmentInfo>> snapshot) {
               if (snapshot.hasData) {
@@ -551,6 +567,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     );
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Widget body() {
     return ValueListenableBuilder(
         child: Container(),
@@ -698,6 +715,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         });
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     final previousCameraController = controller!.value;
 
@@ -786,12 +804,14 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _showCameraException(CameraException e) {
     _logError(e.code, e.description);
     Utility.showSnackBar(
         _scaffoldKey, 'Error: ${e.code}\n${e.description}', context, null);
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _logError(String code, String? message) {
     if (message != null) {
       print('Error: $code\nError Message: $message');
@@ -800,6 +820,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   showPopup({required String message, required String? title}) {
     return showDialog(
         context: context,
@@ -814,6 +835,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
             }));
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Future<XFile?> takePicture() async {
     final CameraController? cameraController = controller!.value;
     if (cameraController!.value.isTakingPicture) {
@@ -829,6 +851,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Future<void> _showStartDialog() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     bool? showPopUp = pref.getBool("camera_popup");
@@ -899,19 +922,21 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         : null;
   }
 
-  Future<List<StudentAssessmentInfo>> _getStudentInfoList() async {
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  Future<List<StudentAssessmentInfo>> _getSortedStudentInfoList() async {
     // LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
     //     LocalDatabase(Strings.studentInfoDbName);
     return await _studentAssessmentInfoDb.getData();
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Will be used in standalone app only
   Future<List<String>> getSuggestionChips() async {
     List<String> classSuggestionsList = [];
 
     try {
       List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(
+          await OcrUtility.getSortedStudentInfoList(
               tableName: Strings.studentInfoDbName);
 
       LocalDatabase<GoogleClassroomCourses> _localDb =
@@ -940,10 +965,12 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void setEnabledSystemUIMode() {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Future<void> manualCameraFocusOnTap(TapUpDetails details) async {
     if (controller!.value.value.isInitialized) {
       showFocusCircle.value = true;
@@ -970,6 +997,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Future<void> _navigatetoResultSection() async {
     Navigator.of(context).pop();
     if (widget.isFromHistoryAssessmentScanMore == true) {
@@ -1025,6 +1053,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   _navigateToCreateAssessment({required List<String> suggestionList}) {
     Navigator.pushReplacement(
       context,
@@ -1037,6 +1066,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     );
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
           notPresentStudentsInSelectedClass}) async {
@@ -1058,12 +1088,26 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 if (_dialogKey.currentState != null) {
                   _dialogKey.currentState!.closeDialog();
                 }
-                preparingGoogleSlideFiles();
+                //--------------------------------------------------------------
+                if (widget.isFromHistoryAssessmentScanMore == true ||
+                    (!widget.isFromHistoryAssessmentScanMore &&
+                        widget.isScanMore == true)) {
+                  preparingStudentAssessmentImageUpdateToSlideFiles();
+                } else {
+                  prepareClassSuggestionListForCreateAssessmentScreen();
+                }
               },
             ));
   }
 
-  Future<void> preparingGoogleSlideFiles() async {
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  Future<void> preparingStudentAssessmentImageUpdateToSlideFiles() async {
+    await OcrUtility.sortStudents(
+      tableName: widget.isFromHistoryAssessmentScanMore == true
+          ? Strings.historyStudentInfoDbName
+          : Strings.studentInfoDbName,
+    );
+
     if (widget.isFromHistoryAssessmentScanMore == true) {
       _driveBloc.add(UpdateGoogleSlideOnScanMore(
           studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
@@ -1079,54 +1123,58 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           slidePresentationId: Globals.googleSlidePresentationId,
           studentInfoDb: LocalDatabase(Strings.studentInfoDbName)));
       //
-    } else {
-      if (Overrides.STANDALONE_GRADED_APP == true) {
-        //Prepare suggestion chips for create screen //course list
-        Utility.showLoadingDialog(context: context, isOCR: true);
-        List<String> suggestionList = await getSuggestionChips();
-        Navigator.of(context).pop();
-
-        _navigateToCreateAssessment(suggestionList: suggestionList);
-      } else {
-        List<String> classSuggestions = await _localDb.getData();
-        LocalDatabase<String> classSectionLocalDb =
-            LocalDatabase('class_section_list');
-
-        List<String> localSectionList = await classSectionLocalDb.getData();
-
-        // Compares 2 list and update the changes in local database.
-        bool isClassChanges = false;
-        for (int i = 0; i < classList.length; i++) {
-          if (!localSectionList.contains(classList[i])) {
-            isClassChanges = true;
-            break;
-          }
-        }
-
-        if (localSectionList.isEmpty || isClassChanges) {
-          //print("local db is empty");
-          classSectionLocalDb.clear();
-          classList.forEach((String e) {
-            classSectionLocalDb.addData(e);
-          });
-        } else {
-          //print("local db is not empty");
-          classList = [];
-          classList.addAll(localSectionList);
-        }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GradedPlusCreateAssessment(
-                  isMcqSheet: widget.isMcqSheet,
-                  selectedAnswer: widget.selectedAnswer,
-                  customGrades: classList,
-                  classSuggestions: classSuggestions)),
-        );
-      }
     }
   }
 
+  Future<void> prepareClassSuggestionListForCreateAssessmentScreen() async {
+    if (Overrides.STANDALONE_GRADED_APP == true) {
+      //Prepare suggestion chips for create screen //course list from google classroom
+      Utility.showLoadingDialog(context: context, isOCR: true);
+      List<String> suggestionList = await getSuggestionChips();
+      Navigator.of(context).pop();
+
+      _navigateToCreateAssessment(suggestionList: suggestionList);
+    } else {
+      //Locally added classes suggestion list
+      List<String> classSuggestions = await _localDb.getData();
+      LocalDatabase<String> classSectionLocalDb =
+          LocalDatabase('class_section_list');
+
+      List<String> localSectionList = await classSectionLocalDb.getData();
+
+      // Compares 2 list and update the changes in local database.
+      bool isClassChanges = false;
+      for (int i = 0; i < classList.length; i++) {
+        if (!localSectionList.contains(classList[i])) {
+          isClassChanges = true;
+          break;
+        }
+      }
+
+      if (localSectionList.isEmpty || isClassChanges) {
+        //print("local db is empty");
+        classSectionLocalDb.clear();
+        classList.forEach((String e) {
+          classSectionLocalDb.addData(e);
+        });
+      } else {
+        //print("local db is not empty");
+        classList = [];
+        classList.addAll(localSectionList);
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => GradedPlusCreateAssessment(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                customGrades: classList,
+                classSuggestions: classSuggestions)),
+      );
+    }
+  }
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //Graded+ Standalone Classroom
   String getCourse() {
     // Extract the course name from the assessment name, which is in the format "assessment_math"
@@ -1138,6 +1186,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     return course.contains("_") ? course.split("_")[1] : '';
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _saveResultAssignmentsToDashboard(
       {required String assessmentId,
       required String googleSpreadsheetUrl,
