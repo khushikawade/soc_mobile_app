@@ -1,8 +1,11 @@
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 import '../../google_classroom/google_classroom_globals.dart';
@@ -159,6 +162,109 @@ class OcrUtility {
     }
   }
 
+  static Future<List<ResultSummeryDetailModel>>
+      getResultSummaryCardDetailsAndBarSize(
+          {required double width,
+          required bool isMcqSheet,
+          required bool assessmentDetailPage,
+          List<StudentAssessmentInfo>? assessmentList}) async {
+    List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
+        ? assessmentList
+        : await OcrUtility.getSortedStudentInfoList(
+            tableName: assessmentDetailPage == true
+                ? 'history_student_info'
+                : 'student_info');
+
+    //List to be return
+    List<ResultSummeryDetailModel> summaryCardDetailsList = [];
+    List<String> studentEarnedPoint = [];
+
+    //Comparing Rubric with students earned point
+    for (var i = 0; i < studentAssessmentList.length; i++) {
+      //Check if earned point matches with correct response key /rubric
+      if (studentEarnedPoint.contains(isMcqSheet == true
+          ? studentAssessmentList[i].studentResponseKey
+          : studentAssessmentList[i].studentGrade)) {
+        for (var j = 0; j < summaryCardDetailsList.length; j++) {
+          if (summaryCardDetailsList[j].value ==
+              (isMcqSheet == true
+                  ? studentAssessmentList[i].studentResponseKey
+                  : studentAssessmentList[i].studentGrade)) {
+            //Increasing count of number of student exist with same score or selected key
+            summaryCardDetailsList[j].count =
+                summaryCardDetailsList[j].count! + 1;
+          }
+        }
+      } else {
+        //Updating list to compare next values of studentAssessmentList
+        studentEarnedPoint.add(isMcqSheet == true
+            ? studentAssessmentList[i].studentResponseKey!
+            : studentAssessmentList[i].studentGrade!);
+        summaryCardDetailsList.add(ResultSummeryDetailModel(
+            value: isMcqSheet == true
+                ? studentAssessmentList[i].studentResponseKey
+                : studentAssessmentList[i].studentGrade,
+            count: 1,
+            pointPossible: isMcqSheet == true
+                ? studentAssessmentList[i].answerKey
+                : studentAssessmentList[i].pointPossible));
+      }
+    }
+
+    //Returning width for each result for summary card with their value
+    for (var i = 0; i < summaryCardDetailsList.length; i++) {
+      //Formula :::::::Totalwidth /AssessmentListLength/ StudentEarnedPointCount
+//-------------------------------------------------------------------
+      summaryCardDetailsList[i].width = (width /
+          (studentAssessmentList.length / summaryCardDetailsList[i].count!));
+//-------------------------------------------------------------------
+      Color color = AppTheme.kPrimaryColor;
+      if (isMcqSheet == true) {
+        color = studentAssessmentList[i].answerKey ==
+                summaryCardDetailsList[i].value
+            ? Color(0xAA7ac36a)
+            : Color(0xAAe57373);
+      } else {
+        switch (summaryCardDetailsList[i].value) {
+          case '0':
+            {
+              color = Color(0xAAe57373);
+              break;
+            }
+          case '1':
+            {
+              color = summaryCardDetailsList[i].pointPossible == '4'
+                  ? Color(0xAAe57373)
+                  : Color(0xAAffd54f);
+              break;
+            }
+          case '2':
+            {
+              color = summaryCardDetailsList[i].pointPossible == '2'
+                  ? Color(0xAA7ac36a)
+                  : Color(0xAAffd54f);
+              break;
+            }
+          case '3':
+            {
+              color = summaryCardDetailsList[i].pointPossible == '3'
+                  ? Color(0xAA7ac36a)
+                  : Color(0xAAffd54f);
+              break;
+            }
+          case '4':
+            {
+              color = Color(0xAA7ac36a);
+              break;
+            }
+        }
+      }
+      summaryCardDetailsList[i].color = color;
+    }
+    summaryCardDetailsList.sort((a, b) => a.value!.compareTo(b.value!));
+    return summaryCardDetailsList;
+  }
+
   static Future sortStudents({
     required tableName,
   }) async {
@@ -215,7 +321,7 @@ class OcrUtility {
 //clean the Local DB
     await _studentInfoDb.clear();
 
-//Ading the sorted list
+//Adding the sorted list
     students.asMap().forEach((int index, StudentAssessmentInfo element) async {
       StudentAssessmentInfo studentObj = element;
       // TO make sure all comman data is available on first index on edit or scan more
@@ -246,6 +352,7 @@ class OcrUtility {
     _studentInfoListDb = await _studentInfoDb.getData();
 
     if (isEdit == true) {
+      //Sorting Local db student list
       await sortStudents(
         tableName: tableName,
       );
