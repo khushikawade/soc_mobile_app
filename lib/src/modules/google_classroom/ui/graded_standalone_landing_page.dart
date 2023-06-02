@@ -8,10 +8,9 @@ import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dar
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
+
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
-import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -62,9 +61,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     fetchLocalRoster();
     fatchProfileData();
 
-    if (Overrides.STANDALONE_GRADED_APP) {
-      Globals.isPremiumUser = true;
-    }
+    // if (Overrides.STANDALONE_GRADED_APP) {
+    //   Globals.isPremiumUser = true;
+    // }
     if (Globals.sessionId != '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
@@ -450,7 +449,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType:"Premium", //Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));
@@ -765,9 +764,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                           teacherId: Globals.teacherId,
                           activityId: '2',
                           accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser == true
-                              ? "Premium"
-                              : "Free",
+                          accountType: "Premium",
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));

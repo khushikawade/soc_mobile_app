@@ -647,7 +647,7 @@ class _GradedPlusConstructedResponseState
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));
@@ -665,7 +665,7 @@ class _GradedPlusConstructedResponseState
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));

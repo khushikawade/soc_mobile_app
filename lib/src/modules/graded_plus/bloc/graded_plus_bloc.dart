@@ -1712,7 +1712,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.isPremiumUser.toString(),
+        "Created_As_Premium": true,
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response',

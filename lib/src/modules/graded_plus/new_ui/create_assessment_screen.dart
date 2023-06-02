@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
@@ -89,6 +90,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
+
+    sortStudents();
+
     super.initState();
   }
 
@@ -147,6 +151,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             valueListenable: isAlreadySelected,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
+<<<<<<< HEAD
               return LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                 final isSmallDevice = constraints.maxHeight <= 600;
@@ -174,6 +179,91 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                         isAssessmentTextFormField: true,
                         controller: assessmentController,
                         hintText: 'Assignment Name',
+=======
+              return ListView(
+                // physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                    vertical: 0,
+                    horizontal: StudentPlusOverrides.kLabelSpacing / 2),
+                shrinkWrap: true,
+                children: [
+                  SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+                  PlusScreenTitleWidget(
+                      kLabelSpacing: 0, text: 'Create Assignment',backButton: true,),
+                  SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+                  highlightText(
+                      text: 'Assignment Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  textFormField(
+                      scrollController: scrollControllerAssessmentName,
+                      isAssessmentTextFormField: true,
+                      controller: assessmentController,
+                      hintText: 'Assignment Name',
+                      validator: (String? value) {
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        assessmentNameError.value = value;
+                      },
+                      readOnly: isAlreadySelected.value),
+
+                  //Used to tramslate the error message
+                  ValueListenableBuilder(
+                      valueListenable: assessmentNameError,
+                      child: Container(),
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return Container(
+                          //  color: Colors.amber,
+
+                          padding: assessmentNameError.value.isEmpty
+                              ? EdgeInsets.only(top: 8)
+                              : null,
+                          alignment: Alignment.centerLeft,
+                          child: TranslationWidget(
+                              message: assessmentNameError.value.isEmpty
+                                  ? 'Assignment Name is required'
+                                  : assessmentNameError.value.length < 2
+                                      ? 'Assignment Name should contains atleast 2 characters'
+                                      : '',
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) {
+                                return Text(
+                                  translatedMessage,
+                                  style: TextStyle(color: Colors.red),
+                                );
+                              }),
+                        );
+                      }),
+                  SpacerWidget(_KVerticalSpace / 3),
+                  highlightText(
+                      text: 'Class Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textFormField(
+                        readOnly: Overrides.STANDALONE_GRADED_APP == true
+                            ? true
+                            : isAlreadySelected.value, // true,
+                        scrollController: scrollControllerClassName,
+                        isAssessmentTextFormField: false,
+                        controller: classController,
+                        hintText: '1st',
+                        onSaved: (String value) {
+                          classError.value = value;
+                        },
+>>>>>>> dev_quarter2_2k23
                         validator: (String? value) {
                           return null;
                         },
@@ -996,7 +1086,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
+        await OcrUtility.getSortedStudentInfoList(
+            tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {
@@ -1100,5 +1191,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           title: Globals.assessmentName ?? '',
           pointPossible: Globals.pointPossible ?? "0"));
     }
+  }
+
+  void sortStudents() async {
+    await OcrUtility.sortStudents(
+      tableName: Strings.studentInfoDbName,
+    );
   }
 }
