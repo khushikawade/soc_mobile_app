@@ -1137,9 +1137,11 @@ class _GradedPlusSearchScreenPageState
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    showDialogSetState!(() {
-      GradedGlobals.loadingMessage = 'Result Detail is Updating';
-    });
+    if (showDialogSetState != null) {
+      showDialogSetState!(() {
+        GradedGlobals.loadingMessage = 'Result Detail is Updating';
+      });
+    }
 
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
