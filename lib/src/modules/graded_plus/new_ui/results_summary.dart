@@ -522,7 +522,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   isMcqSheet: widget.isMcqSheet ?? false,
                                   // questionImage:
                                   //     questionImageUrl ?? "NA",
-                             
+
                                   assessmentName: Globals.assessmentName!,
                                   fileId: Globals.googleExcelSheetId,
                                   isLoading: true,
@@ -1467,7 +1467,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   // questionImage: questionImageUrl ?? "NA",
-                 
+
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
@@ -1644,7 +1644,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               // questionImage: questionImageUrl ?? "NA",
-                           
+
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
@@ -1812,52 +1812,51 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 return;
               }
 
-            
-                if (widget.assessmentDetailPage == true &&
-                    widget.createdAsPremium == false) {
+              if (widget.assessmentDetailPage == true &&
+                  widget.createdAsPremium == false) {
+                Utility.updateLogs(
+                    activityType: 'GRADED+',
+                    activityId: '14',
+                    description:
+                        'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
+                    operationResult: 'Failed');
+                popupModal(
+                    title: 'Data Not Saved',
+                    message:
+                        'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
+                Globals.scanMoreStudentInfoLength =
+                    await OcrUtility.getStudentInfoListLength(
+                            tableName: 'student_info') -
+                        1;
+              } else {
+                List list = await OcrUtility.getSortedStudentInfoList(
+                    tableName: 'student_info');
+
+                if (widget.isScanMore == true &&
+                    widget.assessmentListLength != null &&
+                    widget.assessmentListLength! < list.length) {
                   Utility.updateLogs(
                       activityType: 'GRADED+',
                       activityId: '14',
                       description:
-                          'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-                      operationResult: 'Failed');
-                  popupModal(
-                      title: 'Data Not Saved',
-                      message:
-                          'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-                  Globals.scanMoreStudentInfoLength =
-                      await OcrUtility.getStudentInfoListLength(
-                              tableName: 'student_info') -
-                          1;
+                          'Save to dashboard pressed in case for scan more',
+                      operationResult: 'Success');
                 } else {
-                  List list = await OcrUtility.getSortedStudentInfoList(
-                      tableName: 'student_info');
+                  // Adding the non saved record of dashboard in the list
+                  List<StudentAssessmentInfo> _listRecord = [];
 
-                  if (widget.isScanMore == true &&
-                      widget.assessmentListLength != null &&
-                      widget.assessmentListLength! < list.length) {
-                    Utility.updateLogs(
-                        activityType: 'GRADED+',
-                        activityId: '14',
-                        description:
-                            'Save to dashboard pressed in case for scan more',
-                        operationResult: 'Success');
+                  if (widget.assessmentDetailPage! &&
+                      savedRecordCount != null &&
+                      historyRecordList.length != savedRecordCount!) {
+                    _listRecord = historyRecordList.sublist(
+                        savedRecordCount!, historyRecordList.length);
                   } else {
-                    // Adding the non saved record of dashboard in the list
-                    List<StudentAssessmentInfo> _listRecord = [];
-
-                    if (widget.assessmentDetailPage! &&
-                        savedRecordCount != null &&
-                        historyRecordList.length != savedRecordCount!) {
-                      _listRecord = historyRecordList.sublist(
-                          savedRecordCount!, historyRecordList.length);
-                    } else {
-                      //
-                      _listRecord = historyRecordList;
-                    }
+                    //
+                    _listRecord = historyRecordList;
                   }
                 }
-           
+              }
+
               // }
             } else if (dashboardState.value == 'Success') {
               if (Overrides.STANDALONE_GRADED_APP == true) {
@@ -2117,7 +2116,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
-               
                 oneTimeCamera: widget.assessmentDetailPage!,
                 isFromHistoryAssessmentScanMore: widget.assessmentDetailPage!,
                 onlyForPicture: false,
@@ -2197,9 +2195,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: widget.assessmentDetailPage!,
-                height: constraints.maxHeight < 800
-                    ? MediaQuery.of(context).size.height * 0.5
-                    : MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.35,
 
                 //  getURlForResultSummaryIcons: getURlForBottomIcons,
                 //  resultSummaryIconsOnTap: bottomIconsOnTap,
