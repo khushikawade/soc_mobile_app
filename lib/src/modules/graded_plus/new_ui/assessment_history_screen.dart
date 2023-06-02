@@ -640,9 +640,7 @@ class _GradedPlusAssessmentSummaryState
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: false,
-                height: constraints.maxHeight < 800
-                    ? MediaQuery.of(context).size.height * 0.5
-                    : MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.35,
                 //   getURlForResultSummaryIcons: getURlForBottomIcons,
                 // resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP

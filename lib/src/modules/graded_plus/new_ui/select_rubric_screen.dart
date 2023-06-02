@@ -282,10 +282,9 @@ class _GradedPlusConstructedResponseState
       isExtended: true,
       title: 'Start Scanning',
       icon: Icon(
-          IconData(0xe875,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: Theme.of(context).backgroundColor,
-          size: 16),
+        Icons.add,
+        color: Theme.of(context).backgroundColor,
+      ),
       onPressed: () async {
         if (!connected) {
           await FirebaseAnalyticsService.addCustomAnalyticsEvent(

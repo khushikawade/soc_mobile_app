@@ -189,20 +189,22 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       isSuccessState: isSuccessResult,
       isHomeButtonPopup: true,
       isBackOnSuccess: isBackFromCamera,
-      actionIcon: scanFailure.value == "Failure"
-          ? Container()
-          : IconButton(
-              onPressed: () {
-                onPressAction();
-              },
-              icon: Icon(
-                IconData(0xe877,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                size: 30,
-                color: AppTheme.kButtonColor,
-              ),
-            ),
+      actionIcon: Container(),
+
+      // scanFailure.value == "Failure"
+      //     ? Container()
+      //     : IconButton(
+      //         onPressed: () {
+      //           onPressAction();
+      //         },
+      //         icon: Icon(
+      //           IconData(0xe877,
+      //               fontFamily: Overrides.kFontFam,
+      //               fontPackage: Overrides.kFontPkg),
+      //           size: 30,
+      //           color: AppTheme.kButtonColor,
+      //         ),
+      //       ),
       key: null,
     );
   }
