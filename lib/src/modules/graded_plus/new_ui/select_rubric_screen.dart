@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
-
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -17,7 +16,6 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -745,34 +743,6 @@ class _GradedPlusConstructedResponseState
       updateRubricList.value = !updateRubricList.value;
     }
   }
-
-  // _selectSectionBeforeNavigate() async {
-  //   String sectin = '';
-  //   await showModalBottomSheet(
-  //     clipBehavior: Clip.antiAliasWithSaveLayer,
-  //     isScrollControlled: true,
-  //     isDismissible: true,
-  //     enableDrag: true,
-  //     backgroundColor: Colors.transparent,
-  //     elevation: 10,
-  //     context: context,
-  //     builder: (context) => BottomSheetWidget(
-  //       update: _update,
-  //       title: 'Please select section',
-  //       isImageField: false,
-  //       textFieldTitleOne: 'Score Name',
-  //       textFieldTitleTwo: 'Custom Score',
-  //       isSubjectScreen: false,
-  //       valueChanged: (controller) async {},
-  //       section: 'MCQ Assessment',
-  //       tileOnTap: (i) {
-  //         sectin = i;
-  //       },
-  //       sheetHeight: MediaQuery.of(context).size.height / 3,
-  //     ),
-  //   );
-  //   return sectin;
-  // }
 
   void navigateToCamera() {
     Navigator.push(

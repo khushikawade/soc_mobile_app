@@ -1023,9 +1023,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         }
       }
     }
-    // print(_localData);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable({required String msg}) {

@@ -116,6 +116,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
 
   Widget _buildSelectedMenu(final PersistentBottomNavBarItem item,
       final bool isSelected, final double? height, BuildContext context) {
+    //Managing the '+' icon visibility on keyboard appear
     final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Stack(
