@@ -761,7 +761,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                         studentIdOnSaveFailure(value);
                       },
                       validator: (String? value) {
-                        isStudentIdFilled.value = value!;
+                        // isStudentIdFilled.value = value!;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          isStudentIdFilled.value = value!;
+                        });
                         return Overrides.STANDALONE_GRADED_APP == true
                             ? isStudentIdFilled.value.isEmpty ||
                                     !regex.hasMatch(isStudentIdFilled.value)
@@ -1622,7 +1625,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       }
     } else {
       List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(tableName: 'student_info');
+          await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
 
       if (studentInfo.length > 0 && studentInfo[0].studentId == "Id") {
         studentInfo.remove(0);

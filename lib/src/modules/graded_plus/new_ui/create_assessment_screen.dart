@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
@@ -89,6 +90,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
+
+    sortStudents();
+
     super.initState();
   }
 
@@ -987,7 +991,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
+        await OcrUtility.getSortedStudentInfoList(
+            tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {
@@ -1091,5 +1096,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           title: Globals.assessmentName ?? '',
           pointPossible: Globals.pointPossible ?? "0"));
     }
+  }
+
+  void sortStudents() async {
+    await OcrUtility.sortStudents(
+      tableName: Strings.studentInfoDbName,
+    );
   }
 }
