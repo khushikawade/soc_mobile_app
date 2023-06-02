@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
@@ -383,9 +384,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   }),
             ],
           ),
+
           // SpacerWidget(_KVerticalSpace / 5),
           Container(
-            height: MediaQuery.of(context).size.height * 0.09,
+            //color: Colors.amber,
+            //height: MediaQuery.of(context).size.height * 0.09,
             child: ValueListenableBuilder(
               valueListenable: infoIconValue,
               builder: (BuildContext context, bool value, Widget? child) {
@@ -419,7 +422,25 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               child: Container(),
             ),
           ),
-          // SpacerWidget(_KVerticalSpace / 5),
+
+          !widget.assessmentDetailPage!
+              ? studentSummaryCardWidget()
+              : BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
+                  bloc: _driveBloc,
+                  builder: (context, state) {
+                    if (state is AssessmentDetailSuccess) {
+                      if (state.obj.length > 0 &&
+                          state.obj[0].answerKey != '' &&
+                          state.obj[0].answerKey != 'NA' &&
+                          state.obj[0].answerKey != null) {
+                        widget.isMcqSheet = true;
+                      }
+                      return studentSummaryCardWidget(list: state.obj);
+                    }
+                    return Container();
+                  },
+                ),
+          SpacerWidget(_KVerticalSpace / 5),
           !widget.assessmentDetailPage!
               ? Expanded(
                   child: ListView(
@@ -1015,7 +1036,73 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+  Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
+    return ValueListenableBuilder(
+      valueListenable: disableSlidableAction,
+      builder: (context, value, child) {
+        return FutureBuilder(
+          future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
+              isMcqSheet: widget.isMcqSheet ?? false,
+              assessmentDetailPage: widget.assessmentDetailPage ?? false,
+              width: MediaQuery.of(context).size.width * 0.9,
+              assessmentList: list),
+          builder: (context,
+              AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
+            if (snapshot.hasData) {
+              return Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: snapshot.data!
+                      .map((item) => Container(
+                            width: item.width,
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: item.color,
+                                      border: Border.all(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffF7F8F9)
+                                              : Color(0xff111C20),
+                                          width: 2)),
+                                  width: item.width,
+                                  height: 25,
+                                  child: Center(
+                                    child: Utility.textWidget(
+                                        text: "${item.count}",
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!),
+                                  ),
+                                ),
+                                FittedBox(
+                                  child: Utility.textWidget(
+                                      text: widget.isMcqSheet == true
+                                          ? "${item.value}"
+                                          : "${item.value}/${item.pointPossible}",
+                                      context: context,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall!
+                                          .copyWith(fontSize: 10)),
+                                )
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                ),
+              );
+            }
+            return Container();
+          },
+        );
+      },
+    );
+  }
+
   // Widget _scanFloatingWidget() {
   //   return ValueListenableBuilder<bool>(
   //       valueListenable: isScrolling,
@@ -1701,7 +1788,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               Utility.updateLogs(
                   activityType: 'GRADED+',
                   activityId: '15',
-                  description: 'History Assesment button pressed',
+                  description: 'History Assessment button pressed',
                   operationResult: 'Success');
 
               _showDataSavedPopup(
