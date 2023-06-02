@@ -974,7 +974,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           : 15
                       : 20,
                   mainAxisSpacing: pageIndex.value == 1 ? 15 : 15),
-              itemCount: page == 1 ? list.length : list.length + 2,
+              itemCount: page == 1 ? list.length : list.length + 2, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
