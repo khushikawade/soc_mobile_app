@@ -160,7 +160,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                       horizontal: StudentPlusOverrides.kLabelSpacing / 2),
                   shrinkWrap: true,
                   children: [
-                    SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+                    SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
                     PlusScreenTitleWidget(
                       kLabelSpacing: 0,
                       text: 'Create Assignment',

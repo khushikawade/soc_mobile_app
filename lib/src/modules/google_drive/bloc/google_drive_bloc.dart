@@ -552,10 +552,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            isMcqSheet: event.isMcqSheet,
-            data: assessmentData,
-            name: event.assessmentName!,
-           );
+          isMcqSheet: event.isMcqSheet,
+          data: assessmentData,
+          name: event.assessmentName!,
+        );
 
         //Update the created excel file to drive with all the result data
         String excelSheetId = await uploadSheetOnDrive(
@@ -1576,8 +1576,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex:  (isMcqSheet == true ? 6 : 4),
-            endColumnIndex:  (isMcqSheet == true ? 7 : 5),
+            startColumnIndex: (isMcqSheet == true ? 6 : 4),
+            endColumnIndex: (isMcqSheet == true ? 7 : 5),
             sheetId: sheetID,
             imageLink: assessmentData[1].questionImgUrl));
       }
@@ -1589,8 +1589,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex:  (isMcqSheet == true ? 14 : 12),
-            endColumnIndex:  (isMcqSheet == true ? 15 : 13),
+            startColumnIndex: (isMcqSheet == true ? 14 : 12),
+            endColumnIndex: (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
             imageLink: assessmentData[1].customRubricImage));
       }
@@ -1602,7 +1602,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
             startColumnIndex: (isMcqSheet == true ? 16 : 14),
-            endColumnIndex:  (isMcqSheet == true ? 17 : 15),
+            endColumnIndex: (isMcqSheet == true ? 17 : 15),
             sheetId: sheetID,
             imageLink: assessmentData[1].googleSlidePresentationURL));
       }
@@ -1613,7 +1613,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: i,
             endRowIndex: i + 1,
-            startColumnIndex:  (isMcqSheet == true ? 15 : 13),
+            startColumnIndex: (isMcqSheet == true ? 15 : 13),
             endColumnIndex: (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));

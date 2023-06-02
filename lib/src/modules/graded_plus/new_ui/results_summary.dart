@@ -2229,11 +2229,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         GradedPlusCustomFloatingActionButton(
           title: 'Scan More',
           icon: Icon(
-              IconData(0xe875,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: Theme.of(context).backgroundColor,
-              size: 16),
+            Icons.add,
+            color: Theme.of(context).backgroundColor,
+          ),
           isExtended: true,
           onPressed: () async {
             if (Overrides.STANDALONE_GRADED_APP) {
