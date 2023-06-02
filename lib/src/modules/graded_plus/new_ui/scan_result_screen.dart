@@ -604,92 +604,91 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             },
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                      child: PlusScreenTitleWidget(
-                          kLabelSpacing: 0, text: 'Manual Entry')),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xffCF6679),
-                    ),
-                    child: Icon(
-                        IconData(0xe838,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        // size: 19,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Row(
+          //       children: [
+          //         Container(
+          //             child: PlusScreenTitleWidget(
+          //                 kLabelSpacing: 0, text: 'Manual Entry')),
+          //         SizedBox(
+          //           width: 5.0,
+          //         ),
+          //         Container(
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             color: Color(0xffCF6679),
+          //           ),
+          //           child: Icon(
+          //               IconData(0xe838,
+          //                   fontFamily: Overrides.kFontFam,
+          //                   fontPackage: Overrides.kFontPkg),
+          //               // size: 19,
+          //               color: Colors.white),
+          //         ),
+          //       ],
+          //     ),
 
-              // Retry and  next button widget
-              ValueListenableBuilder(
-                valueListenable: isStudentIdFilled,
-                child: Container(),
-                builder: (context, value, child) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: FloatingActionButton.extended(
-                      backgroundColor: AppTheme.kButtonColor,
-                      onPressed: () {
+          //     // Retry and  next button widget
+          //     ValueListenableBuilder(
+          //       valueListenable: isStudentIdFilled,
+          //       child: Container(),
+          //       builder: (context, value, child) {
+          //         return SizedBox(
+          //           height: MediaQuery.of(context).size.height * 0.05,
+          //           child: FloatingActionButton.extended(
+          //             backgroundColor: AppTheme.kButtonColor,
+          //             onPressed: () {
+          //               //  Condition to check id is validate or not
+          //               if (validateStudentId(value: idController.text)) {
+          //                 onPressAction();
+          //               } else {
+          //                 Utility.updateLogs(
+          //                     activityType: 'GRADED+',
+          //                     activityId: '9',
+          //                     description:
+          //                         'Scan Failure and teacher retry scan',
+          //                     operationResult: 'Failure');
 
-                      //  Condition to check id is validate or not
-                        if (validateStudentId(value: idController.text)) {
-                          onPressAction();
-                        } else {
-                          Utility.updateLogs(
-                              activityType: 'GRADED+',
-                              activityId: '9',
-                              description:
-                                  'Scan Failure and teacher retry scan',
-                              operationResult: 'Failure');
-
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          Navigator.of(context).pop(widget.isFlashOn);
-                        }
-                      },
-                      label: Row(
-                        children: [
-                          Utility.textWidget(
-                              text: validateStudentId(value: idController.text)
-                                  ? "Next"
-                                  : 'Retry',
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).backgroundColor)),
-                        ],
-                      ),
-                      icon: validateStudentId(value: idController.text)
-                          ? Icon(
-                              IconData(0xe877,
-                                  fontFamily: Overrides.kFontFam,
-                                  fontPackage: Overrides.kFontPkg),
-                              size: 20,
-                              color: Theme.of(context).backgroundColor,
-                              // color: AppTheme.kButtonColor,
-                            )
-                          : Icon(
-                              Icons.refresh,
-                              color: Theme.of(context).backgroundColor,
-                            ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+          //                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          //                 Navigator.of(context).pop(widget.isFlashOn);
+          //               }
+          //             },
+          //             label: Row(
+          //               children: [
+          //                 Utility.textWidget(
+          //                     text: validateStudentId(value: idController.text)
+          //                         ? "Next"
+          //                         : 'Retry',
+          //                     context: context,
+          //                     textTheme: Theme.of(context)
+          //                         .textTheme
+          //                         .headline4!
+          //                         .copyWith(
+          //                             color:
+          //                                 Theme.of(context).backgroundColor)),
+          //               ],
+          //             ),
+          //             icon: validateStudentId(value: idController.text)
+          //                 ? Icon(
+          //                     IconData(0xe877,
+          //                         fontFamily: Overrides.kFontFam,
+          //                         fontPackage: Overrides.kFontPkg),
+          //                     size: 20,
+          //                     color: Theme.of(context).backgroundColor,
+          //                     // color: AppTheme.kButtonColor,
+          //                   )
+          //                 : Icon(
+          //                     Icons.refresh,
+          //                     color: Theme.of(context).backgroundColor,
+          //                   ),
+          //           ),
+          //         );
+          //       },
+          //     ),
+          //   ],
+          // ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Utility.textWidget(
               text: 'Student Name',
@@ -848,9 +847,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 );
               }),
           suggestionWidget(isNameList: false),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
           Center(
             child: Utility.textWidget(
                 textAlign: TextAlign.center,
@@ -872,6 +869,69 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       : grade
                   : (grade == '' ? 2 : int.parse(grade)),
               isSuccessState: false),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+
+          ValueListenableBuilder(
+            valueListenable: isStudentIdFilled,
+            child: Container(),
+            builder: (context, value, child) {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.25),
+                height: MediaQuery.of(context).size.height * 0.05,
+                // width: MediaQuery.of(context).size.width * 0.3,
+                child: FloatingActionButton.extended(
+                  backgroundColor: AppTheme.kButtonColor,
+                  onPressed: () {
+                    //  Condition to check id is validate or not
+                    if (validateStudentId(value: idController.text)) {
+                      onPressAction();
+                    } else {
+                      Utility.updateLogs(
+                          activityType: 'GRADED+',
+                          activityId: '9',
+                          description: 'Scan Failure and teacher retry scan',
+                          operationResult: 'Failure');
+
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      Navigator.of(context).pop(widget.isFlashOn);
+                    }
+                  },
+                  label: Container(
+                    child: Row(
+                      children: [
+                        Utility.textWidget(
+                            text: validateStudentId(value: idController.text)
+                                ? "Next"
+                                : 'Retry',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(
+                                    color: Theme.of(context).backgroundColor)),
+                      ],
+                    ),
+                  ),
+                  icon: validateStudentId(value: idController.text)
+                      ? Icon(
+                          IconData(0xe877,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          size: 20,
+                          color: Theme.of(context).backgroundColor,
+                          // color: AppTheme.kButtonColor,
+                        )
+                      : Icon(
+                          Icons.refresh,
+                          color: Theme.of(context).backgroundColor,
+                        ),
+                ),
+              );
+            },
+          ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
       ),
@@ -1160,9 +1220,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 );
               }),
           suggestionWidget(isNameList: false),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          // SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Center(
             child: Utility.textWidget(
                 text: widget.isMcqSheet == true
@@ -1179,7 +1237,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           pointsEarnedButton(
               widget.isMcqSheet == true ? grade : int.parse(grade),
               isSuccessState: true),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Container(
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width * 0.5,
@@ -1205,6 +1263,9 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                   ),
                 ],
               )),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
         // ),
       ),
@@ -2126,8 +2187,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       ],
     );
   }
-  
-
 
   // Function to validate student id field to show retry and next button
   bool validateStudentId({required String value}) {
