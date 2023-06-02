@@ -1,12 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
-import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -35,10 +31,8 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
 
   // list of screen on navigation
   List<Widget> _screens = [];
-  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   @override
   void initState() {
-    _checkDriveFolderExistsOrNot();
     _controller.index = widget.index;
     //_studentPlusBloc.add(GetStudentPlusDetails(studentId: widget.studentId));
     super.initState();
@@ -142,21 +136,5 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
           );
         });
-  }
-
-  void _checkDriveFolderExistsOrNot() async {
-    //FOR PBIS PLUS
-    StudentPlusOverrides.studentPlusGoogleDriveFolderId = '';
-    StudentPlusOverrides.studentPlusGoogleDriveFolderPath = '';
-    final List<UserInformation> _profileData =
-        await UserGoogleProfile.getUserProfile();
-    final UserInformation userProfile = _profileData[0];
-
-    googleDriveBloc.add(GetDriveFolderIdEvent(
-        fromGradedPlusAssessmentSection: false,
-        isReturnState: false,
-        token: userProfile.authorizationToken,
-        folderName: "SOLVED PBIS+",
-        refreshToken: userProfile.refreshToken));
   }
 }

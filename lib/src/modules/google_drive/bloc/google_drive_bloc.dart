@@ -16,6 +16,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -105,6 +106,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               PBISPlusOverrides.pbisPlusGoogleDriveFolderId =
                   folderObject['id'];
               PBISPlusOverrides.pbisPlusGoogleDriveFolderPath =
+                  folderObject['webViewLink'];
+            } else if (event.folderName == "SOLVED STUDENT+") {
+              print(
+                  "FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
+              //FOR STUDENT PLUS
+              StudentPlusOverrides.studentPlusGoogleDriveFolderId =
+                  folderObject['id'];
+              StudentPlusOverrides.studentPlusGoogleDriveFolderPath =
                   folderObject['webViewLink'];
             }
 
@@ -1271,11 +1280,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       //   return Globals.googleDriveFolderId = response.data['body']['id'];
       // }
+
+      print("FOLDER IS API CALL IS RECIVED ${response.data['statusCode']}");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         //  String id = response.data['id'];
 
         //   return Globals.googleDriveFolderId = response.data['body']['id'];
-
+        print("FOLDERIS CREATED  SECTION NAME IS $folderName");
         String folderId = response.data['body']['id'];
         //for GARDED+
         if (folderName == "SOLVED GRADED+") {
@@ -1283,7 +1294,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else if (folderName == "SOLVED PBIS+") {
           //FOR PBIS PLUS
           PBISPlusOverrides.pbisPlusGoogleDriveFolderId = folderId;
+        } else if (folderName == "SOLVED STUDENT+") {
+          //FOR STUDENT PLUS
+          StudentPlusOverrides.studentPlusGoogleDriveFolderId = folderId;
         }
+
         return folderId;
       }
       return "";
