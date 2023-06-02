@@ -592,40 +592,40 @@ class _GradedPlusSearchScreenPageState
                     },
                     label: Row(
                       children: [
-                        BlocListener<OcrBloc, OcrState>(
-                            bloc: _ocrBloc,
-                            child: Container(),
-                            listener: (context, state) async {
-                              if (state is OcrLoading) {
-                                //Utility.showLoadingDialog(context);
-                              }
-                              if (state is AssessmentIdSuccess) {
-                                if (Overrides.STANDALONE_GRADED_APP &&
-                                    (GoogleClassroomGlobals
-                                            .studentAssessmentAndClassroomObj
-                                            ?.courseWorkId
-                                            ?.isEmpty ??
-                                        true)) {
-                                  showDialogSetState!(() {
-                                    GradedGlobals.loadingMessage =
-                                        'Creating Google Classroom Assignment';
-                                  });
-                                  widget.googleClassroomBloc.add(
-                                      CreateClassRoomCourseWork(
-                                          studentAssessmentInfoDb:
-                                              LocalDatabase('student_info'),
-                                          pointPossible:
-                                              Globals.pointPossible ?? '0',
-                                          studentClassObj: GoogleClassroomGlobals
-                                              .studentAssessmentAndClassroomObj!,
-                                          title: Globals.assessmentName!
-                                                  .split("_")[1] ??
-                                              ''));
-                                } else {
-                                  _navigatetoResultSection();
-                                }
-                              }
-                            }),
+                        // BlocListener<OcrBloc, OcrState>(
+                        //     bloc: _ocrBloc,
+                        //     child: Container(),
+                        //     listener: (context, state) async {
+                        //       if (state is OcrLoading) {
+                        //         //Utility.showLoadingDialog(context);
+                        //       }
+                        //       if (state is AssessmentIdSuccess) {
+                        //         if (Overrides.STANDALONE_GRADED_APP &&
+                        //             (GoogleClassroomGlobals
+                        //                     .studentAssessmentAndClassroomObj
+                        //                     ?.courseWorkId
+                        //                     ?.isEmpty ??
+                        //                 true)) {
+                        //           showDialogSetState!(() {
+                        //             GradedGlobals.loadingMessage =
+                        //                 'Creating Google Classroom Assignment';
+                        //           });
+                        //           widget.googleClassroomBloc.add(
+                        //               CreateClassRoomCourseWork(
+                        //                   studentAssessmentInfoDb:
+                        //                       LocalDatabase('student_info'),
+                        //                   pointPossible:
+                        //                       Globals.pointPossible ?? '0',
+                        //                   studentClassObj: GoogleClassroomGlobals
+                        //                       .studentAssessmentAndClassroomObj!,
+                        //                   title: Globals.assessmentName!
+                        //                           .split("_")[1] ??
+                        //                       ''));
+                        //         } else {
+                        //           _navigatetoResultSection();
+                        //         }
+                        //       }
+                        //     }),
                         Utility.textWidget(
                             text: 'Save',
                             context: context,
@@ -789,6 +789,8 @@ class _GradedPlusSearchScreenPageState
           if (state is ExcelSheetCreated) {
             Globals.googleExcelSheetId =
                 state.googleSpreadSheetFileObj['fileId'];
+            Globals.shareableLink =
+                state.googleSpreadSheetFileObj['fileUrl'] ?? '';
             //Create Google Presentation once Spreadsheet created
             googleBloc.add(CreateSlideToDrive(
                 isMcqSheet: widget.isMcqSheet ?? false,
@@ -983,11 +985,17 @@ class _GradedPlusSearchScreenPageState
       listener: (context, state) {
         print("state is $state");
         if (state is AssessmentIdSuccess) {
-          assessmentStatus.value.saveAssessmentResultToDashboard = true;
-          navigateToResultSummery();
+          _saveResultAssignmentsToDashboard(
+              assessmentId: state.dashboardAssignmentsId ?? '',
+              googleSpreadsheetUrl: Globals.shareableLink ?? '',
+              assessmentName: Globals.assessmentName ?? '',
+              studentAssessmentInfoDb: _studentAssessmentInfoDb);
         } else if (state is OcrErrorReceived) {
           Navigator.of(context).pop();
           Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
+        } else if (state is GradedPlusSaveResultToDashboardSuccess) {
+          assessmentStatus.value.saveAssessmentResultToDashboard = true;
+          navigateToResultSummery();
         }
       },
       child: Container(),
@@ -1119,5 +1127,28 @@ class _GradedPlusSearchScreenPageState
                   ?.studentAssessmentAndClassroomObj?.courseWorkId ??
               ''));
     }
+  }
+
+  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  void _saveResultAssignmentsToDashboard(
+      {required String assessmentId,
+      required String googleSpreadsheetUrl,
+      // required String subjectId,
+      required String assessmentName,
+      //  required String fileId,
+      required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    showDialogSetState!(() {
+      GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    });
+
+    ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
+      assessmentId: assessmentId,
+      assessmentSheetPublicURL: googleSpreadsheetUrl,
+      studentInfoDb: studentAssessmentInfoDb,
+      assessmentName: assessmentName,
+      // subjectId: subjectId,
+      schoolId: Globals.appSetting.schoolNameC!,
+      // fileId: fileId,
+    ));
   }
 }
