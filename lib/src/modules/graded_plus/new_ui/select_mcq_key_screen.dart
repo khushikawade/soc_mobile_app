@@ -92,7 +92,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
                     accountType:
-                        Globals.isPremiumUser == true ? "Premium" : "Free",
+                        "Premium",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
@@ -279,7 +279,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType:"Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));

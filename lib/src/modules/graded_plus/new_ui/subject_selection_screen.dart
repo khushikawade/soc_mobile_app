@@ -1653,7 +1653,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           // questionImage:
           //     questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          createdAsPremium: Globals.isPremiumUser,
+          
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,

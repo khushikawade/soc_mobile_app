@@ -555,7 +555,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isMcqSheet: event.isMcqSheet,
             data: assessmentData,
             name: event.assessmentName!,
-            createdAsPremium: event.createdAsPremium);
+           );
 
         //Update the created excel file to drive with all the result data
         String excelSheetId = await uploadSheetOnDrive(
@@ -1576,16 +1576,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 5 : 3)
-                : (isMcqSheet == true ? 6 : 4),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 6 : 4)
-                : (isMcqSheet == true ? 7 : 5),
+            startColumnIndex:  (isMcqSheet == true ? 6 : 4),
+            endColumnIndex:  (isMcqSheet == true ? 7 : 5),
             sheetId: sheetID,
             imageLink: assessmentData[1].questionImgUrl));
       }
@@ -1597,16 +1589,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 13 : 11)
-                : (isMcqSheet == true ? 14 : 12),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
+            startColumnIndex:  (isMcqSheet == true ? 14 : 12),
+            endColumnIndex:  (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
             imageLink: assessmentData[1].customRubricImage));
       }
@@ -1617,16 +1601,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 15 : 13)
-                : (isMcqSheet == true ? 16 : 14),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 16 : 14)
-                : (isMcqSheet == true ? 17 : 15),
+            startColumnIndex: (isMcqSheet == true ? 16 : 14),
+            endColumnIndex:  (isMcqSheet == true ? 17 : 15),
             sheetId: sheetID,
             imageLink: assessmentData[1].googleSlidePresentationURL));
       }
@@ -1637,16 +1613,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: i,
             endRowIndex: i + 1,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 15 : 13)
-                : (isMcqSheet == true ? 16 : 14),
+            startColumnIndex:  (isMcqSheet == true ? 15 : 13),
+            endColumnIndex: (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));
       }
