@@ -640,8 +640,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                     child: FloatingActionButton.extended(
                       backgroundColor: AppTheme.kButtonColor,
                       onPressed: () {
-
-                      //  Condition to check id is validate or not
+                        //  Condition to check id is validate or not
                         if (validateStudentId(value: idController.text)) {
                           onPressAction();
                         } else {
@@ -2126,8 +2125,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       ],
     );
   }
-  
-
 
   // Function to validate student id field to show retry and next button
   bool validateStudentId({required String value}) {

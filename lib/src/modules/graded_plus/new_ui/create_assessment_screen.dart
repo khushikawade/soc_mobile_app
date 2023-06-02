@@ -153,7 +153,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             builder: (BuildContext context, dynamic value, Widget? child) {
               return LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                final isSmallDevice = constraints.maxHeight <= 600;
+                bool isSmallDevice = MediaQuery.of(context).size.height <= 700;
                 return ListView(
                     physics:
                         !isSmallDevice ? NeverScrollableScrollPhysics() : null,
