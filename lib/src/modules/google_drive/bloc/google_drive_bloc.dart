@@ -1130,26 +1130,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        // var newSlideIndex = null;
-
-        // if (event.oldSlideIndex != null) {
-        //   print("olde index is available ${event.oldSlideIndex}");
-        //   List<StudentAssessmentInfo> allStudents =
-        //       await OcrUtility.getSortedStudentInfoList(
-        //           isEdit: true, tableName: Strings.studentInfoDbName);
-
-        //   allStudents
-        //       .asMap()
-        //       .forEach((int index, StudentAssessmentInfo student) {
-        //     if (student.studentId == event.studentAssessmentInfo.studentId) {
-        //       if (index != event.oldSlideIndex) {
-        //         print("new index is found $index");
-        //         newSlideIndex = index;
-        //       }
-        //     }
-        //   });
-        // }
-
         _editSlideFromPresentation(
             studentAssessmentInfo: event.studentAssessmentInfo,
             presentationId: event.slidePresentationId,
