@@ -1026,7 +1026,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
   _navigateToCreateAssessment({required List<String> suggestionList}) {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
@@ -1114,7 +1114,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           classList = [];
           classList.addAll(localSectionList);
         }
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => GradedPlusCreateAssessment(
