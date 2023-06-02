@@ -424,7 +424,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           ),
 
           !widget.assessmentDetailPage!
-              ? resultDetailLineWidget()
+              ? studentSummaryCardWidget()
               : BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
                   bloc: _driveBloc,
                   builder: (context, state) {
@@ -435,7 +435,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           state.obj[0].answerKey != null) {
                         widget.isMcqSheet = true;
                       }
-                      return resultDetailLineWidget(list: state.obj);
+                      return studentSummaryCardWidget(list: state.obj);
                     }
                     return Container();
                   },
@@ -1036,13 +1036,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-<<<<<<< HEAD
-  Widget resultDetailLineWidget({List<StudentAssessmentInfo>? list}) {
+  Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
     return ValueListenableBuilder(
       valueListenable: disableSlidableAction,
       builder: (context, value, child) {
         return FutureBuilder(
-          future: OcrUtility.getDetailsByValue(
+          future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
               isMcqSheet: widget.isMcqSheet ?? false,
               assessmentDetailPage: widget.assessmentDetailPage ?? false,
               width: MediaQuery.of(context).size.width * 0.9,
@@ -1104,112 +1103,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
-  Widget _scanFloatingWidget() {
-    return ValueListenableBuilder<bool>(
-        valueListenable: isScrolling,
-        child: Container(),
-        builder: (BuildContext context, bool value, Widget? child) {
-          return Container(
-            //margin: EdgeInsets.only(left: 15),
-            alignment: Alignment.center,
-            // width: isScrolling.value ? null : 130,
-            child: FloatingActionButton.extended(
-                isExtended: !isScrolling.value,
-                backgroundColor: AppTheme.kButtonColor,
-                onPressed: () async {
-                  if (Overrides.STANDALONE_GRADED_APP) {
-                    List<GoogleClassroomCourses> _localData =
-                        await _googleClassRoomlocalDb.getData();
-                    if (_localData.isEmpty) {
-                      Utility.currentScreenSnackBar(
-                          "You need to import roster first", null);
-                      return;
-                    }
-                  }
-                  // print('perform scan more');
-                  performScanMore();
-                },
-                icon: Icon(
-                    IconData(0xe875,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Theme.of(context).backgroundColor,
-                    size: 16),
-                label: Utility.textWidget(
-                    text: isScrolling.value ? '' : 'Scan More',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).backgroundColor))),
-          );
-        });
-  }
-
-  // Widget _bottomButtons(context, List iconsList, List iconName,
-  //     {required String webContentLink}) {
-  //   return Container(
-  //       alignment: Alignment.center,
-  //       decoration: BoxDecoration(
-  //           color: Theme.of(context).backgroundColor == Color(0xff000000)
-  //               ? Color(0xff162429)
-  //               : Color(0xffF7F8F9),
-  //           // color: Theme.of(context).backgroundColor,
-  //           boxShadow: [
-  //             new BoxShadow(
-  //               color: Color.fromRGBO(0, 0, 0, 0.2),
-  //               blurRadius: 20.0,
-  //             ),
-  //           ],
-  //           borderRadius: BorderRadius.circular(4)),
-  //       margin: widget.assessmentDetailPage!
-  //           ? EdgeInsets.only(
-  //               left: MediaQuery.of(context).size.width * 0.15,
-  //               right: MediaQuery.of(context).size.width * 0.15)
-  //           : !widget.assessmentDetailPage!
-  //               ? EdgeInsets.only(
-  //                   left: MediaQuery.of(context).size.width * 0.0,
-  //                   right: MediaQuery.of(context).size.width * 0.0)
-  //               : Globals.deviceType == 'tablet'
-  //                   ? EdgeInsets.only(
-  //                       right: MediaQuery.of(context).size.width * 0.03)
-  //                   : null,
-  //       padding: Globals.deviceType == 'tablet'
-  //           ? EdgeInsets.symmetric(horizontal: 20)
-  //           : EdgeInsets.symmetric(horizontal: 8),
-  //       height: MediaQuery.of(context).orientation == Orientation.portrait
-  //           ? MediaQuery.of(context).size.height * 0.086
-  //           : MediaQuery.of(context).size.width * 0.086,
-  //       width:
-  //           //  Overrides.STANDALONE_GRADED_APP == true
-  //           //     ? (widget.assessmentDetailPage == true
-  //           //         ? MediaQuery.of(context).size.width * 0.5
-  //           //         : MediaQuery.of(context).size.width * 0.7)
-  //           //  :
-  //           widget.assessmentDetailPage!
-  //               ? MediaQuery.of(context).size.width * 0.7
-  //               : MediaQuery.of(context).size.width * 0.9,
-  //       child: Row(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: Overrides.STANDALONE_GRADED_APP
-  //             ? widget.assessmentDetailPage!
-  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //             : widget.assessmentDetailPage!
-  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList()
-  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-  //                     .map<Widget>((element) => bottomIcon(element))
-  //                     .toList(),
-  //       ));
-=======
-//--------------------------------------------------------------------------------------------------------------------------
   // Widget _scanFloatingWidget() {
   //   return ValueListenableBuilder<bool>(
   //       valueListenable: isScrolling,
@@ -1250,7 +1143,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   //                       .copyWith(color: Theme.of(context).backgroundColor))),
   //         );
   //       });
->>>>>>> dev_quarter2_2k23
   // }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -2376,97 +2268,4 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       ],
     );
   }
-
-  // Future<List<ResultSummeryDetailModel>> getDetailsByValue(
-  //     {required double width,
-  //     List<StudentAssessmentInfo>? assessmentList}) async {
-  //   List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
-  //       ? assessmentList
-  //       : await Utility.getStudentInfoList(
-  //           tableName: widget.assessmentDetailPage == true
-  //               ? 'history_student_info'
-  //               : 'student_info');
-
-  //   if (studentAssessmentList[0].answerKey != '' &&
-  //       studentAssessmentList[0].answerKey != 'NA' &&
-  //       studentAssessmentList[0].answerKey != null) {
-  //     widget.isMcqSheet = true;
-  //   }
-  //   List<ResultSummeryDetailModel> list = [];
-  //   List<String> rubricList = [];
-  //   for (var i = 0; i < studentAssessmentList.length; i++) {
-  //     if (rubricList.contains(widget.isMcqSheet == true
-  //         ? studentAssessmentList[i].studentResponseKey
-  //         : studentAssessmentList[i].studentGrade)) {
-  //       for (var j = 0; j < list.length; j++) {
-  //         if (list[j].value ==
-  //             (widget.isMcqSheet == true
-  //                 ? studentAssessmentList[i].studentResponseKey
-  //                 : studentAssessmentList[i].studentGrade)) {
-  //           list[j].count = list[j].count! + 1;
-  //         }
-  //       }
-  //     } else {
-  //       rubricList.add(widget.isMcqSheet == true
-  //           ? studentAssessmentList[i].studentResponseKey!
-  //           : studentAssessmentList[i].studentGrade!);
-  //       list.add(ResultSummeryDetailModel(
-  //           value: widget.isMcqSheet == true
-  //               ? studentAssessmentList[i].studentResponseKey
-  //               : studentAssessmentList[i].studentGrade,
-  //           count: 1,
-  //           pointPossible: widget.isMcqSheet == true
-  //               ? studentAssessmentList[i].answerKey
-  //               : studentAssessmentList[i].pointPossible));
-  //     }
-  //   }
-
-  //   for (var i = 0; i < list.length; i++) {
-  //     list[i].width = width / (studentAssessmentList.length / list[i].count!);
-  //     Color color = AppTheme.kPrimaryColor;
-  //     if (widget.isMcqSheet == true) {
-  //       color = studentAssessmentList[i].answerKey == list[i].value
-  //           ? Color(0xAA7ac36a)
-  //           : Color(0xAAe57373);
-  //     } else {
-  //       switch (list[i].value) {
-  //         case '0':
-  //           {
-  //             color = Color(0xAAe57373);
-  //             break;
-  //           }
-  //         case '1':
-  //           {
-  //             color =
-  //                 list[i].pointPossible == '2' || list[i].pointPossible == '3'
-  //                     ? Color(0xAAffd54f)
-  //                     : Color(0xAAe57373);
-  //             break;
-  //           }
-  //         case '2':
-  //           {
-  //             color = list[i].pointPossible == '2'
-  //                 ? Color(0xAA7ac36a)
-  //                 : Color(0xAAffd54f);
-  //             break;
-  //           }
-  //         case '3':
-  //           {
-  //             color = list[i].pointPossible == '3'
-  //                 ? Color(0xAA7ac36a)
-  //                 : Color(0xAAffd54f);
-  //             break;
-  //           }
-  //         case '4':
-  //           {
-  //             color = Color(0xAA7ac36a);
-  //             break;
-  //           }
-  //       }
-  //     }
-  //     list[i].color = color;
-  //   }
-  //   list.sort((a, b) => a.value!.compareTo(b.value!));
-  //   return list;
-  // }
 }

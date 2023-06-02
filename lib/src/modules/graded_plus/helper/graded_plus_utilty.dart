@@ -162,41 +162,46 @@ class OcrUtility {
     }
   }
 
-<<<<<<< HEAD
-
-  static Future<List<ResultSummeryDetailModel>> getDetailsByValue(
-      {required double width,
-      required bool isMcqSheet,
-      required bool assessmentDetailPage,
-      List<StudentAssessmentInfo>? assessmentList}) async {
+  static Future<List<ResultSummeryDetailModel>>
+      getResultSummaryCardDetailsAndBarSize(
+          {required double width,
+          required bool isMcqSheet,
+          required bool assessmentDetailPage,
+          List<StudentAssessmentInfo>? assessmentList}) async {
     List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
         ? assessmentList
-        : await Utility.getStudentInfoList(
+        : await OcrUtility.getSortedStudentInfoList(
             tableName: assessmentDetailPage == true
                 ? 'history_student_info'
                 : 'student_info');
 
-    
-    List<ResultSummeryDetailModel> list = [];
-    List<String> rubricList = [];
+    //List to be return
+    List<ResultSummeryDetailModel> summaryCardDetailsList = [];
+    List<String> studentEarnedPoint = [];
+
+    //Comparing Rubric with students earned point
     for (var i = 0; i < studentAssessmentList.length; i++) {
-      if (rubricList.contains(isMcqSheet == true
+      //Check if earned point matches with correct response key /rubric
+      if (studentEarnedPoint.contains(isMcqSheet == true
           ? studentAssessmentList[i].studentResponseKey
           : studentAssessmentList[i].studentGrade)) {
-        for (var j = 0; j < list.length; j++) {
-          if (list[j].value ==
+        for (var j = 0; j < summaryCardDetailsList.length; j++) {
+          if (summaryCardDetailsList[j].value ==
               (isMcqSheet == true
                   ? studentAssessmentList[i].studentResponseKey
                   : studentAssessmentList[i].studentGrade)) {
-            list[j].count = list[j].count! + 1;
+            //Increasing count of number of student exist with same score or selected key
+            summaryCardDetailsList[j].count =
+                summaryCardDetailsList[j].count! + 1;
           }
         }
       } else {
-        rubricList.add(isMcqSheet == true
+        //Updating list to compare next values of studentAssessmentList
+        studentEarnedPoint.add(isMcqSheet == true
             ? studentAssessmentList[i].studentResponseKey!
             : studentAssessmentList[i].studentGrade!);
-        list.add(ResultSummeryDetailModel(
-            value:isMcqSheet == true
+        summaryCardDetailsList.add(ResultSummeryDetailModel(
+            value: isMcqSheet == true
                 ? studentAssessmentList[i].studentResponseKey
                 : studentAssessmentList[i].studentGrade,
             count: 1,
@@ -206,15 +211,21 @@ class OcrUtility {
       }
     }
 
-    for (var i = 0; i < list.length; i++) {
-      list[i].width = width / (studentAssessmentList.length / list[i].count!);
+    //Returning width for each result for summary card with their value
+    for (var i = 0; i < summaryCardDetailsList.length; i++) {
+      //Formula :::::::Totalwidth /AssessmentListLength/ StudentEarnedPointCount
+//-------------------------------------------------------------------
+      summaryCardDetailsList[i].width = (width /
+          (studentAssessmentList.length / summaryCardDetailsList[i].count!));
+//-------------------------------------------------------------------
       Color color = AppTheme.kPrimaryColor;
       if (isMcqSheet == true) {
-        color = studentAssessmentList[i].answerKey == list[i].value
+        color = studentAssessmentList[i].answerKey ==
+                summaryCardDetailsList[i].value
             ? Color(0xAA7ac36a)
             : Color(0xAAe57373);
       } else {
-        switch (list[i].value) {
+        switch (summaryCardDetailsList[i].value) {
           case '0':
             {
               color = Color(0xAAe57373);
@@ -222,22 +233,21 @@ class OcrUtility {
             }
           case '1':
             {
-              color =
-                  list[i].pointPossible == '2' || list[i].pointPossible == '3'
-                      ? Color(0xAAffd54f)
-                      : Color(0xAAe57373);
+              color = summaryCardDetailsList[i].pointPossible == '4'
+                  ? Color(0xAAe57373)
+                  : Color(0xAAffd54f);
               break;
             }
           case '2':
             {
-              color = list[i].pointPossible == '2'
+              color = summaryCardDetailsList[i].pointPossible == '2'
                   ? Color(0xAA7ac36a)
                   : Color(0xAAffd54f);
               break;
             }
           case '3':
             {
-              color = list[i].pointPossible == '3'
+              color = summaryCardDetailsList[i].pointPossible == '3'
                   ? Color(0xAA7ac36a)
                   : Color(0xAAffd54f);
               break;
@@ -249,11 +259,12 @@ class OcrUtility {
             }
         }
       }
-      list[i].color = color;
+      summaryCardDetailsList[i].color = color;
     }
-    list.sort((a, b) => a.value!.compareTo(b.value!));
-    return list;
-=======
+    summaryCardDetailsList.sort((a, b) => a.value!.compareTo(b.value!));
+    return summaryCardDetailsList;
+  }
+
   static Future sortStudents({
     required tableName,
   }) async {
@@ -310,7 +321,7 @@ class OcrUtility {
 //clean the Local DB
     await _studentInfoDb.clear();
 
-//Ading the sorted list
+//Adding the sorted list
     students.asMap().forEach((int index, StudentAssessmentInfo element) async {
       StudentAssessmentInfo studentObj = element;
       // TO make sure all comman data is available on first index on edit or scan more
@@ -341,6 +352,7 @@ class OcrUtility {
     _studentInfoListDb = await _studentInfoDb.getData();
 
     if (isEdit == true) {
+      //Sorting Local db student list
       await sortStudents(
         tableName: tableName,
       );
@@ -372,6 +384,5 @@ class OcrUtility {
     }
 
     return _studentInfoListDb.length;
->>>>>>> dev_quarter2_2k23
   }
 }

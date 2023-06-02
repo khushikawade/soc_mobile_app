@@ -1098,13 +1098,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     }
   }
 
-<<<<<<< HEAD
-  
-=======
   void sortStudents() async {
     await OcrUtility.sortStudents(
       tableName: Strings.studentInfoDbName,
     );
   }
->>>>>>> dev_quarter2_2k23
 }
