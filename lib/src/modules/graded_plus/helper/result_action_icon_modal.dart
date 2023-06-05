@@ -26,7 +26,7 @@ class ResultSummaryIcons {
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
     ResultSummaryIcons(
-      title: 'Sheet',
+      title: 'Sheets',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     ResultSummaryIcons(
@@ -53,7 +53,7 @@ class ResultSummaryIcons {
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
     ResultSummaryIcons(
-      title: 'Sheet',
+      title: 'Sheets',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     ResultSummaryIcons(
@@ -81,7 +81,7 @@ class ResultSummaryIcons {
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
     ),
     ResultSummaryIcons(
-      title: 'Sheet',
+      title: 'Sheets',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     ResultSummaryIcons(
@@ -105,7 +105,7 @@ class ResultSummaryIcons {
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
     ),
     ResultSummaryIcons(
-      title: 'Sheet',
+      title: 'Sheets',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     ResultSummaryIcons(

@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -91,7 +92,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
                     accountType:
-                        Globals.isPremiumUser == true ? "Premium" : "Free",
+                        "Premium",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
@@ -179,7 +180,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CameraScreen(
+        builder: (context) => GradedPlusCameraScreen(
           isMcqSheet: true,
           selectedAnswer: selectedAnswerKey.value,
           isFromHistoryAssessmentScanMore: false,
@@ -278,7 +279,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType:"Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));

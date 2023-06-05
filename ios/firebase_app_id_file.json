@@ -1,7 +1,13 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
+<<<<<<< HEAD
   "GOOGLE_APP_ID": "1:675468736684:ios:e4f8e48602f1bf4aabc709",
   "FIREBASE_PROJECT_ID": "app-07x151",
   "GCM_SENDER_ID": "675468736684"
+=======
+  "GOOGLE_APP_ID": "1:971796701109:ios:e0658080983559323e03fc",
+  "FIREBASE_PROJECT_ID": "solved-consulting",
+  "GCM_SENDER_ID": "971796701109"
+>>>>>>> latest_create_aasessment_loader_removed
 }

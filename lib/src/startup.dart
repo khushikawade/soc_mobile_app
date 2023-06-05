@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -244,9 +244,9 @@ class _StartupPageState extends State<StartupPage> {
                               var isOldUser = await _hiveDbServices
                                   .getSingleData('new_user', 'new_user');
                               //-------------------------------------------------------------
-                              if (Overrides.STANDALONE_GRADED_APP == true) {
-                                Globals.isPremiumUser = true;
-                              }
+                              // if (Overrides.STANDALONE_GRADED_APP == true) {
+                              //   Globals.isPremiumUser = true;
+                              // }
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true

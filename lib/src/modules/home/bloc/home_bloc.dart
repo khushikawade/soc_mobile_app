@@ -604,8 +604,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         AccountObjectModal accountObejct = AccountObjectModal.fromJson(data);
         Globals.schoolDbnC = accountObejct.dBNC ?? '';
 
-        Globals.isPremiumUser =
-            accountObejct.gRADEDPremiumC == 'true' ? true : false;
+        // Globals.isPremiumUser =
+        //     accountObejct.gRADEDPremiumC == 'true' ? true : false;
       } else {
         _verifyUserWithDatabase(accountId: accountId);
       }

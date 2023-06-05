@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -291,7 +291,7 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       // await _launchURL('Google Authentication');
       var value = await GoogleLogin.launchURL(
-          'Google Authentication', context, _scaffoldKey, '', '');
+          'Google Authentication', context, _scaffoldKey, '', actionName);
       if (value == true) {
         navigatorToScreen(actionName: actionName);
       }
@@ -320,7 +320,7 @@ class _StaffPageState extends State<StaffPage> {
             teacherId: Globals.teacherId,
             activityId: '2',
             accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            accountType: "Premium",
             dateTime: currentDateTime.toString(),
             description: 'Graded+ Accessed(Login)',
             operationResult: 'Success'));
@@ -340,7 +340,7 @@ class _StaffPageState extends State<StaffPage> {
             teacherId: Globals.teacherId,
             activityId: '2',
             accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            accountType: "Premium",
             dateTime: currentDateTime.toString(),
             description: 'PBIS+ Accessed(Login)',
             operationResult: 'Success'));
@@ -357,7 +357,7 @@ class _StaffPageState extends State<StaffPage> {
             teacherId: Globals.teacherId,
             activityId: '2',
             accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            accountType: "Premium",
             dateTime: currentDateTime.toString(),
             description: 'STUDENT+ Accessed(Login)',
             operationResult: 'Success'));

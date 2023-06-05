@@ -64,7 +64,7 @@ class GoogleLogin {
           teacherId: Globals.teacherId,
           activityId: '2',
           accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+          accountType: "Premium",
           dateTime: currentDateTime.toString(),
           description: 'Authentication Failure',
           operationResult: 'Failure'));
@@ -104,7 +104,7 @@ class GoogleLogin {
           teacherId: Globals.teacherId,
           activityId: '2',
           accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+          accountType:"Premium",
           dateTime: currentDateTime.toString(),
           description: 'Google Authentication Success',
           operationResult: 'Success'));

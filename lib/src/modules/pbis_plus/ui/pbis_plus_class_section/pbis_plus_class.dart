@@ -36,7 +36,7 @@ class PBISPlusClass extends StatefulWidget {
       {Key? key,
       required this.titleIconData,
       required this.backOnTap,
-      this.isGradedPlus})
+      this.isGradedPlus = false})
       : super(key: key);
 
   @override
@@ -98,7 +98,11 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         extendBody: true,
         backgroundColor: Colors.transparent,
         appBar: PBISPlusUtility.pbisAppBar(
-            context, widget.titleIconData, 'Class', _scaffoldKey),
+            context: context,
+            titleIconData: widget.titleIconData,
+            title: 'Class',
+            scaffoldKey: _scaffoldKey,
+            isGradedPlus: widget.isGradedPlus),
         floatingActionButton: widget.isGradedPlus == true
             ? null
             : ValueListenableBuilder(
