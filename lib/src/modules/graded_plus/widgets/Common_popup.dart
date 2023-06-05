@@ -8,8 +8,10 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
@@ -138,6 +140,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 .addCustomAnalyticsEvent("logout");
                             await UserGoogleProfile.clearUserProfile();
                             await GoogleClassroom.clearClassroomCourses();
+                            Authentication.signOut(context: context);
                             Utility.clearStudentInfo(tableName: 'student_info');
                             Utility.clearStudentInfo(
                                 tableName: 'history_student_info');
