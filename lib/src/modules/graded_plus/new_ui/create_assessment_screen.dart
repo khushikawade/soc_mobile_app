@@ -66,8 +66,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
       false); //Used to manage the question image. Should not be editable if already sent to google classroom assignment
   final ValueNotifier<String> assessmentNameError = ValueNotifier<String>('');
   final ValueNotifier<String> classError = ValueNotifier<String>('');
-  ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(
-      false); //Used to manage the edit of assignment details if excel and slide already created. It should not be editable then.
+  // ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(
+  //     false); //Used to manage the edit of assignment details if excel and slide already created. It should not be editable then.
   File? imageFile;
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -142,70 +142,117 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   }
 
   Widget body() {
+    bool isSmallDevice = MediaQuery.of(context).size.height <= 700;
     return Form(
       key: _formKey,
       child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: StudentPlusOverrides.kSymmetricPadding),
-        child: ValueListenableBuilder(
-            valueListenable: isAlreadySelected,
-            child: Container(),
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              bool isSmallDevice = MediaQuery.of(context).size.height <= 700;
-              return ListView(
-                  physics:
-                      !isSmallDevice ? NeverScrollableScrollPhysics() : null,
-                  padding: EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: StudentPlusOverrides.kLabelSpacing / 2),
-                  shrinkWrap: true,
-                  children: [
-                    SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
-                    PlusScreenTitleWidget(
-                      kLabelSpacing: 0,
-                      text: 'Create Assignment',
-                      backButton: true,
-                    ),
-                    SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                    highlightText(
-                        text: 'Assignment Name',
-                        theme: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryVariant
-                                .withOpacity(0.3))),
-                    textFormField(
-                        scrollController: scrollControllerAssessmentName,
-                        isAssessmentTextFormField: true,
-                        controller: assessmentController,
-                        hintText: 'Assignment Name',
-                        validator: (String? value) {
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          assessmentNameError.value = value;
-                        },
-                        readOnly: isAlreadySelected.value),
+          padding: EdgeInsets.symmetric(
+              horizontal: StudentPlusOverrides.kSymmetricPadding),
+          child: ListView(
+              physics: !isSmallDevice ? NeverScrollableScrollPhysics() : null,
+              padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: StudentPlusOverrides.kLabelSpacing / 2),
+              shrinkWrap: true,
+              children: [
+                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+                PlusScreenTitleWidget(
+                  kLabelSpacing: 0,
+                  text: 'Create Assignment',
+                  backButton: true,
+                ),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+                highlightText(
+                    text: 'Assignment Name',
+                    theme: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3))),
+                textFormField(
+                    scrollController: scrollControllerAssessmentName,
+                    isAssessmentTextFormField: true,
+                    controller: assessmentController,
+                    hintText: 'Assignment Name',
+                    validator: (String? value) {
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      assessmentNameError.value = value;
+                    },
+                    readOnly: false),
 
-                    //Used to tramslate the error message
+                //Used to tramslate the error message
+                ValueListenableBuilder(
+                    valueListenable: assessmentNameError,
+                    child: Container(),
+                    builder:
+                        (BuildContext context, dynamic value, Widget? child) {
+                      return Container(
+                        //  color: Colors.amber,
+
+                        padding: assessmentNameError.value.isEmpty
+                            ? EdgeInsets.only(top: 8)
+                            : null,
+                        alignment: Alignment.centerLeft,
+                        child: TranslationWidget(
+                            message: assessmentNameError.value.isEmpty
+                                ? 'Assignment Name is required'
+                                : assessmentNameError.value.length < 2
+                                    ? 'Assignment Name should contains atleast 2 characters'
+                                    : '',
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(
+                                translatedMessage,
+                                style: TextStyle(color: Colors.red),
+                              );
+                            }),
+                      );
+                    }),
+
+                SpacerWidget(_KVerticalSpace / 3),
+                highlightText(
+                    text: 'Class Name',
+                    theme: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3))),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    textFormField(
+                      readOnly: Overrides.STANDALONE_GRADED_APP == true
+                          ? true
+                          : false, // true,
+                      scrollController: scrollControllerClassName,
+                      isAssessmentTextFormField: false,
+                      controller: classController,
+                      hintText: '1st',
+                      onSaved: (String value) {
+                        classError.value = value;
+                      },
+                      validator: (String? value) {
+                        return null;
+                      },
+                    ),
                     ValueListenableBuilder(
-                        valueListenable: assessmentNameError,
+                        valueListenable: classError,
                         child: Container(),
                         builder: (BuildContext context, dynamic value,
                             Widget? child) {
                           return Container(
-                            //  color: Colors.amber,
-
-                            padding: assessmentNameError.value.isEmpty
+                            padding: classError.value.isEmpty
                                 ? EdgeInsets.only(top: 8)
                                 : null,
                             alignment: Alignment.centerLeft,
                             child: TranslationWidget(
-                                message: assessmentNameError.value.isEmpty
-                                    ? 'Assignment Name is required'
-                                    : assessmentNameError.value.length < 2
-                                        ? 'Assignment Name should contains atleast 2 characters'
-                                        : '',
+                                message: classError.value.isEmpty
+                                    ? 'Class is required'
+                                    : '',
                                 fromLanguage: "en",
                                 toLanguage: Globals.selectedLanguage,
                                 builder: (translatedMessage) {
@@ -216,226 +263,164 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                                 }),
                           );
                         }),
-
-                    SpacerWidget(_KVerticalSpace / 3),
-                    highlightText(
-                        text: 'Class Name',
-                        theme: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryVariant
-                                .withOpacity(0.3))),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        textFormField(
-                          readOnly: Overrides.STANDALONE_GRADED_APP == true
-                              ? true
-                              : isAlreadySelected.value, // true,
-                          scrollController: scrollControllerClassName,
-                          isAssessmentTextFormField: false,
-                          controller: classController,
-                          hintText: '1st',
-                          onSaved: (String value) {
+                  ],
+                ),
+                if (widget.classSuggestions.length > 0)
+                  SpacerWidget(_KVerticalSpace / 8),
+                if (widget.classSuggestions.length > 0)
+                  Container(
+                      height: 30, //!isAlreadySelected.value ? 30 : 0.0,
+                      //padding: EdgeInsets.only(left: 2.0),
+                      child: ChipsFilter(
+                        selectedValue: (String value) {
+                          if (value.isNotEmpty) {
+                            classController.text = value;
                             classError.value = value;
-                          },
-                          validator: (String? value) {
-                            return null;
-                          },
-                        ),
-                        ValueListenableBuilder(
-                            valueListenable: classError,
-                            child: Container(),
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return Container(
-                                padding: classError.value.isEmpty
-                                    ? EdgeInsets.only(top: 8)
-                                    : null,
-                                alignment: Alignment.centerLeft,
-                                child: TranslationWidget(
-                                    message: classError.value.isEmpty
-                                        ? 'Class is required'
-                                        : '',
-                                    fromLanguage: "en",
-                                    toLanguage: Globals.selectedLanguage,
-                                    builder: (translatedMessage) {
-                                      return Text(
-                                        translatedMessage,
-                                        style: TextStyle(color: Colors.red),
-                                      );
-                                    }),
-                              );
-                            }),
-                      ],
-                    ),
-                    if (widget.classSuggestions.length > 0 &&
-                        !isAlreadySelected.value)
-                      SpacerWidget(_KVerticalSpace / 8),
-                    if (widget.classSuggestions.length > 0)
-                      Container(
-                          height: !isAlreadySelected.value ? 30 : 0.0,
-                          //padding: EdgeInsets.only(left: 2.0),
-                          child: ChipsFilter(
-                            selectedValue: (String value) {
-                              if (value.isNotEmpty) {
-                                classController.text = value;
-                                classError.value = value;
-                                updateClassName();
-                              }
-                            },
-                            selected: 1, // Select the second filter as default
-                            filters: widget.classSuggestions,
-                          )),
+                            updateClassName();
+                          }
+                        },
+                        selected: 1, // Select the second filter as default
+                        filters: widget.classSuggestions,
+                      )),
 
-                    SpacerWidget(_KVerticalSpace / 2),
-                    highlightText(
-                        text: 'Select Grade',
-                        theme: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryVariant
-                                .withOpacity(0.3))),
-                    SpacerWidget(_KVerticalSpace / 4),
-                    scoringButton(),
-                    SpacerWidget(_KVerticalSpace / 3),
+                SpacerWidget(_KVerticalSpace / 2),
+                highlightText(
+                    text: 'Select Grade',
+                    theme: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3))),
+                SpacerWidget(_KVerticalSpace / 4),
+                scoringButton(),
+                SpacerWidget(_KVerticalSpace / 3),
 
-                    Row(
-                      children: [
-                        ValueListenableBuilder(
-                            valueListenable: isAlreadySelected,
-                            builder: (BuildContext context, bool value,
-                                Widget? child) {
-                              return ValueListenableBuilder(
-                                  valueListenable: isImageFilePicked,
-                                  builder: (BuildContext context, dynamic value,
-                                      Widget? child) {
-                                    return Container(
-                                      // height: 80,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Utility.textWidget(
-                                                context: context,
-                                                text: isImageFilePicked.value !=
-                                                        true
-                                                    ? 'Scan Assignment (Optional)'
-                                                    : 'Assignment Selected',
-                                                textTheme: TextStyle(
-                                                    color: isImageFilePicked
-                                                                .value !=
-                                                            true
-                                                        ? Color(0xff000000) ==
-                                                                Theme.of(
-                                                                        context)
-                                                                    .backgroundColor
-                                                            ? Color(0xffFFFFFF)
-                                                            : Color(0xff000000)
-                                                        : AppTheme
-                                                            .kSelectedColor,
-                                                    fontSize:
-                                                        Globals.deviceType ==
-                                                                'phone'
-                                                            ? 16
-                                                            : 22),
-                                              ),
-                                              isImageFilePicked.value == true
-                                                  ? IconButton(
-                                                      onPressed: () {
-                                                        if (isAlreadySelected
-                                                            .value) {
-                                                          _checkFieldEditable(
-                                                              msg:
-                                                                  "You cannot edit the image, once created.");
-                                                        } else {
-                                                          _cameraImage(context);
-                                                        }
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.replay_outlined,
-                                                        // : Icons.image_sharp,
-                                                        size:
-                                                            Globals.deviceType ==
-                                                                    'phone'
-                                                                ? 20
-                                                                : 25,
-                                                      ),
-                                                      color: isImageFilePicked
-                                                                  .value !=
-                                                              true
-                                                          ? Color(0xff000000) ==
-                                                                  Theme.of(
-                                                                          context)
-                                                                      .backgroundColor
-                                                              ? Color(
-                                                                  0xffFFFFFF)
-                                                              : Color(
-                                                                  0xff000000)
-                                                          : AppTheme
-                                                              .kSelectedColor,
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          ),
-                                          SpacerWidget(_KVerticalSpace / 8),
-                                          CircleAvatar(
-                                            //  foregroundColor:  Colors.red,
-                                            backgroundImage:
-                                                isImageFilePicked.value == true
-                                                    ? FileImage(imageFile!)
-                                                    : null,
-                                            backgroundColor:
-                                                AppTheme.kButtonColor,
-                                            radius: 30,
-                                            child: IconButton(
-                                              onPressed: () {
-                                                if (isImageFilePicked.value !=
-                                                    true) {
-                                                  if (isAlreadySelected.value) {
-                                                    _checkFieldEditable(
-                                                        msg:
-                                                            "You cannot edit the image, once created.");
-                                                  } else {
-                                                    _cameraImage(context);
-                                                  }
-                                                } else {
-                                                  showQuestionImage();
-                                                }
-                                              },
-                                              icon: Icon(
-                                                isImageFilePicked.value != true
-                                                    ? Icons.add
-                                                    : Icons.check,
-                                                // : Icons.image_sharp,
-                                                size: Globals.deviceType ==
-                                                        'phone'
-                                                    ? 25
-                                                    : 30,
-                                              ),
-                                              color: isImageFilePicked.value !=
-                                                      true
-                                                  ? Color(0xff000000) ==
-                                                          Theme.of(context)
-                                                              .backgroundColor
-                                                      ? Color(0xffFFFFFF)
-                                                      : Color(0xff000000)
-                                                  : AppTheme.kSelectedColor,
+                Row(
+                  children: [
+                    ValueListenableBuilder(
+                        valueListenable: isImageFilePicked,
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return Container(
+                            // height: 80,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Utility.textWidget(
+                                      context: context,
+                                      text: isImageFilePicked.value != true
+                                          ? 'Scan Assignment (Optional)'
+                                          : 'Assignment Selected',
+                                      textTheme: TextStyle(
+                                          color: isImageFilePicked.value != true
+                                              ? Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000)
+                                              : AppTheme.kSelectedColor,
+                                          fontSize:
+                                              Globals.deviceType == 'phone'
+                                                  ? 16
+                                                  : 22),
+                                    ),
+                                    isImageFilePicked.value == true
+                                        ? IconButton(
+                                            onPressed: () {
+                                              // if (isAlreadySelected
+                                              //     .value) {
+                                              //   _checkFieldEditable(
+                                              //       msg:
+                                              //           "You cannot edit the image, once created.");
+                                              // } else {
+                                              _cameraImage(context);
+                                              //  }
+                                            },
+                                            icon: Icon(
+                                              Icons.replay_outlined,
+                                              // : Icons.image_sharp,
+                                              size:
+                                                  Globals.deviceType == 'phone'
+                                                      ? 20
+                                                      : 25,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  });
-                            }),
-                      ],
-                    )
-                  ]);
-            }),
-      ),
+                                            color:
+                                                isImageFilePicked.value != true
+                                                    ? Color(0xff000000) ==
+                                                            Theme.of(context)
+                                                                .backgroundColor
+                                                        ? Color(0xffFFFFFF)
+                                                        : Color(0xff000000)
+                                                    : AppTheme.kSelectedColor,
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                                SpacerWidget(_KVerticalSpace / 8),
+                                CircleAvatar(
+                                  //  foregroundColor:  Colors.red,
+                                  backgroundImage:
+                                      isImageFilePicked.value == true
+                                          ? FileImage(imageFile!)
+                                          : null,
+                                  backgroundColor: AppTheme.kButtonColor,
+                                  radius: 30,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      if (isImageFilePicked.value != true) {
+                                        // if (isAlreadySelected.value) {
+                                        //   _checkFieldEditable(
+                                        //       msg:
+                                        //           "You cannot edit the image, once created.");
+                                        // } else {
+                                        _cameraImage(context);
+                                        //  }
+                                      } else {
+                                        showQuestionImage();
+                                      }
+                                    },
+                                    icon: Icon(
+                                      isImageFilePicked.value != true
+                                          ? Icons.add
+                                          : Icons.check,
+                                      // : Icons.image_sharp,
+                                      size: Globals.deviceType == 'phone'
+                                          ? 25
+                                          : 30,
+                                    ),
+                                    color: isImageFilePicked.value != true
+                                        ? Color(0xff000000) ==
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Color(0xffFFFFFF)
+                                            : Color(0xff000000)
+                                        : AppTheme.kSelectedColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                    // ValueListenableBuilder(
+                    //     valueListenable: isAlreadySelected,
+                    //     builder: (BuildContext context, bool value,
+                    //         Widget? child) {
+                    //       return
+                    //     }),
+                  ],
+                )
+              ])
+
+          //  ValueListenableBuilder(
+          //     valueListenable: isAlreadySelected,
+          //     child: Container(),
+          //     builder: (BuildContext context, dynamic value, Widget? child) {
+
+          //       return
+          //     }),
+          ),
     );
   }
 
@@ -574,9 +559,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 return Container(
                   //  color: Colors.blue,
                   child: TextFormField(
-                    onTap: (() => _checkFieldEditable(
-                        msg:
-                            'You cannot edit the Assessment Name and Class, once created.')),
+                    // onTap: (() => _checkFieldEditable(
+                    //     msg:
+                    //         'You cannot edit the Assessment Name and Class, once created.')),
                     readOnly: readOnly ?? false,
                     scrollController: scrollController,
                     autovalidateMode: AutovalidateMode.always,
@@ -598,9 +583,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                           .headline6!
                           .copyWith(
                               fontWeight: FontWeight.bold, color: Colors.grey),
-                      fillColor: isAlreadySelected.value
-                          ? Colors.grey.withOpacity(.1)
-                          : Colors.transparent,
+                      fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context)
@@ -691,8 +674,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
                   //Check student and show popup modal in case of scan more
                   if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
-                          true) &&
-                      (!isAlreadySelected.value)) {
+                      true)) {
                     notPresentStudentsPopupModal(
                         notPresentStudentsInSelectedClass:
                             notPresentStudentListInSelectedClass);
@@ -803,8 +785,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
       //for school app default state
       selectedState = OcrOverrides.defaultStateForSchoolApp;
     }
-
-    isAlreadySelected.value = true;
 
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "navigate_from_create_assignment_page_to_subject_page");
@@ -943,12 +923,12 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     }
   }
 
-  _checkFieldEditable({required String msg}) {
-    if (isAlreadySelected.value) {
-      Utility.currentScreenSnackBar(msg, null);
-    }
-    return;
-  }
+  // _checkFieldEditable({required String msg}) {
+  //   if (isAlreadySelected.value) {
+  //     Utility.currentScreenSnackBar(msg, null);
+  //   }
+  //   return;
+  // }
 
   void performOnTapOnNext() {
     Globals.assessmentName =
