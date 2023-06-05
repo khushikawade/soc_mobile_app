@@ -174,7 +174,8 @@ class _GradedPlusConstructedResponseState
                   },
                   listener: (BuildContext context, Object? state) {
                     if (state is OcrLoading) {
-                      Utility.showLoadingDialog(context: context, isOCR: true);
+                      Utility.showLoadingDialog(
+                          context: context, isOCR: true, msg: 'Please Wait...');
                     }
                     if (state is GetRubricPdfSuccess) {
                       Navigator.pop(context);

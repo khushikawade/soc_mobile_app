@@ -364,7 +364,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                                                 ? (widget.studentEmailIdController.text.length != 9
                                                                     ? 'Student Id should be 9 digit'
                                                                     : (widget.studentEmailIdController.text[0] != '2' && widget.studentEmailIdController.text[0] != '1'
-                                                                        ? 'Student Id should be start for 1 or 2'
+                                                                        ? 'Student Id Should Start With Either 1 or 2'
                                                                         : ''))
                                                                 : (!regex.hasMatch(widget
                                                                         .studentEmailIdController

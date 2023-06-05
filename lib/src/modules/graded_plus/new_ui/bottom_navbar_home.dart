@@ -35,9 +35,12 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: body(),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: body(),
+      ),
     );
   }
 

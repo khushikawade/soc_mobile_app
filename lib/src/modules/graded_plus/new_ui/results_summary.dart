@@ -192,7 +192,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Stack(
+      child:  Stack(
         children: [
           CommonBackgroundImgWidget(),
           Scaffold(
