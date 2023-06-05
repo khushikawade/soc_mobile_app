@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google%20_slides_presentation/bloc/google%20_slides_presentation_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -21,6 +23,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
@@ -41,8 +44,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
+  List<StudentPlusWorkModel> updatedList = [];
   FocusNode myFocusNode = new FocusNode();
+  final GoogleSlidesPresentationBloc googleSlidesPresentationBloc =
+      GoogleSlidesPresentationBloc();
   @override
   void initState() {
     _studentPlusBloc.add(
@@ -127,7 +132,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               ],
             ),
           ),
+          floatingActionButton: fab(),
         ),
+        googleSlidesPresentationBlocListener()
       ],
     );
   }
@@ -229,8 +236,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   child: Container(),
                   builder:
                       (BuildContext context, dynamic value, Widget? child) {
-                    List<StudentPlusWorkModel> updatedList = [];
-
                     for (var i = 0; i < state.obj.length; i++) {
                       if (state.obj[i].subjectC == filterNotifier.value ||
                           filterNotifier.value == '' ||
@@ -283,6 +288,13 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   /* ----------------- widget to show work detail in listTile ----------------- */
   Widget listObject(
       {required StudentPlusWorkModel studentWorkModel, required int index}) {
+    // print(studentWorkModel.dateC);
+    // print(studentWorkModel.nameC);
+    // print(studentWorkModel.resultC);
+    // print(studentWorkModel.rubricC);
+    // print(studentWorkModel.studentNameC);
+    // print(studentWorkModel.teacherEmail);
+    print(studentWorkModel);
     return InkWell(
       onTap: () {
         /*-------------------------User Activity Track START----------------------------*/
@@ -421,5 +433,46 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'Sync Student Work STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+  }
+
+  Widget? fab() {
+    return PlusCustomFloatingActionButton(
+      icon: SvgPicture.asset(
+        "assets/ocr_result_section_bottom_button_icons/Slide.svg",
+        height: 25,
+      ),
+      onPressed: () {
+        try {
+          print("calling event to check presentation is available or not");
+          googleSlidesPresentationBloc
+              .add(StudentPlusGooglePresentationIsAvailable(
+            stduentPlusDriveFolderId:
+                StudentPlusOverrides.studentPlusGoogleDriveFolderId,
+            studentDetails: widget.studentDetails,
+          ));
+        } catch (e) {
+          print(e);
+        }
+      },
+    );
+  }
+
+  BlocListener googleSlidesPresentationBlocListener() {
+    return BlocListener<GoogleSlidesPresentationBloc,
+            GoogleSlidesPresentationState>(
+        bloc: googleSlidesPresentationBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("$state");
+
+          if (state is StudentPlusGooglePresentationIsAvailableSuccess) {
+            print("caliing StudentPlusUpdateNewSldiesOnGooglePresentation ");
+            googleSlidesPresentationBloc.add(
+                StudentPlusUpdateNewSldiesOnGooglePresentation(
+                    googlePresentationFileId: state.googlePresentationFileId,
+                    studentDetails: widget.studentDetails,
+                    allrecords: updatedList));
+          }
+        });
   }
 }

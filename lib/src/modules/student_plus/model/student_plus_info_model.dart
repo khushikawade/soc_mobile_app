@@ -80,7 +80,8 @@ class StudentPlusDetailsModel {
       this.age,
       this.grade19_20,
       this.grade20_21,
-      this.grade21_22,this.studentPhoto});
+      this.grade21_22,
+      this.studentPhoto});
 
   /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
@@ -283,7 +284,8 @@ class StudentPlusDetailsModel {
               json["ELA_IReady_Overall_Relative_Place_MOY__c"],
           ELACurrentEOYOverallRelativePlace:
               json["IReady_ELA_EOY_Overall_Relative_Place__c"],
-          currentAttendance: json["Current_Attendance__c"], studentPhoto: json['Student_photo__c']);
+          currentAttendance: json["Current_Attendance__c"],
+          studentPhoto: json['Student_photo__c']);
 
   get nysElaPrScore2021C => null;
 
@@ -365,7 +367,7 @@ class StudentPlusDetailsModel {
         "Grade_19_20__c": grade19_20,
         "Grade_20_21__c": grade20_21,
         "Grade_21_22__c": grade21_22,
-        "Student_photo__c":studentPhoto
+        "Student_photo__c": studentPhoto
       };
 }
 

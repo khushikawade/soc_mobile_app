@@ -78,6 +78,8 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
       _height = 0;
       _width = 0;
     } else {
+      //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
+      //is available or not if not this will create one or the available get the drive folder id
       _checkDriveFolderExistsOrNot();
     }
 
@@ -458,13 +460,20 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
   }
 
   void _checkDriveFolderExistsOrNot() async {
-    //FOR PBIS PLUS
+    //FOR STUDENT PLUS
+
     StudentPlusOverrides.studentPlusGoogleDriveFolderId = '';
     StudentPlusOverrides.studentPlusGoogleDriveFolderPath = '';
+
+    //this is get the user profile details
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     final UserInformation userProfile = _profileData[0];
-    print("callig the the event to get ids ");
+
+    print("callig the the event to check the folder available or not ");
+
+    //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
+    //is available or not if not this will create one or the available get the drive folder id
     googleDriveBloc.add(GetDriveFolderIdEvent(
         fromGradedPlusAssessmentSection: false,
         isReturnState: false,
