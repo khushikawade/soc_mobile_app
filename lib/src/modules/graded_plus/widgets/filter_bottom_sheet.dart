@@ -129,39 +129,58 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             Color(0xff000000)
                         ? Color(0xff111C20)
                         : Color(0xffE9ECEE)),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: AppTheme.kButtonColor
-                  // Theme.of(context).colorScheme.onBackground,
-                  ),
-              child: RadioListTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                activeColor: AppTheme.kButtonColor,
-                title: selectedValue.value == filterList[index]
-                    ? InkWell(
-                        onTap: () {
-                          // ignore: deprecated_member_use
-                          Utility.currentScreenSnackBar(
-                              '${filterList[index]} Filter is already selected',
-                              null);
-                        },
-                        child: Utility.textWidget(
-                            text: filterList[index],
-                            context: context,
-                            textTheme: Theme.of(context).textTheme.headline2),
-                      )
-                    : Utility.textWidget(
-                        text: filterList[index],
-                        context: context,
-                        textTheme: Theme.of(context).textTheme.headline2),
-                groupValue: true,
-                value: selectedValue.value == filterList[index] ? true : false,
-                onChanged: (bool? value) {
+            child: ListTile(
+              onTap: () {
+                if (selectedValue.value == filterList[index]) {
+                  //         // ignore: deprecated_member_use
+                  Utility.currentScreenSnackBar(
+                      '${filterList[index]} Filter is already selected', null);
+                } else {
                   selectedValue.value = filterList[index];
                   widget.update(filterValue: filterList[index]);
                   Navigator.pop(context);
-                },
+                }
+              },
+              title: Utility.textWidget(
+                  text: filterList[index],
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2),
+              trailing: Icon(
+                selectedValue.value == filterList[index]
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off,
+                color: AppTheme.kButtonColor,
               ),
             ),
+
+            //  Theme(
+            //   data: ThemeData(unselectedWidgetColor: AppTheme.kButtonColor
+            //       // Theme.of(context).colorScheme.onBackground,
+            //       ),
+            //   child: RadioListTile(
+            //     controlAffinity: ListTileControlAffinity.trailing,
+            //     activeColor: AppTheme.kButtonColor,
+            //     title: Utility.textWidget(
+            //         text: filterList[index],
+            //         context: context,
+            //         textTheme: Theme.of(context).textTheme.headline2),
+            //     groupValue: true,
+            //     value: selectedValue.value == filterList[index] ? true : false,
+
+            //     onChanged: (bool? value) {
+            //       if (selectedValue.value == filterList[index]) {
+            //         // ignore: deprecated_member_use
+            //         Utility.currentScreenSnackBar(
+            //             '${filterList[index]} Filter is already selected',
+            //             null);
+            //       }
+
+            //       selectedValue.value = filterList[index];
+            //       widget.update(filterValue: filterList[index]);
+            //       Navigator.pop(context);
+            //     },
+            //   ),
+            // ),
           );
         });
   }

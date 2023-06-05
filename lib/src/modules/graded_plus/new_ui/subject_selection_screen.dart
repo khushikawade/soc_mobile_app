@@ -1509,7 +1509,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           if (_localData[i].customOrStandardRubic == "Custom" &&
               '${_localData[i].name}' + ' ' + '${_localData[i].score}' ==
                   Globals.scoringRubric) {
-            rubricImgUrl = _localData[i].imgUrl;
+            rubricImgUrl = _localData[i].imgUrl ?? 'NA';
             break;
           } else {
             rubricImgUrl = 'NA';

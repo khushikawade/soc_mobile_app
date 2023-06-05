@@ -86,6 +86,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
               resizeToAvoidBottomInset:
                   true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
               stateManagement: false, // Default is true.
+
               // hideNavigationBarWhenKeyboardShows: OcrOverrides
               //     .gradedPlusNavBarIsHide
               //     .value, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
