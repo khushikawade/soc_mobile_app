@@ -685,7 +685,7 @@ class _GradedPlusSearchScreenPageState
     for (int i = 0; i < _localData.length; i++) {
       if (_localData[i].customOrStandardRubic == "Custom" &&
           _localData[i].name == Globals.scoringRubric) {
-        rubricImgUrl = _localData[i].imgUrl;
+        rubricImgUrl = _localData[i].imgUrl ?? 'NA';
         break;
         // rubricScore = null;
       } else {

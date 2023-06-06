@@ -43,7 +43,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
-
 import '../../../services/strings.dart';
 
 class GradedPlusResultsSummary extends StatefulWidget {
@@ -506,7 +505,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                         pointPossible:
                                             Globals.pointPossible ?? "0"));
                               } else {
-                                Navigator.of(context).pop();
+                                //!UNCOMMENT  Navigator.of(context).pop();
                               }
                             }
                             if (state is ErrorState) {
@@ -1463,7 +1462,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                 Navigator.pop(context, false);
 
-                Utility.showLoadingDialog(context: context, isOCR: true);
+                //!UNCOMMENT Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   // questionImage: questionImageUrl ?? "NA",
@@ -1639,8 +1638,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           Navigator.pop(
                             context,
                           );
-                          Utility.showLoadingDialog(
-                              context: context, isOCR: true);
+                          //!UNCOMMENT        Utility.showLoadingDialog(
+                          //!UNCOMMENT           context: context, isOCR: true);
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               // questionImage: questionImageUrl ?? "NA",
