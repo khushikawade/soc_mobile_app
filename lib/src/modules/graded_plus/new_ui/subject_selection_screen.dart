@@ -379,6 +379,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             ? MediaQuery.of(context).size.height * 0.85
             : MediaQuery.of(context).size.width * 0.80,
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(
             horizontal: 20,
           ),
@@ -549,49 +550,52 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return PlusScreenTitleWidget(
-          kLabelSpacing: 0,
-          text: pageIndex.value == 0
-              ? 'Subject'
-              : '${widget.stateName} Learning Standard',
-          backButton: true,
-          backButtonOnTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            // Change pages according to current page position on back press ..
-            if (pageIndex.value == 1) {
-              learningStandard = '';
-              isSkipButton.value = false;
-              nycIndex1.value = -1;
-              subjectIndex1.value = 0;
-              isSubmitButton.value = false;
+        return Container(
+          // width: MediaQuery.of(context).size.width * 0.1,
+          child: PlusScreenTitleWidget(
+            kLabelSpacing: 0,
+            text: pageIndex.value == 0
+                ? 'Subject'
+                : '${widget.stateName} Learning Standard',
+            backButton: true,
+            backButtonOnTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              // Change pages according to current page position on back press ..
+              if (pageIndex.value == 1) {
+                learningStandard = '';
+                isSkipButton.value = false;
+                nycIndex1.value = -1;
+                subjectIndex1.value = 0;
+                isSubmitButton.value = false;
 
-              fetchSubjectDetails('subject', widget.selectedClass,
-                  widget.selectedClass, widget.stateName, '', '');
-            } else if (pageIndex.value == 2) {
-              nycSubIndex1.value = -1;
-              nycIndex1.value = 0;
-              learningStandard = '';
-              standardDescription = '';
-              subLearningStandard = '';
-              isSubmitButton.value = false;
-              isSkipButton.value = true;
+                fetchSubjectDetails('subject', widget.selectedClass,
+                    widget.selectedClass, widget.stateName, '', '');
+              } else if (pageIndex.value == 2) {
+                nycSubIndex1.value = -1;
+                nycIndex1.value = 0;
+                learningStandard = '';
+                standardDescription = '';
+                subLearningStandard = '';
+                isSubmitButton.value = false;
+                isSkipButton.value = true;
 
-              if (widget.isSearchPage == true) {
-                Navigator.pop(context);
+                if (widget.isSearchPage == true) {
+                  Navigator.pop(context);
+                } else {
+                  _ocrBloc.add(FetchSubjectDetails(
+                    type: 'nyc',
+                    selectedKeyword: selectedKeyword,
+                    grade: widget.selectedClass,
+                    stateName: widget.stateName,
+                    subjectId: subjectId,
+                    subjectSelected: subject,
+                  ));
+                }
               } else {
-                _ocrBloc.add(FetchSubjectDetails(
-                  type: 'nyc',
-                  selectedKeyword: selectedKeyword,
-                  grade: widget.selectedClass,
-                  stateName: widget.stateName,
-                  subjectId: subjectId,
-                  subjectSelected: subject,
-                ));
+                Navigator.pop(context);
               }
-            } else {
-              Navigator.pop(context);
-            }
-          },
+            },
+          ),
         );
       },
       child: Container(),

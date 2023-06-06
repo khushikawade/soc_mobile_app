@@ -2,11 +2,9 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
@@ -28,7 +26,7 @@ import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
@@ -142,7 +140,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   }
 
   Widget body() {
-    bool isSmallDevice = MediaQuery.of(context).size.height <= 700;
+    bool isSmallDevice = MediaQuery.of(context).size.height * 0.8 <= 700;
+    // print(MediaQuery.of(context).size.height * 0.9);
     return Form(
       key: _formKey,
       child: Container(
@@ -402,7 +401,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                               ],
                             ),
                           );
-                        })
+                        }),
                     // ValueListenableBuilder(
                     //     valueListenable: isAlreadySelected,
                     //     builder: (BuildContext context, bool value,
@@ -410,7 +409,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                     //       return
                     //     }),
                   ],
-                )
+                ),
+                SpacerWidget(_KVerticalSpace / 2),
               ])
 
           //  ValueListenableBuilder(

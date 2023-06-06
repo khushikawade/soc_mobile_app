@@ -214,40 +214,134 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         valueListenable: scanFailure,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return scanFailure.value == "Success"
-              ? ValueListenableBuilder(
-                  valueListenable: isBackFromCamera,
-                  child: Container(),
-                  builder:
-                      (BuildContext context, dynamic value, Widget? child) {
-                    return isBackFromCamera.value != true
-                        ? Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ValueListenableBuilder(
-                                valueListenable: animationStart,
-                                child: Container(),
-                                builder: (BuildContext context, dynamic value,
-                                    Widget? child) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      onPressSuccessFloatingButton();
-                                    },
-                                    child: GradedPlusNextScanAnimationButton(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.055,
-                                      animationDuration:
-                                          Duration(milliseconds: 4950),
-                                      animationStart: animationStart.value,
-                                    ),
-                                  );
-                                }),
+          if (scanFailure.value == "Success") {
+            return ValueListenableBuilder(
+                valueListenable: isBackFromCamera,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return
+                      // isBackFromCamera.value != true
+                      //     ?
+                      Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ValueListenableBuilder(
+                        valueListenable: animationStart,
+                        child: Container(),
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return InkWell(
+                            onTap: () async {
+                              onPressSuccessFloatingButton();
+                            },
+                            child: GradedPlusNextScanAnimationButton(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.055,
+                              animationDuration: Duration(milliseconds: 4950),
+                              animationStart: animationStart.value,
+                            ),
+                          );
+                        }),
+                  );
+                  //  : Container();
+                });
+          } else if (scanFailure.value == "") {
+            return Container();
+          } else {
+            return ValueListenableBuilder(
+              valueListenable: isStudentIdFilled,
+              child: Container(),
+              builder: (context, value, child) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.055,
+                  // width: MediaQuery.of(context).size.width * 0.3,
+                  child: FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor,
+                    onPressed: () {
+                      //  Condition to check id is validate or not
+                      if (validateStudentId(value: idController.text)) {
+                        onPressAction();
+                      } else {
+                        Utility.updateLogs(
+                            activityType: 'GRADED+',
+                            activityId: '9',
+                            description: 'Scan Failure and teacher retry scan',
+                            operationResult: 'Failure');
+
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        Navigator.of(context).pop(widget.isFlashOn);
+                      }
+                    },
+                    label: Container(
+                      child: Row(
+                        children: [
+                          Utility.textWidget(
+                              text: validateStudentId(value: idController.text)
+                                  ? "Next"
+                                  : 'Retry',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor)),
+                        ],
+                      ),
+                    ),
+                    icon: validateStudentId(value: idController.text)
+                        ? Icon(
+                            IconData(0xe877,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            size: 20,
+                            color: Theme.of(context).backgroundColor,
+                            // color: AppTheme.kButtonColor,
                           )
-                        : Container();
-                  })
-              : Container();
+                        : Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).backgroundColor,
+                          ),
+                  ),
+                );
+              },
+            );
+          }
+          // return scanFailure.value == "Success"
+          //     ? ValueListenableBuilder(
+          //         valueListenable: isBackFromCamera,
+          //         child: Container(),
+          //         builder:
+          //             (BuildContext context, dynamic value, Widget? child) {
+          //           return
+          //               // isBackFromCamera.value != true
+          //               //     ?
+          //               Align(
+          //             alignment: Alignment.bottomCenter,
+          //             child: ValueListenableBuilder(
+          //                 valueListenable: animationStart,
+          //                 child: Container(),
+          //                 builder: (BuildContext context, dynamic value,
+          //                     Widget? child) {
+          //                   return InkWell(
+          //                     onTap: () async {
+          //                       onPressSuccessFloatingButton();
+          //                     },
+          //                     child: GradedPlusNextScanAnimationButton(
+          //                       width: MediaQuery.of(context).size.width * 0.4,
+          //                       height:
+          //                           MediaQuery.of(context).size.height * 0.055,
+          //                       animationDuration: Duration(milliseconds: 4950),
+          //                       animationStart: animationStart.value,
+          //                     ),
+          //                   );
+          //                 }),
+          //           );
+          //           //  : Container();
+          //         })
+          //     :
         });
   }
 
@@ -875,65 +969,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           Center(child: imagePreviewWidget()),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
 
-          ValueListenableBuilder(
-            valueListenable: isStudentIdFilled,
-            child: Container(),
-            builder: (context, value, child) {
-              return Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.25),
-                height: MediaQuery.of(context).size.height * 0.05,
-                // width: MediaQuery.of(context).size.width * 0.3,
-                child: FloatingActionButton.extended(
-                  backgroundColor: AppTheme.kButtonColor,
-                  onPressed: () {
-                    //  Condition to check id is validate or not
-                    if (validateStudentId(value: idController.text)) {
-                      onPressAction();
-                    } else {
-                      Utility.updateLogs(
-                          activityType: 'GRADED+',
-                          activityId: '9',
-                          description: 'Scan Failure and teacher retry scan',
-                          operationResult: 'Failure');
-
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      Navigator.of(context).pop(widget.isFlashOn);
-                    }
-                  },
-                  label: Container(
-                    child: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: validateStudentId(value: idController.text)
-                                ? "Next"
-                                : 'Retry',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline4!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                      ],
-                    ),
-                  ),
-                  icon: validateStudentId(value: idController.text)
-                      ? Icon(
-                          IconData(0xe877,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          size: 20,
-                          color: Theme.of(context).backgroundColor,
-                          // color: AppTheme.kButtonColor,
-                        )
-                      : Icon(
-                          Icons.refresh,
-                          color: Theme.of(context).backgroundColor,
-                        ),
-                ),
-              );
-            },
-          ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
       ),
