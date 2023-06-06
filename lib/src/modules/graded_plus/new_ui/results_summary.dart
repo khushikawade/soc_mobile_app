@@ -17,7 +17,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/result_summary_action_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';

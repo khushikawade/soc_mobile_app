@@ -25,14 +25,15 @@ class StateSelectionPage extends StatefulWidget {
   final bool? isFromCreateAssessmentScreen;
   // final String questionImageUrl;
   final String selectedClass;
-   final File? localQuestionImage;
+  final File? gradedPlusQueImage;
   const StateSelectionPage(
       {Key? key,
       this.isMcqSheet,
       this.selectedAnswer,
       // required this.questionImageUrl,
       required this.selectedClass,
-      this.isFromCreateAssessmentScreen,required this.localQuestionImage})
+      this.isFromCreateAssessmentScreen,
+      required this.gradedPlusQueImage})
       : super(key: key);
 
   @override
@@ -160,7 +161,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         GradedPluSubjectSelection(
-                                          localQuestionImage: widget.localQuestionImage,
+                                          gradedPlusQueImage:
+                                              widget.gradedPlusQueImage,
                                           isMcqSheet: widget.isMcqSheet,
                                           selectedAnswer: widget.selectedAnswer,
                                           // isCommonCore: selectedIndex.value == 0
@@ -271,7 +273,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPluSubjectSelection(
-                              localQuestionImage: widget.localQuestionImage,
+                                  gradedPlusQueImage: widget.gradedPlusQueImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   stateName: list[index],

@@ -793,10 +793,10 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => GradedPluSubjectSelection(
-                  localQuestionImage: imageFile,
+                  gradedPlusQueImage: imageFile,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
-                  stateName: Overrides.STANDALONE_GRADED_APP == true
+                  stateName: Overrides.STANDALONE_GRADED_APP != true
                       ? "New York"
                       : selectedState,
                   // questionImageUrl: questionImageUrl ?? '',
@@ -808,7 +808,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => StateSelectionPage(
-                  localQuestionImage: imageFile,
+                  gradedPlusQueImage: imageFile,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   isFromCreateAssessmentScreen: true,
