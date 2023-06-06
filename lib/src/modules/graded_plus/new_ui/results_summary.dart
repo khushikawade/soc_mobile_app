@@ -2205,12 +2205,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     : ResultSummaryIcons.resultSummaryIconsModalList,
 
                 allUrls: {
-                  'Share': widget.shareLink ?? '',
+                  'Share': widget.shareLink == null || widget.shareLink == ''
+                      ? Globals.shareableLink ?? ''
+                      : widget.shareLink ?? '',
                   'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': 'Dashboard',
                   'Slides': Globals.googleSlidePresentationLink ?? '',
-                  'Sheets': widget.shareLink ?? '',
+                  'Sheets': widget.shareLink == null || widget.shareLink == ''
+                      ? Globals.shareableLink ?? ''
+                      : widget.shareLink ?? '',
                   'Class': GoogleClassroomGlobals
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
