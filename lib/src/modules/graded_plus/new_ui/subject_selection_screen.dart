@@ -1633,9 +1633,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 assessmentName: Globals.assessmentName ?? 'Assessment Name',
                 rubricScore: Globals.scoringRubric ?? '2',
                 subjectName: widget.isSearchPage == true
-                    ? widget.selectedSubject ?? ''
+                    ? widget.selectedSubject ?? 'NA'
                     : subject ??
-                        '', //Student Id will not be there in case of custom subject
+                        'NA', //Student Id will not be there in case of custom subject
                 domainName: widget.isSearchPage == true
                     ? widget.domainNameC ?? ''
                     : learningStandard ?? '',
