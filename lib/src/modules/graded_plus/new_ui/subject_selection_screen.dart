@@ -135,8 +135,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
     // SubjectSelectionAPIAndMethods.googleSlidesPreparation();
     //  googleSlidesPreparation();
+    isSkipButton.value = true;
     if (widget.isSearchPage == true) {
-      isSkipButton.value = true;
+      //    isSkipButton.value = true;
       _ocrBloc.add(FetchSubjectDetails(
           stateName: widget.stateName,
           subjectId: widget.subjectId,
@@ -158,6 +159,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
       // if user come from state selection page or create assessment page
     }
+    //isSkipButton.value = true;
 
     super.initState();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("subject_selection");
@@ -186,7 +188,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         // Change pages according to current page position on back press ..
         if (pageIndex.value == 1) {
           learningStandard = '';
-          isSkipButton.value = false;
+          isSkipButton.value = true;
           nycIndex1.value = -1;
           subjectIndex1.value = 0;
           isSubmitButton.value = false;
@@ -563,7 +565,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               // Change pages according to current page position on back press ..
               if (pageIndex.value == 1) {
                 learningStandard = '';
-                isSkipButton.value = false;
+                isSkipButton.value = true;
                 nycIndex1.value = -1;
                 subjectIndex1.value = 0;
                 isSubmitButton.value = false;
@@ -833,7 +835,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               itemCount: page == 1
                   ? list.length
                   : list.length +
-                      2, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
+                      1, //  plus 2 for adding length in case subject (1 for no standard and another for + add subject)
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
@@ -1048,114 +1050,45 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           ),
                         ),
                       )
-                    : (index == list.length
-                        ? OfflineBuilder(
-                            child: Container(),
-                            connectivityBuilder: (BuildContext context,
-                                ConnectivityResult connectivity, Widget child) {
-                              final bool connected =
-                                  connectivity != ConnectivityResult.none;
-
-                              return Bouncing(
-                                child: InkWell(
-                                  onTap: () {
-                                    subjectIndex1.value = index;
-                                    subject = 'No Standard';
-                                    Utility.updateLogs(
-                                        activityType: 'GRADED+',
-                                        activityId: '18',
-                                        description:
-                                            'No Standard subject selection process',
-                                        operationResult: 'Success');
-                                    floatingButtonOnTap();
-                                    //   floatingButtonOnTap();
-                                    //addCustomSubjectBottomSheet();
-                                  },
-                                  child: AnimatedContainer(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                    decoration: BoxDecoration(
-                                      color: (subjectIndex1.value == index &&
-                                                  pageIndex.value == 0) ||
-                                              (nycIndex1.value == index &&
-                                                  pageIndex.value == 1)
-                                          ? AppTheme.kSelectedColor
-                                          : Colors.grey,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    duration: Duration(microseconds: 100),
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      alignment: Alignment.center,
-                                      child: Utility.textWidget(
-                                          text: 'No Standard',
-                                          textTheme: Theme.of(context)
-                                              .textTheme
-                                              .headline2!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold),
-                                          context: context),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xff000000) !=
-                                                  Theme.of(context)
-                                                      .backgroundColor
-                                              ? Color(0xffF7F8F9)
-                                              : Color(0xff111C20),
-                                          border: Border.all(
-                                            color:
-                                                (subjectIndex1.value == index &&
-                                                        pageIndex.value == 0)
-                                                    ? AppTheme.kSelectedColor
-                                                    : Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            })
-                        : Bouncing(
-                            child: InkWell(
-                            onTap: () {
-                              addCustomSubjectBottomSheet();
-                            },
-                            child: AnimatedContainer(
-                              padding: EdgeInsets.only(bottom: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8),
-                                ),
-                              ),
-                              duration: Duration(microseconds: 100),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                alignment: Alignment.center,
-                                child: Utility.textWidget(
-                                    text: '+',
-                                    textTheme: Theme.of(context)
-                                        .textTheme
-                                        .headline2!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                    context: context),
-                                decoration: BoxDecoration(
-                                    color: Color(0xff000000) !=
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffF7F8F9)
-                                        : Color(0xff111C20),
-                                    border: Border.all(
-                                      color: (subjectIndex1.value == index &&
-                                              pageIndex.value == 0)
-                                          ? AppTheme.kSelectedColor
-                                          : Colors.grey,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8)),
-                              ),
+                    : Bouncing(
+                        child: InkWell(
+                        onTap: () {
+                          addCustomSubjectBottomSheet();
+                        },
+                        child: AnimatedContainer(
+                          padding: EdgeInsets.only(bottom: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
                             ),
-                          )));
+                          ),
+                          duration: Duration(microseconds: 100),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.center,
+                            child: Utility.textWidget(
+                                text: '+',
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                                context: context),
+                            decoration: BoxDecoration(
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffF7F8F9)
+                                    : Color(0xff111C20),
+                                border: Border.all(
+                                  color: (subjectIndex1.value == index &&
+                                          pageIndex.value == 0)
+                                      ? AppTheme.kSelectedColor
+                                      : Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                      ));
               }),
         );
       },
@@ -1214,7 +1147,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             valueListenable: isSkipButton,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return isSkipButton.value && pageIndex.value != 0
+              return isSkipButton.value //&& pageIndex.value != 0
                   ? OfflineBuilder(
                       connectivityBuilder: (BuildContext context,
                           ConnectivityResult connectivity, Widget child) {
