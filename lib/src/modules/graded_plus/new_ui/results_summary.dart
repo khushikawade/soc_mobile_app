@@ -192,7 +192,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child:  Stack(
+      child: Stack(
         children: [
           CommonBackgroundImgWidget(),
           Scaffold(
@@ -505,7 +505,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                         pointPossible:
                                             Globals.pointPossible ?? "0"));
                               } else {
-                                Navigator.of(context).pop();
+                                //!UNCOMMENT  Navigator.of(context).pop();
                               }
                             }
                             if (state is ErrorState) {
@@ -1462,7 +1462,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                 Navigator.pop(context, false);
 
-                Utility.showLoadingDialog(context: context, isOCR: true);
+                //!UNCOMMENT Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   // questionImage: questionImageUrl ?? "NA",
@@ -1638,8 +1638,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           Navigator.pop(
                             context,
                           );
-                          Utility.showLoadingDialog(
-                              context: context, isOCR: true);
+                          //!UNCOMMENT        Utility.showLoadingDialog(
+                          //!UNCOMMENT           context: context, isOCR: true);
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               // questionImage: questionImageUrl ?? "NA",

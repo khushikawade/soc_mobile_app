@@ -143,7 +143,7 @@ class _GradedPlusConstructedResponseState
             pointPossibleButton(),
             SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 PlusScreenTitleWidget(
