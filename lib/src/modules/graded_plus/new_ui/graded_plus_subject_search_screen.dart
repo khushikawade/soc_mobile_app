@@ -846,7 +846,7 @@ class _GradedPlusSearchScreenPageState
                 assessmentName: Globals.assessmentName ?? 'Assessment Name',
                 rubricScore: Globals.scoringRubric ?? '2',
                 subjectName: widget.selectedSubject ??
-                    '', //Student Id will not be there in case of custom subject
+                    'NA', //Student Id will not be there in case of custom subject
                 domainName: learningStandard ?? '',
                 subDomainName: subLearningStandard ?? '',
                 grade: widget.grade ?? '',

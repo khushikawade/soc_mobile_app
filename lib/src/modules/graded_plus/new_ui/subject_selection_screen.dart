@@ -1409,7 +1409,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         //Updating remaining common details of assignment
         StudentAssessmentInfo element = studentAssessmentInfoDblist.first;
 
-        element.subject = subject;
+        element.subject = subject == null || subject == '' ? "NA" : subject;
         element.learningStandard =
             learningStandard == null || learningStandard == ''
                 ? "NA"
