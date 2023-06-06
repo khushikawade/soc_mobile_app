@@ -28,3 +28,22 @@ class GoogleSlidesPresentationErrorState extends GoogleSlidesPresentationState {
   @override
   List<Object> get props => [];
 }
+
+class StudentPlusUpdateNewSldiesOnGooglePresentationSuccess
+    extends GoogleSlidesPresentationState {
+  StudentPlusUpdateNewSldiesOnGooglePresentationSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class StudentPlusGetGooglePresentationSuccess
+    extends GoogleSlidesPresentationState {
+  final String googlePresentationFileUrl;
+
+  StudentPlusGetGooglePresentationSuccess(
+      {required this.googlePresentationFileUrl});
+
+  @override
+  List<Object> get props => [];
+}

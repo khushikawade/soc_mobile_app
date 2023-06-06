@@ -81,7 +81,8 @@ class StudentPlusDetailsModel {
       this.grade19_20,
       this.grade20_21,
       this.grade21_22,
-      this.studentPhoto});
+      this.studentPhoto,
+      this.googlePresentationUrl});
 
   /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
@@ -206,6 +207,9 @@ class StudentPlusDetailsModel {
   final String? grade21_22;
   @HiveField(54)
   final String? studentPhoto;
+
+  @HiveField(55)
+  String? googlePresentationUrl;
 
   factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusDetailsModel(

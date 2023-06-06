@@ -32,3 +32,15 @@ class StudentPlusUpdateNewSldiesOnGooglePresentation
   @override
   List<Object> get props => [];
 }
+
+class StudentPlusGetGooglePresentation extends GoogleSlidesPresentationEvent {
+  final StudentPlusDetailsModel studentDetails;
+  final String stduentPlusDriveFolderId;
+  StudentPlusGetGooglePresentation({
+    required this.stduentPlusDriveFolderId,
+    required this.studentDetails,
+  });
+
+  @override
+  List<Object> get props => [];
+}

@@ -2242,7 +2242,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        deleteSlide(
+        print(response.data);
+        await deleteSlide(
             slideObjId:
                 "p", //default first slide object ID//Always delete this to change the type of slide
             accessToken: accessToken,
@@ -2737,7 +2738,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       required bool? isScanMore,
       int retry = 3}) async {
     try {
-
       List<Map> slideRequiredObjectsList =
           await prepareAddAndUpdateSlideRequestBody(
               studentInfoDb: studentInfoDb, isScanMore: isScanMore);
@@ -2803,10 +2803,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     required LocalDatabase<StudentAssessmentInfo> studentInfoDb,
     required bool? isScanMore,
   }) async {
-
     List<StudentAssessmentInfo> assessmentData = await studentInfoDb.getData();
     print(assessmentData);
-    
+
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2827,7 +2826,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ];
     // print(slideRequiredObjectsList);
     // print(assessmentData);
-    
+
     try {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {
