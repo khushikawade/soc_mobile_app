@@ -777,13 +777,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearNewsCache.getBool('delete_local_all_state_and_subject_cache');
+            clearNewsCache.getBool('delete_local_all_state_and_subject_cache1');
 
         if (clearCacheResult != true) {
           print('Inside clear state');
           await _localDb.clear();
           await clearNewsCache.setBool(
-              'delete_local_all_state_and_subject_cache', true);
+              'delete_local_all_state_and_subject_cache1', true);
         }
 
         List<StateListObject>? _localData = await _localDb.getData();
