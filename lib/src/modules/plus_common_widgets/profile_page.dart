@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StateSelectionPage(
-                                                localQuestionImage: null,
+                                                gradedPlusQueImage: null,
                                                 isFromCreateAssessmentScreen:
                                                     false,
                                                 // questionImageUrl: '',

@@ -46,7 +46,7 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
 
   GoogleDriveBloc googleDriveBloc;
   GoogleClassroomBloc googleClassroomBloc;
-  final File? localQuestionImage;
+  final File? gradedPlusQueImage;
   GradedPlusSearchScreenPage(
       {Key? key,
       this.isMcqSheet,
@@ -59,7 +59,7 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
       required this.subjectId,
       required this.googleDriveBloc,
       required this.googleClassroomBloc,
-      required this.localQuestionImage})
+      required this.gradedPlusQueImage})
       : super(key: key);
 
   @override
@@ -423,8 +423,8 @@ class _GradedPlusSearchScreenPageState
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   GradedPluSubjectSelection(
-                                                    localQuestionImage: widget
-                                                        .localQuestionImage,
+                                                    gradedPlusQueImage: widget
+                                                        .gradedPlusQueImage,
                                                     isMcqSheet:
                                                         widget.isMcqSheet,
                                                     selectedAnswer:
@@ -593,40 +593,6 @@ class _GradedPlusSearchScreenPageState
                     },
                     label: Row(
                       children: [
-                        // BlocListener<OcrBloc, OcrState>(
-                        //     bloc: _ocrBloc,
-                        //     child: Container(),
-                        //     listener: (context, state) async {
-                        //       if (state is OcrLoading) {
-                        //         //Utility.showLoadingDialog(context);
-                        //       }
-                        //       if (state is AssessmentIdSuccess) {
-                        //         if (Overrides.STANDALONE_GRADED_APP &&
-                        //             (GoogleClassroomGlobals
-                        //                     .studentAssessmentAndClassroomObj
-                        //                     ?.courseWorkId
-                        //                     ?.isEmpty ??
-                        //                 true)) {
-                        //           showDialogSetState!(() {
-                        //             GradedGlobals.loadingMessage =
-                        //                 'Creating Google Classroom Assignment';
-                        //           });
-                        //           widget.googleClassroomBloc.add(
-                        //               CreateClassRoomCourseWork(
-                        //                   studentAssessmentInfoDb:
-                        //                       LocalDatabase('student_info'),
-                        //                   pointPossible:
-                        //                       Globals.pointPossible ?? '0',
-                        //                   studentClassObj: GoogleClassroomGlobals
-                        //                       .studentAssessmentAndClassroomObj!,
-                        //                   title: Globals.assessmentName!
-                        //                           .split("_")[1] ??
-                        //                       ''));
-                        //         } else {
-                        //           _navigatetoResultSection();
-                        //         }
-                        //       }
-                        //     }),
                         Utility.textWidget(
                             text: 'Save',
                             context: context,
@@ -861,9 +827,10 @@ class _GradedPlusSearchScreenPageState
           if (state is ShareLinkReceived) {
             Globals.googleSlidePresentationLink = state.shareLink;
             saveToDrive();
-            googleSlideBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
-                studentInfoDb: _studentAssessmentInfoDb,
-                slidePresentationId: Globals.googleSlidePresentationId));
+            googleSlideBloc.add(
+                AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
+                    studentInfoDb: _studentAssessmentInfoDb,
+                    slidePresentationId: Globals.googleSlidePresentationId));
 
             Globals.currentAssessmentId = '';
 
@@ -1032,25 +999,10 @@ class _GradedPlusSearchScreenPageState
     Utility.showLoadingDialog(
         context: context, isOCR: true, msg: "Please Wait");
 
-    // // check question image exist or not
-    // if (widget.localQuestionImage == null) {
-    //   googleBloc.add(CreateExcelSheetToDrive(
-    //       description:
-    //           widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
-    //       name: Globals.assessmentName,
-    //       folderId: Globals.googleDriveFolderId!));
-    // } else {
-    //   googleBloc.add(
-    //     QuestionImgToAwsBucket(
-    //       imageFile: widget.localQuestionImage,
-    //     ),
-    //   );
-    // }
-
     if (Globals.googleExcelSheetId == null ||
         Globals.googleExcelSheetId?.isEmpty == true) {
       // Check if question image exists
-      if (widget.localQuestionImage == null) {
+      if (widget.gradedPlusQueImage == null) {
         googleBloc.add(CreateExcelSheetToDrive(
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
@@ -1059,12 +1011,18 @@ class _GradedPlusSearchScreenPageState
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(
-          imageFile: widget.localQuestionImage,
+          imageFile: widget.gradedPlusQueImage,
         ));
       }
       return; // Exit the function early
     }
+    //Will call the method only in case of user press the button again if something went wrong or authentication requires in between the process
+    callActionOnReTappingFAB();
+  }
 
+  //------------------------------------------------------------------------callActionOnReTappingFAB------------------------------------------------------------------------------------
+  //Will call the method only in case of user press the button again if something went wrong or authentication requires in between the process
+  callActionOnReTappingFAB() async {
     if (Globals.googleSlidePresentationId == null ||
         Globals.googleSlidePresentationId?.isEmpty == true) {
       googleBloc.add(CreateSlideToDrive(
@@ -1075,6 +1033,8 @@ class _GradedPlusSearchScreenPageState
       return; // Exit the function early
     }
 
+    //------------------------------------------------------------------------------
+    //Get Slide Share Link if empty
     if (Globals.googleSlidePresentationLink == null ||
         Globals.googleSlidePresentationLink?.isEmpty == true) {
       googleBloc.add(GetShareLink(
@@ -1084,17 +1044,23 @@ class _GradedPlusSearchScreenPageState
       return; // Exit the function early
     }
 
+    //------------------------------------------------------------------------------
+    //Updating Excel sheet with student details if not already updated
     if (assessmentStatus.value.excelSheetPrepared == false) {
       saveToDrive();
     }
 
+    //------------------------------------------------------------------------------
+    //Updating Google Slide with student details if not already updated
     if (assessmentStatus.value.slidePrepared == false) {
-      googleSlideBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
+      googleSlideBloc.add(AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
         studentInfoDb: _studentAssessmentInfoDb,
         slidePresentationId: Globals.googleSlidePresentationId,
       ));
     }
 
+    //------------------------------------------------------------------------------
+    //Updating student result to dashboard if not already updated
     if (assessmentStatus.value.saveAssessmentResultToDashboard == false) {
       Globals.currentAssessmentId = '';
 

@@ -1060,7 +1060,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
 
 //Performing both create and update detail to slide together
-    if (event is AddAndUpdateAssessmentImageToSlidesOnDrive) {
+    if (event is AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive) {
       try {
         yield ShowLoadingDialog();
 
