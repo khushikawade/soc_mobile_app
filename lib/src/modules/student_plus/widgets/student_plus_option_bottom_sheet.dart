@@ -271,6 +271,7 @@ class _GradedPlusResultOptionBottomSheetState
                 "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
 
             List<StudentPlusWorkModel>? _localData = await _localDb.getData();
+            _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
             print("update the presentation event trigger");
             googleSlidesPresentationBloc.add(
                 StudentPlusUpdateNewSldiesOnGooglePresentation(
