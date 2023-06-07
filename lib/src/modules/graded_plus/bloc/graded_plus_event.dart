@@ -296,3 +296,9 @@ class GradedPlusSaveResultToDashboard extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class FetchGradedApprovedDomains extends OcrEvent {
+  FetchGradedApprovedDomains();
+  @override
+  List<Object> get props => [];
+}

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'attributes.dart';
 import 'package:hive/hive.dart';
 part 'app_setting.g.dart';
@@ -186,7 +184,8 @@ class AppSetting {
       this.parentCoordinatorEmailc,
       this.calendarId,
       this.calendarBannerImage,
-      this.calendarBannerColor,this.enableGoogleSSO});
+      this.calendarBannerColor,
+      this.enableGoogleSSO});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
       attributes: json['attributes'] == null
@@ -267,8 +266,7 @@ class AppSetting {
       calendarId: json['Calendar_Id__c'],
       calendarBannerImage: json['Calendar_Banner_Image__c'],
       calendarBannerColor: json['Calendar_Banner_Color__c'],
-      enableGoogleSSO: json['Enable_Google_SSO__c'] as String?
-      );
+      enableGoogleSSO: json['Enable_Google_SSO__c'] as String?);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -330,7 +328,7 @@ class AppSetting {
         'Calendar_Id__c': calendarId,
         'Calendar_Banner_Image__c': calendarBannerImage,
         'Calendar_Banner_Color__c': calendarBannerColor,
-        'Enable_Google_SSO__c':enableGoogleSSO
+        'Enable_Google_SSO__c': enableGoogleSSO
       };
 
   AppSetting copyWith(
@@ -393,7 +391,8 @@ class AppSetting {
       String? parentCoordinatorEmailc,
       String? calendarId,
       String? calendarBannerImage,
-      String? calendarBannerColor,String? enableGoogleSSO}) {
+      String? calendarBannerColor,
+      String? enableGoogleSSO}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -457,6 +456,7 @@ class AppSetting {
             parentCoordinatorEmailc ?? this.parentCoordinatorEmailc,
         calendarId: calendarId ?? this.calendarId,
         calendarBannerImage: calendarBannerImage ?? this.aboutBannerImageC,
-        calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC,enableGoogleSSO: enableGoogleSSO??this.enableGoogleSSO);
+        calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC,
+        enableGoogleSSO: enableGoogleSSO ?? this.enableGoogleSSO);
   }
 }

@@ -259,3 +259,10 @@ class GradedPlusSaveResultToDashboardSuccess extends OcrState {
   @override
   List<Object> get props => [];
 }
+
+class GradedApprovedDomainsSuccess extends OcrState {
+  GradedApprovedDomainsSuccess();
+
+  @override
+  List<Object> get props => [];
+}

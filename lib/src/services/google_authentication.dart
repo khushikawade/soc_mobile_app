@@ -154,6 +154,7 @@ class Authentication {
           }
 
           //-------------------------------Updating user info locally--------------------------------------------
+
           saveUserProfile(user!, googleSignInAuthentication);
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {

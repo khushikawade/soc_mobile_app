@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/graded_approved_domain_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_modal.dart';
@@ -398,131 +399,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // if (event is SaveAssessmentToDashboard) {
-    //   try {
-    //     yield OcrLoading();
-    //     // List<UserInformation> _profileData =
-    //     //     await UserGoogleProfile.getUserProfile();
-    //     List list = await Utility.getStudentInfoList(tableName: 'student_info');
-    //     if (event.previouslyAddedListLength != null &&
-    //         event.previouslyAddedListLength! < list.length) {
-    //       List<StudentAssessmentInfo> _list =
-    //           await Utility.getStudentInfoList(tableName: 'student_info');
-
-    //       //Removing the previous scanned records to save only latest scanned sheets to the dashboard
-    //       _list.removeRange(0,
-    //           event.previouslyAddedListLength!); //+1 - To remove title as well
-
-    //       if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-    //         bool result = await saveResultToDashboard(
-    //             assessmentId: event.assessmentId!,
-    //             studentDetails: _list,
-    //             previousListLength: event.previouslyAddedListLength ?? 0,
-    //             isHistoryDetailPage: event.isHistoryAssessmentSection,
-    //             schoolId: event.schoolId,
-    //             assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-
-    //         if (!result) {
-    //           saveResultToDashboard(
-    //               assessmentId: event.assessmentId!,
-    //               studentDetails: _list,
-    //               previousListLength: event.previouslyAddedListLength ?? 0,
-    //               isHistoryDetailPage: event.isHistoryAssessmentSection,
-    //               schoolId: event.schoolId,
-    //               assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-    //         } else {
-    //           // await _sendEmailToAdmin(
-    //           //   assessmentId: event.assessmentId!,
-    //           //   name: _profileData[0]
-    //           //       .userName!
-    //           //       .replaceAll("%20", " ")
-    //           //       .replaceAll("20", ""),
-    //           //   studentResultDetails: _list,
-    //           //   schoolId: event.schoolId,
-    //           //   email: _profileData[0].userEmail!,
-    //           //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-    //           // );
-    //           ////print("result Record is saved on DB");
-
-    //           yield AssessmentSavedSuccessfully();
-    //         }
-    //       } else {
-    //         Utility.showSnackBar(
-    //             event.scaffoldKey,
-    //             'Unable to save the result. Please try again.',
-    //             event.context,
-    //             null);
-
-    //         yield OcrErrorReceived();
-    //         throw ('something went wrong');
-    //       }
-    //     } else {
-    //       //Using for history assessment details page
-    //       String subjectId;
-    //       String standardId;
-    //       var standardObject;
-    //       if (event.isHistoryAssessmentSection == true) {
-    //         standardObject = await _getStandardIdAndsubjectId(
-    //             grade: event.resultList.first.grade ?? '',
-    //             subLearningCode:
-    //                 event.resultList.first.subLearningStandard ?? '',
-    //             subjectName: event.resultList.first.subject ?? '');
-
-    //         standardId = standardObject != null && standardObject != ''
-    //             ? standardObject['Id']
-    //             : '';
-    //         subjectId = standardObject != null && standardObject != ''
-    //             ? standardObject['Subject__c']
-    //             : '';
-    //       }
-
-    //       if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-    //         bool result = await saveResultToDashboard(
-    //           assessmentId: event.assessmentId!,
-    //           studentDetails: event.resultList,
-    //           previousListLength: event.previouslyAddedListLength ?? 0,
-    //           isHistoryDetailPage: event.isHistoryAssessmentSection,
-    //           assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-    //           schoolId: event.schoolId,
-    //         );
-
-    //         if (!result) {
-    //           saveResultToDashboard(
-    //             assessmentId: event.assessmentId!,
-    //             studentDetails: event.resultList,
-    //             previousListLength: event.previouslyAddedListLength ?? 0,
-    //             isHistoryDetailPage: event.isHistoryAssessmentSection,
-    //             assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-    //             schoolId: event.schoolId,
-    //           );
-    //         } else {
-    //           yield AssessmentSavedSuccessfully();
-    //         }
-    //       } else {
-    //         Utility.showSnackBar(
-    //             event.scaffoldKey,
-    //             'Unable to save the result. Please try again.',
-    //             event.context,
-    //             null);
-    //         throw ('something went wrong');
-    //       }
-    //     }
-    //   } on SocketException catch (e, s) {
-    //     e.message == 'Connection failed'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection", null)
-    //         : print(e);
-    //     rethrow;
-    //   } catch (e, s) {
-    //     FirebaseAnalyticsService.firebaseCrashlytics(
-    //         e, s, 'SaveAssessmentToDashboard Event');
-
-    //     e == 'NO_CONNECTION'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection", null)
-    //         : print(e);
-    //     throw (e);
-    //   }
-    // }
-
     if (event is GradedPlusSaveResultToDashboard) {
       try {
         List<UserInformation> userInformation =
@@ -612,27 +488,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // if (event is GetDashBoardStatus) {
-    //   try {
-    //     yield OcrLoading2();
-
-    //     AssessmentDetails object =
-    //         await _getAssessmentIdByGoogleFileId(fileId: event.fileId!);
-    //     // await Future.delayed(Duration(seconds: 10));
-    //     if (object[1].assessmentId!.isNotEmpty) {
-    //       yield AssessmentDashboardStatus(
-    //           resultRecordCount: object[0], assessmentObj: object[1]);
-    //     }
-    //     yield AssessmentDashboardStatus(
-    //         resultRecordCount: null, assessmentObj: null);
-    //   } catch (e, s) {
-    //     FirebaseAnalyticsService.firebaseCrashlytics(
-    //         e, s, 'GetDashBoardStatus Event');
-
-    //     yield AssessmentDashboardStatus(
-    //         resultRecordCount: null, assessmentObj: null);
-    //   }
-    // }
     if (event is GetDashBoardStatus) {
       try {
         yield OcrLoading2();
@@ -700,71 +555,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield OcrErrorReceived(err: e);
       }
     }
-
-    // ---------- Event to Save Selected State Subject List to Local DB ----------
-    // if (event is SaveSubjectListDetailsToLocalDb) {
-    //   try {
-    //     yield OcrLoading();
-    //     List<SubjectDetailList> list = [];
-    //     // Condition to check selected Subject is Common core or other
-    //     if (event.selectedState == 'Common Core') {
-    //       list = await saveSubjectListDetails(isCommonCore: true);
-    //     } else {
-    //       // To get local data related to stateObjectList
-    //       LocalDatabase<StateListObject> _localDb =
-    //           LocalDatabase(Strings.stateObjectName);
-    //       List<StateListObject> _localData = await _localDb.getData();
-    //       // List of id related to selected state
-    //       List<String> _id = [];
-    //       // for loop to extract id releated selected subject
-    //       for (int i = 0; i < _localData.length; i++) {
-    //         if (_localData[i].stateC == event.selectedState &&
-    //             _localData[i].id != null) {
-    //           _id.add(_localData[i].id!);
-    //         }
-    //       }
-    //       list = await saveSubjectListDetails(isCommonCore: false, idList: _id);
-    //     }
-
-    //     // Syncing the Local database with remote data
-    //     LocalDatabase<SubjectDetailList> _localDb =
-    //         LocalDatabase(Strings.ocrSubjectObjectName);
-    //     await _localDb.clear();
-    //     list.forEach((SubjectDetailList e) {
-    //       //To decode the special characters
-    //       utf8.decode(utf8.encode(_localDb.addData(e).toString()));
-    //     });
-
-    //     yield SubjectDetailsListSaveSuccessfully();
-    //   } on SocketException catch (e,s) {
-    //     e.message == 'Connection failed'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection")
-    //         : print(e);
-    //     yield OcrErrorReceived();
-    //     rethrow;
-    //   } catch (e,s) {
-    //     e == 'NO_CONNECTION'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection")
-    //         : print(e);
-    //     yield OcrErrorReceived();
-    //     throw (e);
-    //   }
-
-    //   // try {
-    //   //   bool result = await saveSubjectListDetails();
-    //   // } on SocketException catch (e,s) {
-    //   //   e.message == 'Connection failed'
-    //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
-    //   //       : print(e);
-    //   //   rethrow;
-    //   // } catch (e,s) {
-    //   //   e == 'NO_CONNECTION'
-    //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
-    //   //       : print(e);
-    //   //   throw (e);
-    //   // }
-
-    // }
 
     // ---------- Event to Fetch State List for Api ----------
     if (event is FetchStateListEvent) {
@@ -872,6 +662,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield StateListFetchSuccessfully(stateList: stateList);
       }
     }
+
+    // if (event is FetchGradedApprovedDomains) {
+    //   try {
+    //     LocalDatabase<StateListObject> _localDb =
+    //         LocalDatabase(Strings.gradedApprovedDomains);
+    //     List<StateListObject>? _localData = await _localDb.getData();
+    //   } catch (e, s) {
+    //     FirebaseAnalyticsService.firebaseCrashlytics(
+    //         e, s, 'FetchGradedApprovedDomains Event');
+    //     // In case of error or no internet Showing data from Local DB
+    //     // To get local data if exist
+    //     LocalDatabase<StateListObject> _localDb =
+    //         LocalDatabase(Strings.stateObjectName);
+    //     List<StateListObject>? _localData = await _localDb.getData();
+
+    //     yield GradedApprovedDomainsSuccess();
+    //   }
+    // }
   }
 
   // ---------- Function to update stateList according to to user location and last selection ---------
@@ -1033,20 +841,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> saveSubjectListDetails(
       {required String id}) async {
     try {
-      // for loop to create api filter url according to id list
-      // String filterString = '';
-      // if (isCommonCore == false) {
-      //   for (int i = 0; i < idList!.length; i++) {
-      //     if (i == 0) {
-      //       filterString = filterString +
-      //           'filterRecords/"State_and_Standards__c" = \'${idList[i]}\'';
-      //     } else {
-      //       filterString =
-      //           filterString + 'OR "State_and_Standards__c" = \'${idList[i]}\'';
-      //     }
-      //   }
-      // }
-
       // Api Calling According to subject selection
       final ResponseModel response = await _dbServices.getApiNew(
           Uri.encodeFull(
@@ -1095,38 +889,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // Future<bool> saveSubjectListDetails() async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getApiNew(Uri.encodeFull(
-  //             //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
-  //             // ),
-  //             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-  //         isCompleteUrl: true,
-  //         headers: {"Content-type": "application/json; charset=utf-8"});
-
-  //     if (response.statusCode == 200) {
-  //       List<SubjectDetailList> _list =
-  //           jsonDecode(jsonEncode(response.data['body']))
-  //               .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
-  //               .toList();
-  //       ////print(_list);
-  //       LocalDatabase<SubjectDetailList> _localDb =
-  //           LocalDatabase(Strings.ocrSubjectObjectName);
-  //       await _localDb.clear();
-
-  //       _list.forEach((SubjectDetailList e) {
-  //         //To decode the special characters
-  //         utf8.decode(utf8.encode(_localDb.addData(e).toString()));
-  //       });
-  //       // _list.removeWhere((SubjectList element) => element.status == 'Hide');
-  //       return true;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e,s) {
-  //     throw (e);
-  //   }
-  // }
   // ---------  To Fetch local subject added by user -----------
   Future<List<StateListObject>> fetchLocalSubject(String classNo,
       {required String stateName}) async {
@@ -1204,106 +966,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return subjectDetailList;
       }
 
-      ////////////////////-----------------old -------------------------------/////////////////////////
-      // // String grade = '';
-      // // String selectedSubject = '';
-      // //Local list managing
-      // LocalDatabase<SubjectDetailList> _localDb =
-      //     LocalDatabase(Strings.ocrSubjectObjectName);
-      // List<SubjectDetailList>? _localData = await _localDb.getData();
-
-      // //Common detail list to save all details of subject for specific grade. Include : Subject, Learning standard and sub learning standard
-      // List<SubjectDetailList> subjectDetailList = [];
-
-      // //Return subject details
-      // if (type == 'subject') {
-      //   grade = keyword;
-      //   //Using a separate list to check only 'Subject' whether already exist or not.
-      //   List subjectList = [];
-
-      //   for (int i = 0; i < _localData.length; i++) {
-      //     if (_localData[i].gradeC == keyword) {
-      //       if (subjectDetailList.isNotEmpty &&
-      //           !subjectList.contains(_localData[i].subjectNameC)) {
-      //         subjectDetailList.add(_localData[i]);
-      //         subjectList.add(_localData[i].subjectNameC);
-      //       } else if (subjectDetailList.isEmpty) {
-      //         subjectDetailList.add(_localData[i]);
-      //         subjectList.add(_localData[i].subjectNameC);
-      //       }
-      //     }
-      //   }
-      //   return subjectDetailList;
-      // }
-      // //Return Learning standard details
-      // else if (type == 'nyc') {
-      //   //Using a seperate list to check only 'Learning Standard' whether already exist or not.
-
-      //   List learningStdList = [];
-
-      //   selectedSubject = keyword;
-      //   for (int i = 0; i < _localData.length; i++) {
-      //     if (_localData[i].subjectNameC == keyword &&
-      //         _localData[i].gradeC ==
-      //             (isSearchPage == true ? gradeNo : grade)) {
-      //       if (subjectDetailList.isNotEmpty &&
-      //           !learningStdList.contains(_localData[i].domainNameC)) {
-      //         subjectDetailList.add(_localData[i]);
-      //         learningStdList.add(_localData[i].domainNameC);
-      //       } else if (subjectDetailList.isEmpty) {
-      //         subjectDetailList.add(_localData[i]);
-      //         learningStdList.add(_localData[i].domainNameC);
-      //       }
-      //     }
-      //   }
-      //   return subjectDetailList;
-      // } //Return Sub Learning standard details
-      // else if (type == 'nycSub') {
-      //   //Using a separate list to check only 'Sub Learning Standard' whether already exist or not.
-      //   if (isSearchPage == true) {
-      //     List<SubjectDetailList> list = [];
-      //     List subLearningStdList = [];
-      //     for (int i = 0; i < _localData.length; i++) {
-      //       if (
-      //           //_localData[i].subjectNameC == selectedSubject &&
-      //           _localData[i].gradeC == gradeNo &&
-      //               _localData[i].subjectNameC == keyword) {
-      //         if (list.isNotEmpty &&
-      //             !subLearningStdList
-      //                 .contains(_localData[i].standardAndDescriptionC)) {
-      //           list.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         } else if (list.isEmpty) {
-      //           list.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         }
-      //       }
-      //     }
-      //     return list;
-      //   } else {
-      //     List subLearningStdList = [];
-
-      //     for (int i = 0; i < _localData.length; i++) {
-      //       if (_localData[i].subjectNameC ==
-      //               (selectedSubject == ''
-      //                   ? subjectSelected
-      //                   : selectedSubject) &&
-      //           (_localData[i].gradeC == (grade == '' ? gradeNo : grade)) &&
-      //           _localData[i].domainNameC == keyword) {
-      //         if (subjectDetailList.isNotEmpty &&
-      //             !subLearningStdList
-      //                 .contains(_localData[i].standardAndDescriptionC)) {
-      //           subjectDetailList.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         } else if (subjectDetailList.isEmpty) {
-      //           subjectDetailList.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         }
-      //       }
-      //     }
-      //     return subjectDetailList;
-      //   }
-      // }
       // return subjectDetailList;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
@@ -1355,12 +1017,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // Url for Production
         Uri.encodeFull(
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processMcqSheet'),
-        // Url For testing and development
-        // Uri.encodeFull(
-        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
-        // Url For testing and development
-        // Uri.encodeFull(
-        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
 
         body: {
           'data': '$base64',
@@ -1538,34 +1194,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         } else {
           Globals.teacherId = data['Id'];
 
-          // if (data['Assessment_App_User__c'] != 'true') {
-          //   var userType = data["GRADED_Premium__c"];
-          //   if (userType == "true") {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-
-          //   Globals.teacherId = data['Id'];
-          //   bool result = await updateContactToSalesforce(recordId: data['Id']);
-          //   if (!result) {
-          //     await updateContactToSalesforce(recordId: data['Id']);
-          //   }
-          // } else {
-          //   if (Overrides.STANDALONE_GRADED_APP == true) {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-          // }
           if (data['Assessment_App_User__c'] != 'true') {
             Globals.teacherId = data['Id'];
             bool result = await updateContactToSalesforce(recordId: data['Id']);
@@ -1573,18 +1201,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               await updateContactToSalesforce(recordId: data['Id']);
             }
           }
-          // else {
-          //   // var premiumUserType = data["GRADED_Premium__c"];
-          //   if (premiumUserType == "true") {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-          // }
         }
 
         return true;
@@ -1756,78 +1372,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-//  Future<bool> saveResultToDashboard(
-//       {required String assessmentId,
-//       required List<StudentAssessmentInfo> studentDetails,
-//       required previousListLength,
-//       required isHistoryDetailPage,
-//       required schoolId,
-//       required assessmentSheetPublicURL}) async {
-//     try {
-//       List<Map> bodyContent = [];
-
-//       // studentDetails.removeAt(0);
-//       // int initIndex = isHistoryDetailPage == true
-//       //     ? previousListLength
-//       //     : previousListLength; // + 1;
-//       for (int i = 0; i < studentDetails.length; i++) {
-//         //To bypass the titles saving in the dashboard
-//         if (studentDetails[i].studentId != 'Id') {
-//           bodyContent.add(recordToJson(
-//               assessmentId,
-//               Utility.getCurrentDate(DateTime.now()),
-//               studentDetails[i].studentGrade ?? '',
-//               studentDetails[i].studentId ?? '',
-//               studentDetails[i].assessmentImage ?? '',
-//               studentDetails[i].studentName ?? ''));
-//         }
-//       }
-//       final ResponseModel response = await _dbServices.postApi(
-//         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
-//         isGoogleApi: true,
-//         body: bodyContent,
-//       );
-//       if (response.statusCode == 200) {
-//         // String id = response.data['body']['id'];
-
-//         List<UserInformation> _profileData =
-//             await UserGoogleProfile.getUserProfile();
-//         bool result = await _sendEmailToAdmin(
-//           assessmentId: assessmentId,
-//           name: _profileData[0]
-//               .userName!
-//               .replaceAll("%20", " ")
-//               .replaceAll("20", ""),
-//           studentResultDetails: studentDetails,
-//           schoolId: schoolId,
-//           email: _profileData[0].userEmail!,
-//           assessmentSheetPublicURL: assessmentSheetPublicURL!,
-//         );
-//         if (!result) {
-//           await _sendEmailToAdmin(
-//             assessmentId: assessmentId,
-//             name: _profileData[0]
-//                 .userName!
-//                 .replaceAll("%20", " ")
-//                 .replaceAll("20", ""),
-//             studentResultDetails: studentDetails,
-//             schoolId: schoolId,
-//             email: _profileData[0].userEmail!,
-//             assessmentSheetPublicURL: assessmentSheetPublicURL!,
-//           );
-//         }
-
-//         return true;
-//       } else {
-//         return false;
-//       }
-//     } catch (e, s) {
-//       FirebaseAnalyticsService.firebaseCrashlytics(
-//           e, s, 'saveResultToDashboard Method');
-//       throw (e);
-//     }
-//   }
-
   Future<List> saveResultToDashboard({
     required String assessmentId,
     required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
@@ -1919,54 +1463,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // Future<bool> _sendEmailToAdmin(
-  //     {required String schoolId,
-  //     required String name,
-  //     required String email,
-  //     required String assessmentId,
-  //     required String assessmentSheetPublicURL,
-  //     required List<StudentAssessmentInfo> studentResultDetails}) async {
-  //   try {
-  //     List<Map> bodyContent = [];
-
-  //     for (int i = 0; i < studentResultDetails.length; i++) {
-  //       if (studentResultDetails[i].studentId == "Id") {
-  //         studentResultDetails.remove(i);
-  //       }
-  //       bodyContent.add(recordToJson(
-  //           assessmentId,
-  //           Utility.getCurrentDate(DateTime.now()),
-  //           studentResultDetails[i].studentGrade ?? '',
-  //           studentResultDetails[i].studentId ?? '',
-  //           studentResultDetails[i].assessmentImage ?? '',
-  //           studentResultDetails[i].studentName ?? ''));
-  //     }
-  //     final body = {
-  //       "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-  //       "to": "techadmin@solvedconsulting.com", //, appdevelopersdp7@gmail.com",
-  //       "subject": "Data Saved To The Dashboard",
-  //       // "html":
-  //       "text":
-  //           '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
-  //     };
-
-  //     final ResponseModel response = await _dbServices.postApi(
-  //       "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
-  //       isGoogleApi: true,
-  //       body: body,
-  //     );
-  //     if (response.statusCode == 200) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } catch (e, s) {
-  //     FirebaseAnalyticsService.firebaseCrashlytics(
-  //         e, s, '_sendEmailToAdmin Method');
-  //     throw (e);
-  //   }
-  // }
-
   _sendEmailToAdmin({
     required String schoolId,
     required String name,
@@ -2028,23 +1524,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // Future authenticateEmail(body) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices
-  //         .postApi("authorizeEmail?objectName=Contact", body: body);
-
-  //     if (response.statusCode == 200) {
-  //       var res = response.data;
-  //       var data = res["body"];
-  //       return data;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e,s) {
-  //     throw (e);
-  //   }
-  // }
-
   Future fetchStudentDetails(ossId) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
@@ -2059,15 +1538,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         //Resposne from global API
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
-
-        //Response from filter API ---
-        // List<StudentDetails> _list = response.data['body']
-        //     .map<StudentDetails>((i) => StudentDetails.fromJson(i))
-        //     .toList();
-        // StudentDetails? res;
-        // if (_list.length > 0) {
-        //   res = _list[0];
-        // }
 
         return res;
       } else {
@@ -2225,13 +1695,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               .add(_localData[i].studentList![j]['profile']['emailAddress']);
         }
       }
-      // List<String> studentList = [
-      //   "test@gmail.com",
-      //   "appdevelopersdp7@gmail.com",
-      //   "rupeshparmar@gmail.com",
-      //   "techadmin@solvedconsulting.com"
-      // ];
-      // List<String> resonanceTextList = responseText.split(' ');
+
       String pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex = new RegExp(pattern);
@@ -2271,26 +1735,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
 
       return [newResult, studentName];
-
-      // if (result.isNotEmpty) {
-      //   return result[0];
-      // } else {
-      //   for (int j = 0; j < respoanceTextList.length; j++) {
-      //     if (regex.hasMatch(respoanceTextList[j]) &&
-      //         studentList.contains(respoanceTextList[j])) {
-      //       return respoanceTextList[j];
-      //     } else {
-      //       for (var i = 0; i < studentList.length; i++) {
-      //         if (studentList[i].contains(respoanceTextList[j])) {
-      //           return studentList[i];
-      //         }
-      //       }
-      //     }
-
-      //     //}
-
-      //   }
-      // }
 
       // return ['', ''];
     } catch (e, s) {
@@ -2332,14 +1776,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             emails.add(respoanceTextList[i]);
           }
         }
-
-        // final test = RegExp('@',
-        //   caseSensitive: false, multiLine: true);
-        //   final data = test.allMatches(string);
-        // for (final Match match in data) {
-        //   emails.add(string.substring(match.start, match.end));
-
-        // }
       }
 
       return emails;
@@ -2507,4 +1943,29 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return [];
     }
   }
+
+  // Future<List<GradedPlusApprovedDomainsModal>>
+  //     fetchGradedPlusApprovedDomains() async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApi(
+  //       Uri.encodeFull(
+  //           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Graded_Approved_Email_Domain__c"),
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       List<GradedPlusApprovedDomainsModal> gradedApprovedDomainsList =
+  //           response.data['body']
+  //               .map<GradedPlusApprovedDomainsModal>(
+  //                   (i) => GradedPlusApprovedDomainsModal.fromJson(i))
+  //               .toList();
+
+  //       return gradedApprovedDomainsList;
+  //     }
+  //     return [];
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
+
+  //     throw Exception("Something went wrong");
+  //   }
+  // }
 }
