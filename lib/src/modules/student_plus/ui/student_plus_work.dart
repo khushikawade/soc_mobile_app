@@ -20,6 +20,7 @@ import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
@@ -437,25 +438,36 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   Widget? fab() {
-    return ValueListenableBuilder(
-        valueListenable: filterNotifier,
-        child: Container(),
-        builder: (BuildContext context, dynamic value, Widget? child) {
-          return filterNotifier.value != ''
-              ? Container()
-              : PlusCustomFloatingActionButton(onPressed: () {
-                  if (StudentPlusOverrides
-                          ?.studentPlusGoogleDriveFolderId?.isEmpty ??
-                      true) {
-                    _checkDriveFolderExistsOrNot();
-                  } else if (widget
-                          .studentDetails?.googlePresentationUrl?.isEmpty ??
-                      true) {
-                    getThegooglePresentationUrl();
-                  } else {
-                    _shareBottomSheetMenu();
-                  }
-                });
+    return BlocBuilder<StudentPlusBloc, StudentPlusState>(
+        bloc: _studentPlusBloc,
+        builder: (
+          BuildContext contxt,
+          StudentPlusState state,
+        ) {
+          return ValueListenableBuilder(
+              valueListenable: filterNotifier,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                if (filterNotifier.value == '' &&
+                    state is StudentPlusWorkSuccess &&
+                    state.obj.length > 0) {
+                  return PlusCustomFloatingActionButton(onPressed: () {
+                    if (StudentPlusOverrides
+                            ?.studentPlusGoogleDriveFolderId?.isEmpty ??
+                        true) {
+                      _checkDriveFolderExistsOrNot();
+                    } else if (widget
+                            .studentDetails?.googlePresentationUrl?.isEmpty ??
+                        true) {
+                      getThegooglePresentationUrl();
+                    } else {
+                      _shareBottomSheetMenu();
+                    }
+                  });
+                } else {
+                  return Container();
+                }
+              });
         });
   }
 
@@ -517,6 +529,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             Navigator.pop(context, false);
             widget.studentDetails.googlePresentationUrl =
                 state.googlePresentationFileUrl;
+
             _shareBottomSheetMenu();
           }
 

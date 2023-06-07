@@ -5,9 +5,11 @@ import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 part 'google _slides_presentation_event.dart';
@@ -142,6 +144,8 @@ class GoogleSlidesPresentationBloc
     }
 
     if (event is StudentPlusGetGooglePresentation) {
+      yield StudentPlusGooglePresentationLoading();
+
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
@@ -160,6 +164,14 @@ class GoogleSlidesPresentationBloc
         }
         print("GooglePresentation ${stduentPresentationiSAvailable[1]}");
         if (stduentPresentationiSAvailable[0] == true) {
+          //if Presentation is available update the url
+          if (stduentPresentationiSAvailable[1] != '') {
+            updateTheStudentWithgooglePresentationUrl(
+                studentDetails: event.studentDetails,
+                studentGooglePresentationUrl:
+                    stduentPresentationiSAvailable[1]);
+          }
+
           print("Presentation url get successfully  ");
 
           yield StudentPlusGetGooglePresentationSuccess(
@@ -599,5 +611,33 @@ class GoogleSlidesPresentationBloc
     };
 
     return map[index] != null && map[index] != '' ? map[index] : '-';
+  }
+
+  void updateTheStudentWithgooglePresentationUrl(
+      {required StudentPlusDetailsModel studentDetails,
+      required final String studentGooglePresentationUrl}) async {
+    try {
+      print("now update the local db with url");
+      //this will get the all students saved in local db
+      LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
+          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.id}");
+
+      List<StudentPlusDetailsModel> studentsLocalData =
+          await _localDb.getData();
+      //it will find the student by id and update the updated object wwith googlePresentationUrl
+
+      for (int index = 0; index < studentsLocalData.length; index++) {
+        if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
+          StudentPlusDetailsModel student = studentsLocalData[index];
+
+          student.googlePresentationUrl = studentGooglePresentationUrl;
+
+          await _localDb.putAt(index, student);
+          break;
+        }
+      }
+    } catch (e) {
+      throw (e);
+    }
   }
 }
