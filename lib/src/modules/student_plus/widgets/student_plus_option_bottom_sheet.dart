@@ -212,7 +212,7 @@ class _GradedPlusResultOptionBottomSheetState
         Utility.textWidget(
             context: context,
             textAlign: TextAlign.center,
-            text: 'Google presentation is updateing',
+            text: 'Wait, While Google Presentation is Syncing',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
         if (pageValue == 1)

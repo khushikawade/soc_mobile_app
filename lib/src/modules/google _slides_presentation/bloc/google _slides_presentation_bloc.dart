@@ -107,8 +107,7 @@ class GoogleSlidesPresentationBloc
 
         if (numberOfSlidesIsAlreayavailable[0] == true &&
             numberOfSlidesIsAlreayavailable[1] <= event.allrecords.length) {
-          print(
-              "Get counts from Presentation successfully ${numberOfSlidesIsAlreayavailable[1]}");
+          print("Get counts from Presentation successfully");
 
           print("Now update the Presentation with new sldies");
           List newSldiesOnGooglePresentationIsUpdated =
@@ -163,7 +162,7 @@ class GoogleSlidesPresentationBloc
           stduentPresentationiSAvailable[1] =
               data.isNotEmpty ? data[0].webContentLink : '';
         }
-        print("GooglePresentation ${stduentPresentationiSAvailable[1]}");
+
         if (stduentPresentationiSAvailable[0] == true) {
           //if Presentation is available update the url
           if (stduentPresentationiSAvailable[1] != '') {
@@ -207,8 +206,6 @@ class GoogleSlidesPresentationBloc
       //     'name%3D%22$fileName%22+and+mimeType%3D%22application%2Fvnd.google-apps.presentation%22+and+trashed%3Dfalse';
       String query =
           '((mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and title contains \'${fileName}\') and trashed = false';
-
-      print("Presentation api called ");
 
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
@@ -586,7 +583,11 @@ class GoogleSlidesPresentationBloc
       1: student.assessmentType ?? '',
       2: student.teacherEmail ?? '',
       3: student.subjectC ?? '',
-      4: student.dateC,
+      //  4: student.dateC,
+      4: student.dateC != null && student.dateC!.isNotEmpty
+          ? DateFormat("MM/dd/yyyy")
+              .format(DateTime.parse(student.dateC ?? '-'))
+          : '-',
       5: student.resultC ?? '',
       6: StudentPlusUtility.getMaxPointPossible(rubric: student.rubricC ?? '')
           .toString()
