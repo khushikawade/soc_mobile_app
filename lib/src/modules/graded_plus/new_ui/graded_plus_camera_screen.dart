@@ -323,7 +323,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       _driveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
                           // questionImage: widget.questionImageLink ?? 'NA',
-                          createdAsPremium: widget.createdAsPremium,
+
                           assessmentName: Globals.historyAssessmentName,
                           fileId: Globals.historyAssessmentFileId,
                           isLoading: true,
@@ -378,7 +378,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                     _driveBloc.add(UpdateDocOnDrive(
                         isMcqSheet: widget.isMcqSheet ?? false,
                         // questionImage: widget.questionImageLink ?? 'NA',
-                        createdAsPremium: widget.createdAsPremium,
+
                         assessmentName: Globals.assessmentName!,
                         fileId: Globals.googleExcelSheetId,
                         isLoading: true,
@@ -389,8 +389,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                     _driveBloc.add(UpdateDocOnDrive(
                         isMcqSheet: widget.isMcqSheet ?? false,
                         // questionImage: widget.questionImageLink ?? 'NA',
-                        createdAsPremium:
-                            widget.createdAsPremium ?? Globals.isPremiumUser,
+
                         assessmentName: Globals.historyAssessmentName,
                         fileId: Globals.historyAssessmentFileId,
                         isLoading: true,
@@ -1055,7 +1054,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   _navigateToCreateAssessment({required List<String> suggestionList}) {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
@@ -1118,7 +1117,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           slidePresentationId: Globals.googleSlidePresentationId!));
     } else if (!widget.isFromHistoryAssessmentScanMore &&
         widget.isScanMore == true) {
-      _driveBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
+      _driveBloc.add(AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
           isScanMore: true,
           slidePresentationId: Globals.googleSlidePresentationId,
           studentInfoDb: LocalDatabase(Strings.studentInfoDbName)));

@@ -564,10 +564,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            isMcqSheet: event.isMcqSheet,
-            data: assessmentData,
-            name: event.assessmentName!,
-            createdAsPremium: event.createdAsPremium);
+          isMcqSheet: event.isMcqSheet,
+          data: assessmentData,
+          name: event.assessmentName!,
+        );
 
         //Update the created excel file to drive with all the result data
         String excelSheetId = await uploadSheetOnDrive(
@@ -1065,7 +1065,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
 
 //Performing both create and update detail to slide together
-    if (event is AddAndUpdateAssessmentImageToSlidesOnDrive) {
+    if (event is AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive) {
       try {
         yield ShowLoadingDialog();
 
@@ -1141,26 +1141,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //updating the student record on sldies
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-
-        // var newSlideIndex = null;
-
-        // if (event.oldSlideIndex != null) {
-        //   print("olde index is available ${event.oldSlideIndex}");
-        //   List<StudentAssessmentInfo> allStudents =
-        //       await OcrUtility.getSortedStudentInfoList(
-        //           isEdit: true, tableName: Strings.studentInfoDbName);
-
-        //   allStudents
-        //       .asMap()
-        //       .forEach((int index, StudentAssessmentInfo student) {
-        //     if (student.studentId == event.studentAssessmentInfo.studentId) {
-        //       if (index != event.oldSlideIndex) {
-        //         print("new index is found $index");
-        //         newSlideIndex = index;
-        //       }
-        //     }
-        //   });
-        // }
 
         _editSlideFromPresentation(
             studentAssessmentInfo: event.studentAssessmentInfo,
@@ -1630,16 +1610,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 5 : 3)
-                : (isMcqSheet == true ? 6 : 4),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 6 : 4)
-                : (isMcqSheet == true ? 7 : 5),
+            startColumnIndex: (isMcqSheet == true ? 6 : 4),
+            endColumnIndex: (isMcqSheet == true ? 7 : 5),
             sheetId: sheetID,
             imageLink: assessmentData[1].questionImgUrl));
       }
@@ -1651,16 +1623,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 13 : 11)
-                : (isMcqSheet == true ? 14 : 12),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
+            startColumnIndex: (isMcqSheet == true ? 14 : 12),
+            endColumnIndex: (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
             imageLink: assessmentData[1].customRubricImage));
       }
@@ -1671,16 +1635,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 15 : 13)
-                : (isMcqSheet == true ? 16 : 14),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 16 : 14)
-                : (isMcqSheet == true ? 17 : 15),
+            startColumnIndex: (isMcqSheet == true ? 16 : 14),
+            endColumnIndex: (isMcqSheet == true ? 17 : 15),
             sheetId: sheetID,
             imageLink: assessmentData[1].googleSlidePresentationURL));
       }
@@ -1691,16 +1647,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: i,
             endRowIndex: i + 1,
-            startColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
-            endColumnIndex: assessmentData[1].studentId == null ||
-                    assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 15 : 13)
-                : (isMcqSheet == true ? 16 : 14),
+            startColumnIndex: (isMcqSheet == true ? 15 : 13),
+            endColumnIndex: (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));
       }
@@ -2830,11 +2778,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {
-          String pageObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          String pageObjectuniqueId = "pageObjectId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
 
-          String tableObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          String tableObjectuniqueId = "tableObjectId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
           print(pageObjectuniqueId);
           print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images

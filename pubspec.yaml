@@ -100,27 +100,8 @@ dependencies:
   firebase_crashlytics: ^3.0.10
   visibility_detector: ^0.3.3 #Used to get the feed view by user - View Interaction
   fl_chart: ^0.61.0
-  # linked_scroll_controller: ^0.2.0
   pdf: ^3.0.1 #Used in PBIS+ psf generation and customization
   screenshot: ^1.3.0
-  #basic_utils: ^5.5.4
-
-  # flutter_colorpicker: ^1.0.3
-
-  #advance_pdf_viewer: 2.0.0
-  #flutter_html: ^2.1.5
-  #webview_flutter: ^2.5.0
-  #firebase_analytics: ^8.3.3
-  #flutter_typeahead: ^3.1.0
-  #onboarding: ^3.1.0
-  #connectivity_plus_web: ^1.2.2
-  #network_info_plus_web: ^1.0.1
-  #connectivity_plus_web: ^1.2.2
-  #flutter_typeahead: ^3.1.0
-  #jiffy: ^5.0.0
-  #auto_orientation: ^2.2.1
-  #path_provider: ^2.0.8
-  #social_embed_webview: ^0.3.2
 
 dev_dependencies:
   flutter_test:

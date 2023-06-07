@@ -3,8 +3,10 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -61,8 +63,15 @@ class _ProfilePageState extends State<ProfilePage> {
           body: ListView(
             physics: NeverScrollableScrollPhysics(),
             children: [
+              SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+              PlusScreenTitleWidget(
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                text: 'Profile',
+                backButton: true,
+              ),
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
               Container(
-                height: MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.3,
               ),
               Container(
                   width: MediaQuery.of(context).size.width,
@@ -173,6 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StateSelectionPage(
+                                                gradedPlusQueImage: null,
                                                 isFromCreateAssessmentScreen:
                                                     false,
                                                 // questionImageUrl: '',
@@ -200,7 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         Positioned(
-            top: MediaQuery.of(context).size.height * 0.045,
+            top: MediaQuery.of(context).size.height * 0.12,
             left: 20.0,
             right: 20.0,
             child: Container(

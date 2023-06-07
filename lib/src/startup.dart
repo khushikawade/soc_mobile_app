@@ -244,9 +244,9 @@ class _StartupPageState extends State<StartupPage> {
                               var isOldUser = await _hiveDbServices
                                   .getSingleData('new_user', 'new_user');
                               //-------------------------------------------------------------
-                              if (Overrides.STANDALONE_GRADED_APP == true) {
-                                Globals.isPremiumUser = true;
-                              }
+                              // if (Overrides.STANDALONE_GRADED_APP == true) {
+                              //   Globals.isPremiumUser = true;
+                              // }
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true

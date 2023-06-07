@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -188,17 +189,22 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       isSuccessState: isSuccessResult,
       isHomeButtonPopup: true,
       isBackOnSuccess: isBackFromCamera,
-      actionIcon: IconButton(
-        onPressed: () {
-          onPressAction();
-        },
-        icon: Icon(
-          IconData(0xe877,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          size: 30,
-          color: AppTheme.kButtonColor,
-        ),
-      ),
+      actionIcon: Container(),
+
+      // scanFailure.value == "Failure"
+      //     ? Container()
+      //     : IconButton(
+      //         onPressed: () {
+      //           onPressAction();
+      //         },
+      //         icon: Icon(
+      //           IconData(0xe877,
+      //               fontFamily: Overrides.kFontFam,
+      //               fontPackage: Overrides.kFontPkg),
+      //           size: 30,
+      //           color: AppTheme.kButtonColor,
+      //         ),
+      //       ),
       key: null,
     );
   }
@@ -208,40 +214,134 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         valueListenable: scanFailure,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return scanFailure.value == "Success"
-              ? ValueListenableBuilder(
-                  valueListenable: isBackFromCamera,
-                  child: Container(),
-                  builder:
-                      (BuildContext context, dynamic value, Widget? child) {
-                    return isBackFromCamera.value != true
-                        ? Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ValueListenableBuilder(
-                                valueListenable: animationStart,
-                                child: Container(),
-                                builder: (BuildContext context, dynamic value,
-                                    Widget? child) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      onPressSuccessFloatingButton();
-                                    },
-                                    child: GradedPlusNextScanAnimationButton(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.055,
-                                      animationDuration:
-                                          Duration(milliseconds: 4950),
-                                      animationStart: animationStart.value,
-                                    ),
-                                  );
-                                }),
+          if (scanFailure.value == "Success") {
+            return ValueListenableBuilder(
+                valueListenable: isBackFromCamera,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return
+                      // isBackFromCamera.value != true
+                      //     ?
+                      Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ValueListenableBuilder(
+                        valueListenable: animationStart,
+                        child: Container(),
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return InkWell(
+                            onTap: () async {
+                              onPressSuccessFloatingButton();
+                            },
+                            child: GradedPlusNextScanAnimationButton(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.055,
+                              animationDuration: Duration(milliseconds: 4950),
+                              animationStart: animationStart.value,
+                            ),
+                          );
+                        }),
+                  );
+                  //  : Container();
+                });
+          } else if (scanFailure.value == "") {
+            return Container();
+          } else {
+            return ValueListenableBuilder(
+              valueListenable: isStudentIdFilled,
+              child: Container(),
+              builder: (context, value, child) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.055,
+                  // width: MediaQuery.of(context).size.width * 0.3,
+                  child: FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor,
+                    onPressed: () {
+                      //  Condition to check id is validate or not
+                      if (validateStudentId(value: idController.text)) {
+                        onPressAction();
+                      } else {
+                        Utility.updateLogs(
+                            activityType: 'GRADED+',
+                            activityId: '9',
+                            description: 'Scan Failure and teacher retry scan',
+                            operationResult: 'Failure');
+
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        Navigator.of(context).pop(widget.isFlashOn);
+                      }
+                    },
+                    label: Container(
+                      child: Row(
+                        children: [
+                          Utility.textWidget(
+                              text: validateStudentId(value: idController.text)
+                                  ? "Next"
+                                  : 'Retry',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor)),
+                        ],
+                      ),
+                    ),
+                    icon: validateStudentId(value: idController.text)
+                        ? Icon(
+                            IconData(0xe877,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            size: 20,
+                            color: Theme.of(context).backgroundColor,
+                            // color: AppTheme.kButtonColor,
                           )
-                        : Container();
-                  })
-              : Container();
+                        : Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).backgroundColor,
+                          ),
+                  ),
+                );
+              },
+            );
+          }
+          // return scanFailure.value == "Success"
+          //     ? ValueListenableBuilder(
+          //         valueListenable: isBackFromCamera,
+          //         child: Container(),
+          //         builder:
+          //             (BuildContext context, dynamic value, Widget? child) {
+          //           return
+          //               // isBackFromCamera.value != true
+          //               //     ?
+          //               Align(
+          //             alignment: Alignment.bottomCenter,
+          //             child: ValueListenableBuilder(
+          //                 valueListenable: animationStart,
+          //                 child: Container(),
+          //                 builder: (BuildContext context, dynamic value,
+          //                     Widget? child) {
+          //                   return InkWell(
+          //                     onTap: () async {
+          //                       onPressSuccessFloatingButton();
+          //                     },
+          //                     child: GradedPlusNextScanAnimationButton(
+          //                       width: MediaQuery.of(context).size.width * 0.4,
+          //                       height:
+          //                           MediaQuery.of(context).size.height * 0.055,
+          //                       animationDuration: Duration(milliseconds: 4950),
+          //                       animationStart: animationStart.value,
+          //                     ),
+          //                   );
+          //                 }),
+          //           );
+          //           //  : Container();
+          //         })
+          //     :
         });
   }
 
@@ -600,65 +700,91 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             },
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                      child: PlusScreenTitleWidget(
-                          kLabelSpacing: 0, text: 'Manual Entry')),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xffCF6679),
-                    ),
-                    child: Icon(
-                        IconData(0xe838,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        // size: 19,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-                child: FloatingActionButton.extended(
-                  backgroundColor: AppTheme.kButtonColor,
-                  onPressed: () {
-                    Utility.updateLogs(
-                        activityType: 'GRADED+',
-                        activityId: '9',
-                        description: 'Scan Failure and teacher retry scan',
-                        operationResult: 'Failure');
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Row(
+          //       children: [
+          //         Container(
+          //             child: PlusScreenTitleWidget(
+          //                 kLabelSpacing: 0, text: 'Manual Entry')),
+          //         SizedBox(
+          //           width: 5.0,
+          //         ),
+          //         Container(
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             color: Color(0xffCF6679),
+          //           ),
+          //           child: Icon(
+          //               IconData(0xe838,
+          //                   fontFamily: Overrides.kFontFam,
+          //                   fontPackage: Overrides.kFontPkg),
+          //               // size: 19,
+          //               color: Colors.white),
+          //         ),
+          //       ],
+          //     ),
 
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    Navigator.of(context).pop(widget.isFlashOn);
-                  },
-                  label: Row(
-                    children: [
-                      Utility.textWidget(
-                          text: 'Retry',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(
-                                  color: Theme.of(context).backgroundColor)),
-                    ],
-                  ),
-                  icon: Icon(
-                    Icons.refresh,
-                    color: Theme.of(context).backgroundColor,
-                  ),
-                ),
-              )
-            ],
-          ),
+          //     // Retry and  next button widget
+          //     ValueListenableBuilder(
+          //       valueListenable: isStudentIdFilled,
+          //       child: Container(),
+          //       builder: (context, value, child) {
+          //         return SizedBox(
+          //           height: MediaQuery.of(context).size.height * 0.05,
+          //           child: FloatingActionButton.extended(
+          //             backgroundColor: AppTheme.kButtonColor,
+          //             onPressed: () {
+          //               //  Condition to check id is validate or not
+          //               if (validateStudentId(value: idController.text)) {
+          //                 onPressAction();
+          //               } else {
+          //                 Utility.updateLogs(
+          //                     activityType: 'GRADED+',
+          //                     activityId: '9',
+          //                     description:
+          //                         'Scan Failure and teacher retry scan',
+          //                     operationResult: 'Failure');
+
+          //                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          //                 Navigator.of(context).pop(widget.isFlashOn);
+          //               }
+          //             },
+          //             label: Row(
+          //               children: [
+          //                 Utility.textWidget(
+          //                     text: validateStudentId(value: idController.text)
+          //                         ? "Next"
+          //                         : 'Retry',
+          //                     context: context,
+          //                     textTheme: Theme.of(context)
+          //                         .textTheme
+          //                         .headline4!
+          //                         .copyWith(
+          //                             color:
+          //                                 Theme.of(context).backgroundColor)),
+          //               ],
+          //             ),
+          //             icon: validateStudentId(value: idController.text)
+          //                 ? Icon(
+          //                     IconData(0xe877,
+          //                         fontFamily: Overrides.kFontFam,
+          //                         fontPackage: Overrides.kFontPkg),
+          //                     size: 20,
+          //                     color: Theme.of(context).backgroundColor,
+          //                     // color: AppTheme.kButtonColor,
+          //                   )
+          //                 : Icon(
+          //                     Icons.refresh,
+          //                     color: Theme.of(context).backgroundColor,
+          //                   ),
+          //           ),
+          //         );
+          //       },
+          //     ),
+          //   ],
+          // ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Utility.textWidget(
               text: 'Student Name',
@@ -817,9 +943,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 );
               }),
           suggestionWidget(isNameList: false),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
           Center(
             child: Utility.textWidget(
                 textAlign: TextAlign.center,
@@ -841,6 +965,11 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       : grade
                   : (grade == '' ? 2 : int.parse(grade)),
               isSuccessState: false),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
       ),
     );
@@ -1128,9 +1257,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 );
               }),
           suggestionWidget(isNameList: false),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          // SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Center(
             child: Utility.textWidget(
                 text: widget.isMcqSheet == true
@@ -1147,7 +1274,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           pointsEarnedButton(
               widget.isMcqSheet == true ? grade : int.parse(grade),
               isSuccessState: true),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Container(
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width * 0.5,
@@ -1173,6 +1300,9 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                   ),
                 ],
               )),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
         // ),
       ),
@@ -1195,8 +1325,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         showCustomRubricImage();
       },
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.195,
-        width: MediaQuery.of(context).size.width * 0.85,
+        height: MediaQuery.of(context).size.height * 0.25,
+        width: MediaQuery.of(context).size.width * 0.45,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6.52),
           child: Image.file(
@@ -2093,5 +2223,14 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 color: Theme.of(context).colorScheme.primaryVariant)),
       ],
     );
+  }
+
+  // Function to validate student id field to show retry and next button
+  bool validateStudentId({required String value}) {
+    return (value.isNotEmpty && Overrides.STANDALONE_GRADED_APP == true
+        ? (regex.hasMatch(value))
+        : (Utility.checkForInt(value)
+            ? (value.length == 9 && ((value[0] == '2' || value[0] == '1')))
+            : (regex.hasMatch(value))));
   }
 }

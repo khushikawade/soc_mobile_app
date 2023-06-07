@@ -97,14 +97,19 @@ class _GradedPlusResultOptionBottomSheetState
         dense: true,
         contentPadding: EdgeInsets.zero,
         horizontalTitleGap: 20,
-        leading: SvgPicture.asset(element.svgPath!,
+        leading: Padding(
+          padding: EdgeInsets.only(left: element.title != "Slides" ? 4 : 0),
+          child: SvgPicture.asset(
+            element.svgPath!,
             height: 30,
             width: 30,
             color: element.title == "Dashboard"
                 ? Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20)
-                : null),
+                : null,
+          ),
+        ),
         title: Utility.textWidget(
             text: element.title!,
             context: context,

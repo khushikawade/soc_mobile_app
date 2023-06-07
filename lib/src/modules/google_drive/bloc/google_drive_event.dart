@@ -45,7 +45,6 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final int? selectedRubric;
   // final String questionImage;
   final String? assessmentName;
-  final bool? createdAsPremium;
 
   UpdateDocOnDrive(
       {this.studentData,
@@ -55,7 +54,6 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       this.isCustomRubricSelected,
       this.selectedRubric,
       required this.assessmentName,
-      required this.createdAsPremium,
       required this.isMcqSheet});
   @override
   List<Object> get props => [];
@@ -226,11 +224,12 @@ class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
 }
 
 // ignore: must_be_immutable
-class AddAndUpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
+class AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive
+    extends GoogleDriveEvent {
   final String? slidePresentationId;
   LocalDatabase<StudentAssessmentInfo> studentInfoDb;
   final bool? isScanMore;
-  AddAndUpdateAssessmentImageToSlidesOnDrive(
+  AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
       {required this.slidePresentationId,
       required this.studentInfoDb,
       this.isScanMore = false});

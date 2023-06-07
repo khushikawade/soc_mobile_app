@@ -778,13 +778,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearNewsCache.getBool('delete_local_all_state_and_subject_cache');
+            clearNewsCache.getBool('delete_local_all_state_and_subject_cache1');
 
         if (clearCacheResult != true) {
           print('Inside clear state');
           await _localDb.clear();
           await clearNewsCache.setBool(
-              'delete_local_all_state_and_subject_cache', true);
+              'delete_local_all_state_and_subject_cache1', true);
         }
 
         List<StateListObject>? _localData = await _localDb.getData();
@@ -1713,7 +1713,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.isPremiumUser.toString(),
+        "Created_As_Premium": true,
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response',
