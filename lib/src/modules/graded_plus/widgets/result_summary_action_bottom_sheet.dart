@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,7 +59,7 @@ class _GradedPlusResultOptionBottomSheetState
         padding: EdgeInsets.only(left: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
@@ -88,6 +89,7 @@ class _GradedPlusResultOptionBottomSheetState
             ...widget.resultSummaryIconsModalList.map(
                 (ResultSummaryIcons element) =>
                     _listTileMenu(element: element)),
+            SpacerWidget(20)
           ],
         ));
   }
@@ -97,12 +99,16 @@ class _GradedPlusResultOptionBottomSheetState
         dense: true,
         contentPadding: EdgeInsets.zero,
         horizontalTitleGap: 20,
-        leading: Padding(
+        leading: Container(
+          height: 30,
+          width: 30,
+          //   color: Colors.amber,
           padding: EdgeInsets.only(left: element.title != "Slides" ? 4 : 0),
           child: SvgPicture.asset(
             element.svgPath!,
-            height: 30,
-            width: 30,
+            // height: 30,
+            // width: 30,
+            // fit: BoxFit.fill,
             color: element.title == "Dashboard"
                 ? Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)

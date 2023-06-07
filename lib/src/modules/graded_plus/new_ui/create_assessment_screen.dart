@@ -832,6 +832,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   _updateGradeBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,

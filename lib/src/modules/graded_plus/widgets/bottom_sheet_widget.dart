@@ -262,6 +262,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                margin: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
+                    ? EdgeInsets.only(bottom: 100)
+                    : null,
                 child: FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {

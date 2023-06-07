@@ -1100,6 +1100,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   addCustomSubjectBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
+     
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
