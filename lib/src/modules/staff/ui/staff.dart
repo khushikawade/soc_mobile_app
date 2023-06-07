@@ -294,7 +294,7 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       // await _launchURL('Google Authentication');
       //Google Manual Sign in
-      if (Globals.appSetting.enableGoogleSSO != true) {
+      if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', actionName);
         if (value == true) {
