@@ -115,9 +115,14 @@ class _GradedPlusResultOptionBottomSheetState
             context: context,
             textTheme: Theme.of(context).textTheme.headline3!),
         onTap: () {
-          bottomIconsOnTap(
-              title: element.title ?? '',
-              url: widget.allUrls[element.title] ?? '');
+          if (element.title == "Dashboard") {
+            Utility.launchUrlOnExternalBrowser(
+                "https://www.${Globals.schoolDbnC}.com/");
+          } else {
+            bottomIconsOnTap(
+                title: element.title ?? '',
+                url: widget.allUrls[element.title] ?? '');
+          }
         });
   }
 

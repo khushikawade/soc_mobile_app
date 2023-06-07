@@ -417,7 +417,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             child: Container(
                 height:
                     MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.60 //7
+                        ? MediaQuery.of(context).size.height * 0.68 //7
                         : MediaQuery.of(context).size.height * 0.45,
                 child: screenShotNotifier.value == true
                     ? SingleChildScrollView(
