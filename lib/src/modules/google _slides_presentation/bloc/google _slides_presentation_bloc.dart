@@ -12,6 +12,7 @@ import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 part 'google _slides_presentation_event.dart';
 part 'google _slides_presentation_state.dart';
 
@@ -431,14 +432,14 @@ class GoogleSlidesPresentationBloc
             "elementProperties": {
               "pageObjectId": "Slide1",
               "size": {
-                "width": {"magnitude": 6000000, "unit": "EMU"},
+                "width": {"magnitude": 5000000, "unit": "EMU"},
                 "height": {"magnitude": 3500000, "unit": "EMU"}
               },
               "transform": {
                 "scaleX": 1,
                 "scaleY": 1,
-                "translateX": 1505000,
-                "translateY": 250000,
+                "translateX": 2005000,
+                "translateY": 850000,
                 "unit": "EMU",
               }
             },
@@ -534,14 +535,14 @@ class GoogleSlidesPresentationBloc
             "elementProperties": {
               "pageObjectId": pageObjectuniqueId,
               "size": {
-                "width": {"magnitude": 4000000, "unit": "EMU"},
+                "width": {"magnitude": 6000000, "unit": "EMU"},
                 "height": {"magnitude": 3000000, "unit": "EMU"}
               },
               "transform": {
                 "scaleX": 1,
                 "scaleY": 1,
-                "translateX": 3200600,
-                "translateY": 1167820,
+                "translateX": 3005000,
+                "translateY": 1050000,
                 "unit": "EMU"
               }
             },
@@ -598,7 +599,7 @@ class GoogleSlidesPresentationBloc
       {required final StudentPlusDetailsModel studentDetails,
       required int index}) {
     Map map = {
-      0: studentDetails.firstNameC ?? '-',
+      0: "${studentDetails.firstNameC} ${studentDetails.lastNameC}" ?? '-',
       1: studentDetails.id ?? '-',
       2: studentDetails.parentPhoneC ?? '-',
       3: studentDetails.emailC ?? '-',
@@ -607,7 +608,11 @@ class GoogleSlidesPresentationBloc
       6: studentDetails.currentAttendance ?? '-',
       7: studentDetails.genderFullC ?? '-',
       8: studentDetails.age ?? '-',
-      9: studentDetails.dobC ?? '-'
+      // 9: studentDetails.dobC ?? '-'
+      9: studentDetails.dobC != null && studentDetails.dobC!.isNotEmpty
+          ? DateFormat("MM/dd/yyyy")
+              .format(DateTime.parse(studentDetails.dobC ?? '-'))
+          : '-'
     };
 
     return map[index] != null && map[index] != '' ? map[index] : '-';
