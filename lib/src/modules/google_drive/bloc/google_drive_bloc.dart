@@ -16,6 +16,9 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/schedule/modal/event.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -83,6 +86,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (folderObject != 401 && folderObject != 500) {
           //Which means folder API return 200 but folder not found
           if (folderObject.length == 0) {
+            print("${event.folderName} is not available on drive Create one ");
             //Create the folder now
             String? folderId = await _createFolderOnDrive(
                 token: _userProfileLocalData[0].authorizationToken,
@@ -107,6 +111,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               PBISPlusOverrides.pbisPlusGoogleDriveFolderId =
                   folderObject['id'];
               PBISPlusOverrides.pbisPlusGoogleDriveFolderPath =
+                  folderObject['webViewLink'];
+            } else if (event.folderName == "SOLVED STUDENT+") {
+              print(
+                  "FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
+              //FOR STUDENT PLUS
+              StudentPlusOverrides.studentPlusGoogleDriveFolderId =
+                  folderObject['id'];
+              StudentPlusOverrides.studentPlusGoogleDriveFolderPath =
                   folderObject['webViewLink'];
             }
 
@@ -284,7 +296,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // Create new Google presentation in case already not exist // Will work for all the existing assessment which are not having already google slide presentation in case of scan more
         if (event.slidePresentationId == 'NA') {
           //To create Google Presentation
-          List result = await createSlideOnDrive(
+          List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             excelSheetId: Globals.googleExcelSheetId,
             name: event.assessmentName, //event.fileTitle!,
@@ -293,22 +305,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
 
-          //
-          // await createBlankSlidesInGooglePresentation(
-          //     googleSlideId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
-          //     studentRecordList: assessmentData,
-          //     isScanMore: false);
-
-          //
-          // await updateAssessmentImageToSlidesOnDrive(
-          //     googleSlideId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     assessmentData,
-          //     _studentInfoDb);
           //To add one or more blank slides in Google Presentation
 //To update scanned images in the Google Slides
           await addAndUpdateStudentAssessmentDetailsToSlide(
@@ -358,22 +354,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           //Execute when presentation already exist and we need to add only new slides for new scans
-          // for (int index = 0;
-          //     index < event.lastAssessmentLength &&
-          //         index < assessmentDataList.length;
-          //     index++) {
-          //   assessmentDataList[index].isSlideObjUpdated = true;
-          //   await event.studentInfoDb.putAt(index, assessmentDataList[index]);
-          // }
-          // print(assessmentDataList);
-          // //To create Google Presentation
-          // await createBlankSlidesInGooglePresentation(
-          //     event.slidePresentationId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     studentRecordList: list,
-          //     isFromHistoryAssessment: event.isFromHistoryAssessment,
-          //     isScanMore: true);
 
           //To create Google Presentation
           //To update scanned images in the Google Slides
@@ -572,7 +552,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userProfileLocalData[0].refreshToken);
 
         if (excelSheetId.isEmpty) {
-          // await _toRefreshAuthenticationToken(
+          //  toRefreshAuthenticationToken(
           //     _userProfileLocalData[0].refreshToken!);
 
           String excelSheetId = await uploadSheetOnDrive(
@@ -1015,7 +995,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        List result = await createSlideOnDrive(
+        List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             name: event.fileTitle!,
             folderId: Globals.googleDriveFolderId,
@@ -1244,6 +1224,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
+
+      print("CERATE FOLDER API IS CALLED");
+
       final ResponseModel response = await _dbServices.postApi(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
           //'https://www.googleapis.com/drive/v2/files',
@@ -1258,11 +1241,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       //   return Globals.googleDriveFolderId = response.data['body']['id'];
       // }
+
+      print(
+          " CREATE FOLDER  API RESPONSE IS RECIVED ${response.data['statusCode']}");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         //  String id = response.data['id'];
 
         //   return Globals.googleDriveFolderId = response.data['body']['id'];
-
+        print("FOLDER IS CREATED ON DRIVE NAME $folderName");
         String folderId = response.data['body']['id'];
         //for GARDED+
         if (folderName == "SOLVED GRADED+") {
@@ -1270,7 +1256,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else if (folderName == "SOLVED PBIS+") {
           //FOR PBIS PLUS
           PBISPlusOverrides.pbisPlusGoogleDriveFolderId = folderId;
+        } else if (folderName == "SOLVED STUDENT+") {
+          //FOR STUDENT PLUS
+          StudentPlusOverrides.studentPlusGoogleDriveFolderId = folderId;
         }
+
         return folderId;
       }
       return "";
@@ -1289,11 +1279,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      String query =
-          //   '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
-          folderName == "SOLVED GRADED+"
-              ? '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')'
-              : '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED PBIS%2B\')';
+      String query;
+      //   '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
+
+      // folderName == "SOLVED GRADED+"
+      //     ? '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')'
+      //     : '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED PBIS%2B\')';
+
+      if (folderName == "SOLVED GRADED+") {
+        query =
+            "(trashed = false and mimeType = 'application/vnd.google-apps.folder' and name = 'SOLVED GRADED%2B')";
+      } else if (folderName == "SOLVED PBIS+") {
+        query =
+            "(trashed = false and mimeType = 'application/vnd.google-apps.folder' and name = 'SOLVED PBIS%2B')";
+      } else {
+        query =
+            "(trashed = false and mimeType = 'application/vnd.google-apps.folder' and name = 'SOLVED STUDENT%2B')";
+      }
 
       final ResponseModel response = await _dbServices.getApiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
@@ -1388,7 +1390,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //         _totalRetry < 3) {
   //       _totalRetry++;
   //       //To regenerated fresh access token
-  //       var result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       var result =  toRefreshAuthenticationToken(refreshToken!);
   //       if (result == true) {
   //         List<UserInformation> _userProfileLocalData =
   //             await UserGoogleProfile.getUserProfile();
@@ -2143,7 +2145,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<List> createSlideOnDrive(
+  Future<List> createPresentationOnDrive(
       {String? name,
       String? folderId,
       String? accessToken,
@@ -2179,7 +2181,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        deleteSlide(
+        print(response.data);
+        await deleteSlide(
             slideObjId:
                 "p", //default first slide object ID//Always delete this to change the type of slide
             accessToken: accessToken,
@@ -2197,7 +2200,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          return await createSlideOnDrive(
+          return await createPresentationOnDrive(
               isMcqSheet: isMcqSheet,
               name: name!,
               folderId: folderId,
@@ -2301,7 +2304,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //     } else if ((response.statusCode == 401 ||
   //             response.data['statusCode'] == 500) &&
   //         _totalRetry < 3) {
-  //       var result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       var result =  toRefreshAuthenticationToken(refreshToken!);
   //       if (result == true) {
   //         List<UserInformation> _userProfileLocalData =
   //             await UserGoogleProfile.getUserProfile();
@@ -2753,6 +2756,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }) async {
     List<StudentAssessmentInfo> assessmentData = await studentInfoDb.getData();
     print(assessmentData);
+
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2773,6 +2777,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ];
     // print(slideRequiredObjectsList);
     // print(assessmentData);
+
     try {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {

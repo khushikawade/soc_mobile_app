@@ -591,31 +591,15 @@ class _GradedPlusSearchScreenPageState
                       floatingButtonOnTap();
                       //await saveToDrive();
                     },
-                    label: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: 'Save',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Container(
-                          //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                          child: Image(
-                            width: Globals.deviceType == "phone" ? 23 : 28,
-                            height: Globals.deviceType == "phone" ? 23 : 28,
-                            image: AssetImage(
-                              "assets/images/drive_ico.png",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
+                    label: Utility.textWidget(
+                        text: 'Save',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  )
                 : Container();
       },
     );
@@ -846,7 +830,7 @@ class _GradedPlusSearchScreenPageState
                 assessmentName: Globals.assessmentName ?? 'Assessment Name',
                 rubricScore: Globals.scoringRubric ?? '2',
                 subjectName: widget.selectedSubject ??
-                    '', //Student Id will not be there in case of custom subject
+                    'NA', //Student Id will not be there in case of custom subject
                 domainName: learningStandard ?? '',
                 subDomainName: subLearningStandard ?? '',
                 grade: widget.grade ?? '',

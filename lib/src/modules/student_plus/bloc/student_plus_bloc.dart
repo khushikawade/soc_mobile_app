@@ -102,6 +102,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         //yield StudentPlusLoading();
         List<StudentPlusWorkModel> list =
             await getStudentWorkDetails(studentId: event.studentId ?? '');
+
         await _localDb.clear();
         list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         list.forEach((StudentPlusWorkModel e) {
