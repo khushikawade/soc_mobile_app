@@ -1666,8 +1666,11 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       {bool? isUpdateData,
       required bool? isFromHistoryAssessmentScanMore}) async {
     String? updatedStudentId;
+    String studentEmail;
+
     if (idController.text.contains('@')) {
-      updatedStudentId = getIdFromEmail(idController.text);
+      String studentEmail =
+          updatedStudentId = getIdFromEmail(idController.text);
     } else {
       updatedStudentId = idController.text;
     }

@@ -205,7 +205,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                                   marginFromBottom: 90);
                             } else {
                               _animationControllerForSync!.repeat();
-                              widget.pbisBloc!.add(PBISPlusImportRoster());
+                              widget.pbisBloc!.add(PBISPlusImportRoster(
+                                
+                                  isGradedPlus: false));
                             }
                           },
                           label: Utility.textWidget(

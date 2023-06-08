@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/scan_result_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -930,7 +931,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Will be used in standalone app only
-  Future<List<String>> getSuggestionChips() async {
+  Future<List<String>> getSuggestionChipsForStandAloneApp() async {
     List<String> classSuggestionsList = [];
 
     try {
@@ -1053,15 +1054,19 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  _navigateToCreateAssessment({required List<String> suggestionList}) {
+  _navigateToCreateAssessment(
+      {required List<String> suggestionList,
+      required List<String> classroomsuggestionList}) {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
-              isMcqSheet: widget.isMcqSheet,
-              selectedAnswer: widget.selectedAnswer,
-              customGrades: classList,
-              classSuggestions: suggestionList)),
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                customGrades: classList,
+                classSuggestions: suggestionList,
+                classroomSuggestions: classroomsuggestionList,
+              )),
     );
   }
 
@@ -1125,51 +1130,74 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+  // Future<void> prepareClassSuggestionListForCreateAssessmentScreen() async {
+  //   if (Overrides.STANDALONE_GRADED_APP == true) {
+  //     //Prepare suggestion chips for create screen //course list from google classroom
+  //     Utility.showLoadingDialog(context: context, isOCR: true);
+  //     List<String> suggestionList = await getSuggestionChips();
+  //     Navigator.of(context).pop();
+
+  //     _navigateToCreateAssessment(suggestionList: suggestionList);
+  //   } else {
+  //     //Locally added classes suggestion list
+  //     List<String> classSuggestions = await _localDb.getData();
+  //     LocalDatabase<String> classSectionLocalDb =
+  //         LocalDatabase('class_section_list');
+
+  //     List<String> localSectionList = await classSectionLocalDb.getData();
+
+  //     // Compares 2 list and update the changes in local database.
+  //     bool isClassChanges = false;
+  //     for (int i = 0; i < classList.length; i++) {
+  //       if (!localSectionList.contains(classList[i])) {
+  //         isClassChanges = true;
+  //         break;
+  //       }
+  //     }
+
+  //     if (localSectionList.isEmpty || isClassChanges) {
+  //       //print("local db is empty");
+  //       classSectionLocalDb.clear();
+  //       classList.forEach((String e) {
+  //         classSectionLocalDb.addData(e);
+  //       });
+  //     } else {
+  //       //print("local db is not empty");
+  //       classList = [];
+  //       classList.addAll(localSectionList);
+  //     }
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => GradedPlusCreateAssessment(
+  //               isMcqSheet: widget.isMcqSheet,
+  //               selectedAnswer: widget.selectedAnswer,
+  //               customGrades: classList,
+  //               classSuggestions: classSuggestions)),
+  //     );
+  //   }
+  // }
   Future<void> prepareClassSuggestionListForCreateAssessmentScreen() async {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       //Prepare suggestion chips for create screen //course list from google classroom
       Utility.showLoadingDialog(context: context, isOCR: true);
-      List<String> suggestionList = await getSuggestionChips();
+      List<String> suggestionListSatandAlone =
+          await getSuggestionChipsForStandAloneApp();
       Navigator.of(context).pop();
 
-      _navigateToCreateAssessment(suggestionList: suggestionList);
+      _navigateToCreateAssessment(
+          suggestionList: suggestionListSatandAlone,
+          classroomsuggestionList: []);
     } else {
-      //Locally added classes suggestion list
-      List<String> classSuggestions = await _localDb.getData();
-      LocalDatabase<String> classSectionLocalDb =
-          LocalDatabase('class_section_list');
+      List<String> suggestionListForStandardApp =
+          await getSuggestionChipsForStandardApp();
 
-      List<String> localSectionList = await classSectionLocalDb.getData();
+      List<String> classroomsuggestionListForStandardApp =
+          await getClassroomSuggestionChipsForStandardApp();
 
-      // Compares 2 list and update the changes in local database.
-      bool isClassChanges = false;
-      for (int i = 0; i < classList.length; i++) {
-        if (!localSectionList.contains(classList[i])) {
-          isClassChanges = true;
-          break;
-        }
-      }
-
-      if (localSectionList.isEmpty || isClassChanges) {
-        //print("local db is empty");
-        classSectionLocalDb.clear();
-        classList.forEach((String e) {
-          classSectionLocalDb.addData(e);
-        });
-      } else {
-        //print("local db is not empty");
-        classList = [];
-        classList.addAll(localSectionList);
-      }
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => GradedPlusCreateAssessment(
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
-                customGrades: classList,
-                classSuggestions: classSuggestions)),
-      );
+      _navigateToCreateAssessment(
+          suggestionList: suggestionListForStandardApp,
+          classroomsuggestionList: classroomsuggestionListForStandardApp);
     }
   }
 
@@ -1202,5 +1230,68 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       schoolId: Globals.appSetting.schoolNameC!,
       //fileId: fileId,
     ));
+  }
+
+  Future<List<String>> getSuggestionChipsForStandardApp() async {
+    //Locally added classes suggestion list
+    List<String> classSuggestions = await _localDb.getData();
+    LocalDatabase<String> classSectionLocalDb =
+        LocalDatabase('class_section_list');
+
+    List<String> localSectionList = await classSectionLocalDb.getData();
+
+    // Compares 2 list and update the changes in local database.
+    bool isClassChanges = false;
+    for (int i = 0; i < classList.length; i++) {
+      if (!localSectionList.contains(classList[i])) {
+        isClassChanges = true;
+        break;
+      }
+    }
+
+    if (localSectionList.isEmpty || isClassChanges) {
+      //print("local db is empty");
+      classSectionLocalDb.clear();
+      classList.forEach((String e) {
+        classSectionLocalDb.addData(e);
+      });
+    } else {
+      classList = [];
+      classList.addAll(localSectionList);
+    }
+    return classSuggestions;
+  }
+
+  Future<List<String>> getClassroomSuggestionChipsForStandardApp() async {
+    List<String> classroomSuggestionsList = [];
+    try {
+      List<StudentAssessmentInfo> studentInfo =
+          await OcrUtility.getSortedStudentInfoList(
+              tableName: Strings.studentInfoDbName);
+
+      LocalDatabase<ClassroomCourse> _localDb =
+          LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+
+      List<ClassroomCourse>? _localData = await _localDb.getData();
+
+// filteredCourses only the courses that contain all scanned students
+      classroomSuggestionsList = _localData
+          .where((course) => course.students != null)
+          .where((course) => course.students!.any((student) => studentInfo
+              .any((s) => s.studentId == student.profile!.emailAddress)))
+          .map((course) => course.name!)
+          .toSet() // remove duplicates
+          .toList();
+
+// if classSuggestionList is empty or null so get all local classroom courses
+      classroomSuggestionsList = classroomSuggestionsList?.isNotEmpty ?? false
+          ? classroomSuggestionsList
+          : _localData.map((course) => course.name!).toList();
+
+      classroomSuggestionsList.sort();
+      return classroomSuggestionsList ?? [];
+    } catch (e) {
+      return classroomSuggestionsList;
+    }
   }
 }

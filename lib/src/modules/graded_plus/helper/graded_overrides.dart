@@ -18,4 +18,7 @@ class OcrOverrides {
   // To manage Graded plus bottom nav bar
   static final ValueNotifier<bool> gradedPlusNavBarIsHide =
       ValueNotifier<bool>(false);
+
+  static final String gradedPlusClassroomDB =
+      'GradedPlus_student_course_details';
 }

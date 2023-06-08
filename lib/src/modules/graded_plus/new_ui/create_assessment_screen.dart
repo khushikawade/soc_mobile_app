@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -40,12 +41,14 @@ class GradedPlusCreateAssessment extends StatefulWidget {
       required this.classSuggestions,
       required this.customGrades,
       this.isMcqSheet,
-      required this.selectedAnswer})
+      required this.selectedAnswer,
+      required this.classroomSuggestions})
       : super(key: key);
   final List<String> classSuggestions;
   final List<String> customGrades;
   final bool? isMcqSheet;
   final String? selectedAnswer;
+  final List<String> classroomSuggestions;
   @override
   State<GradedPlusCreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -79,7 +82,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         GoogleClassroomCourses();
 
     //Managing suggestion chips // course name // class name
-    updateClassName();
+    if (Overrides.STANDALONE_GRADED_APP) {
+      updateClassNameForStandAloneApp();
+    } else {
+      updateClassNameForStandardApp();
+    }
 
     // Globals.googleExcelSheetId = '';
     // Globals.googleSlidePresentationId = '';
@@ -275,11 +282,26 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                           if (value.isNotEmpty) {
                             classController.text = value;
                             classError.value = value;
-                            updateClassName();
+                            updateClassNameForStandAloneApp();
                           }
                         },
                         selected: 1, // Select the second filter as default
                         filters: widget.classSuggestions,
+                      )),
+
+                if (widget.classroomSuggestions.length > 0)
+                  SpacerWidget(_KVerticalSpace / 8),
+                if (widget.classroomSuggestions.length > 0)
+                  Container(
+                      height: 30,
+                      child: ChipsFilter(
+                        selectedValue: (String value) {
+                          if (value.isNotEmpty) {
+                            updateClassNameForStandAloneApp();
+                          }
+                        },
+                        selected: 1, // Select the second filter as default
+                        filters: widget.classroomSuggestions,
                       )),
 
                 SpacerWidget(_KVerticalSpace / 2),
@@ -870,7 +892,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     });
   }
 
-  updateClassName() async {
+  updateClassNameForStandAloneApp() async {
     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
         GoogleClassroomCourses(courseId: '');
 
@@ -982,5 +1004,43 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     await OcrUtility.sortStudents(
       tableName: Strings.studentInfoDbName,
     );
+  }
+
+  Future<void> updateClassNameForStandardApp() async {
+    GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+        ClassroomCourse(id: '');
+
+    LocalDatabase<ClassroomCourse> _localDb =
+        LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+
+//Validating suggestion list comes from camera screen //comparing string of list and return course object
+//Manage here to manage standalone and standard app
+    List<ClassroomCourse> googleClassroomCoursesDB = await _localDb.getData();
+
+    List<ClassroomCourse> _localData = googleClassroomCoursesDB
+        .where((ClassroomCourse classroomCourses) =>
+            widget.classroomSuggestions.contains(classroomCourses.name))
+        .toList();
+
+    _localData.sort((a, b) => (a?.name ?? '').compareTo(b?.name ?? ''));
+
+    List<StudentAssessmentInfo> studentInfo =
+        await OcrUtility.getSortedStudentInfoList(
+            tableName: Strings.studentInfoDbName);
+
+    if (studentInfo.isNotEmpty) {
+      for (ClassroomCourse classroom in _localData) {
+        for (ClassroomStudents student in classroom.students ?? []) {
+          for (StudentAssessmentInfo info in studentInfo) {
+            if (info.studentId == student.profile!.emailAddress) {
+              GoogleClassroomGlobals
+                  .studentAssessmentAndClassroomForStandardApp = classroom;
+
+              break;
+            }
+          }
+        }
+      }
+    }
   }
 }
