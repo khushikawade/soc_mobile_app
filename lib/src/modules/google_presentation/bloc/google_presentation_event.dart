@@ -4,13 +4,13 @@ abstract class GoogleSlidesPresentationEvent extends Equatable {
   const GoogleSlidesPresentationEvent();
 }
 
-class StudentPlusGooglePresentationIsAvailable
+class SearchStudentPresentationStudentPlus
     extends GoogleSlidesPresentationEvent {
   final StudentPlusDetailsModel studentDetails;
-  final String stduentPlusDriveFolderId;
+  final String studentPlusDriveFolderId;
 
-  StudentPlusGooglePresentationIsAvailable({
-    required this.stduentPlusDriveFolderId,
+  SearchStudentPresentationStudentPlus({
+    required this.studentPlusDriveFolderId,
     required this.studentDetails,
   });
 
@@ -18,26 +18,26 @@ class StudentPlusGooglePresentationIsAvailable
   List<Object> get props => [];
 }
 
-class StudentPlusUpdateNewSldiesOnGooglePresentation
+class StudentPlusCreateAndUpdateNewSlidesToGooglePresentation
     extends GoogleSlidesPresentationEvent {
   final StudentPlusDetailsModel studentDetails;
-  final List<StudentPlusWorkModel> allrecords;
+  final List<StudentPlusWorkModel> allRecords;
   final String googlePresentationFileId;
 
-  StudentPlusUpdateNewSldiesOnGooglePresentation(
+  StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
       {required this.studentDetails,
-      required this.allrecords,
+      required this.allRecords,
       required this.googlePresentationFileId});
 
   @override
   List<Object> get props => [];
 }
 
-class StudentPlusGetGooglePresentation extends GoogleSlidesPresentationEvent {
+class GetStudentPlusPresentationURL extends GoogleSlidesPresentationEvent {
   final StudentPlusDetailsModel studentDetails;
-  final String stduentPlusDriveFolderId;
-  StudentPlusGetGooglePresentation({
-    required this.stduentPlusDriveFolderId,
+  final String studentPlusDriveFolderId;
+  GetStudentPlusPresentationURL({
+    required this.studentPlusDriveFolderId,
     required this.studentDetails,
   });
 

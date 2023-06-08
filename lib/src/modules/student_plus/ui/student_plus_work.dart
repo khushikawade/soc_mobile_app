@@ -511,9 +511,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   void getThegooglePresentationUrl() {
     Utility.showLoadingDialog(
         context: context, isOCR: true, msg: 'Please Wait...');
-    googleSlidesPresentationBloc.add(StudentPlusGetGooglePresentation(
+    googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
         studentDetails: widget.studentDetails,
-        stduentPlusDriveFolderId:
+        studentPlusDriveFolderId:
             StudentPlusOverrides.studentPlusGoogleDriveFolderId));
   }
 
@@ -525,7 +525,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         listener: (context, state) async {
           print("On student work ------------$state---------");
 
-          if (state is StudentPlusGetGooglePresentationSuccess) {
+          if (state is GetGooglePresentationURLSuccess) {
             Navigator.pop(context, false);
             widget.studentDetails.googlePresentationUrl =
                 state.googlePresentationFileUrl;

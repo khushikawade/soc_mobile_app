@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
+import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
@@ -28,114 +29,107 @@ class GoogleSlidesPresentationBloc
   Stream<GoogleSlidesPresentationState> mapEventToState(
     GoogleSlidesPresentationEvent event,
   ) async* {
-    if (event is StudentPlusGooglePresentationIsAvailable) {
+    //Used to search the presentation URL if already exist and update the student's local database
+    //Create Presentation in case of not exist
+    //This will call on pressing sync slide button from Student+ work
+    if (event is SearchStudentPresentationStudentPlus) {
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
+        String? googlePresentationId;
 
-        print("check Presentation is available or not");
-        List stduentPresentationiSAvailable = await checkStudentPresentation(
-            folderId: event.stduentPlusDriveFolderId,
+        //------------------Search Student Presentation--------------------------------------------
+        List searchPresentationResult = await searchStudentPresentation(
+            folderId: event.studentPlusDriveFolderId,
             userProfile: userProfileLocalData[0],
             studentDetails: event.studentDetails);
 
-        if (stduentPresentationiSAvailable[0] == true) {
-          List<HistoryAssessment> data = stduentPresentationiSAvailable[1];
-          stduentPresentationiSAvailable[1] =
-              data.isNotEmpty ? data[0].fileId : '';
+        if (searchPresentationResult[0] == true) {
+          //--------------------------Storing presentation search result---------------------------
+          List<HistoryAssessment> presentationData =
+              searchPresentationResult[1];
+          // searchPresentationResult[1] =
+          googlePresentationId =
+              presentationData.isNotEmpty ? presentationData[0].fileId : '';
         }
 
-        if (stduentPresentationiSAvailable[0] == true &&
-            stduentPresentationiSAvailable[1] != '') {
-          print("Presentation is already available ");
-
-          yield StudentPlusGooglePresentationIsAvailableSuccess(
-              googlePresentationFileId: stduentPresentationiSAvailable[1]);
-        } else if (stduentPresentationiSAvailable[0] &&
-            stduentPresentationiSAvailable[1] == '') {
-          print("Presentation is not available ");
-
+        //Return Search Success if file found in search
+        if (searchPresentationResult[0] == true && googlePresentationId != '') {
+          yield StudentPlusGooglePresentationSearchSuccess(
+              googlePresentationFileId: googlePresentationId!);
+        }
+        //Create presentation to google drive Student+ folder if not already exist
+        else if (searchPresentationResult[0] && googlePresentationId == '') {
           String fileName =
               "${event.studentDetails.firstNameC}_${event.studentDetails.lastNameC}_${event.studentDetails.studentIdC}";
 
-          print("create Presentation");
-
-          List stduentPresentationIsCreated =
-              await googleDriveBloc.createSlideOnDrive(
+          List GooglePresentationCreateResponse =
+              await googleDriveBloc.createPresentationOnDrive(
                   name: fileName,
-                  folderId: event.stduentPlusDriveFolderId,
+                  folderId: event.studentPlusDriveFolderId,
                   accessToken: userProfileLocalData[0].authorizationToken,
                   refreshToken: userProfileLocalData[0].refreshToken,
                   excelSheetId: '',
                   isMcqSheet: false);
 
-          if (stduentPresentationIsCreated[0]) {
-            print(" Presentation crated successfully");
-            yield StudentPlusGooglePresentationIsAvailableSuccess(
-                googlePresentationFileId: stduentPresentationIsCreated[1]);
-          } else {
-            print(" Presentation crate FAIL");
-            yield GoogleSlidesPresentationErrorState(
-                errorMsg: stduentPresentationIsCreated[1].toString());
+          //Return Google presentation if once presentation created
+          if (GooglePresentationCreateResponse[0]) {
+            yield StudentPlusGooglePresentationSearchSuccess(
+                googlePresentationFileId: GooglePresentationCreateResponse[1]);
           }
-        }
-
-        if (stduentPresentationiSAvailable[0] == false) {
-          print("check Presentation is  available or not  FAIL");
+          //Return Error in case of presentation not created
+          else {
+            yield GoogleSlidesPresentationErrorState(
+                errorMsg: GooglePresentationCreateResponse[1].toString());
+          }
+        } else if (searchPresentationResult[0] == false) {
           yield GoogleSlidesPresentationErrorState(
-              errorMsg: stduentPresentationiSAvailable[1].toString());
+              errorMsg: googlePresentationId.toString());
         }
       } catch (e) {
         print(e);
-        print("FAIL INSDIE StudentPlusGooglePresentationIsAvailable");
         yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
       }
     }
 
-    if (event is StudentPlusUpdateNewSldiesOnGooglePresentation) {
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------StudentPlusCreateAndUpdateNewSlidesToGooglePresentation------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+    if (event is StudentPlusCreateAndUpdateNewSlidesToGooglePresentation) {
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        print("Get counts from Presentation");
-        List numberOfSlidesIsAlreayavailable =
+        //Count the number of slide already exist to the Google Presentation
+        List countGooglePresentationSlide =
             await getSlidesCountFromGooglePresentation(
           presentationFileId: event.googlePresentationFileId,
           userProfile: userProfileLocalData[0],
         );
-        print("number of records available ${event.allrecords.length} ");
 
-        if (numberOfSlidesIsAlreayavailable[0] == true &&
-            numberOfSlidesIsAlreayavailable[1] <= event.allrecords.length) {
-          print("Get counts from Presentation successfully");
-
-          print("Now update the Presentation with new sldies");
-          List newSldiesOnGooglePresentationIsUpdated =
-              await updateNewSldiesOnGooglePresentation(
+        //Compare Google Presentation slide count with the Student work count
+        if (countGooglePresentationSlide[0] == true &&
+            countGooglePresentationSlide[1] <= event.allRecords.length) {
+          List updatedPresentationResponse =
+              await updateNewSlidesToGooglePresentation(
                   presentationId: event.googlePresentationFileId,
                   studentDetails: event.studentDetails,
-                  allrecords: event.allrecords,
-                  numberOfSlidesIsAlreayavailable:
-                      numberOfSlidesIsAlreayavailable[1],
+                  allRecords: event.allRecords,
+                  numberOfSlidesAlreadyAvailable:
+                      countGooglePresentationSlide[1],
                   userProfile: userProfileLocalData[0]);
 
-          if (newSldiesOnGooglePresentationIsUpdated[0] == true) {
-            print("updated the Presentation with new sldies successfully");
-            yield StudentPlusUpdateNewSldiesOnGooglePresentationSuccess();
+          if (updatedPresentationResponse[0] == true) {
+            yield StudentPlusCreateAndUpdateSlideSuccess();
           } else {
-            print("updated the Presentation with new sldies FAIL");
             yield GoogleSlidesPresentationErrorState(
-                errorMsg: numberOfSlidesIsAlreayavailable[1].toString());
+                errorMsg: countGooglePresentationSlide[1].toString());
           }
-        } else if (numberOfSlidesIsAlreayavailable[1]! >
-            event.allrecords.length) {
-          print(
-              "Presentation is Alreay updated to all slides not need to update");
-          yield StudentPlusUpdateNewSldiesOnGooglePresentationSuccess();
+        } else if (countGooglePresentationSlide[1]! > event.allRecords.length) {
+          yield StudentPlusCreateAndUpdateSlideSuccess();
         } else {
-          print("Get counts from Presentation FAIL");
           yield GoogleSlidesPresentationErrorState(
-              errorMsg: numberOfSlidesIsAlreayavailable[1].toString());
+              errorMsg: countGooglePresentationSlide[1].toString());
         }
       } catch (e) {
         print(e);
@@ -143,52 +137,55 @@ class GoogleSlidesPresentationBloc
       }
     }
 
-    if (event is StudentPlusGetGooglePresentation) {
-      yield StudentPlusGooglePresentationLoading();
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------StudentPlusGetGooglePresentation----------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+//Used to get the presentation URL if already exist and update the student's local database
+//This is the default event fire on searching the presentation
+    if (event is GetStudentPlusPresentationURL) {
+      yield GooglePresentationLoading();
 
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        print("check Presentation is available or not");
-
-        List stduentPresentationiSAvailable = await checkStudentPresentation(
-            folderId: event.stduentPlusDriveFolderId,
+        List isStudentPresentationAvailable = await searchStudentPresentation(
+            folderId: event.studentPlusDriveFolderId,
             userProfile: userProfileLocalData[0],
             studentDetails: event.studentDetails);
 
-        if (stduentPresentationiSAvailable[0] == true) {
-          List<HistoryAssessment> data = stduentPresentationiSAvailable[1];
-          stduentPresentationiSAvailable[1] =
+        if (isStudentPresentationAvailable[0] == true) {
+          List<HistoryAssessment> data = isStudentPresentationAvailable[1];
+          isStudentPresentationAvailable[1] =
               data.isNotEmpty ? data[0].webContentLink : '';
         }
 
-        if (stduentPresentationiSAvailable[0] == true) {
+        if (isStudentPresentationAvailable[0] == true) {
           //if Presentation is available update the url
-          if (stduentPresentationiSAvailable[1] != '') {
-            updateTheStudentWithgooglePresentationUrl(
-                studentDetails: event.studentDetails,
-                studentGooglePresentationUrl:
-                    stduentPresentationiSAvailable[1]);
+          if (isStudentPresentationAvailable[1] != '') {
+            GooglePresentationBlocMethods
+                .updateStudentLocalDBWithGooglePresentationUrl(
+                    studentDetails: event.studentDetails,
+                    studentGooglePresentationUrl:
+                        isStudentPresentationAvailable[1]);
           }
 
-          print("Presentation url get successfully  ");
-
-          yield StudentPlusGetGooglePresentationSuccess(
-              googlePresentationFileUrl: stduentPresentationiSAvailable[1]);
+          yield GetGooglePresentationURLSuccess(
+              googlePresentationFileUrl: isStudentPresentationAvailable[1]);
         } else {
-          print("Presentation url get FAIL  ");
           yield GoogleSlidesPresentationErrorState(
-              errorMsg: stduentPresentationiSAvailable[1].toString());
+              errorMsg: isStudentPresentationAvailable[1].toString());
         }
       } catch (e) {
-        print("Presentation url get FAIL  ");
         yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
       }
     }
   }
 
-  Future<List> checkStudentPresentation(
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------Method searchStudentPresentation----------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+  Future<List> searchStudentPresentation(
       {required final folderId,
       required final UserInformation? userProfile,
       required final StudentPlusDetailsModel studentDetails,
@@ -211,18 +208,15 @@ class GoogleSlidesPresentationBloc
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
               Uri.encodeFull(query);
 
+      //  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/drives/$folderId/files?q=$query",
       final ResponseModel response = await _dbServices.getApiNew(api,
-          //  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/drives/$folderId/files?q=$query",
-
-          headers: headers,
-          isCompleteUrl: true);
+          headers: headers, isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<HistoryAssessment> data = response.data['body']['items']
             .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
 
-        // return [true, data.isNotEmpty ? data[0].fileId : ''];
         return [true, data];
       } else if (retry > 0) {
         var result = await googleDriveBloc
@@ -232,7 +226,7 @@ class GoogleSlidesPresentationBloc
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          return await checkStudentPresentation(
+          return await searchStudentPresentation(
               folderId: folderId,
               studentDetails: studentDetails,
               userProfile: _userProfileLocalData[0],
@@ -255,29 +249,9 @@ class GoogleSlidesPresentationBloc
     }
   }
 
-  // Future<List> createStduentPresentation(
-  //     {required final folderId,
-  //     required final UserInformation? userProfile,
-  //     required final StudentPlusDetailsModel studentDetails,
-  //     int retry = 3}) async {
-  //   try {
-  //     String fileName =
-  //         "${studentDetails.firstNameC}_${studentDetails.lastNameC}_${studentDetails.id}";
-
-  //     print("calling to create fil in drive");
-  //     return await googleDriveBloc.createSlideOnDrive(
-  //         name: fileName,
-  //         folderId: folderId,
-  //         accessToken: userProfile!.authorizationToken,
-  //         refreshToken: userProfile.refreshToken,
-  //         excelSheetId: '',
-  //         isMcqSheet: false);
-  //   } catch (e) {
-  //     print(e);
-  //     throw (e);
-  //   }
-  // }
-
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------Method getSlidesCountFromGooglePresentation-----------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
   Future<List> getSlidesCountFromGooglePresentation(
       {required final String presentationFileId,
       required final UserInformation? userProfile,
@@ -325,27 +299,31 @@ class GoogleSlidesPresentationBloc
     }
   }
 
-  Future<List> updateNewSldiesOnGooglePresentation(
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------Method updateNewSlidesOnGooglePresentation-----------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+  Future<List> updateNewSlidesToGooglePresentation(
       {required String presentationId,
       required final UserInformation? userProfile,
       required final StudentPlusDetailsModel studentDetails,
-      required List<StudentPlusWorkModel> allrecords,
-      required final int numberOfSlidesIsAlreayavailable,
+      required List<StudentPlusWorkModel> allRecords,
+      required final int numberOfSlidesAlreadyAvailable,
       int retry = 3}) async {
     try {
-      List<Map> slideRequiredObjectsList =
-          await prepareAddAndUpdateSlideRequestBody(
-              allrecords: allrecords,
-              numberOfSlidesIsAlreayavailable: numberOfSlidesIsAlreayavailable,
+      //Preparing Google Presentation Slide Request Body to update slide on existing presentation
+      List<Map> slideRequiredObjectsList = await GooglePresentationBlocMethods
+          .prepareAddAndUpdateSlideRequestBody(
+              allRecords: allRecords,
+              numberOfSlidesAlreadyAvailable: numberOfSlidesAlreadyAvailable,
               studentDetails: studentDetails);
-
+      //---------------------------------------------------------------------------------
       Map body = {"requests": slideRequiredObjectsList};
-
+      //---------------------------------------------------------------------------------
       Map<String, String> headers = {
         'Authorization': 'Bearer ${userProfile!.authorizationToken}',
         'Content-Type': 'application/json'
       };
-
+      //---------------------------------------------------------------------------------
       final ResponseModel response = await _dbServices.postApi(
           'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           body: body,
@@ -361,12 +339,12 @@ class GoogleSlidesPresentationBloc
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          return await updateNewSldiesOnGooglePresentation(
+          return await updateNewSlidesToGooglePresentation(
               presentationId: presentationId,
               studentDetails: studentDetails,
-              allrecords: allrecords,
+              allRecords: allRecords,
               userProfile: _userProfileLocalData[0],
-              numberOfSlidesIsAlreayavailable: numberOfSlidesIsAlreayavailable,
+              numberOfSlidesAlreadyAvailable: numberOfSlidesAlreadyAvailable,
               retry: retry - 1);
         } else {
           return [false, 'ReAuthentication is required'];
@@ -374,274 +352,6 @@ class GoogleSlidesPresentationBloc
       }
 
       return [false, response.statusCode];
-    } catch (e) {
-      throw (e);
-    }
-  }
-
-  prepareAddAndUpdateSlideRequestBody({
-    required List<StudentPlusWorkModel> allrecords,
-    required final int numberOfSlidesIsAlreayavailable,
-    required final StudentPlusDetailsModel studentDetails,
-  }) {
-    print("${allrecords.length}  before -------------");
-    try {
-      List<String> listOfFieldsForFirstSlide = [
-        'Name',
-        'ID',
-        'Phone',
-        'Email',
-        'Grade',
-        'Class',
-        'Attend %',
-        'Gender',
-        'Age',
-        'DOB',
-      ];
-
-      List<String> listOfFieldsForEverySlide = [
-        'Assignment Name',
-        'Assignment Type',
-        'Teacher',
-        'Assignment Subject',
-        'Date',
-        'Points Earned',
-        'Points Possible'
-      ];
-
-      List<Map> slideRequiredObjectsList = [];
-
-      if (numberOfSlidesIsAlreayavailable == 0) {
-        //prepare blank slide
-        Map blankSlide = {
-          "createSlide": {
-            "objectId": "Slide1",
-            "slideLayoutReference": {"predefinedLayout": "BLANK"}
-          }
-        };
-
-        //prepare blank table on slide
-        Map blanktable = {
-          "createTable": {
-            "rows": listOfFieldsForFirstSlide.length, //pass no. of names
-            "columns": 2, //key:value
-            "objectId": "123456",
-            "elementProperties": {
-              "pageObjectId": "Slide1",
-              "size": {
-                "width": {"magnitude": 5000000, "unit": "EMU"},
-                "height": {"magnitude": 3500000, "unit": "EMU"}
-              },
-              "transform": {
-                "scaleX": 1,
-                "scaleY": 1,
-                "translateX": 2005000,
-                "translateY": 850000,
-                "unit": "EMU",
-              }
-            },
-          }
-        };
-
-        slideRequiredObjectsList.add(blankSlide);
-        slideRequiredObjectsList.add(blanktable);
-
-// To update table cells with title and values
-        listOfFieldsForFirstSlide.asMap().forEach((rowIndex, value) {
-          for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
-            slideRequiredObjectsList.add(
-              {
-                "insertText": {
-                  "objectId": "123456",
-                  "cellLocation": {
-                    "rowIndex": rowIndex,
-                    "columnIndex": columnIndex
-                  },
-                  "text": columnIndex == 0
-                      ? listOfFieldsForFirstSlide[rowIndex] //Keys
-                      : prepareTableCellValueForFirstSlide(
-                          studentDetails: studentDetails,
-                          index: rowIndex,
-                        ) //Values
-                }
-              },
-            );
-            //update the textstyle and fontsize of table cells
-            slideRequiredObjectsList.add({
-              "updateTextStyle": {
-                "objectId": "123456",
-                "style": {
-                  "fontSize": {"magnitude": 10, "unit": "PT"},
-                  "bold": columnIndex == 0
-                },
-                "fields": "*",
-                "cellLocation": {
-                  "columnIndex": columnIndex,
-                  "rowIndex": rowIndex
-                }
-              }
-            });
-          }
-        });
-      } else {
-        print("REMOVING ITEAM FORM LIST--------");
-
-        allrecords.removeRange(0, numberOfSlidesIsAlreayavailable - 1);
-        print("${allrecords.length}  after -------------");
-      }
-
-      allrecords
-          .asMap()
-          .forEach((int index, StudentPlusWorkModel element) async {
-        String pageObjectuniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
-
-        String tableObjectuniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
-
-        // Preparing all other blank slide (based on student detail length) type to add assessment images
-        Map slideObject = {
-          "createSlide": {
-            "objectId": pageObjectuniqueId,
-            "slideLayoutReference": {"predefinedLayout": "BLANK"}
-          }
-        };
-
-        slideRequiredObjectsList.add(slideObject);
-
-// Preparing to update assignment sheet images - students
-        if (element.assessmentImageC?.isNotEmpty ?? false) {
-          Map obj = {
-            "createImage": {
-              "url": element.assessmentImageC,
-              "elementProperties": {
-                "pageObjectId": pageObjectuniqueId,
-              },
-              "objectId": DateTime.now().microsecondsSinceEpoch.toString()
-            }
-          };
-          slideRequiredObjectsList.add(obj);
-        }
-        // print(slideRequiredObjectsList);
-        // Preparing table and structure for each student slide
-        Map table = {
-          "createTable": {
-            "rows": listOfFieldsForEverySlide.length, //pass no. of names
-            "columns": 2, //key:value
-            "objectId": tableObjectuniqueId,
-            "elementProperties": {
-              "pageObjectId": pageObjectuniqueId,
-              "size": {
-                "width": {"magnitude": 6000000, "unit": "EMU"},
-                "height": {"magnitude": 3000000, "unit": "EMU"}
-              },
-              "transform": {
-                "scaleX": 1,
-                "scaleY": 1,
-                "translateX": 3005000,
-                "translateY": 1050000,
-                "unit": "EMU"
-              }
-            },
-          }
-        };
-        slideRequiredObjectsList.add(table);
-
-        // Updating table with student information
-        listOfFieldsForEverySlide.asMap().forEach((rowIndex, value) {
-          for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
-            slideRequiredObjectsList.add(
-              {
-                "insertText": {
-                  "objectId": tableObjectuniqueId,
-                  "cellLocation": {
-                    "rowIndex": rowIndex,
-                    "columnIndex": columnIndex
-                  },
-                  "text": columnIndex == 0
-                      ? listOfFieldsForEverySlide[rowIndex] //Keys
-                      : prepareAssignmentTableCellValue(
-                          student: element, index: rowIndex) //Values
-                }
-              },
-            );
-          }
-        });
-      });
-      //  print(assessmentData);
-      return slideRequiredObjectsList;
-    } catch (e) {
-      print(e);
-      return [];
-    }
-  }
-
-  prepareAssignmentTableCellValue(
-      {required StudentPlusWorkModel student, required int index}) {
-    Map map = {
-      0: student.nameC ?? '',
-      1: student.assessmentType ?? '',
-      2: student.teacherEmail ?? '',
-      3: student.subjectC ?? '',
-      //  4: student.dateC,
-      4: student.dateC != null && student.dateC!.isNotEmpty
-          ? DateFormat("MM/dd/yyyy")
-              .format(DateTime.parse(student.dateC ?? '-'))
-          : '-',
-      5: student.resultC ?? '',
-      6: StudentPlusUtility.getMaxPointPossible(rubric: student.rubricC ?? '')
-          .toString()
-    };
-
-    return map[index] != null && map[index] != '' ? map[index] : '-';
-  }
-
-  prepareTableCellValueForFirstSlide(
-      {required final StudentPlusDetailsModel studentDetails,
-      required int index}) {
-    Map map = {
-      0: "${studentDetails.firstNameC} ${studentDetails.lastNameC}" ?? '-',
-      1: studentDetails.id ?? '-',
-      2: studentDetails.parentPhoneC ?? '-',
-      3: studentDetails.emailC ?? '-',
-      4: studentDetails.gradeC ?? '-',
-      5: studentDetails.classC ?? '-',
-      6: studentDetails.currentAttendance ?? '-',
-      7: studentDetails.genderFullC ?? '-',
-      8: studentDetails.age ?? '-',
-      // 9: studentDetails.dobC ?? '-'
-      9: studentDetails.dobC != null && studentDetails.dobC!.isNotEmpty
-          ? DateFormat("MM/dd/yyyy")
-              .format(DateTime.parse(studentDetails.dobC ?? '-'))
-          : '-'
-    };
-
-    return map[index] != null && map[index] != '' ? map[index] : '-';
-  }
-
-  void updateTheStudentWithgooglePresentationUrl(
-      {required StudentPlusDetailsModel studentDetails,
-      required final String studentGooglePresentationUrl}) async {
-    try {
-      print("now update the local db with url");
-      //this will get the all students saved in local db
-      LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
-          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.id}");
-
-      List<StudentPlusDetailsModel> studentsLocalData =
-          await _localDb.getData();
-      //it will find the student by id and update the updated object wwith googlePresentationUrl
-
-      for (int index = 0; index < studentsLocalData.length; index++) {
-        if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
-          StudentPlusDetailsModel student = studentsLocalData[index];
-
-          student.googlePresentationUrl = studentGooglePresentationUrl;
-
-          await _localDb.putAt(index, student);
-          break;
-        }
-      }
     } catch (e) {
       throw (e);
     }

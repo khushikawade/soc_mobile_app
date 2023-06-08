@@ -290,7 +290,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // Create new Google presentation in case already not exist // Will work for all the existing assessment which are not having already google slide presentation in case of scan more
         if (event.slidePresentationId == 'NA') {
           //To create Google Presentation
-          List result = await createSlideOnDrive(
+          List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             excelSheetId: Globals.googleExcelSheetId,
             name: event.assessmentName, //event.fileTitle!,
@@ -299,22 +299,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
 
-          //
-          // await createBlankSlidesInGooglePresentation(
-          //     googleSlideId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
-          //     studentRecordList: assessmentData,
-          //     isScanMore: false);
-
-          //
-          // await updateAssessmentImageToSlidesOnDrive(
-          //     googleSlideId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     assessmentData,
-          //     _studentInfoDb);
           //To add one or more blank slides in Google Presentation
 //To update scanned images in the Google Slides
           await addAndUpdateStudentAssessmentDetailsToSlide(
@@ -364,22 +348,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           //Execute when presentation already exist and we need to add only new slides for new scans
-          // for (int index = 0;
-          //     index < event.lastAssessmentLength &&
-          //         index < assessmentDataList.length;
-          //     index++) {
-          //   assessmentDataList[index].isSlideObjUpdated = true;
-          //   await event.studentInfoDb.putAt(index, assessmentDataList[index]);
-          // }
-          // print(assessmentDataList);
-          // //To create Google Presentation
-          // await createBlankSlidesInGooglePresentation(
-          //     event.slidePresentationId,
-          //     _userProfileLocalData[0].authorizationToken,
-          //     _userProfileLocalData[0].refreshToken,
-          //     studentRecordList: list,
-          //     isFromHistoryAssessment: event.isFromHistoryAssessment,
-          //     isScanMore: true);
 
           //To create Google Presentation
           //To update scanned images in the Google Slides
@@ -1020,7 +988,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        List result = await createSlideOnDrive(
+        List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             name: event.fileTitle!,
             folderId: Globals.googleDriveFolderId,
@@ -2154,7 +2122,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<List> createSlideOnDrive(
+  Future<List> createPresentationOnDrive(
       {String? name,
       String? folderId,
       String? accessToken,
@@ -2206,7 +2174,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          return await createSlideOnDrive(
+          return await createPresentationOnDrive(
               isMcqSheet: isMcqSheet,
               name: name!,
               folderId: folderId,

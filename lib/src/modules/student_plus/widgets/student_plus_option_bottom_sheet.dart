@@ -261,7 +261,7 @@ class _GradedPlusResultOptionBottomSheetState
         listener: (context, state) async {
           print("On student work ------------$state---------");
 
-          if (state is StudentPlusGooglePresentationIsAvailableSuccess) {
+          if (state is StudentPlusGooglePresentationSearchSuccess) {
             LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
                 "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
 
@@ -269,13 +269,13 @@ class _GradedPlusResultOptionBottomSheetState
             _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
             print("update the presentation event trigger");
             googleSlidesPresentationBloc.add(
-                StudentPlusUpdateNewSldiesOnGooglePresentation(
+                StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
                     googlePresentationFileId: state.googlePresentationFileId,
                     studentDetails: widget.studentDetails,
-                    allrecords: _localData));
+                    allRecords: _localData));
           }
 
-          if (state is StudentPlusUpdateNewSldiesOnGooglePresentationSuccess) {
+          if (state is StudentPlusCreateAndUpdateSlideSuccess) {
             Navigator.of(context).pop();
           }
 
@@ -301,13 +301,9 @@ class _GradedPlusResultOptionBottomSheetState
 
   void _checkDriveFolderExistsOrNot() async {
     //FOR STUDENT PLUS
-
-    //this is get the user profile details
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     final UserInformation userProfile = _profileData[0];
-
-    print("callig the the event to check the folder available or not ");
 
     //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
     //is available or not if not this will create one or the available get the drive folder id
@@ -321,8 +317,8 @@ class _GradedPlusResultOptionBottomSheetState
 
   void studentPlusGooglePresentationIsAvailable() {
     print("check  Presentation event trigger");
-    googleSlidesPresentationBloc.add(StudentPlusGooglePresentationIsAvailable(
-      stduentPlusDriveFolderId:
+    googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
+      studentPlusDriveFolderId:
           StudentPlusOverrides.studentPlusGoogleDriveFolderId,
       studentDetails: widget.studentDetails,
     ));

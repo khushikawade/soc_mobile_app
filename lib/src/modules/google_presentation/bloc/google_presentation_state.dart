@@ -9,10 +9,10 @@ class GoogleSlidesPresentationInitial extends GoogleSlidesPresentationState {
   List<Object> get props => [];
 }
 
-class StudentPlusGooglePresentationIsAvailableSuccess
+class StudentPlusGooglePresentationSearchSuccess
     extends GoogleSlidesPresentationState {
   final String googlePresentationFileId;
-  StudentPlusGooglePresentationIsAvailableSuccess(
+  StudentPlusGooglePresentationSearchSuccess(
       {required this.googlePresentationFileId});
 
   @override
@@ -29,28 +29,25 @@ class GoogleSlidesPresentationErrorState extends GoogleSlidesPresentationState {
   List<Object> get props => [];
 }
 
-class StudentPlusUpdateNewSldiesOnGooglePresentationSuccess
+class StudentPlusCreateAndUpdateSlideSuccess
     extends GoogleSlidesPresentationState {
-  StudentPlusUpdateNewSldiesOnGooglePresentationSuccess();
+  StudentPlusCreateAndUpdateSlideSuccess();
 
   @override
   List<Object> get props => [];
 }
 
-class StudentPlusGetGooglePresentationSuccess
-    extends GoogleSlidesPresentationState {
+class GetGooglePresentationURLSuccess extends GoogleSlidesPresentationState {
   final String googlePresentationFileUrl;
 
-  StudentPlusGetGooglePresentationSuccess(
-      {required this.googlePresentationFileUrl});
+  GetGooglePresentationURLSuccess({required this.googlePresentationFileUrl});
 
   @override
   List<Object> get props => [];
 }
 
-class StudentPlusGooglePresentationLoading
-    extends GoogleSlidesPresentationState {
-  StudentPlusGooglePresentationLoading();
+class GooglePresentationLoading extends GoogleSlidesPresentationState {
+  GooglePresentationLoading();
 
   @override
   List<Object> get props => [];
