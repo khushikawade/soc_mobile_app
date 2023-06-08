@@ -471,7 +471,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   _shareBottomSheetMenu() async {
     List<ResultSummaryIcons> resultSummaryIconsModalList = [
       ResultSummaryIcons(
-        title: 'Sycn Presentation',
+        title: 'Sync Presentation',
         svgPath: '',
       ),
     ];
