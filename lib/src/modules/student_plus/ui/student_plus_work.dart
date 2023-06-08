@@ -50,7 +50,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  List<StudentPlusWorkModel> updatedList = [];
+  List<StudentPlusWorkModel> studentWorkUpdatedList = [];
   FocusNode myFocusNode = new FocusNode();
   final GoogleSlidesPresentationBloc googleSlidesPresentationBloc =
       GoogleSlidesPresentationBloc();
@@ -245,20 +245,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   child: Container(),
                   builder:
                       (BuildContext context, dynamic value, Widget? child) {
-                    for (var i = 0; i < state.obj.length; i++) {
+                    //Filtered Records
+                    for (int i = 0; i < state.obj.length; i++) {
                       if (state.obj[i].subjectC == filterNotifier.value ||
                           filterNotifier.value == '' ||
                           filterNotifier.value ==
                               "${state.obj[i].firstName ?? ''} ${state.obj[i].lastName ?? ''}") {
-                        updatedList.add(state.obj[i]);
+                        studentWorkUpdatedList.add(state.obj[i]);
                       }
                     }
-                    // updatedList.addAll(state.obj);
-                    // updatedList.removeWhere(
-                    //   (element) {
-                    //     return element.subjectC == filterNotifier.value;
-                    //   },
-                    // );
+
                     return Expanded(
                         child: RefreshIndicator(
                       color: AppTheme.kButtonColor,
@@ -267,11 +263,11 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount:
-                            updatedList.length, // studentWorkList.length,
+                        itemCount: studentWorkUpdatedList
+                            .length, // studentWorkList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return listObject(
-                              studentWorkModel: updatedList[index],
+                              studentWorkModel: studentWorkUpdatedList[index],
                               index: index);
                         },
                       ),
@@ -459,7 +455,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     } else if (widget
                             .studentDetails?.googlePresentationUrl?.isEmpty ??
                         true) {
-                      getThegooglePresentationUrl();
+                      getGooglePresentationUrl();
                     } else {
                       _shareBottomSheetMenu();
                     }
@@ -508,7 +504,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
   }
 
-  void getThegooglePresentationUrl() {
+  void getGooglePresentationUrl() {
     Utility.showLoadingDialog(
         context: context, isOCR: true, msg: 'Please Wait...');
     googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
@@ -523,8 +519,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
-          print("On student work ------------$state---------");
-
           if (state is GetGooglePresentationURLSuccess) {
             Navigator.pop(context, false);
             widget.studentDetails.googlePresentationUrl =
@@ -563,7 +557,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             if (StudentPlusOverrides
                     ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
                 false) {
-              getThegooglePresentationUrl();
+              getGooglePresentationUrl();
             } else {
               // Navigator.of(context).pop();
               Utility.currentScreenSnackBar(
