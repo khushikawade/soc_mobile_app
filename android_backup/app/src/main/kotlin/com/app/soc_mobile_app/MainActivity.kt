@@ -1,4 +1,4 @@
-package com.test.solved
+package com.app.soc_mobile_app
 
 import io.flutter.embedding.android.FlutterActivity
 
