@@ -1669,12 +1669,14 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     String? studentEmail;
 
     if (idController.text.contains('@')) {
-      String studentEmail = idController.text;
+      studentEmail = idController.text;
       updatedStudentId = getIdFromEmail(idController.text);
     } else {
       studentEmail = getEmailFromId(idController.text);
       updatedStudentId = idController.text;
     }
+
+   
     StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
 
     // To add the scan more result to the google file existing list
