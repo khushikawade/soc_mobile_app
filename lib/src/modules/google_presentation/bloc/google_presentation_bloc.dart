@@ -13,8 +13,8 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
-part 'google _slides_presentation_event.dart';
-part 'google _slides_presentation_state.dart';
+part 'google_presentation_event.dart';
+part 'google_presentation_state.dart';
 
 class GoogleSlidesPresentationBloc
     extends Bloc<GoogleSlidesPresentationEvent, GoogleSlidesPresentationState> {

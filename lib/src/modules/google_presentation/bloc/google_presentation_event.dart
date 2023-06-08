@@ -1,4 +1,4 @@
-part of 'google _slides_presentation_bloc.dart';
+part of 'google_presentation_bloc.dart';
 
 abstract class GoogleSlidesPresentationEvent extends Equatable {
   const GoogleSlidesPresentationEvent();
