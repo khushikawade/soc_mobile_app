@@ -1100,6 +1100,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   addCustomSubjectBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
+     
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
@@ -1194,43 +1196,23 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           final bool connected =
                               connectivity != ConnectivityResult.none;
                           return FloatingActionButton.extended(
-                              backgroundColor:
-                                  AppTheme.kButtonColor.withOpacity(1.0),
-                              onPressed: () async {
-                                floatingButtonOnTap();
-                                // updateExcelSheetOnDriveAndNavigate(
-                                //     connected: connected);
-                              },
-                              label: Row(
-                                children: [
-                                  Utility.textWidget(
-                                      text: 'Save',
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .headline2!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .backgroundColor)),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                                    child: Image(
-                                      width: Globals.deviceType == "phone"
-                                          ? 23
-                                          : 28,
-                                      height: Globals.deviceType == "phone"
-                                          ? 23
-                                          : 28,
-                                      image: AssetImage(
-                                        "assets/images/drive_ico.png",
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ));
+                            backgroundColor:
+                                AppTheme.kButtonColor.withOpacity(1.0),
+                            onPressed: () async {
+                              floatingButtonOnTap();
+                              // updateExcelSheetOnDriveAndNavigate(
+                              //     connected: connected);
+                            },
+                            label: Utility.textWidget(
+                                text: 'Save',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        color:
+                                            Theme.of(context).backgroundColor)),
+                          );
                         },
                         child: Container(),
                       )

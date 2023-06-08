@@ -49,7 +49,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                   ? _buildSelectedMenu(
                       item, selectedIndex == index, 50, context)
                   : _buildUnselectedMenus(
-                      item, selectedIndex == index, 140, context),
+                      item, selectedIndex == index, 140, context, index),
             ),
           );
         }).toList(),
@@ -58,7 +58,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
   }
 
   Widget _buildUnselectedMenus(PersistentBottomNavBarItem item, bool isSelected,
-      double height, BuildContext context) {
+      double height, BuildContext context, int index) {
     return Container(
       width: 120,
       height: height,
@@ -72,12 +72,21 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           Flexible(
             child: IconTheme(
               data: IconThemeData(
-                  size: isSelected ? 28 : 22.0,
+                  size: index == 3
+                      ? isSelected
+                          ? 33
+                          : 28.0
+                      : isSelected
+                          ? 28
+                          : 22.0,
                   color: isSelected
                       ? item.activeColorPrimary
                       : item.inactiveColorPrimary),
               child: item.icon,
             ),
+          ),
+          SizedBox(
+            height: index == 3 ? 1 : 5,
           ),
           Container(
             child: Align(

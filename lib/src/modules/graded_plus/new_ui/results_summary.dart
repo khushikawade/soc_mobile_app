@@ -443,6 +443,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           !widget.assessmentDetailPage!
               ? Expanded(
                   child: ListView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
                       resultTitle(),
                       ValueListenableBuilder(
@@ -575,6 +576,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       if (state.obj.length > 0) {
                         return Expanded(
                           child: ListView(
+                            physics: NeverScrollableScrollPhysics(),
+                            //  shrinkWrap: true,
                             children: [
                               resultTitle(),
                               FutureBuilder(
@@ -629,13 +632,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     }
                     if (state is AssessmentDetailSuccess) {
                       if (state.obj.length > 0) {
-                        return Column(
-                          children: [
-                            resultTitle(),
-                            listView(
-                              state.obj,
-                            )
-                          ],
+                        return Expanded(
+                          child: ListView(
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              resultTitle(),
+                              listView(
+                                state.obj,
+                              )
+                            ],
+                          ),
                         );
                       } else {
                         return Expanded(
@@ -899,7 +905,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     0.08), //For bottom padding from FAB
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.55
+                    ? MediaQuery.of(context).size.height * 0.63
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height * 0.57
@@ -2227,8 +2233,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 //--------------------------------------------------------------------------------------------------------------------------
   Row buildScanMoreAndShareFabButton() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        SizedBox(
+          width: 60,
+        ),
         GradedPlusCustomFloatingActionButton(
           title: 'Scan More',
           icon: Icon(
@@ -2250,9 +2259,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             performScanMore();
           },
           heroTag: 'scan_more_tag',
-        ),
-        SizedBox(
-          width: 60,
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
