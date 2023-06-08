@@ -357,22 +357,15 @@ class OcrUtility {
       _studentInfoListDb = await sortStudents(
         tableName: tableName,
       );
-      if (_studentInfoListDb.isNotEmpty) {
-        if (_studentInfoListDb[0].studentId == 'Id' ||
-            _studentInfoListDb[0].studentId == 'Name') {
-          _studentInfoListDb.removeAt(0);
-        }
-      }
     } else {
       _studentInfoListDb = await _studentInfoDb.getData();
-      if (_studentInfoListDb.isNotEmpty) {
-        if (_studentInfoListDb[0].studentId == 'Id' ||
-            _studentInfoListDb[0].studentId == 'Name') {
-          _studentInfoListDb.removeAt(0);
-        }
+    }
+    if (_studentInfoListDb.isNotEmpty) {
+      if (_studentInfoListDb[0].studentId == 'Id' ||
+          _studentInfoListDb[0].studentId == 'Name') {
+        _studentInfoListDb.removeAt(0);
       }
     }
-
     return _studentInfoListDb;
   }
 
