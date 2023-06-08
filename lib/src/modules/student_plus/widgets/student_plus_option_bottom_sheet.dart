@@ -25,7 +25,7 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
   const StudentPlusOptionBottomSheet(
       {Key? key,
       this.title,
-      this.height = 150,
+      this.height = 200,
       required this.resultSummaryIconsModalList,
       required this.studentDetails});
 
@@ -82,7 +82,8 @@ class _GradedPlusResultOptionBottomSheetState
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
-          padding: EdgeInsets.only(left: 16),
+          // padding: EdgeInsets.only(left: 16),
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: PageView(
               physics: NeverScrollableScrollPhysics(),
               onPageChanged: ((value) {
@@ -103,19 +104,21 @@ class _GradedPlusResultOptionBottomSheetState
         dense: true,
         contentPadding: EdgeInsets.zero,
         horizontalTitleGap: 20,
-        leading: element.title == "Sycn Presentation"
+        leading: element.title == "Sync Presentation"
             ? Icon(Icons.sync,
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20))
-            : SvgPicture.asset(element.svgPath!,
+            : SvgPicture.asset(
+                element.svgPath!,
                 height: 30,
                 width: 30,
-                color: element.title == "Dashboard"
-                    ? Color(0xff000000) == Theme.of(context).backgroundColor
-                        ? Color(0xffF7F8F9)
-                        : Color(0xff111C20)
-                    : null),
+                // color: element.title == "Dashboard"
+                //     ? Color(0xff000000) == Theme.of(context).backgroundColor
+                //         ? Color(0xffF7F8F9)
+                //         : Color(0xff111C20)
+                //     : null
+              ),
         title: Utility.textWidget(
             text: element.title!,
             context: context,
@@ -135,7 +138,7 @@ class _GradedPlusResultOptionBottomSheetState
         }
 
         break;
-      case 'Sycn Presentation':
+      case 'Sync Presentation':
         _pageController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
@@ -158,66 +161,76 @@ class _GradedPlusResultOptionBottomSheetState
   }
 
   Widget buildOptions() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          alignment: Alignment.topRight,
-          child: IconButton(
-            padding: EdgeInsets.all(0),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.clear,
-              color: AppTheme.kButtonColor,
-              size: Globals.deviceType == "phone" ? 28 : 36,
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              padding: EdgeInsets.all(0),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.clear,
+                color: AppTheme.kButtonColor,
+                size: Globals.deviceType == "phone" ? 28 : 36,
+              ),
             ),
           ),
-        ),
-        widget?.title?.isNotEmpty ?? false
-            ? Utility.textWidget(
-                context: context,
-                text: widget.title!,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
-            : Container(),
-        ...widget.resultSummaryIconsModalList.map(
-            (ResultSummaryIcons element) => _listTileMenu(element: element)),
-      ],
+          widget?.title?.isNotEmpty ?? false
+              ? Utility.textWidget(
+                  context: context,
+                  text: widget.title!,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
+              : Container(),
+          ...widget.resultSummaryIconsModalList.map(
+              (ResultSummaryIcons element) => _listTileMenu(element: element)),
+        ],
+      ),
     );
   }
 
 //page value=4
   Widget commonLoaderWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SpacerWidget(50),
-        CircularProgressIndicator.adaptive(
-          backgroundColor: AppTheme.kButtonColor,
-        ),
-        SpacerWidget(30),
-        Utility.textWidget(
-            context: context,
-            textAlign: TextAlign.center,
-            text: 'Wait, While Google Presentation is Syncing',
-            textTheme:
-                Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
-        if (pageValue == 1)
-          Column(
-            children: [
-              googleDriveBlocListener(),
-              googleSlidesPresentationBlocListener()
-            ],
-          )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SpacerWidget(50),
+          CircularProgressIndicator.adaptive(
+            backgroundColor: AppTheme.kButtonColor,
+          ),
+          SpacerWidget(30),
+          Utility.textWidget(
+              context: context,
+              textAlign: TextAlign.center,
+              text: 'Google Presentation Syncing',
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontSize: 18)),
+          if (pageValue == 1)
+            Column(
+              children: [
+                googleDriveBlocListener(),
+                googleSlidesPresentationBlocListener()
+              ],
+            )
+        ],
+      ),
     );
   }
 

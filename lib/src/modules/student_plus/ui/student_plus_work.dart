@@ -50,7 +50,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  List<StudentPlusWorkModel> studentWorkUpdatedList = [];
+  // List<StudentPlusWorkModel> studentWorkUpdatedList = [];
   FocusNode myFocusNode = new FocusNode();
   final GoogleSlidesPresentationBloc googleSlidesPresentationBloc =
       GoogleSlidesPresentationBloc();
@@ -245,6 +245,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   child: Container(),
                   builder:
                       (BuildContext context, dynamic value, Widget? child) {
+                    List<StudentPlusWorkModel> studentWorkUpdatedList = [];
                     //Filtered Records
                     for (int i = 0; i < state.obj.length; i++) {
                       if (state.obj[i].subjectC == filterNotifier.value ||
@@ -470,8 +471,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   _shareBottomSheetMenu() async {
     List<ResultSummaryIcons> resultSummaryIconsModalList = [
       ResultSummaryIcons(
-        title: 'Sycn Presentation',
-        svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
+        title: 'Sync Presentation',
+        svgPath: '',
       ),
     ];
     if (widget.studentDetails.googlePresentationUrl?.isNotEmpty ?? false) {
@@ -498,7 +499,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             builder: (BuildContext context, BoxConstraints constraints) {
               return StudentPlusOptionBottomSheet(
                   studentDetails: widget.studentDetails,
-                  resultSummaryIconsModalList: resultSummaryIconsModalList);
+                  resultSummaryIconsModalList: resultSummaryIconsModalList,
+                  height: MediaQuery.of(context).size.height * 0.25);
             },
           );
         });
