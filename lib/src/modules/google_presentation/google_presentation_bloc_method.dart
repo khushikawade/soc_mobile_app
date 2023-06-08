@@ -200,7 +200,13 @@ class GooglePresentationBlocMethods {
       } else {
         print("REMOVING ITEAM FORM LIST--------");
 
-        allRecords.removeRange(0, numberOfSlidesAlreadyAvailable - 1);
+        // allRecords.removeRange(0, numberOfSlidesAlreadyAvailable - 1);
+
+        //Preparing slide list that we need to update to  Google Presentation
+        //Adding latest records to the top of the presentation
+        allRecords.removeRange(
+            allRecords.length - (numberOfSlidesAlreadyAvailable - 1),
+            allRecords.length);
         print("${allRecords.length}  after -------------");
       }
 
@@ -217,6 +223,7 @@ class GooglePresentationBlocMethods {
         // Preparing all other blank slide (based on student detail length) type to add assessment images
         Map slideObject = {
           "createSlide": {
+            "insertionIndex": index + 1, //Location to add new slides
             "objectId": pageObjectUniqueId,
             "slideLayoutReference": {"predefinedLayout": "BLANK"}
           }

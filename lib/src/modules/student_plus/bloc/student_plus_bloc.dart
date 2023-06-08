@@ -94,9 +94,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         if (_localData.isEmpty) {
           yield StudentPlusLoading();
         } else {
-          yield StudentPlusWorkSuccess(
-            obj: _localData,
-          );
+          yield StudentPlusWorkSuccess(obj: _localData);
         }
 
         //yield StudentPlusLoading();
@@ -109,18 +107,15 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           _localDb.addData(e);
         });
 
-        yield StudentPlusWorkSuccess(
-          obj: list,
-        );
+        yield StudentPlusLoading();
+        yield StudentPlusWorkSuccess(obj: list);
       } catch (e) {
         LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
             "${StudentPlusOverrides.studentWorkList}_${event.studentId}");
 
         List<StudentPlusWorkModel>? _localData = await _localDb.getData();
         _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-        yield StudentPlusWorkSuccess(
-          obj: _localData,
-        );
+        yield StudentPlusWorkSuccess(obj: _localData);
       }
     }
 
