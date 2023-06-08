@@ -8,6 +8,9 @@ import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -235,7 +238,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         divider(context),
         textWidget('Select Courses', Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
-        textWidget('Coming September 2023', AppTheme.kSecondaryColor),
+        textWidget('Edit Skills', Color(0xff111C20)),
       ],
     );
   }
@@ -282,6 +285,31 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               _pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
+              break;
+
+            case 'Edit Skills':
+              sectionName = 'Skills';
+              // _pageController.animateToPage(1,
+              //     duration: const Duration(milliseconds: 100),
+              //     curve: Curves.ease);
+
+              Navigator.of(context).push(
+                HeroDialogRoute(
+                  builder: (context) => Center(
+                    child: PBISPlusEditSkills(constraint: 450
+                        //  constraints.maxHeight,
+                        // onValueUpdate: (updatedStudentValueNotifier) {
+                        //   studentValueNotifier = updatedStudentValueNotifier;
+                        // },
+                        // studentValueNotifier: studentValueNotifier,
+                        // heroTag: heroTag,
+                        // classroomCourseId: classroomCourseId,
+                        // scaffoldKey: _scaffoldKey,
+                        ),
+                  ),
+                ),
+              );
+
               break;
             default:
               // Code to handle an unknown text value.

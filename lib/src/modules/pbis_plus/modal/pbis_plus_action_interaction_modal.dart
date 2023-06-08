@@ -32,6 +32,24 @@ class PBISPlusActionInteractionModal {
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       color: Colors.green,
       title: 'Helpful',
+    ),
+    PBISPlusActionInteractionModal(
+      iconData: IconData(0xe87e,
+          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+      color: Colors.red,
+      title: 'Participation',
+    ),
+    PBISPlusActionInteractionModal(
+      iconData: IconData(0xe87f,
+          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+      color: Colors.blue,
+      title: 'Collaboration',
+    ),
+    PBISPlusActionInteractionModal(
+      iconData: IconData(0xe880,
+          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+      color: Colors.green,
+      title: 'Listening',
     )
   ];
 }

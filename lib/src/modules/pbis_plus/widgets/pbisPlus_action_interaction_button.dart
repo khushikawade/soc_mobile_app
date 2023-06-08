@@ -99,7 +99,6 @@ class PBISPlusActionInteractionButtonState
                               widget.isFromStudentPlus == true ? 0 : 1000),
                       countPostion: CountPostion.right,
                       isLiked: null,
-
                       size: 20,
                       onTap: widget.isLoading == true
                           ?
