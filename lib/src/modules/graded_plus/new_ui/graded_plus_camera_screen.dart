@@ -1278,7 +1278,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       classroomSuggestionsList = _localData
           .where((course) => course.students != null)
           .where((course) => course.students!.any((student) => studentInfo
-              .any((s) => s.studentId == student.profile!.emailAddress)))
+              .any((s) => s.studentEmail == student.profile!.emailAddress)))
           .map((course) => course.name!)
           .toSet() // remove duplicates
           .toList();

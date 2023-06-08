@@ -1666,12 +1666,13 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       {bool? isUpdateData,
       required bool? isFromHistoryAssessmentScanMore}) async {
     String? updatedStudentId;
-    String studentEmail;
+    String? studentEmail;
 
     if (idController.text.contains('@')) {
-      String studentEmail =
-          updatedStudentId = getIdFromEmail(idController.text);
+      String studentEmail = idController.text;
+      updatedStudentId = getIdFromEmail(idController.text);
     } else {
+      studentEmail = getEmailFromId(idController.text);
       updatedStudentId = idController.text;
     }
     StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
@@ -1706,7 +1707,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         studentAssessmentInfo.googleSlidePresentationURL = 'NA';
         studentAssessmentInfo.uniqueId = uniqueId;
         studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
-
+        studentAssessmentInfo.studentEmail = studentEmail ?? '';
         //  if (!id.contains(idController.text)) {
         await _historyStudentInfoDb.putAt(
             historyStudentInfo.length - 1, studentAssessmentInfo);
@@ -1746,6 +1747,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
             studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
+            studentAssessmentInfo.studentEmail = studentEmail ?? '';
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
@@ -1798,6 +1800,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         studentAssessmentInfo.uniqueId = uniqueId;
         studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
         studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
+        studentAssessmentInfo.studentEmail = studentEmail ?? '';
 // To update/edit the scanned details
         await _studentInfoDb.putAt(
             studentInfo.length - 1, studentAssessmentInfo);
@@ -1832,6 +1835,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           studentAssessmentInfo.uniqueId = uniqueId;
           studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
           studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
+          studentAssessmentInfo.studentEmail = studentEmail ?? '';
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           await _studentInfoDb.addData(studentAssessmentInfo);
           return;
@@ -1872,6 +1876,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
             studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
+            studentAssessmentInfo.studentEmail = studentEmail ?? '';
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
               await _studentInfoDb.addData(studentAssessmentInfo);
@@ -2235,5 +2240,18 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         : (Utility.checkForInt(value)
             ? (value.length == 9 && ((value[0] == '2' || value[0] == '1')))
             : (regex.hasMatch(value))));
+  }
+
+  String getEmailFromId(String studentIdDetails) {
+    try {
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if (standardStudentDetails[i].studentId == studentIdDetails) {
+          return standardStudentDetails[i].email ?? studentIdDetails;
+        }
+      }
+      return studentIdDetails;
+    } catch (e) {
+      return studentIdDetails;
+    }
   }
 }
