@@ -1101,7 +1101,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       useRootNavigator: true,
-     
+
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
@@ -1602,6 +1602,24 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
+          }
+        });
+  }
+
+  Widget excelBlocListener() {
+    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
+        bloc: excelSheetBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("state is $state");
+          if (state is GoogleSuccess) {
+            Utility.updateLogs(
+                activityType: 'GRADED+',
+                activityId: '45',
+                description: 'G-Excel File Updated',
+                operationResult: 'Success');
+            assessmentExportAndSaveStatus.value.excelSheetPrepared =
+                true; // update loading dialog and navigate
 
             Globals.currentAssessmentId = '';
 
@@ -1637,25 +1655,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 classroomCourseWorkId: GoogleClassroomGlobals
                         ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                     ''));
-          }
-        });
-  }
-
-  Widget excelBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: excelSheetBloc,
-        child: Container(),
-        listener: (context, state) async {
-          print("state is $state");
-          if (state is GoogleSuccess) {
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '45',
-                description: 'G-Excel File Updated',
-                operationResult: 'Success');
-            assessmentExportAndSaveStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
-            navigateToResultSummery();
+            //! navigateToResultSummery();
           }
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
