@@ -121,14 +121,14 @@ class _GradedPlusResultOptionBottomSheetState
             context: context,
             textTheme: Theme.of(context).textTheme.headline3!),
         onTap: () {
-          if (element.title == "Dashboard") {
-            Utility.launchUrlOnExternalBrowser(
-                "https://www.${Globals.schoolDbnC}.com/");
-          } else {
-            bottomIconsOnTap(
-                title: element.title ?? '',
-                url: widget.allUrls[element.title] ?? '');
-          }
+          // if (element.title == "Dashboard") {
+          //   Utility.launchUrlOnExternalBrowser(
+          //       "https://www.${Globals.schoolDbnC}.com/");
+          // } else {
+          bottomIconsOnTap(
+              title: element.title ?? '',
+              url: widget.allUrls[element.title] ?? '');
+          // }
         });
   }
 
@@ -139,37 +139,57 @@ class _GradedPlusResultOptionBottomSheetState
             'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        // Utility.updateLogs(
-        //     activityType: 'GRADED+',
-        //     activityId: '13',
-        //     sessionId: widget.assessmentDetailPage == true
-        //         ? widget.obj!.sessionId
-        //         : '',
-        //     description: shareLogMsg,
-        //     operationResult: 'Success');
+        Utility.updateLogs(
+            activityType: 'GRADED+',
+            activityId: '13',
+            sessionId: Globals.sessionId,
+            // widget.assessmentDetailPage == true
+            //     ? widget.obj!.sessionId
+            //     : '',
+            description: shareLogMsg,
+            operationResult: 'Success');
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Share.share(url);
         }
         break;
       case 'Dashboard':
+        String dashboardLogMsg =
+            'Dashboard Action Button Presses from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+        //-------------------------------------------------------------------------
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            dashboardLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+        Fluttertoast.cancel();
+        Utility.updateLogs(
+            activityType: 'GRADED+',
+            activityId: '14',
+            sessionId: Globals.sessionId,
+            // widget.assessmentDetailPage == true
+            //     ? widget.obj!.sessionId
+            //     : '',
+            description: dashboardLogMsg,
+            operationResult: 'Success');
+        //-------------------------------------------------------------------------
+        Utility.launchUrlOnExternalBrowser(
+            "https://www.${Globals.schoolDbnC}.com/");
         break;
       case 'Slides':
         String slidesLogMsg =
             "Slide Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-
+        //-------------------------------------------------------------------------
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
 
-        // Utility.updateLogs(
-        //     activityType: 'GRADED+',
-        //     activityId: '31',
-        //     sessionId: widget.assessmentDetailPage == true
-        //         ? widget.obj!.sessionId ?? ''
-        //         : '',
-        //     description: slidesLogMsg,
-        //     operationResult: 'Success');
-
+        Utility.updateLogs(
+            activityType: 'GRADED+',
+            activityId: '31',
+            sessionId: Globals.sessionId,
+            //  widget.assessmentDetailPage == true
+            //     ? widget.obj!.sessionId ?? ''
+            //     : '',
+            description: slidesLogMsg,
+            operationResult: 'Success');
+        //-------------------------------------------------------------------------
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }
@@ -181,11 +201,36 @@ class _GradedPlusResultOptionBottomSheetState
               "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+          Utility.updateLogs(
+              activityType: 'GRADED+',
+              activityId: '32',
+              sessionId: Globals.sessionId,
+              //  widget.assessmentDetailPage == true
+              //     ? widget.obj!.sessionId ?? ''
+              //     : '',
+              description: sheetLogMsg,
+              operationResult: 'Success');
+
           await Utility.launchUrlOnExternalBrowser(url);
         }
         break;
       case "Class":
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+          //-------------------------------------------------------------------------
+          String classroomLogMsg =
+              "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              classroomLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+          Utility.updateLogs(
+              activityType: 'GRADED+',
+              activityId: '35',
+              sessionId: Globals.sessionId,
+              //  widget.assessmentDetailPage == true
+              //     ? widget.obj!.sessionId ?? ''
+              //     : '',
+              description: classroomLogMsg,
+              operationResult: 'Success');
+          //-------------------------------------------------------------------------
           Utility.launchUrlOnExternalBrowser(url);
         }
         break;
