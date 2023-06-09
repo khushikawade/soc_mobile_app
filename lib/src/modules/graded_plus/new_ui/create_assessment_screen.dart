@@ -76,16 +76,18 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   final OcrBloc _bloc = new OcrBloc();
 
   final addController = TextEditingController();
+
   @override
   void initState() {
-    GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-        GoogleClassroomCourses();
-
     //Managing suggestion chips // course name // class name
     if (Overrides.STANDALONE_GRADED_APP) {
+      GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+          GoogleClassroomCourses();
       updateClassNameForStandAloneApp();
     } else {
-      updateClassNameForStandardApp();
+      GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+          ClassroomCourse();
+      // updateClassNameForStandardApp();
     }
 
     // Globals.googleExcelSheetId = '';
@@ -282,6 +284,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                           if (value.isNotEmpty) {
                             classController.text = value;
                             classError.value = value;
+
                             updateClassNameForStandAloneApp();
                           }
                         },
@@ -291,18 +294,26 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
                 if (widget.classroomSuggestions.length > 0)
                   SpacerWidget(_KVerticalSpace / 8),
+                highlightText(
+                    text: 'Select Classroom',
+                    theme: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3))),
                 if (widget.classroomSuggestions.length > 0)
-                  Container(
-                      height: 30,
-                      child: ChipsFilter(
-                        selectedValue: (String value) {
-                          if (value.isNotEmpty) {
-                            updateClassNameForStandAloneApp();
-                          }
-                        },
-                        selected: 1, // Select the second filter as default
-                        filters: widget.classroomSuggestions,
-                      )),
+                  SpacerWidget(_KVerticalSpace / 4),
+                Container(
+                    height: 30,
+                    child: ChipsFilter(
+                      selectedValue: (String value) {
+                        if (value.isNotEmpty) {
+                          updateClassNameForStandardApp(courseName: value);
+                        }
+                      },
+                      selected: 1, // Select the second filter as default
+                      filters: widget.classroomSuggestions,
+                    )),
 
                 SpacerWidget(_KVerticalSpace / 2),
                 highlightText(
@@ -668,6 +679,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 }
 
                 // Check if using standalone graded app and if student not belongs to selected classroom
+
+                /* --------------------------------------------------------------------------- */
+                /*                              StandAlone app                                 */
+                /* --------------------------------------------------------------------------- */
+                /* --------------- This will works only for StandAlone App   ----------------- */
                 if (Overrides.STANDALONE_GRADED_APP &&
                     (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
                             ?.courseId?.isEmpty ??
@@ -686,11 +702,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   );
 
                   List<StudentAssessmentInfo>
-                      notPresentStudentListInSelectedClass =
-                      await OcrUtility.checkAllStudentBelongsToSameClassOrNot(
-                          title: Globals.assessmentName ?? '',
-                          isScanMore: false,
-                          studentInfoDB: _studentAssessmentInfoDb);
+                      notPresentStudentListInSelectedClass = await OcrUtility
+                          .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
+                              title: Globals.assessmentName ?? '',
+                              isScanMore: false,
+                              studentInfoDB: _studentAssessmentInfoDb);
 
                   Navigator.of(context).pop();
 
@@ -699,7 +715,43 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                       true)) {
                     notPresentStudentsPopupModal(
                         notPresentStudentsInSelectedClass:
-                            notPresentStudentListInSelectedClass);
+                            notPresentStudentListInSelectedClass,
+                        courseName: classController.text);
+                    return;
+                  }
+                } else if (GoogleClassroomGlobals
+                        .studentAssessmentAndClassroomForStandardApp
+                        ?.id
+                        ?.isNotEmpty ??
+                    false) {
+                  /* -------------------------------------------------------------------------- */
+                  /*                              StandDart app                                 */
+                  /* -------------------------------------------------------------------------- */
+
+                  /* ------------------ This will works for Standart App    -------------------- */
+
+                  Utility.showLoadingDialog(
+                    context: context,
+                    isOCR: true,
+                  );
+
+                  List<StudentAssessmentInfo>
+                      notPresentStudentListInSelectedClass = await OcrUtility
+                          .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                              title: Globals.assessmentName ?? '',
+                              isScanMore: false,
+                              studentInfoDB: _studentAssessmentInfoDb);
+
+                  Navigator.of(context).pop();
+
+                  //Check student and show popup modal in case of scan more
+                  if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
+                      true)) {
+                    notPresentStudentsPopupModal(
+                        notPresentStudentsInSelectedClass:
+                            notPresentStudentListInSelectedClass,
+                        courseName: GoogleClassroomGlobals
+                            .studentAssessmentAndClassroomForStandardApp.name!);
                     return;
                   }
                 }
@@ -961,8 +1013,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   }
 
   notPresentStudentsPopupModal(
-      {required List<StudentAssessmentInfo>
-          notPresentStudentsInSelectedClass}) async {
+      {required List<StudentAssessmentInfo> notPresentStudentsInSelectedClass,
+      required String courseName}) async {
     showDialog(
         context: context,
         builder: (showDialogContext) => NonCourseGoogleClassroomStudentPopup(
@@ -971,7 +1023,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course \'${classController.text}\'. Do you still want to continue with these students?",
+                  // "A few students not found in the selected course \'${classController.text}\'. Do you still want to continue with these students?",
+                  "A few students not found in the selected course \'$courseName\'. Do you still want to continue with these students?",
               studentInfoDb: _studentAssessmentInfoDb,
               onTapCallback: () {
                 // Close the dialog from outside
@@ -1006,41 +1059,22 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     );
   }
 
-  Future<void> updateClassNameForStandardApp() async {
+  Future<void> updateClassNameForStandardApp(
+      {required String courseName}) async {
     GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
         ClassroomCourse(id: '');
-
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
+//get all classroom couses for localDB
     LocalDatabase<ClassroomCourse> _localDb =
         LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
-
-//Validating suggestion list comes from camera screen //comparing string of list and return course object
-//Manage here to manage standalone and standard app
     List<ClassroomCourse> googleClassroomCoursesDB = await _localDb.getData();
 
-    List<ClassroomCourse> _localData = googleClassroomCoursesDB
-        .where((ClassroomCourse classroomCourses) =>
-            widget.classroomSuggestions.contains(classroomCourses.name))
-        .toList();
+    GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+        googleClassroomCoursesDB.firstWhere(
+            (ClassroomCourse classroomCourses) =>
+                classroomCourses.name!.toLowerCase() ==
+                courseName.toLowerCase());
 
-    _localData.sort((a, b) => (a?.name ?? '').compareTo(b?.name ?? ''));
-
-    List<StudentAssessmentInfo> studentInfo =
-        await OcrUtility.getSortedStudentInfoList(
-            tableName: Strings.studentInfoDbName);
-
-    if (studentInfo.isNotEmpty) {
-      for (ClassroomCourse classroom in _localData) {
-        for (ClassroomStudents student in classroom.students ?? []) {
-          for (StudentAssessmentInfo info in studentInfo) {
-            if (info.studentId == student.profile!.emailAddress) {
-              GoogleClassroomGlobals
-                  .studentAssessmentAndClassroomForStandardApp = classroom;
-
-              break;
-            }
-          }
-        }
-      }
-    }
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
   }
 }

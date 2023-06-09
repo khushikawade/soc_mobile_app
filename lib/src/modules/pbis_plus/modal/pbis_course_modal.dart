@@ -18,6 +18,12 @@ class ClassroomCourse {
   String? courseState;
   @HiveField(6)
   List<ClassroomStudents>? students;
+  @HiveField(7)
+  String? courseWorkId;
+  @HiveField(8)
+  String? assessmentCId;
+  @HiveField(9)
+  String? courseWorkURL;
 
   ClassroomCourse(
       {this.id,

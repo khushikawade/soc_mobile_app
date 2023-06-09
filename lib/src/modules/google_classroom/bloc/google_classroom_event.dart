@@ -58,3 +58,22 @@ class CreatePBISClassroomCoursework extends GoogleClassroomEvent {
   @override
   List<Object> get props => [];
 }
+
+class CreateClassRoomCourseWorkForStandardApp extends GoogleClassroomEvent {
+  final String title;
+  final String pointPossible;
+  ClassroomCourse studentClassObj;
+  LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb;
+  final bool? isFromHistoryAssessmentScanMore;
+  final bool? isEditStudentInfo;
+
+  CreateClassRoomCourseWorkForStandardApp(
+      {required this.title,
+      required this.pointPossible,
+      required this.studentClassObj,
+      required this.studentAssessmentInfoDb,
+      this.isFromHistoryAssessmentScanMore,
+      this.isEditStudentInfo});
+  @override
+  List<Object> get props => [];
+}

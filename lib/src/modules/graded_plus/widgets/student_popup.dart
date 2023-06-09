@@ -187,11 +187,6 @@ class NonCourseGoogleClassroomStudentPopupState
                                         ? 1.5
                                         : 2.5,
                                     style: BorderStyle.solid)),
-                                // padding: MaterialStateProperty.all<
-                                //         EdgeInsetsGeometry>(
-                                //     EdgeInsets.all(Globals.deviceType == "phone"
-                                //         ? 5.0
-                                //         : 10.0)),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -244,6 +239,7 @@ class NonCourseGoogleClassroomStudentPopupState
     return [
       ElevatedButton(
         style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.kButtonColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),

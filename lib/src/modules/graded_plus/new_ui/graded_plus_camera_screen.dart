@@ -500,7 +500,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         //Preparing list of student not belong to selected class
                         List<StudentAssessmentInfo>
                             notPresentStudentsInSelectedClass = await OcrUtility
-                                .checkAllStudentBelongsToSameClassOrNot(
+                                .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
                                     title: widget
                                             .isFromHistoryAssessmentScanMore
                                         ? Globals.historyAssessmentName ?? ''

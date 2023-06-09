@@ -1,7 +1,9 @@
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -100,7 +102,7 @@ class OcrUtility {
   }
 
   static Future<List<StudentAssessmentInfo>>
-      checkAllStudentBelongsToSameClassOrNot(
+      checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
           {required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
           required bool isScanMore,
           required String title}) async {
@@ -384,5 +386,70 @@ class OcrUtility {
     }
 
     return _studentInfoListDb.length;
+  }
+
+  static Future<List<StudentAssessmentInfo>>
+      checkAllStudentBelongsToSameClassOrNotForStandardApp(
+          {required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
+          required bool isScanMore,
+          required String title}) async {
+    try {
+      List<StudentAssessmentInfo> studentInfo = await studentInfoDB.getData();
+
+      if (isScanMore) {
+        studentInfo.removeWhere((element) =>
+            element?.isScanMore == null || element?.isScanMore == false);
+
+        //event.studentClassObj = Google classroom Course Object come from import roster
+        if ((GoogleClassroomGlobals?.studentAssessmentAndClassroomForStandardApp
+                .courseWorkId?.isEmpty ??
+            true)) {
+          // courseWorkId is null or empty, and isHistorySanMore is either null or false
+          LocalDatabase<ClassroomCourse> _googleClassRoomLocalDb =
+              LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+          List<ClassroomCourse> _googleClassRoomLocalData =
+              await _googleClassRoomLocalDb.getData();
+
+//Update the studentclassobject when the user tries to scan older records that are not available on Google Classroom
+// checking the class name by title
+
+          if ((_googleClassRoomLocalData?.isNotEmpty ?? false)) {
+            if ((title?.isNotEmpty ?? false) && (title.contains('_'))) {
+              for (ClassroomCourse classroom in _googleClassRoomLocalData) {
+                // always check last "_" contains in title and get the subject
+                if ((title.split("_").last == classroom.name)) {
+                  // print("insdie if loopppp");
+                  GoogleClassroomGlobals
+                      .studentAssessmentAndClassroomForStandardApp
+                      .name = classroom.name;
+                  GoogleClassroomGlobals
+                      ?.studentAssessmentAndClassroomForStandardApp
+                      .id = classroom.id;
+                  GoogleClassroomGlobals
+                      ?.studentAssessmentAndClassroomForStandardApp
+                      .students = classroom.students;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return GoogleClassroomGlobals
+                  ?.studentAssessmentAndClassroomForStandardApp?.students ==
+              null
+          ? []
+          : studentInfo.where((student) {
+              return GoogleClassroomGlobals
+                  .studentAssessmentAndClassroomForStandardApp.students!
+                  .every((ClassroomStudents courseStudent) {
+                return courseStudent.profile!.emailAddress !=
+                    student.studentEmail;
+              });
+            }).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }

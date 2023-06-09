@@ -80,7 +80,7 @@ class _GradedPlusSearchScreenPageState
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
           excelSheetPrepared: false,
           slidePrepared: false,
-          saveAssessmentResultToDashboard: false));
+          saveAssessmentResultToDashboard: false, googleClassRoomIsUpdated: false));
 
   GoogleDriveBloc googleBloc = GoogleDriveBloc();
   GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();

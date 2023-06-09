@@ -337,6 +337,178 @@ class GoogleClassroomBloc
         yield GoogleClassroomErrorState(errorMsg: e.toString());
       }
     }
+
+    if (event is CreateClassRoomCourseWorkForStandardApp) {
+      try {
+        yield GoogleClassroomLoading();
+
+        //Fetch logged in user profile
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+        //get the student records from localdb to prepare assessment request body
+        List<StudentAssessmentInfo>? assessmentData =
+            await event.studentAssessmentInfoDb.getData();
+
+        //event.studentClassObj = Google classroom Course Object come from import roster
+        if ((event.studentClassObj.id?.isEmpty ?? true) &&
+            // (event.isFromHistoryAssessmentScanMore == true)
+            (event.isFromHistoryAssessmentScanMore ?? false)) {
+          // courseWorkId is null or empty, and isHistorySanMore is either null or false
+          LocalDatabase<ClassroomCourse> _googleClassRoomLocalDb =
+              LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+          List<ClassroomCourse> _googleClassRoomLocalData =
+              await _googleClassRoomLocalDb.getData();
+
+//Update the studentclassobject when the user tries to scan older records that are not available on Google Classroom
+// checking the class name by title
+          bool isClassroomCourseAdded = false;
+          if ((_googleClassRoomLocalData?.isNotEmpty ?? false) &&
+              (assessmentData?.isNotEmpty ?? false)) {
+            if ((event.title?.isNotEmpty ?? false) &&
+                (event.title.contains('_'))) {
+              for (ClassroomCourse classroom in _googleClassRoomLocalData) {
+                // always check last "_" contains in title and get the subject
+                if ((event.title.split("_").last == classroom.name)) {
+                  // print("insdie if loopppp");
+                  isClassroomCourseAdded = true;
+                  event.studentClassObj.id = classroom.id;
+                  event.studentClassObj.students = classroom.students;
+                  break;
+                }
+              }
+            }
+
+//check the class name is updated if not update the class name by student first records details - Worst scenario
+            if (!isClassroomCourseAdded) {
+              for (ClassroomCourse classroom in _googleClassRoomLocalData) {
+                for (var student in classroom.students!) {
+                  if (student.profile!.emailAddress ==
+                      assessmentData.first.studentId) {
+                    // print("insdie second if loop");
+                    event.studentClassObj.id = classroom.id;
+                    // event.studentClassObj.studentList is always empty from history screen
+                    event.studentClassObj.students = classroom.students;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // get local stored classroom course list
+        List<ClassroomStudents> classRoomCoursesStudentList =
+            event.studentClassObj?.students ?? [];
+
+        //create student details as per the request body keys
+        List<ClassRoomStudentProfile> studentAssessmentDetails = [];
+
+        //update if any assessment images is not updated and update student profile list
+        for (int i = 0; i < assessmentData.length; i++) {
+          if (assessmentData[i].assessmentImage?.isNotEmpty != true) {
+            // if any assessment images url is not updated
+            String imgUrl = await updateImg(
+                filePath: assessmentData[i]?.assessmentImgPath ?? '');
+
+            if (imgUrl?.isNotEmpty ?? false) {
+              assessmentData[i].assessmentImage = imgUrl;
+              await event.studentAssessmentInfoDb.putAt(i, assessmentData[i]);
+            }
+          }
+
+          //Check if assignment image and update in case found empty
+          if ((i == 0) &&
+              (assessmentData[0]?.questionImgUrl?.isEmpty ?? true) &&
+              (assessmentData[0]?.questionImgFilePath?.isNotEmpty ?? false)) {
+            String imgUrl = await updateImg(
+                filePath: assessmentData[0]?.questionImgFilePath ?? '');
+            if (imgUrl?.isNotEmpty ?? false) {
+              assessmentData[0].questionImgUrl = imgUrl;
+              await event.studentAssessmentInfoDb.putAt(0, assessmentData[0]);
+            }
+          }
+
+          //update student googleClassRoomStudentProfileId into list
+          classRoomCoursesStudentList.forEach((studentProfileObj) async {
+            if ((studentProfileObj.profile?.emailAddress?.isNotEmpty ??
+                    false) &&
+                (assessmentData[i]
+                        .studentEmail == //studentId contains student email address
+                    studentProfileObj.profile!.emailAddress) &&
+                (!assessmentData[i].isgoogleClassRoomStudentProfileUpdated!)) {
+              //adding student profile list
+
+              studentAssessmentDetails.add(ClassRoomStudentProfile(
+                  earnedPoint: int.parse(assessmentData[i].studentGrade ?? '0'),
+                  studentAssessmentImage: assessmentData[i].assessmentImage,
+                  studentId: studentProfileObj.profile!.id));
+
+              //updating the google profile id in local student assignment list
+              assessmentData[i].googleClassRoomStudentProfileId =
+                  studentProfileObj.profile!.emailAddress;
+              await event.studentAssessmentInfoDb.putAt(i, assessmentData[i]);
+            }
+          });
+        }
+
+        if (studentAssessmentDetails.isNotEmpty) {
+          List<dynamic> result = await _createClassRoomCourseWorkForStanDardApp(
+              questionImageUrl: assessmentData.first.questionImgUrl,
+              isEditStudentInfo: event.isEditStudentInfo,
+              isFromHistoryAssessmentScanMore:
+                  event.isFromHistoryAssessmentScanMore,
+              authorizationToken:
+                  userProfileLocalData[0].authorizationToken ?? '',
+              refreshToken: userProfileLocalData[0].refreshToken ?? '',
+              maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
+              studentProfileDetails: studentAssessmentDetails,
+              title: event.title,
+              studentClassObj: event.studentClassObj);
+
+          bool isClassRoomUpdated = result[0];
+
+          dynamic obj =
+              GoogleClassroomCourseworkModal(); // `dynamic` type is used here to allow either `GoogleClassroomCourseworkModal` or `String`
+
+          // Conditionally cast the `obj` based on the value of `isClassRoomUpdated`
+          if (isClassRoomUpdated) {
+            obj = result[1]
+                as GoogleClassroomCourseworkModal; // cast to `GoogleClassroomCourseworkModal` if `isClassRoomUpdated` is true
+          } else {
+            obj = result[1]
+                as String; // set to a string if `isClassRoomUpdated` is false
+          }
+
+          if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
+            if (event.studentClassObj?.id?.isEmpty ?? true) {
+              GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
+                  .id = obj.courseWorkId;
+
+              GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
+                  .courseWorkURL = obj.courseWorkURL;
+            }
+
+// Updating local database with already scanned students data true to avoid include them in next scan more case
+            assessmentData.asMap().forEach(
+              (i, element) async {
+                if (element.isgoogleClassRoomStudentProfileUpdated != true) {
+                  element.isgoogleClassRoomStudentProfileUpdated = true;
+                  await event.studentAssessmentInfoDb.putAt(i, element);
+                }
+              },
+            );
+
+            yield CreateClassroomCourseWorkSuccessForStandardApp();
+          } else {
+            yield GoogleClassroomErrorState(errorMsg: obj[1].toString());
+          }
+        } else {
+          yield CreateClassroomCourseWorkSuccessForStandardApp();
+        }
+      } catch (e) {
+        yield GoogleClassroomErrorState(errorMsg: e.toString());
+      }
+    }
   }
 
   GoogleClassroomState get initialState => GoogleClassroomInitial();
@@ -714,4 +886,113 @@ class GoogleClassroomBloc
     }
   }
 
+  Future<List<dynamic>> _createClassRoomCourseWorkForStanDardApp(
+      {required String authorizationToken,
+      required String refreshToken,
+      required String title,
+      required int maxPoints,
+      required List<ClassRoomStudentProfile> studentProfileDetails,
+      required bool? isFromHistoryAssessmentScanMore,
+      required ClassroomCourse? studentClassObj,
+      required bool? isEditStudentInfo,
+      required String? questionImageUrl,
+      int retry = 3}) async {
+    try {
+      final url =
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+      final headers = {
+        'G_AuthToken': authorizationToken,
+        'G_RefreshToken': refreshToken,
+        'Content-Type': 'application/json',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+
+      Map<String, dynamic> body = {
+        "courseId": studentClassObj!.id,
+        "maxPoints": maxPoints,
+        "studentAssessmentDetails": studentProfileDetails
+            .map((data) => isEditStudentInfo ?? false
+                //user edit the student info.
+                ? data.editStudentInfotoJson()
+                : data.toJson())
+            .toList()
+      };
+
+//if courseWorkId is available need to update the classroom with new student or edit the student info
+      body['courseWorkId'] = studentClassObj.courseWorkId?.isNotEmpty == true
+          ? studentClassObj.courseWorkId
+          : null;
+      // body['courseWorkId'] = null;
+
+//If courseWorkId is null, prepare request body to add a assignment in Google Classroom
+      if (body['courseWorkId'] == null) {
+        int lastUnderscoreIndex = title.lastIndexOf(
+            "_"); // find the index of the last underscore character
+        title = lastUnderscoreIndex == -1
+            ? title
+            : title.substring(0, lastUnderscoreIndex);
+
+        body.addAll({
+          'title': title,
+          if (questionImageUrl?.isNotEmpty ?? false)
+            'materials': [
+              {
+                "link": {
+                  "thumbnailUrl": questionImageUrl,
+                  "url": questionImageUrl
+                }
+              }
+            ]
+        });
+      }
+
+      final ResponseModel response = await _dbServices.postApi(url,
+          headers: headers, body: body, isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        GoogleClassroomCourseworkModal data =
+            GoogleClassroomCourseworkModal.fromJson(response.data);
+        if ((studentClassObj.id?.isEmpty ?? true) &&
+            (isFromHistoryAssessmentScanMore == true)) {
+          // If courseWorkId is null or empty, and isHistorySanMore is either null or false
+
+          //Updating classroomCourseId and courseWorkId on DATABASE ASSESSMENT_C for recent assessment scan only
+          await _bloc.updateAssessmentOnDashboardOnHistoryScanMore(
+              assessmentId: studentClassObj.assessmentCId,
+              classroomCourseId: studentClassObj.id,
+              classroomCourseWorkId: data.courseWorkId);
+        }
+
+        return [true, data];
+      }
+      //retry =3 max
+      else if (retry > 0) {
+        var result = await toRefreshAuthenticationToken(refreshToken);
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+
+          return await _createClassRoomCourseWorkForStanDardApp(
+              questionImageUrl: questionImageUrl,
+              retry: retry - 1,
+              isEditStudentInfo: isEditStudentInfo,
+              isFromHistoryAssessmentScanMore: isFromHistoryAssessmentScanMore,
+              authorizationToken: _userProfileLocalData[0].authorizationToken!,
+              maxPoints: maxPoints,
+              refreshToken: _userProfileLocalData[0].refreshToken!,
+              studentProfileDetails: studentProfileDetails,
+              title: title,
+              studentClassObj: studentClassObj);
+        }
+      } else if ((response.statusCode == 401 ||
+          // response.data['body'][" status"] != 401 ||
+          response.data['statusCode'] == 500)) {
+        return [false, 'ReAuthentication is required'];
+      }
+      return [];
+    } catch (e) {
+      return [false, e.toString()];
+    }
+  }
 }

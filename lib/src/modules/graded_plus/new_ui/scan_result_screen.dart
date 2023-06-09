@@ -1666,17 +1666,24 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       {bool? isUpdateData,
       required bool? isFromHistoryAssessmentScanMore}) async {
     String? updatedStudentId;
+
     String? studentEmail;
 
     if (idController.text.contains('@')) {
-      studentEmail = idController.text;
+      if (Overrides.STANDALONE_GRADED_APP == false) {
+        studentEmail = idController.text;
+      }
+
       updatedStudentId = getIdFromEmail(idController.text);
     } else {
-      studentEmail = getEmailFromId(idController.text);
+      if (Overrides.STANDALONE_GRADED_APP == false) {
+        studentEmail = getEmailFromId(idController.text);
+      }
+
       updatedStudentId = idController.text;
     }
 
-   
+    print(studentEmail);
     StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
 
     // To add the scan more result to the google file existing list
@@ -1709,7 +1716,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         studentAssessmentInfo.googleSlidePresentationURL = 'NA';
         studentAssessmentInfo.uniqueId = uniqueId;
         studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
-        studentAssessmentInfo.studentEmail = studentEmail ?? '';
+        if (Overrides.STANDALONE_GRADED_APP == false) {
+          studentAssessmentInfo.studentEmail = studentEmail ?? '';
+        }
+
         //  if (!id.contains(idController.text)) {
         await _historyStudentInfoDb.putAt(
             historyStudentInfo.length - 1, studentAssessmentInfo);
@@ -1749,7 +1759,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
             studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
-            studentAssessmentInfo.studentEmail = studentEmail ?? '';
+            if (Overrides.STANDALONE_GRADED_APP == false) {
+              studentAssessmentInfo.studentEmail = studentEmail ?? '';
+            }
+
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
@@ -1802,7 +1815,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         studentAssessmentInfo.uniqueId = uniqueId;
         studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
         studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
-        studentAssessmentInfo.studentEmail = studentEmail ?? '';
+        if (Overrides.STANDALONE_GRADED_APP == false) {
+          studentAssessmentInfo.studentEmail = studentEmail ?? '';
+        }
+
 // To update/edit the scanned details
         await _studentInfoDb.putAt(
             studentInfo.length - 1, studentAssessmentInfo);
@@ -1837,7 +1853,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           studentAssessmentInfo.uniqueId = uniqueId;
           studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
           studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
-          studentAssessmentInfo.studentEmail = studentEmail ?? '';
+          if (Overrides.STANDALONE_GRADED_APP == false) {
+            studentAssessmentInfo.studentEmail = studentEmail ?? '';
+          }
+
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           await _studentInfoDb.addData(studentAssessmentInfo);
           return;
@@ -1878,7 +1897,9 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
             studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
-            studentAssessmentInfo.studentEmail = studentEmail ?? '';
+            if (Overrides.STANDALONE_GRADED_APP == false) {
+              studentAssessmentInfo.studentEmail = studentEmail ?? '';
+            }
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
               await _studentInfoDb.addData(studentAssessmentInfo);

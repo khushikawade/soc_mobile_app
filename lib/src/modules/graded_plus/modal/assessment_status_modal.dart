@@ -2,10 +2,10 @@ class AssessmentStatusModel {
   bool? excelSheetPrepared;
   bool? slidePrepared;
   bool? saveAssessmentResultToDashboard;
-
-  AssessmentStatusModel({
-    required this.excelSheetPrepared,
-    required this.slidePrepared,
-    required this.saveAssessmentResultToDashboard,
-  });
+  bool googleClassRoomIsUpdated;
+  AssessmentStatusModel(
+      {required this.excelSheetPrepared,
+      required this.slidePrepared,
+      required this.saveAssessmentResultToDashboard,
+      required this.googleClassRoomIsUpdated});
 }

@@ -114,10 +114,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   // Value Notifier to check which is update or not
   ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus =
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
-    excelSheetPrepared: false,
-    slidePrepared: false,
-    saveAssessmentResultToDashboard: false,
-  ));
+          excelSheetPrepared: false,
+          slidePrepared: false,
+          saveAssessmentResultToDashboard: false,
+          googleClassRoomIsUpdated: false));
 
 //---------------------------------------------------------------------------------------------------------------
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
@@ -1465,9 +1465,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    showDialogSetState!(() {
-      GradedGlobals.loadingMessage = 'Result Detail is Updating';
-    });
+    try {
+      showDialogSetState!(() {
+        GradedGlobals.loadingMessage = 'Result Detail is Updating';
+      });
+    } catch (e) {
+      print(e);
+    }
 
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
@@ -1513,6 +1517,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 operationResult: 'Success');
             _navigateToResultSection();
           }
+
           if (state is GoogleClassroomErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               await Utility.refreshAuthenticationToken(
@@ -1531,6 +1536,11 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               Utility.currentScreenSnackBar(
                   state.errorMsg?.toString() ?? "", null);
             }
+          }
+
+          if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
+            assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated = true;
+            navigateToResultSummery();
           }
         });
   }
@@ -1748,6 +1758,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         } else if (state is GradedPlusSaveResultToDashboardSuccess) {
           assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard =
               true;
+
+          if (Overrides.STANDALONE_GRADED_APP == false &&
+              (GoogleClassroomGlobals
+                      .studentAssessmentAndClassroomForStandardApp
+                      ?.id
+                      ?.isNotEmpty ??
+                  false)) {
+            createClassRoomCourseWorkForStandardApp();
+          }
+
           navigateToResultSummery();
         }
       },
@@ -1786,7 +1806,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     if (assessmentExportAndSaveStatus.value.excelSheetPrepared == true &&
         assessmentExportAndSaveStatus.value.slidePrepared == true &&
         assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
-            true) {
+            true &&
+        assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated == true) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -1909,5 +1930,14 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             '',
       ));
     }
+  }
+
+  void createClassRoomCourseWorkForStandardApp() {
+    _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
+        studentAssessmentInfoDb: _studentAssessmentInfoDb,
+        studentClassObj:
+            GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp,
+        title: Globals.assessmentName ?? '',
+        pointPossible: Globals.pointPossible ?? "0"));
   }
 }
