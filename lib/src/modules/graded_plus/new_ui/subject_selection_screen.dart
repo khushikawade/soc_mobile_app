@@ -77,6 +77,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   OcrBloc ocrAssessmentBloc = OcrBloc();
   //Used to fetch subject details
   OcrBloc _ocrBloc = OcrBloc();
+  bool allProcessDone = false;
 
 //---------------------------------------------------------------------------------------------------------------
   static const double _KVerticalSpace = 60.0;
@@ -114,10 +115,17 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   // Value Notifier to check which is update or not
   ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus =
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
-    excelSheetPrepared: false,
-    slidePrepared: false,
-    saveAssessmentResultToDashboard: false,
-  ));
+          excelSheetPrepared: false,
+          slidePrepared: false,
+          saveAssessmentResultToDashboard: false,
+          saveGoogleClassroom: true));
+
+  List<String> processList = [
+    'Google Sheet',
+    'Google Slides',
+    'Google Classroom',
+    '${Globals.schoolDbnC} Dashboard'
+  ];
 
 //---------------------------------------------------------------------------------------------------------------
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
@@ -1101,7 +1109,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       useRootNavigator: true,
-     
+
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
@@ -1159,6 +1167,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                             backgroundColor:
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
+                              // showLoadingDialog(
+                              //     context: context,
+                              //     state: (p0) => {showDialogSetState = p0});
+                              //!UNCOMMENT
                               Utility.updateLogs(
                                   activityType: 'GRADED+',
                                   activityId: '18',
@@ -1350,10 +1362,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
         GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
 
-        Utility.showLoadingDialog(
-            context: context,
-            isOCR: true,
-            state: (p0) => {showDialogSetState = p0});
+        // Utility.showLoadingDialog(
+        //     context: context,
+        //     isOCR: true,
+        //     state: (p0) => {showDialogSetState = p0});
 
         //calling API
         updateDocOnDrive(
@@ -1447,10 +1459,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    showDialogSetState!(() {
-      GradedGlobals.loadingMessage = 'Result Detail is Updating';
-    });
-
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
@@ -1602,7 +1610,27 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
+          }
+        });
+  }
 
+  Widget excelBlocListener() {
+    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
+        bloc: excelSheetBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("state is $state");
+          if (state is GoogleSuccess) {
+            Utility.updateLogs(
+                activityType: 'GRADED+',
+                activityId: '45',
+                description: 'G-Excel File Updated',
+                operationResult: 'Success');
+
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.excelSheetPrepared =
+                  true; // update loading dialog and navigate
+            });
             Globals.currentAssessmentId = '';
 
             List<StudentAssessmentInfo> studentAssessmentInfoDblist =
@@ -1637,24 +1665,17 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 classroomCourseWorkId: GoogleClassroomGlobals
                         ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                     ''));
-          }
-        });
-  }
 
-  Widget excelBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: excelSheetBloc,
-        child: Container(),
-        listener: (context, state) async {
-          print("state is $state");
-          if (state is GoogleSuccess) {
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '45',
-                description: 'G-Excel File Updated',
-                operationResult: 'Success');
-            assessmentExportAndSaveStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
+            // showDialogSetState() {
+            //   assessmentExportAndSaveStatus.value.excelSheetPrepared =
+            //       true; // update loading dialog and navigate
+            // }
+            // showDialogSetState(() {
+            //   assessmentExportAndSaveStatus.value.excelSheetPrepared =
+            //       true; // update loading dialog and navigate
+            // });
+            // showDialogSetState() {}
+
             navigateToResultSummery();
           }
           if (state is ErrorState) {
@@ -1706,7 +1727,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 operationResult: 'Success');
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "assessment_detail_added_first_slide");
-            assessmentExportAndSaveStatus.value.slidePrepared = true;
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.slidePrepared = true;
+            });
+
             navigateToResultSummery();
           }
         });
@@ -1728,8 +1752,12 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           Navigator.of(context).pop();
           Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
         } else if (state is GradedPlusSaveResultToDashboardSuccess) {
-          assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard =
-              true;
+          showDialogSetState!(() {
+            assessmentExportAndSaveStatus
+                .value.saveAssessmentResultToDashboard = true;
+          });
+          // assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard =
+          //     true;
           navigateToResultSummery();
         }
       },
@@ -1769,6 +1797,11 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         assessmentExportAndSaveStatus.value.slidePrepared == true &&
         assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
             true) {
+      showDialogSetState!(() {
+        allProcessDone == true;
+      });
+
+      // Future.delayed(const Duration(milliseconds: 5000), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -1784,13 +1817,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           ),
         ),
       );
+      //    });
     }
   }
 
   /* ------ Function call when someone tap on skip button or save button ------ */
   floatingButtonOnTap() async {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: "Please Wait");
+    showLoadingDialog(
+        context: context, state: (p0) => {showDialogSetState = p0});
+    // Utility.showLoadingDialog(
+    //     context: context, isOCR: true, msg: "Please Wait");
 
     if (Globals.googleExcelSheetId == null ||
         Globals.googleExcelSheetId?.isEmpty == true) {
@@ -1890,6 +1926,290 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 ?.studentAssessmentAndClassroomObj?.courseWorkId ??
             '',
       ));
+    }
+  }
+
+  void showLoadingDialog({
+    BuildContext? context,
+    required Function(StateSetter) state,
+  }) async {
+    return showDialog<void>(
+      useRootNavigator: false,
+      context: context!,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          if (state != null) {
+            state(setState);
+          }
+
+          return WillPopScope(
+              onWillPop: () async => true,
+              child: SimpleDialog(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                  backgroundColor: allProcessDone == true
+                      ? Colors.transparent
+                      : Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color(0xff111C20)
+                          : Color(0xffF7F8F9), //Colors.black54,
+                  children: allProcessDone == true
+                      ? <Widget>[
+                          Container(
+                            color: Colors.transparent,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: <Widget>[
+                                Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: EdgeInsets.only(top: 45),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff000000) !=
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xff111C20)
+                                          : Color(0xffF7F8F9),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(5),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            offset: Offset(0, 2),
+                                            blurRadius: 10),
+                                      ],
+                                      // gradient: LinearGradient(
+                                      //   begin: Alignment.topCenter,
+                                      //   end: Alignment.bottomCenter,
+                                      //   colors: [
+                                      //     AppTheme.kButtonColor,
+                                      //     Color(0xff000000) !=
+                                      //             Theme.of(context)
+                                      //                 .backgroundColor
+                                      //         ? Color(0xffF7F8F9)
+                                      //         : Color(0xff111C20),
+                                      //   ],
+                                      //   stops: [
+                                      //     0.6,
+                                      //     0.5,
+                                      //   ],
+                                      // ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          'Awesome!',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline1!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'Student Assessments Saved Successfully',
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                        ),
+                                      ],
+                                    )
+                                    // child: FittedBox(child: pbisStudentDetailWidget)
+                                    ),
+                                Positioned(
+                                  top: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xff111C20)
+                                              : Color(0xffF7F8F9),
+                                          width: 8),
+                                      //color: AppTheme.kButtonColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.kButtonColor,
+                                        //color: AppTheme.kButtonColor,
+                                        shape: BoxShape.circle,
+                                      ),
+
+                                      height: 80,
+                                      width: 80,
+                                      child: Icon(
+                                        IconData(0xe877,
+                                            fontFamily: Overrides.kFontFam,
+                                            fontPackage: Overrides.kFontPkg),
+                                        color: Color(0xff000000) !=
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Color(0xff111C20)
+                                            : Color(0xffF7F8F9),
+                                        size: 40,
+                                      ),
+                                      // decoration: BoxDecoration(
+                                      //     borderRadius:
+                                      //         BorderRadius.circular(20)),
+                                      // child: widget,
+                                    ),
+                                    //child:
+                                    //  PBISCommonProfileWidget(
+                                    //     studentProfile:widget.studentProfile,
+                                    //     isFromStudentPlus: widget.isFromStudentPlus,
+                                    //     isLoading: widget.isLoading,
+                                    //     valueChange: valueChange,
+                                    //     countWidget: true,
+                                    //     studentValueNotifier: widget.studentValueNotifier,
+                                    //     profilePictureSize: PBISPlusOverrides.profilePictureSize,
+                                    //     imageUrl:
+                                    //         widget.studentValueNotifier.value.profile!.photoUrl!),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ]
+                      : <Widget>[
+                          Text(
+                            "Saving",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          SpacerWidget(10),
+                          ...processList
+                              .map((item) => Container(
+                                    margin: EdgeInsets.symmetric(vertical: 7),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    height: 55,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppTheme.kButtonColor),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          item,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                        ),
+                                        progressWidget(value: item)
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                          // Container(
+                          //   child: ListView.builder(
+                          //     //shrinkWrap: true,
+                          //     itemBuilder: (context, index) {
+                          //       return
+                          //     },
+                          //     itemCount: processList.length,
+                          //   ),
+                          // )
+
+                          // Container(
+                          //   height: Globals.deviceType == 'phone' ? 80 : 100,
+                          //   width: Globals.deviceType == 'phone'
+                          //       ? MediaQuery.of(context).size.width * 0.4
+                          //       : MediaQuery.of(context).size.width * 0.5,
+                          //   child: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.center,
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       Padding(
+                          //         padding: const EdgeInsets.symmetric(horizontal: 10),
+                          //         child: FittedBox(
+                          //           child: Utility.textWidget(
+                          //               text: msg ??
+                          //                   GradedGlobals.loadingMessage ??
+                          //                   'Please Wait...',
+                          //               context: context,
+                          //               textTheme: Theme.of(context)
+                          //                   .textTheme
+                          //                   .headline6!
+                          //                   .copyWith(
+                          //                     color: Color(0xff000000) !=
+                          //                             Theme.of(context)
+                          //                                 .backgroundColor
+                          //                         ? Color(0xffFFFFFF)
+                          //                         : Color(0xff000000),
+                          //                     fontSize: Globals.deviceType == "phone"
+                          //                         ? AppTheme.kBottomSheetTitleSize
+                          //                         : AppTheme.kBottomSheetTitleSize *
+                          //                             1.3,
+                          //                   )),
+                          //         ),
+                          //       ),
+                          //       SizedBox(
+                          //         height: 10,
+                          //       ),
+                          //       Container(
+                          //         alignment: Alignment.center,
+                          //         margin: EdgeInsets.symmetric(horizontal: 10),
+                          //         child: CircularProgressIndicator(
+                          //           color: isOCR! ? AppTheme.kButtonColor : null,
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // )
+                        ]));
+        });
+      },
+    );
+  }
+
+  Widget progressWidget({required String value}) {
+    if ((value == 'Google Sheet' &&
+            assessmentExportAndSaveStatus.value.excelSheetPrepared) ||
+        (value == 'Google Slides' &&
+            assessmentExportAndSaveStatus.value.slidePrepared) ||
+        (value == 'Google Classroom' &&
+            assessmentExportAndSaveStatus.value.saveGoogleClassroom) ||
+        (value == '${Globals.schoolDbnC} Dashboard' &&
+            assessmentExportAndSaveStatus
+                .value.saveAssessmentResultToDashboard)) {
+      return Icon(
+        IconData(0xe877,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: AppTheme.kButtonColor,
+      );
+    } else {
+      return CupertinoActivityIndicator(
+        color: AppTheme.kButtonColor,
+      );
     }
   }
 }
