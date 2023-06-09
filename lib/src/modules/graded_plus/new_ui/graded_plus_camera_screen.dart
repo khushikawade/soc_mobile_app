@@ -303,6 +303,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                 _historystudentAssessmentInfoDb);
                       } else {
                         // Trigger this when user scanning more from new assignment on result summary
+
                         _saveResultAssignmentsToDashboard(
                             assessmentId: Globals.currentAssessmentId ?? '',
                             googleSpreadsheetUrl: Globals.shareableLink ?? '',
@@ -405,7 +406,11 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 listener: (context, state) {
                   print("state ------------------$state");
                   if (state is GradedPlusSaveResultToDashboardSuccess) {
-                    _navigatetoResultSection();
+                    if (Overrides.STANDALONE_GRADED_APP) {
+                      _navigatetoResultSection();
+                    } else {
+                      createClassRoomCourseWorkForStandardApp();
+                    }
                   }
 
                   if (state is OcrErrorReceived) {
@@ -434,25 +439,28 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           context: context,
                           scaffoldKey: _scaffoldKey);
 
-                      _googleClassroomBloc.add(CreateClassRoomCourseWork(
-                        isFromHistoryAssessmentScanMore:
-                            widget.isFromHistoryAssessmentScanMore,
-                        pointPossible: widget.pointPossible ?? '0',
-                        studentClassObj: GoogleClassroomGlobals
-                            .studentAssessmentAndClassroomObj,
-                        title: widget.isFromHistoryAssessmentScanMore
-                            ? Globals.historyAssessmentName ?? ''
-                            : Globals.assessmentName ?? '',
-                        studentAssessmentInfoDb:
-                            widget.isFromHistoryAssessmentScanMore
-                                ? _historystudentAssessmentInfoDb
-                                : _studentAssessmentInfoDb,
-                      ));
+                      // _googleClassroomBloc.add(CreateClassRoomCourseWork(
+                      //   isFromHistoryAssessmentScanMore:
+                      //       widget.isFromHistoryAssessmentScanMore,
+                      //   pointPossible: widget.pointPossible ?? '0',
+                      //   studentClassObj: GoogleClassroomGlobals
+                      //       .studentAssessmentAndClassroomObj,
+                      //   title: widget.isFromHistoryAssessmentScanMore
+                      //       ? Globals.historyAssessmentName ?? ''
+                      //       : Globals.assessmentName ?? '',
+                      //   studentAssessmentInfoDb:
+                      //       widget.isFromHistoryAssessmentScanMore
+                      //           ? _historystudentAssessmentInfoDb
+                      //           : _studentAssessmentInfoDb,
+                      // ));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
                           state.errorMsg?.toString() ?? "", null);
                     }
+                  }
+                  if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
+                    _navigatetoResultSection();
                   }
                 }),
         widget.onlyForPicture
@@ -492,32 +500,97 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                     ? Strings.historyStudentInfoDbName
                                     : Strings.studentInfoDbName);
 
+                    // if (studentAssessmentInfoDb.length > 0) {
+                    //   // Check if all students belong to same class
+                    //   if (Overrides.STANDALONE_GRADED_APP &&
+                    //       (widget.isFromHistoryAssessmentScanMore == true ||
+                    //           widget.isScanMore == true)) {
+                    //     //Preparing list of student not belong to selected class
+                    //     List<StudentAssessmentInfo>
+                    //         notPresentStudentsInSelectedClass = await OcrUtility
+                    //             .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
+                    //                 title: widget
+                    //                         .isFromHistoryAssessmentScanMore
+                    //                     ? Globals.historyAssessmentName ?? ''
+                    //                     : Globals.assessmentName ?? '',
+                    //                 isScanMore: true,
+                    //                 studentInfoDB:
+                    //                     widget.isFromHistoryAssessmentScanMore ==
+                    //                             true
+                    //                         ? _historystudentAssessmentInfoDb
+                    //                         : _studentAssessmentInfoDb);
+
+                    //     if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                    //         true) {
+                    //       notPresentStudentsPopupModal(
+                    //           notPresentStudentsInSelectedClass:
+                    //               notPresentStudentsInSelectedClass);
+                    //       return;
+                    //     }
+                    //   }
+                    //   //--------------------------------------------------------------
+                    //   if (widget.isFromHistoryAssessmentScanMore == true ||
+                    //       (!widget.isFromHistoryAssessmentScanMore &&
+                    //           widget.isScanMore == true)) {
+                    //     preparingStudentAssessmentImageUpdateToSlideFiles();
+                    //   } else {
+                    //     prepareClassSuggestionListForCreateAssessmentScreen();
+                    //   }
+                    //   //--------------------------------------------------------------
+                    // }
+
                     if (studentAssessmentInfoDb.length > 0) {
                       // Check if all students belong to same class
-                      if (Overrides.STANDALONE_GRADED_APP &&
-                          (widget.isFromHistoryAssessmentScanMore == true ||
-                              widget.isScanMore == true)) {
-                        //Preparing list of student not belong to selected class
-                        List<StudentAssessmentInfo>
-                            notPresentStudentsInSelectedClass = await OcrUtility
-                                .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
-                                    title: widget
-                                            .isFromHistoryAssessmentScanMore
-                                        ? Globals.historyAssessmentName ?? ''
-                                        : Globals.assessmentName ?? '',
-                                    isScanMore: true,
-                                    studentInfoDB:
-                                        widget.isFromHistoryAssessmentScanMore ==
-                                                true
-                                            ? _historystudentAssessmentInfoDb
-                                            : _studentAssessmentInfoDb);
+                      if ((widget.isFromHistoryAssessmentScanMore == true ||
+                          widget.isScanMore == true)) {
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          //Preparing list of student not belong to selected class
+                          List<StudentAssessmentInfo>
+                              notPresentStudentsInSelectedClass =
+                              await OcrUtility
+                                  .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
+                                      title: widget
+                                              .isFromHistoryAssessmentScanMore
+                                          ? Globals.historyAssessmentName ?? ''
+                                          : Globals.assessmentName ?? '',
+                                      isScanMore: true,
+                                      studentInfoDB:
+                                          widget.isFromHistoryAssessmentScanMore ==
+                                                  true
+                                              ? _historystudentAssessmentInfoDb
+                                              : _studentAssessmentInfoDb);
 
-                        if (notPresentStudentsInSelectedClass?.isNotEmpty ??
-                            true) {
-                          notPresentStudentsPopupModal(
-                              notPresentStudentsInSelectedClass:
-                                  notPresentStudentsInSelectedClass);
-                          return;
+                          if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                              true) {
+                            notPresentStudentsPopupModal(
+                                notPresentStudentsInSelectedClass:
+                                    notPresentStudentsInSelectedClass);
+                            return;
+                          }
+                        } else {
+                          //Preparing list of student not belong to selected class
+                          List<StudentAssessmentInfo>
+                              notPresentStudentsInSelectedClass =
+                              await OcrUtility
+                                  .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                                      title: widget
+                                              .isFromHistoryAssessmentScanMore
+                                          ? Globals.historyAssessmentName ?? ''
+                                          : Globals.assessmentName ?? '',
+                                      isScanMore: true,
+                                      studentInfoDB:
+                                          widget.isFromHistoryAssessmentScanMore ==
+                                                  true
+                                              ? _historystudentAssessmentInfoDb
+                                              : _studentAssessmentInfoDb);
+
+                          if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                              true) {
+                            notPresentStudentsPopupModal(
+                                notPresentStudentsInSelectedClass:
+                                    notPresentStudentsInSelectedClass);
+                            return;
+                          }
                         }
                       }
                       //--------------------------------------------------------------
@@ -1293,5 +1366,21 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     } catch (e) {
       return classroomSuggestionsList;
     }
+  }
+
+  void createClassRoomCourseWorkForStandardApp() {
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
+    _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
+      isFromHistoryAssessmentScanMore: widget.isFromHistoryAssessmentScanMore,
+      pointPossible: widget.pointPossible ?? '0',
+      studentClassObj:
+          GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp,
+      title: widget.isFromHistoryAssessmentScanMore
+          ? Globals.historyAssessmentName ?? ''
+          : Globals.assessmentName ?? '',
+      studentAssessmentInfoDb: widget.isFromHistoryAssessmentScanMore
+          ? _historystudentAssessmentInfoDb
+          : _studentAssessmentInfoDb,
+    ));
   }
 }

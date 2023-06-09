@@ -449,7 +449,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType:"Premium", //Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType:
+            "Premium", //Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));

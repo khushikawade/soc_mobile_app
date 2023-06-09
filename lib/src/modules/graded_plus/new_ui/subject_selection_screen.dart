@@ -1933,6 +1933,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
   void createClassRoomCourseWorkForStandardApp() {
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
     _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
         studentAssessmentInfoDb: _studentAssessmentInfoDb,
         studentClassObj:

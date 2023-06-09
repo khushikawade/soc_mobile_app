@@ -450,7 +450,7 @@ class GoogleClassroomBloc
             }
           });
         }
-
+        print(event.studentClassObj);
         if (studentAssessmentDetails.isNotEmpty) {
           List<dynamic> result = await _createClassRoomCourseWorkForStanDardApp(
               questionImageUrl: assessmentData.first.questionImgUrl,
@@ -478,16 +478,18 @@ class GoogleClassroomBloc
             obj = result[1]
                 as String; // set to a string if `isClassRoomUpdated` is false
           }
-
+          print(obj);
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
-            if (event.studentClassObj?.id?.isEmpty ?? true) {
+            if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
               GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
-                  .id = obj.courseWorkId;
+                  .courseWorkId = obj.courseWorkId;
 
               GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
                   .courseWorkURL = obj.courseWorkURL;
             }
-
+            print("wokr couse id-------");
+            print(GoogleClassroomGlobals
+                .studentAssessmentAndClassroomForStandardApp.courseWorkId);
 // Updating local database with already scanned students data true to avoid include them in next scan more case
             assessmentData.asMap().forEach(
               (i, element) async {

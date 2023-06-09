@@ -25,14 +25,17 @@ class ClassroomCourse {
   @HiveField(9)
   String? courseWorkURL;
 
-  ClassroomCourse(
-      {this.id,
-      this.name,
-      this.descriptionHeading,
-      this.ownerId,
-      this.enrollmentCode,
-      this.courseState,
-      this.students});
+  ClassroomCourse({
+    this.id,
+    this.name,
+    this.descriptionHeading,
+    this.ownerId,
+    this.enrollmentCode,
+    this.courseState,
+    this.students,
+    this.courseWorkId,this.assessmentCId,this.courseWorkURL
+
+  });
 
   ClassroomCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
