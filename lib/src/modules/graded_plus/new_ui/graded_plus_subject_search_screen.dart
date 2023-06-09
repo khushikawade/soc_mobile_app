@@ -815,7 +815,25 @@ class _GradedPlusSearchScreenPageState
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
+          }
+        });
+  }
 
+  /* -------------------- Widget bloc listener to manage excel sheet upload data ------------------- */
+  Widget excelBlocListener() {
+    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
+        bloc: excelSheetBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("state is $state");
+          if (state is GoogleSuccess) {
+            Utility.updateLogs(
+                activityType: 'GRADED+',
+                activityId: '45',
+                description: 'G-Excel File Updated',
+                operationResult: 'Success');
+            assessmentStatus.value.excelSheetPrepared =
+                true; // update loading dialog and navigate
             Globals.currentAssessmentId = '';
 
             List<StudentAssessmentInfo> studentAssessmentInfoDblist =
@@ -848,26 +866,7 @@ class _GradedPlusSearchScreenPageState
                 classroomCourseWorkId: GoogleClassroomGlobals
                         ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                     ''));
-          }
-        });
-  }
-
-  /* -------------------- Widget bloc listener to manage excel sheet upload data ------------------- */
-  Widget excelBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: excelSheetBloc,
-        child: Container(),
-        listener: (context, state) async {
-          print("state is $state");
-          if (state is GoogleSuccess) {
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '45',
-                description: 'G-Excel File Updated',
-                operationResult: 'Success');
-            assessmentStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
-            navigateToResultSummery();
+            //! navigateToResultSummery();
           }
 
           if (state is ErrorState) {
