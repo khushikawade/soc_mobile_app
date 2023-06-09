@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -25,6 +26,8 @@ class CustomIntroWidget extends StatefulWidget {
 class _CustomIntroWidgetState extends State<CustomIntroWidget> {
   CarouselController carouselController = CarouselController();
   HiveDbServices _hiveDbServices = HiveDbServices();
+  // int _currentIndex = 0;
+  ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -34,8 +37,16 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
     return result;
   }
 
-  // int _currentIndex = 0;
-  ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
+  @override
+  void initState() {
+    Utility.updateLogs(
+        activityType: 'GRADED+',
+        activityId: '46',
+        description: 'Moved to help screen Graded+',
+        operationResult: 'Success');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
