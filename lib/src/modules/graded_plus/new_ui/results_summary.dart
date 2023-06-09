@@ -1981,7 +1981,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Future<String> _getpointPossible({required String tableName}) async {
+  Future<String> _getPointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
         await OcrUtility.getSortedStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
@@ -2027,42 +2027,42 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Widget _slidableDecorationWidget(
-      {required String label, required IconData icon}) {
-    final children = <Widget>[];
+  // Widget _slidableDecorationWidget(
+  //     {required String label, required IconData icon}) {
+  //   final children = <Widget>[];
 
-    children.add(
-      Icon(icon),
-    );
+  //   children.add(
+  //     Icon(icon),
+  //   );
 
-    children.add(
-      SizedBox(height: 4),
-    );
+  //   children.add(
+  //     SizedBox(height: 4),
+  //   );
 
-    children.add(
-      TranslationWidget(
-          message: label,
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) {
-            return Text(
-              translatedMessage,
-              overflow: TextOverflow.ellipsis,
-            );
-          }),
-    );
+  //   children.add(
+  //     TranslationWidget(
+  //         message: label,
+  //         fromLanguage: "en",
+  //         toLanguage: Globals.selectedLanguage,
+  //         builder: (translatedMessage) {
+  //           return Text(
+  //             translatedMessage,
+  //             overflow: TextOverflow.ellipsis,
+  //           );
+  //         }),
+  //   );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ...children.map(
-          (child) => Flexible(
-            child: child,
-          ),
-        )
-      ],
-    );
-  }
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       ...children.map(
+  //         (child) => Flexible(
+  //           child: child,
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
 //--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
@@ -2075,22 +2075,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------performScanMore-----------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   void performScanMore() async {
-    // if ((widget.assessmentDetailPage == true) &&
-    //     ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
-    //         (widget.createdAsPremium == false &&
-    //             Globals.isPremiumUser == true))) {
-    //   popupModal(
-    //       title: 'Alert!',
-    //       message: Globals.isPremiumUser == true
-    //           ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-    //           : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-    //   return;
-    // }
     String scanMoreLogMsg =
         'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-
+//--------------------------------------------------------------------------
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     Utility.updateLogs(
@@ -2100,14 +2091,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',
         description: scanMoreLogMsg,
         operationResult: 'Success');
+//--------------------------------------------------------------------------
 
     if (widget.obj != null && widget.obj!.isCreatedAsPremium == "true") {
       createdAsPremium = true;
     }
-    String pointPossible = await _getpointPossible(
+    String pointPossible = await _getPointPossible(
         tableName: widget.assessmentDetailPage == true
             ? 'history_student_info'
             : 'student_info');
+//--------------------------------------------------------------------------
 
     Fluttertoast.cancel();
     Navigator.push(
@@ -2131,7 +2124,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     : '2')));
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------_initState-------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
       // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
@@ -2168,7 +2163,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------fabButton--------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   Widget fabButton(
     BuildContext context,
   ) =>

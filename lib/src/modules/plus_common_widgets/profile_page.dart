@@ -18,12 +18,14 @@ class ProfilePage extends StatefulWidget {
   final bool? hideStateSelection;
   final UserInformation profile;
   final bool? fromGradedPlus;
+  final String? plusAppName;
 
   const ProfilePage(
       {Key? key,
       required this.profile,
       this.hideStateSelection,
-      required this.fromGradedPlus})
+      required this.fromGradedPlus,
+      required this.plusAppName})
       : super(key: key);
 
   @override
@@ -137,6 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         listTile(
                             icon: Icons.settings,
                             onTap: () async {
+                              //-----------------------------------------------------
                               String settingsSectionLogMsg =
                                   "Navigate From Graded+ Profile to Settings";
                               FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -144,6 +147,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .toLowerCase()
                                           .replaceAll(" ", "_") ??
                                       '');
+                              Utility.updateLogs(
+                                  activityType: widget.plusAppName,
+                                  activityId: '47',
+                                  sessionId: Globals.sessionId,
+                                  description: settingsSectionLogMsg,
+                                  operationResult: 'Success');
+                              //-----------------------------------------------------
+
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

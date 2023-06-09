@@ -8,7 +8,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/shared_preference.dart';

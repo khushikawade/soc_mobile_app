@@ -68,21 +68,18 @@ class _GradedPlusAssessmentSummaryState
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(_scrollListener);
-    // _driveBloc
-    //     .add(GetHistoryAssessmentFromDrive(filterType: selectedValue.value));
-    // selectedValue.value = widget.selectedFilterValue;
 
-    // SchedulerBinding.instance.addPostFrameCallback((_) {
-    //   refreshPage(isFromPullToRefresh: false);
-    // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       selectedValue.value = Globals.selectedFilterValue;
       refreshPage(isFromPullToRefresh: false, delayInSeconds: 0);
     });
 
-    // _driveBloc.add(GetHistoryAssessmentFromDrive());
+    Utility.updateLogs(
+        activityType: 'GRADED+',
+        activityId: '4',
+        description: 'Moved to history screen Graded+',
+        operationResult: 'Success');
 
-    // _controller = new ScrollController()..addListener(_scrollListener);
     FirebaseAnalyticsService.addCustomAnalyticsEvent("assessment_summary");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'assessment_summary', screenClass: 'AssessmentSummary');
@@ -92,7 +89,6 @@ class _GradedPlusAssessmentSummaryState
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
-
     super.dispose();
   }
 

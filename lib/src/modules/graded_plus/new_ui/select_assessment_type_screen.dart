@@ -362,16 +362,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
-    _ocrBlocLogs.add(LogUserActivityEvent(
-        activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
-        activityId: '4',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
-        description: 'Assignment History page from Select Assignment page',
-        operationResult: 'Success'));
+
     Navigator.push(
       context,
       MaterialPageRoute(
