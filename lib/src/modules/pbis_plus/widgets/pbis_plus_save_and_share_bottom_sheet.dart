@@ -71,7 +71,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   List<ClassroomCourse> selectedCoursesList = [];
 
   @override
-  Future<void> initState() async {
+  void initState() {
     _pageController = PageController()
       ..addListener(() {
         setState(() {});

@@ -16,7 +16,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
-class PBISPlusStudentCardModal extends StatefulWidget {
+class PBISPlusStudentCardNewModal extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final bool? isFromDashboardPage;
   final bool?
@@ -31,7 +31,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 
   //final Function(bool) onValueUpdate;
 
-  PBISPlusStudentCardModal(
+  PBISPlusStudentCardNewModal(
       {Key? key,
       this.isFromDashboardPage,
       required this.studentValueNotifier,
@@ -42,78 +42,123 @@ class PBISPlusStudentCardModal extends StatefulWidget {
       required this.classroomCourseId,
       required this.onValueUpdate,
       required this.constraint,
-      this.studentProfile})
+      this.studentProfile,
+      required bool isFromDashBoard})
       : super(key: key);
 
   @override
-  State<PBISPlusStudentCardModal> createState() =>
-      _PBISPlusStudentCardModalState();
+  State<PBISPlusStudentCardNewModal> createState() =>
+      _PBISPlusStudentCardNewState();
 }
 
-class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
+class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
     trackUserActivity();
-    // widget.studentValueNotifier.value = widget.student!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Row ActionInteractionButtons = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: List.generate(
-        PBISPlusActionInteractionModal.PBISPlusActionInteractionIcons.length,
-        (index) {
-          final iconData = PBISPlusActionInteractionModal
-              .PBISPlusActionInteractionIcons[index];
-          return Container();
-          // PBISPlusActionInteractionButton(
-          //   onValueUpdate: (updatedStudentValueNotifier) {
-          //     widget.classroomCourseId = widget.classroomCourseId;
-          //     widget.onValueUpdate(
-          //         updatedStudentValueNotifier); //Return to class screen //Roster screen count update
-          //     widget.studentValueNotifier =
-          //         updatedStudentValueNotifier; //Used on current screen to update the value
-          //     valueChange.value =
-          //         !valueChange.value; //update the changes on bool change detect
-          //   },
-          //   isLoading: widget.isLoading,
-          //   isFromStudentPlus: widget.isFromStudentPlus,
-          //   studentValueNotifier: widget.studentValueNotifier,
-          //   iconData: iconData,
-          //   classroomCourseId: widget.classroomCourseId,
-          //   scaffoldKey: widget.scaffoldKey,
-          // );
-        },
-      ),
-    );
+    // final Column
+
+    final ActionInteractionButtons = ListView.builder(
+        shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        itemCount: (PBISPlusActionInteractionModalNew
+                    .PBISPlusActionInteractionIconsNew.length /
+                2)
+            .ceil(),
+        itemBuilder: (BuildContext context, int rowIndex) {
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(2, (int columnIndex) {
+                final index = rowIndex * 2 + columnIndex;
+                if (index >=
+                    PBISPlusActionInteractionModalNew
+                        .PBISPlusActionInteractionIconsNew.length) {
+                  return SizedBox
+                      .shrink(); // Return an empty SizedBox for excess cells
+                }
+                final iconData = PBISPlusActionInteractionModalNew
+                    .PBISPlusActionInteractionIconsNew[index];
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: PBISPlusActionInteractionButton(
+                    onValueUpdate: (updatedStudentValueNotifier) {
+                      widget.classroomCourseId = widget.classroomCourseId;
+                      widget.onValueUpdate(
+                          updatedStudentValueNotifier); //Return to class screen //Roster screen count update
+                      widget.studentValueNotifier =
+                          updatedStudentValueNotifier; //Used on current screen to update the value
+                      valueChange.value = !valueChange
+                          .value; //update the changes on bool change detect
+                    },
+                    isLoading: widget.isLoading,
+                    isFromStudentPlus: widget.isFromStudentPlus,
+                    studentValueNotifier: widget.studentValueNotifier,
+                    iconData: iconData,
+                    classroomCourseId: widget.classroomCourseId,
+                    scaffoldKey: widget.scaffoldKey,
+                  ),
+                );
+              }));
+        }
+
+        // Column(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   crossAxisAlignment: CrossAxisAlignment.end,
+        //   children:
+
+        //    List.generate(
+        //     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew.length,
+        //     (index) {
+        //       final iconData = PBISPlusActionInteractionModalNew
+        //           .PBISPlusActionInteractionIconsNew[index];
+        //       return
+
+        // PBISPlusActionInteractionButton(
+        //   onValueUpdate: (updatedStudentValueNotifier) {
+        //     widget.classroomCourseId = widget.classroomCourseId;
+        //     widget.onValueUpdate(
+        //         updatedStudentValueNotifier); //Return to class screen //Roster screen count update
+        //     widget.studentValueNotifier =
+        //         updatedStudentValueNotifier; //Used on current screen to update the value
+        //     valueChange.value =
+        //         !valueChange.value; //update the changes on bool change detect
+        //   },
+        //   isLoading: widget.isLoading,
+        //   isFromStudentPlus: widget.isFromStudentPlus,
+        //   studentValueNotifier: widget.studentValueNotifier,
+        //   iconData: iconData,
+        //   classroomCourseId: widget.classroomCourseId,
+        //   scaffoldKey: widget.scaffoldKey,
+        // );
+        // },
+        // ),
+        );
 
     final pbisStudentDetailWidget = Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SpacerWidget(
             (widget.isFromStudentPlus == true && widget.constraint <= 553)
                 ? MediaQuery.of(context).size.width * 0.11
                 : (widget.constraint <= 115)
                     ? MediaQuery.of(context).size.width * 0.12
-                    : MediaQuery.of(context).size.width * 0.13),
+                    : MediaQuery.of(context).size.width * 0.18),
         Text(
           widget.studentValueNotifier.value.profile!.name!.fullName!,
           style: Theme.of(context)
               .textTheme
-              .bodyText2!
-              .copyWith(fontWeight: FontWeight.bold),
+              .bodyText1!
+              .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Container(
             alignment: Alignment.center,
-            // margin:
-            //     EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.07),
-
             padding: EdgeInsets.only(
                 left: 10,
                 right: 10,
@@ -123,40 +168,16 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     : widget.constraint > 115
                         ? 15
                         : 0.0),
-            // height: 60,
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: ActionInteractionButtons)
+            width: MediaQuery.of(context).size.width * 1,
+            child: ActionInteractionButtons),
+        // SpacerWidget(
+        //     (widget.isFromStudentPlus == true && widget.constraint <= 552)
+        //         ? 0
+        //         : widget.constraint > 115
+        //             ? 15
+        //             : 0.0),
       ],
     );
-
-    // final Column pbisStudentDetailWidget = Column(
-    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //   children: <Widget>[
-    //     Expanded(
-    //       child: SizedBox(
-    //         height: PBISPlusOverrides.profilePictureSize,
-    //       ),
-    //     ),
-    //     Expanded(
-    //       child: Container(
-    //         height: PBISPlusOverrides.profilePictureSize,
-    //         child: Text(
-    //           widget.studentValueNotifier.value.profile!.name!.fullName!,
-    //           style: Theme.of(context)
-    //               .textTheme
-    //               .bodyText2!
-    //               .copyWith(fontWeight: FontWeight.bold),
-    //         ),
-    //       ),
-    //     ),
-    //     Expanded(
-    //       child: Container(
-    //           height: PBISPlusOverrides.profilePictureSize,
-    //           width: MediaQuery.of(context).size.width * 0.65,
-    //           child: Center(child: ActionInteractionButtons)),
-    //     )
-    //   ],
-    // );
 
     return Hero(
         tag: widget.heroTag,
@@ -168,7 +189,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
           children: <Widget>[
             Container(
                 alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.5,
                 width: widget.isFromDashboardPage == true
                     ? MediaQuery.of(context).size.width
                     : MediaQuery.of(context).size.width * 0.7,
@@ -194,8 +215,10 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                           : Color(0xff111C20),
                     ],
                     stops: [
-                      0.6,
-                      0.5,
+                      0.2,
+                      0.0,
+                      // 0.6,
+                      // 0.5,
                     ],
                   ),
                 ),
@@ -251,7 +274,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
         "pbis_plus_student_card_modal_view");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_student_card_modal_screen',
-        screenClass: 'PBISPlusStudentCardModal');
+        screenClass: 'PBISPlusStudentCardNewModal');
     /*-------------------------------------------------------------------------------------*/
     Utility.updateLogs(
         activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',

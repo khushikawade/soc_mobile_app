@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_s
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -18,6 +19,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
@@ -59,16 +61,15 @@ class PBISPlusEditSkills extends StatefulWidget {
   }
 
   @override
-  State<PBISPlusEditSkills> createState() => _PBISPlusStudentCardModalState();
+  State<PBISPlusEditSkills> createState() => _PBISPlusEditSkillsState();
 }
 
-class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
+class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
-  // bool? isEditMode = false;
-  // bool ChangedIndex = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,26 +79,35 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
 
   Widget _buildHeader() {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
       margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1),
+          horizontal: MediaQuery.of(context).size.width * 0.05),
       color: Colors.white,
       child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.height * 0.80,
-            color: AppTheme
-                .kButtonColor, // Set the background color for the heading
+            decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8.0),
+                topLeft: Radius.circular(8.0),
+              ),
+            ),
+            // Set the background color for the heading
             padding: EdgeInsets.all(16),
             child: Text(
               "Edit Skills",
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .headline6!
+                  .headline5!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          SpacerWidget(18),
+          SpacerWidget(24),
           ListView.builder(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
@@ -113,12 +123,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
                   (int columnIndex) {
                     final index = rowIndex * 3 + columnIndex;
                     if (index >=
-                        PBISPlusActionInteractionModal
-                            .PBISPlusActionInteractionIcons.length) {
+                        PBISPlusActionInteractionModalNew
+                            .PBISPlusActionInteractionIconsNew.length) {
                       return SizedBox(); // Return an empty SizedBox for excess cells
                     }
-                    final item = PBISPlusActionInteractionModal
-                        .PBISPlusActionInteractionIcons[index];
+                    final item = PBISPlusActionInteractionModalNew
+                        .PBISPlusActionInteractionIconsNew[index];
                     return Expanded(
                         child: GestureDetector(
                             onTap: () {
@@ -136,16 +146,21 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
                                           ? _buildEditWidget(item)
                                           : Column(
                                               children: [
-                                                Icon(
-                                                  index == changedIndex.value
-                                                      ? Icons.edit
-                                                      : item.iconData,
-                                                  size: Globals.deviceType ==
-                                                          'phone'
-                                                      ? 30
-                                                      : 40,
-                                                  color: item.color,
-                                                ),
+                                                index == changedIndex.value
+                                                    ? Icon(
+                                                        Icons.edit,
+                                                        size:
+                                                            Globals.deviceType ==
+                                                                    'phone'
+                                                                ? 30
+                                                                : 40,
+                                                        color: item.color,
+                                                      )
+                                                    : SvgPicture.asset(
+                                                        item.imagePath,
+                                                        // height: Globals.deviceType == 'phone' ? 64 : 74,
+                                                        // width: Globals.deviceType == 'phone' ? 64 : 74,
+                                                      ),
                                                 SpacerWidget(4),
                                                 Padding(
                                                   padding: Globals.deviceType !=
@@ -165,7 +180,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
                                                                   Colors.black,
                                                               fontSize: 12)),
                                                 ),
-                                                SpacerWidget(16),
+                                                SpacerWidget(32),
                                               ],
                                             ),
                                     ))));
@@ -174,119 +189,132 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
               );
             },
           ),
-          SpacerWidget(18),
+          // SpacerWidget(18),
         ],
       ),
     );
   }
 
   Widget _buildEditWidget(item) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          width: 104,
-          height: 64,
-          decoration: BoxDecoration(
-            color: AppTheme.kButtonColor,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        _modalBottomSheetMenu();
+        // PBISPlusEditSkillsBottomSheet();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 80,
+            height: 60,
+            decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.edit,
+              size: Globals.deviceType == 'phone' ? 32 : 42,
+              color: Colors.white,
+            ),
           ),
-          child: Icon(
-            Icons.edit,
-            size: Globals.deviceType == 'phone' ? 20 : 30,
-            color: Colors.white,
-          ),
-        ),
-        Text("w")
-      ],
+          SpacerWidget(32),
+        ],
+      ),
     );
   }
 
   Widget _buildAdditionalBehaviour() {
-    return Card(
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1),
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-            child: Text(
-              "Additional Behaviors",
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline1!
-                  .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+    return Expanded(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05),
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 24, left: 16),
+              child: Text(
+                "Additional Behaviors",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(color: Colors.black),
+              ),
             ),
-          ),
-          SpacerWidget(18),
-          ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: (PBISPlusActionInteractionModal
-                        .PBISPlusActionInteractionIcons.length /
-                    2)
-                .ceil(),
-            itemBuilder: (BuildContext context, int rowIndex) {
-              return Row(
-                children: List.generate(
-                  3,
-                  (int columnIndex) {
-                    final index = rowIndex * 3 + columnIndex;
-                    if (index >=
-                        PBISPlusActionInteractionModal
-                            .PBISPlusActionInteractionIcons.length) {
-                      return SizedBox
-                          .shrink(); // Return an empty SizedBox for excess cells
-                    }
-                    final item = PBISPlusActionInteractionModal
-                        .PBISPlusActionInteractionIcons[index];
-                    return Expanded(
-                      child: Container(
-                        width: 40,
-                        height: 80,
-                        margin: EdgeInsets.all(16),
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              item.iconData,
-                              color: item.color,
+            SpacerWidget(16),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: (PBISPlusActionInteractionModal
+                          .PBISPlusActionInteractionIcons.length /
+                      2)
+                  .ceil(),
+              itemBuilder: (BuildContext context, int rowIndex) {
+                return Row(
+                  children: List.generate(
+                    3,
+                    (int columnIndex) {
+                      final index = (rowIndex * 3 + columnIndex);
+                      if (index >=
+                          PBISPlusActionInteractionModalNew
+                              .PBISPlusActionInteractionIconsNew.length) {
+                        return SizedBox
+                            .shrink(); // Return an empty SizedBox for excess cells
+                      }
+                      final item = PBISPlusActionInteractionModalNew
+                          .PBISPlusActionInteractionIconsNew[index];
+                      return Expanded(
+                        child: Container(
+                          width: 40,
+                          height: 80,
+                          margin:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 0,
+                                blurRadius: 1,
+                                offset: Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                item.imagePath,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-          SpacerWidget(18),
-        ],
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            SpacerWidget(18),
+          ],
+        ),
       ),
     );
   }
@@ -304,12 +332,14 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
               IconData(0xe80d,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
+              size: Globals.deviceType == 'phone' ? 24 : 32,
               color: AppTheme.kButtonColor),
         ),
         SpacerWidget(18),
         _buildHeader(),
-        SpacerWidget(64),
+        SpacerWidget(16),
         _buildAdditionalBehaviour(),
+        SpacerWidget(16),
       ],
     );
   }
@@ -321,272 +351,50 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusEditSkills> {
       Scaffold(
         backgroundColor: Colors.transparent,
         appBar: PBISPlusAppBar(
-          title: "Dashboard",
+          title: "",
           backButton: true,
           scaffoldKey: _scaffoldKey,
         ),
         body: body(context),
       )
     ]);
-
-    //   final Row ActionInteractionButtons = Row(
-    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //       crossAxisAlignment: CrossAxisAlignment.end,
-    //       children: [Container()]);
-    //   //    List.generate(
-    //   //     PBISPlusActionInteractionModal.PBISPlusActionInteractionIcons.length,
-    //   //     (index) {
-    //   //       final iconData = PBISPlusActionInteractionModal
-    //   //           .PBISPlusActionInteractionIcons[index];
-    //   //       return
-    //   //           // Expanded(
-    //   //           // child:
-    //   //           PBISPlusActionInteractionButton(
-    //   //         onValueUpdate: (updatedStudentValueNotifier) {
-    //   //           widget.classroomCourseId = widget.classroomCourseId;
-    //   //           widget.onValueUpdate(
-    //   //               updatedStudentValueNotifier); //Return to class screen //Roster screen count update
-    //   //           widget.studentValueNotifier =
-    //   //               updatedStudentValueNotifier; //Used on current screen to update the value
-    //   //           valueChange.value =
-    //   //               !valueChange.value; //update the changes on bool change detect
-    //   //         },
-    //   //         isLoading: widget.isLoading,
-    //   //         isFromStudentPlus: widget.isFromStudentPlus,
-    //   //         studentValueNotifier: widget.studentValueNotifier,
-    //   //         iconData: iconData,
-    //   //         classroomCourseId: widget.classroomCourseId,
-    //   //         scaffoldKey: widget.scaffoldKey,
-    //   //       );
-    //   //     },
-    //   //   ),
-    //   // );
-
-    //   final pbisStudentDetailWidget = Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: <Widget>[
-    //       Text(
-    //         "Edit Skills",
-    //         textAlign: TextAlign.center,
-    //         style: Theme.of(context)
-    //             .textTheme
-    //             .headline6!
-    //             .copyWith(fontWeight: FontWeight.bold),
-    //       ),
-    //       Container(
-    //           alignment: Alignment.center,
-    //           padding: EdgeInsets.only(
-    //             left: 10,
-    //             right: 10,
-    //             top: 15,
-    //           ),
-    //           // (widget.isFromStudentPlus == true &&
-    //           //         widget.constraint <= 552)
-    //           //     ? 0
-    //           //     : widget.constraint > 115
-    //           //         ? 15
-    //           //         : 0.0),
-    //           width: MediaQuery.of(context).size.width * 0.1,
-    //           child: ActionInteractionButtons)
-    //     ],
-    //   );
-
-    //   final pbisBehaviourDetails;
-    //   return Column(
-    //     children: [
-    //       Hero(
-    //           // tag: widget.heroTag,
-    //           tag: "heroTag",
-    //           createRectTween: (begin, end) {
-    //             return CustomRectTween(begin: begin!, end: end!);
-    //           },
-    //           child: Stack(
-    //             alignment: Alignment.center,
-    //             children: <Widget>[
-    //               Container(
-    //                   alignment: Alignment.center,
-    //                   height: MediaQuery.of(context).size.height * 0.2,
-    //                   // width: widget.isFromDashboardPage == true
-    //                   //     ?
-    //                   //     MediaQuery.of(context).size.width
-    //                   //     : MediaQuery.of(context).size.width * 0.7,
-    //                   // margin: widget.isFromDashboardPage == true
-    //                   //     ? EdgeInsets.fromLTRB(16, 40, 16, 20)
-    //                   //     : EdgeInsets.only(top: 45),
-
-    //                   width: MediaQuery.of(context).size.width * 0.7,
-    //                   margin: EdgeInsets.only(top: 45),
-    //                   decoration: BoxDecoration(
-    //                     shape: BoxShape.rectangle,
-    //                     borderRadius: BorderRadius.circular(5),
-    //                     boxShadow: [
-    //                       BoxShadow(
-    //                           color: Colors.black,
-    //                           offset: Offset(0, 2),
-    //                           blurRadius: 10),
-    //                     ],
-    //                     gradient: LinearGradient(
-    //                       begin: Alignment.topCenter,
-    //                       end: Alignment.bottomCenter,
-    //                       colors: [
-    //                         AppTheme.kButtonColor,
-    //                         Color(0xff000000) != Theme.of(context).backgroundColor
-    //                             ? Color(0xffF7F8F9)
-    //                             : Color(0xff111C20),
-    //                       ],
-    //                       stops: [
-    //                         0.6,
-    //                         0.5,
-    //                       ],
-    //                     ),
-    //                   ),
-    //                   child: FittedBox(child: pbisStudentDetailWidget)),
-    //               Positioned(
-    //                 top: 0,
-    //                 child: GestureDetector(
-    //                   onTap: null,
-    //                   // widget.isFromStudentPlus == true ||
-    //                   //         widget.isFromDashboardPage == true
-    //                   //     ? null
-    //                   // : () async {
-    //                   // Navigator.of(context).pushReplacement(
-    //                   //   HeroDialogRoute(
-    //                   //     builder: (context) => PBISPlusStudentDashBoard(
-    //                   //       constraint: widget.constraint,
-    //                   //       scaffoldKey: widget.scaffoldKey!,
-    //                   //       isValueChangeNotice: valueChange,
-    //                   //       onValueUpdate: (updatedStudentValueNotifier) {
-    //                   //         widget.studentValueNotifier =
-    //                   //             updatedStudentValueNotifier;
-    //                   //       },
-    //                   //       studentValueNotifier: widget.studentValueNotifier,
-    //                   //       heroTag: widget.heroTag,
-    //                   //       StudentDetailWidget: pbisStudentDetailWidget,
-    //                   //       classroomCourseId: widget.classroomCourseId,
-    //                   //     ),
-    //                   //   ),
-    //                   // );
-    //                   // },
-    //                   child: Container(
-    //                       decoration: BoxDecoration(
-    //                         shape: BoxShape.circle,
-    //                       ),
-    //                       child: Container()
-    //                       // PBISCommonProfileWidget(
-    //                       //     studentProfile: widget.studentProfile,
-    //                       //     isFromStudentPlus: widget.isFromStudentPlus,
-    //                       //     isLoading: widget.isLoading,
-    //                       //     valueChange: valueChange,
-    //                       //     countWidget: true,
-    //                       //     studentValueNotifier: widget.studentValueNotifier,
-    //                       //     profilePictureSize: PBISPlusOverrides.profilePictureSize,
-    //                       //     imageUrl:
-    //                       //         widget.studentValueNotifier.value.profile!.photoUrl!),
-    //                       ),
-    //                 ),
-    //               ),
-    //             ],
-    //           )),
-    //       _buildAdditionalBehaviour()
-    //     ],
-    //   );
-    // }
-
-    // Widget _buildAdditionalBehaviour() {
-    //   return Hero(
-    //       // tag: widget.heroTag,
-    //       tag: "heroTag2",
-    //       createRectTween: (begin, end) {
-    //         return CustomRectTween(begin: begin!, end: end!);
-    //       },
-    //       child: Stack(
-    //         alignment: Alignment.center,
-    //         children: <Widget>[
-    //           Container(
-    //               alignment: Alignment.center,
-    //               height: MediaQuery.of(context).size.height * 0.5,
-    //               width: MediaQuery.of(context).size.width * 0.7,
-    //               // margin: EdgeInsets.only(top: 14),
-    //               decoration: BoxDecoration(
-    //                 shape: BoxShape.rectangle,
-    //                 borderRadius: BorderRadius.circular(5),
-    //                 boxShadow: [
-    //                   BoxShadow(
-    //                       color: Colors.black,
-    //                       offset: Offset(0, 2),
-    //                       blurRadius: 10),
-    //                 ],
-    //                 gradient: LinearGradient(
-    //                   begin: Alignment.topCenter,
-    //                   end: Alignment.bottomCenter,
-    //                   colors: [
-    //                     Color(0xff000000) != Theme.of(context).backgroundColor
-    //                         ? Color(0xffF7F8F9)
-    //                         : Color(0xff111C20),
-    //                     Color(0xff000000) != Theme.of(context).backgroundColor
-    //                         ? Color(0xffF7F8F9)
-    //                         : Color(0xff111C20),
-    //                   ],
-    //                   stops: [
-    //                     0.6,
-    //                     0.5,
-    //                   ],
-    //                 ),
-    //               ),
-    //               child: FittedBox(
-    //                   child: Column(
-    //                 mainAxisAlignment: MainAxisAlignment.start,
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: <Widget>[
-    //                   Text(
-    //                     "Additional Behaviors",
-    //                     textAlign: TextAlign.center,
-    //                     style: Theme.of(context)
-    //                         .textTheme
-    //                         .bodyText1!
-    //                         .copyWith(fontWeight: FontWeight.bold),
-    //                   ),
-    //                   // Container(
-    //                   //   alignment: Alignment.center,
-    //                   //   padding: EdgeInsets.only(
-    //                   //     left: 10,
-    //                   //     right: 10,
-    //                   //     top: 15,
-    //                   //   ),
-    //                   //   // (widget.isFromStudentPlus == true &&
-    //                   //   //         widget.constraint <= 552)
-    //                   //   //     ? 0
-    //                   //   //     : widget.constraint > 115
-    //                   //   //         ? 15
-    //                   //   //         : 0.0),
-    //                   //   width: MediaQuery.of(context).size.width * 0.1,
-    //                   //   child: Card(child: Container()
-    //                   //       // ListView.builder(
-    //                   //       //   itemCount: 5,
-    //                   //       //   itemBuilder: (BuildContext context, int index) {
-    //                   //       //     return Text('Item $index');
-    //                   //       //     // Add any other widget properties or customizations as ne;
-    //                   //       //   },
-    //                   //       // ),
-    //                   //       ),
-    //                   // )
-    //                 ],
-    //               ))),
-
-    //           // Card(
-    //           //   child: ListView.builder(
-    //           //     itemCount: 50,
-    //           //     itemBuilder: (BuildContext context, int index) {
-    //           //       return ListTile(
-    //           //         title: Text('Item $index'),
-    //           //         // Add any other widget properties or customizations as needed
-    //           //       );
-    //           //     },
-    //           //   ),
-    //           // ),
-    //         ],
-    //       ));
   }
+
+  void _modalBottomSheetMenu() => showModalBottomSheet(
+        // useRootNavigator: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return PBISPlusEditSkillsBottomSheet(
+                // fromClassScreen: false,
+                // scaffoldKey: _scaffoldKey,
+                // screenshotController: screenshotController,
+                // headerScreenshotController: headerScreenshotController,
+                // googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
+                // content: false,
+                height:
+                    // constraints.maxHeight < 750 && Globals.deviceType == "phone"
+                    //     ? MediaQuery.of(context).size.height * 0. //0.45
+                    //     : Globals.deviceType == "phone"
+                    //         ? MediaQuery.of(context).size.height * 0.19 //0.45
+                    //         : MediaQuery.of(context).size.height * 0.15,
+                    MediaQuery.of(context).size.height * 0.3,
+                // title: '',
+                // padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
+              );
+            },
+          );
+        },
+      );
 
   void trackUserActivity() {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(

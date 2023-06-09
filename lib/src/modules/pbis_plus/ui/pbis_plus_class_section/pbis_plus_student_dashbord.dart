@@ -166,7 +166,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       classroomCourseId: widget.classroomCourseId!);
                 } else {
                   // In case of student email not found in STUDENT+ Module
-
                   List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
                   if (widget.isFromStudentPlus == true) {
                     updateActionCountStudentPlusModuleWidget(
@@ -187,7 +186,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 }
               }),
         ),
-
         // to remove hero widget for STUDENT+
         Container(
           alignment: Alignment.topCenter,

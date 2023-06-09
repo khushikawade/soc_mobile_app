@@ -7,10 +7,11 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:like_button/like_button.dart';
+import 'package:flutter_svg/svg.dart';
 
 // ignore: must_be_immutable
 class PBISPlusActionInteractionButton extends StatefulWidget {
-  final PBISPlusActionInteractionModal iconData;
+  final PBISPlusActionInteractionModalNew iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final bool?
       isFromStudentPlus; // to check it is from pbis plus or student plus
@@ -63,6 +64,11 @@ class PBISPlusActionInteractionButtonState
 
   final ValueNotifier<bool> _showMessage = ValueNotifier<bool>(false);
 
+  final ValueNotifier<int> participation = ValueNotifier<int>(0);
+  final ValueNotifier<int> collaboration = ValueNotifier<int>(0);
+  final ValueNotifier<int> listening = ValueNotifier<int>(0);
+  void update() {}
+
   @override
   Widget build(BuildContext context) {
     return OfflineBuilder(
@@ -75,31 +81,30 @@ class PBISPlusActionInteractionButtonState
         return InkWell(
           onTap: () {},
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     LikeButton(
                       padding: EdgeInsets.only(
                           top: widget.isFromStudentPlus == true ? 15 : 20,
-                          bottom: widget.isFromStudentPlus == true ? 0 : 5,
+                          bottom: widget.isFromStudentPlus == true ? 0 : 14,
                           left: 15,
                           right: 5),
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       likeCountAnimationType: LikeCountAnimationType.none,
-                      likeCountPadding: const EdgeInsets.only(left: 5.0),
+                      likeCountPadding: const EdgeInsets.only(left: 0.0),
                       animationDuration: Duration(
                           milliseconds:
                               widget.isFromStudentPlus == true ? 0 : 1000),
                       countPostion: CountPostion.right,
                       isLiked: null,
-                      size: 20,
+                      size: 60,
                       onTap: widget.isLoading == true
                           ?
                           // Interaction should not be tappable in STUDENT+ module
@@ -116,27 +121,28 @@ class PBISPlusActionInteractionButtonState
                         dotSecondaryColor: widget.iconData.color,
                       ),
                       likeBuilder: (bool isLiked) {
-                        return Icon(widget.iconData.iconData,
-                            color: widget.iconData.color,
-                            size: Globals.deviceType == 'phone' ? 20 : 30
-                            // 20
-                            // widget.iconData.iconSize,
-                            );
-                      },
+                        return SvgPicture.asset(
+                          widget.iconData.imagePath,
+                          // height: Globals.deviceType == 'phone' ? 64 : 74,
+                          // width: Globals.deviceType == 'phone' ? 64 : 74,
+                        );
 
-                      // likeCount: _getCounts(),
+                        // Icon(widget.iconData.iconData,
+                        //     color: widget.iconData.color,
+                        //     size: Globals.deviceType == 'phone' ? 64 : 74);
+                      },
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        top: widget.isFromStudentPlus == true ? 15 : 20,
+                        // top: widget.isFromStudentPlus == true ? 15 : 0,
+                        // bottom: widget.isFromStudentPlus == true ? 0 : 5,
+                        top: widget.isFromStudentPlus == true ? 15 : 15,
                         bottom: widget.isFromStudentPlus == true ? 0 : 5,
                       ),
                       child: ValueListenableBuilder(
                           valueListenable: onTapDetect,
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
-                            // print('only likes count');
-                            // print(widget.obj.likeCount);
                             return widget.isLoading == true
                                 ? Utility.textWidget(
                                     text: '0',
@@ -144,17 +150,18 @@ class PBISPlusActionInteractionButtonState
                                     textTheme: Theme.of(context)
                                         .textTheme
                                         .bodyText1!
-                                        .copyWith(fontSize: 12))
+                                        .copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18))
                                 : _getCounts();
                           }),
                     )
                   ],
                 ),
               ),
-
               Padding(
                 padding: Globals.deviceType != 'phone'
-                    ? const EdgeInsets.all(16.0)
+                    ? const EdgeInsets.all(0.0)
                     : EdgeInsets.zero,
                 child: Utility.textWidget(
                     text: widget.iconData.title,
@@ -162,31 +169,128 @@ class PBISPlusActionInteractionButtonState
                     textTheme: Theme.of(context)
                         .textTheme
                         .bodyText1!
-                        .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
+                        .copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
               ),
-              // ValueListenableBuilder<bool>(
-              //   valueListenable: _showMessage,
-              //   builder: (BuildContext context, bool value, Widget? child) {
-              //     return value
-              //         ? SizedBox(
-              //             width: 40,
-              //             height: 20,
-              //             child: FittedBox(
-              //               child: Text(
-              //                 widget.iconData.title,
-              //                 style: Theme.of(context).textTheme.bodyText1!,
-              //               ),
-              //             ),
-              //           )
-              //         : SizedBox(
-              //             width: 40,
-              //             height: 20,
-              //           );
-              //   },
-              // ),
             ],
           ),
         );
+
+        // InkWell(
+        //   onTap: () {},
+        //   child: Column(
+        //     // mainAxisSize: MainAxisSize.min,
+        //     mainAxisAlignment: MainAxisAlignment.end,
+        //     children: [
+        //       Container(
+        //         alignment: Alignment.center,
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: [
+        //             LikeButton(
+        //               padding: EdgeInsets.only(
+        //                   top: widget.isFromStudentPlus == true ? 15 : 20,
+        //                   bottom: widget.isFromStudentPlus == true ? 0 : 5,
+        //                   left: 15,
+        //                   right: 5),
+        //               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //               likeCountAnimationType: LikeCountAnimationType.none,
+        //               likeCountPadding: const EdgeInsets.only(left: 5.0),
+        //               animationDuration: Duration(
+        //                   milliseconds:
+        //                       widget.isFromStudentPlus == true ? 0 : 1000),
+        //               countPostion: CountPostion.right,
+        //               isLiked: null,
+
+        //               size: 20,
+        //               onTap: widget.isLoading == true
+        //                   ?
+        //                   // Interaction should not be tappable in STUDENT+ module
+        //                   (bool isLiked) async {
+        //                       return false;
+        //                     }
+        //                   : _onLikeButtonTapped,
+        //               circleColor: CircleColor(
+        //                 start: widget.iconData.color,
+        //                 end: widget.iconData.color,
+        //               ),
+        //               bubblesColor: BubblesColor(
+        //                 dotPrimaryColor: widget.iconData.color,
+        //                 dotSecondaryColor: widget.iconData.color,
+        //               ),
+        //               likeBuilder: (bool isLiked) {
+        //                 return Icon(widget.iconData.iconData,
+        //                     color: widget.iconData.color,
+        //                     size: Globals.deviceType == 'phone' ? 20 : 30
+        //                     // 20
+        //                     // widget.iconData.iconSize,
+        //                     );
+        //               },
+
+        //               // likeCount: _getCounts(),
+        //             ),
+        //             Padding(
+        //               padding: EdgeInsets.only(
+        //                 top: widget.isFromStudentPlus == true ? 15 : 20,
+        //                 bottom: widget.isFromStudentPlus == true ? 0 : 5,
+        //               ),
+        //               child: ValueListenableBuilder(
+        //                   valueListenable: onTapDetect,
+        //                   builder: (BuildContext context, dynamic value,
+        //                       Widget? child) {
+        //                     // print('only likes count');
+        //                     // print(widget.obj.likeCount);
+        //                     return widget.isLoading == true
+        //                         ? Utility.textWidget(
+        //                             text: '0',
+        //                             context: context,
+        //                             textTheme: Theme.of(context)
+        //                                 .textTheme
+        //                                 .bodyText1!
+        //                                 .copyWith(fontSize: 12))
+        //                         : _getCounts();
+        //                   }),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+
+        //       Padding(
+        //         padding: Globals.deviceType != 'phone'
+        //             ? const EdgeInsets.all(16.0)
+        //             : EdgeInsets.zero,
+        //         child: Utility.textWidget(
+        //             text: widget.iconData.title,
+        //             context: context,
+        //             textTheme: Theme.of(context)
+        //                 .textTheme
+        //                 .bodyText1!
+        //                 .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
+        //       ),
+        //       // ValueListenableBuilder<bool>(
+        //       //   valueListenable: _showMessage,
+        //       //   builder: (BuildContext context, bool value, Widget? child) {
+        //       //     return value
+        //       //         ? SizedBox(
+        //       //             width: 40,
+        //       //             height: 20,
+        //       //             child: FittedBox(
+        //       //               child: Text(
+        //       //                 widget.iconData.title,
+        //       //                 style: Theme.of(context).textTheme.bodyText1!,
+        //       //               ),
+        //       //             ),
+        //       //           )
+        //       //         : SizedBox(
+        //       //             width: 40,
+        //       //             height: 20,
+        //       //           );
+        //       //   },
+        //       // ),
+        //     ],
+        //   ),
+        // );
       },
       child: _isOffline
           ? Utility.textWidget(
@@ -268,6 +372,11 @@ class PBISPlusActionInteractionButtonState
       'Engaged': widget.studentValueNotifier.value.profile!.engaged,
       'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+      'Participation': ++participation.value,
+      'Collaboration': ++collaboration.value,
+      'Listening': ++listening.value,
+      // widget.studentValueNotifier.value.profile!.niceWork,
+      // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };
 
     int viewCount = map[title] ?? 0;

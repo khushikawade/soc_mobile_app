@@ -605,7 +605,8 @@ class _ActionInteractionButtonWidgetState
     Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
-        builder: (showDialogContext) => CommonPopupWidget(
+        builder: (showDialogContext) => 
+        CommonPopupWidget(
               backgroundColor:
                   Theme.of(showDialogContext).colorScheme.background ==
                           Color(0xff000000)

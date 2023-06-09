@@ -33,24 +33,81 @@ class PBISPlusActionInteractionModal {
       color: Colors.green,
       title: 'Helpful',
     ),
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe87e,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  ];
+}
+
+class PBISPlusActionInteractionModalNew {
+  String imagePath;
+  String title;
+  Color color;
+  PBISPlusActionInteractionModalNew({
+    required this.imagePath,
+    required this.title,
+    required this.color,
+  });
+
+  static List<PBISPlusActionInteractionModalNew>
+      PBISPlusActionInteractionIconsNew = [
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/Engaged.svg",
+      title: 'Engaged',
       color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/Helpful.svg",
+      title: 'Nice Work',
+      color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/nice_work.svg",
+      title: 'Helpful',
+      color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/participation.svg",
       title: 'Participation',
+      color: Colors.red,
     ),
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe87f,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      color: Colors.blue,
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/collaboration.svg",
       title: 'Collaboration',
+      color: Colors.red,
     ),
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe880,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      color: Colors.green,
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/listening.svg",
       title: 'Listening',
-    )
+      color: Colors.red,
+    ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/Engaged.svg",
+    //   title: 'Engaged',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/Helpful.svg",
+    //   title: 'Nice Work',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/nice_work.svg",
+    //   title: 'Helpful',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/participation.svg",
+    //   title: 'Participation',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/collaboration.svg",
+    //   title: 'Collaboration',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/listening.svg",
+    //   title: 'Listening',
+    //   color: Colors.red,
+    // ),
   ];
 }
 

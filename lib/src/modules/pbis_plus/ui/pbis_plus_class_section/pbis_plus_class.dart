@@ -2,6 +2,7 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_new_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -270,7 +271,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           .addAll(state.googleClassroomCourseList);
 
                       /*----------------------END--------------------------*/
-
                     }
                     if (widget.isGradedPlus == true &&
                         _animationController!.isAnimating == true) {
@@ -593,17 +593,29 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
-              child: PBISPlusStudentCardModal(
-                constraint: constraints.maxHeight,
-                onValueUpdate: (updatedStudentValueNotifier) {
-                  studentValueNotifier = updatedStudentValueNotifier;
-                },
-                studentValueNotifier: studentValueNotifier,
-                heroTag: heroTag,
-                classroomCourseId: classroomCourseId,
-                scaffoldKey: _scaffoldKey,
-              ),
-            ),
+                //OLD FLOW MAKE BY NIKHAR
+                // child: PBISPlusStudentCardModal(
+                //   constraint: constraints.maxHeight,
+                //   onValueUpdate: (updatedStudentValueNotifier) {
+                //     studentValueNotifier = updatedStudentValueNotifier;
+                //   },
+                //   studentValueNotifier: studentValueNotifier,
+                //   heroTag: heroTag,
+                //   classroomCourseId: classroomCourseId,
+                //   scaffoldKey: _scaffoldKey,
+                // ),
+                // NEW FLOW
+                child: PBISPlusStudentCardNewModal(
+              constraint: constraints.maxHeight,
+              isFromDashBoard: false,
+              onValueUpdate: (updatedStudentValueNotifier) {
+                studentValueNotifier = updatedStudentValueNotifier;
+              },
+              studentValueNotifier: studentValueNotifier,
+              heroTag: heroTag,
+              classroomCourseId: classroomCourseId,
+              scaffoldKey: _scaffoldKey,
+            )),
           ),
         );
       },
