@@ -296,3 +296,16 @@ class GradedPlusSaveResultToDashboard extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetDashBoardStatusForStandardApp extends OcrEvent {
+  final String? fileId;
+  ClassroomCourse? assessmentObj;
+  GetDashBoardStatusForStandardApp(
+      {required this.fileId, required this.assessmentObj});
+
+  @override
+  List<Object> get props => [fileId!, assessmentObj!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $fileId}';
+}

@@ -209,6 +209,22 @@ class AssessmentDashboardStatus extends OcrState {
   List<Object> get props => [];
 }
 
+class AssessmentDashboardStatusForStandardApp extends OcrState {
+  int? resultRecordCount;
+  ClassroomCourse? assessmentObj;
+  AssessmentDashboardStatusForStandardApp(
+      {this.resultRecordCount, required this.assessmentObj});
+  AssessmentDashboardStatus copyWith(
+      {final obj, final recordCount, final assessmentId}) {
+    return AssessmentDashboardStatus(
+        resultRecordCount: recordCount ?? this.resultRecordCount,
+        assessmentObj: assessmentId ?? this.assessmentObj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
 class GetRubricPdfSuccess extends OcrState {
   List<RubricPdfModal>? objList;
 

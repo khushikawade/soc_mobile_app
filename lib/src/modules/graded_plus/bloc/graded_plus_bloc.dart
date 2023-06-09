@@ -26,6 +26,7 @@ import 'package:equatable/equatable.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 import '../../google_drive/model/assessment_detail_modal.dart';
+import '../../pbis_plus/modal/pbis_course_modal.dart';
 part 'graded_plus_event.dart';
 part 'graded_plus_state.dart';
 
@@ -647,6 +648,35 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
 
         yield AssessmentDashboardStatus(
+            resultRecordCount: Overrides.STANDALONE_GRADED_APP
+                ? 0
+                //to get save student list from result object
+                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                    assessmentId: event.assessmentObj!.assessmentCId),
+            assessmentObj: event.assessmentObj);
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'GetDashBoardStatus Event');
+
+        yield AssessmentDashboardStatus(
+            resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
+      }
+    }
+
+    if (event is GetDashBoardStatusForStandardApp) {
+      try {
+        yield OcrLoading2();
+
+        if (event.assessmentObj?.assessmentCId?.isEmpty ?? true) {
+          AssessmentDetails obj =
+              await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
+
+          event.assessmentObj!.assessmentCId = obj.assessmentId;
+          event.assessmentObj!.id = obj.classroomCourseId;
+          event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
+        }
+
+        yield AssessmentDashboardStatusForStandardApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object

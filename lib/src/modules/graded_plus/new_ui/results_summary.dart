@@ -21,6 +21,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/result_summary_action_bottom
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
@@ -139,8 +140,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   final ScrollController _scrollController = ScrollController();
   // GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
   // final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
-  LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDb =
-      LocalDatabase(Strings.googleClassroomCoursesList);
+
+  LocalDatabase<dynamic> _googleClassRoomlocalDb = LocalDatabase(
+      Overrides.STANDALONE_GRADED_APP
+          ? Strings.googleClassroomCoursesList
+          : OcrOverrides.gradedPlusClassroomDB);
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
@@ -804,9 +808,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       }
 
                       if (Overrides.STANDALONE_GRADED_APP) {
-                        List<GoogleClassroomCourses>
-                            _googleClassroomCourseslocalData =
-                            await _googleClassRoomlocalDb.getData();
+                        var _googleClassroomCourseslocalData =
+                            await _googleClassRoomlocalDb.getData()
+                                as List<GoogleClassroomCourses>;
 
                         for (GoogleClassroomCourses element
                             in _googleClassroomCourseslocalData) {
@@ -827,6 +831,46 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       savedRecordCount = state.resultRecordCount;
                       GoogleClassroomGlobals
                               .studentAssessmentAndClassroomObj.assessmentCId =
+                          historyAssessmentId =
+                              state.assessmentObj!.assessmentCId;
+                    }
+                  }
+
+                  if (state is AssessmentDashboardStatusForStandardApp) {
+                    if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
+                        false) {
+                      List list = await OcrUtility.getSortedStudentInfoList(
+                          tableName: 'history_student_info');
+
+                      if (isGoogleSheetStateReceived.value == true) {
+                        state.resultRecordCount == list.length
+                            ? dashboardState.value = 'Success'
+                            : dashboardState.value = '';
+                      }
+
+                      var _googleClassroomCourseslocalData =
+                          await _googleClassRoomlocalDb.getData()
+                              as List<ClassroomCourse>;
+
+                      for (ClassroomCourse element
+                          in _googleClassroomCourseslocalData) {
+                        if (element.id == state.assessmentObj!.id) {
+                          //update the classroom course work id in GoogleClassroomGlobals obj
+                          element.courseWorkId =
+                              state.assessmentObj!.courseWorkId!;
+
+                          GoogleClassroomGlobals
+                                  .studentAssessmentAndClassroomForStandardApp =
+                              element;
+
+                          break;
+                        }
+                      }
+
+                      savedRecordCount = state.resultRecordCount;
+                      GoogleClassroomGlobals
+                              .studentAssessmentAndClassroomForStandardApp
+                              .assessmentCId =
                           historyAssessmentId =
                               state.assessmentObj!.assessmentCId;
                     }
@@ -2143,10 +2187,18 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       _driveBloc
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
 
-      _ocrBloc.add(GetDashBoardStatus(
-          fileId: widget.fileId,
-          assessmentObj:
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+      if (Overrides.STANDALONE_GRADED_APP) {
+        _ocrBloc.add(GetDashBoardStatus(
+            fileId: widget.fileId,
+            assessmentObj:
+                GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+      } else {
+        _ocrBloc.add(GetDashBoardStatusForStandardApp(
+            fileId: widget.fileId,
+            assessmentObj: GoogleClassroomGlobals
+                .studentAssessmentAndClassroomForStandardApp));
+      }
+
       // _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
       updateAssessmentToDb();
@@ -2238,8 +2290,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           isExtended: true,
           onPressed: () async {
             if (Overrides.STANDALONE_GRADED_APP) {
-              List<GoogleClassroomCourses> _localData =
-                  await _googleClassRoomlocalDb.getData();
+              var _localData = await _googleClassRoomlocalDb.getData()
+                  as List<GoogleClassroomCourses>;
               if (_localData.isEmpty) {
                 Utility.currentScreenSnackBar(
                     "You need to import roster first", null);

@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/result_summary_action_bottom_sheet.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -455,16 +456,30 @@ class _GradedPlusAssessmentSummaryState
               createdAsPremium = true;
             }
             //     Globals.historyAssessmentId = list[index].assessmentId!;
-            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                GoogleClassroomCourses();
+            if (Overrides.STANDALONE_GRADED_APP) {
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                  GoogleClassroomCourses();
 
-            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                GoogleClassroomCourses(
-                    assessmentCId: list[index].assessmentId,
-                    courseId: list[index].classroomCourseId,
-                    courseWorkId: list[index].classroomCourseWorkId);
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                  GoogleClassroomCourses(
+                      assessmentCId: list[index].assessmentId,
+                      courseId: list[index].classroomCourseId,
+                      courseWorkId: list[index].classroomCourseWorkId);
+            } else {
+              GoogleClassroomGlobals
+                      .studentAssessmentAndClassroomForStandardApp =
+                  ClassroomCourse();
 
-            // await _historyStudentInfoDb.clear();
+              GoogleClassroomGlobals
+                      .studentAssessmentAndClassroomForStandardApp =
+                  ClassroomCourse(
+                      assessmentCId: list[index].assessmentId,
+                      id: list[index].classroomCourseId,
+                      courseWorkId: list[index].classroomCourseWorkId);
+            }
+
+            print(GoogleClassroomGlobals
+                .studentAssessmentAndClassroomForStandardApp);
             Navigator.push(
               context,
               MaterialPageRoute(
