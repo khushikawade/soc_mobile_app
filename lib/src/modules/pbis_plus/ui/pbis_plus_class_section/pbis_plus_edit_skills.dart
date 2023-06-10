@@ -101,10 +101,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             child: Text(
               "Edit Skills",
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headline5!.copyWith(
+                  color: Color(0xff000000) == Theme.of(context).backgroundColor
+                      ? Color(0xffFFFFFF)
+                      : Color(0xff000000),
+                  fontWeight: FontWeight.bold),
             ),
           ),
           SpacerWidget(24),
@@ -189,7 +190,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               );
             },
           ),
-          // SpacerWidget(18),
         ],
       ),
     );
@@ -242,6 +242,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             horizontal: MediaQuery.of(context).size.width * 0.05),
         color: Colors.white,
         child: Column(
+          // physics: NeverScrollableScrollPhysics(),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
@@ -256,62 +257,83 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               ),
             ),
             SpacerWidget(16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: (PBISPlusActionInteractionModal
-                          .PBISPlusActionInteractionIcons.length /
-                      2)
-                  .ceil(),
-              itemBuilder: (BuildContext context, int rowIndex) {
-                return Row(
-                  children: List.generate(
-                    3,
-                    (int columnIndex) {
-                      final index = (rowIndex * 3 + columnIndex);
-                      if (index >=
-                          PBISPlusActionInteractionModalNew
-                              .PBISPlusActionInteractionIconsNew.length) {
-                        return SizedBox
-                            .shrink(); // Return an empty SizedBox for excess cells
-                      }
-                      final item = PBISPlusActionInteractionModalNew
-                          .PBISPlusActionInteractionIconsNew[index];
-                      return Expanded(
-                        child: Container(
-                          width: 40,
-                          height: 80,
-                          margin:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 0,
-                                blurRadius: 1,
-                                offset: Offset(0, 0),
-                              ),
-                            ],
+            // ListView.builder(
+            //   shrinkWrap: true,
+            //   physics: BouncingScrollPhysics(),
+            //   scrollDirection: Axis.vertical,
+            //   itemCount: (PBISPlusActionInteractionModal
+            //               .PBISPlusActionInteractionIcons.length /
+            //           2)
+            //       .ceil(),
+            //   itemBuilder: (BuildContext context, int rowIndex) {
+            //     return Row(
+            //       children: List.generate(
+            //         3,
+            //         (int columnIndex) {
+            //           final index = (rowIndex * 3 + columnIndex);
+            //           if (index >=
+            //               PBISPlusActionInteractionModalNew
+            //                   .PBISPlusActionInteractionIconsNew.length) {
+            //             return SizedBox
+            //                 .shrink(); // Return an empty SizedBox for excess cells
+            //           }
+            //           final item = PBISPlusActionInteractionModalNew
+            //               .PBISPlusActionInteractionIconsNew[index];
+            //           return
+            Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                // physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio:
+                      1.0, // Adjust this value to change item aspect ratio
+                  crossAxisSpacing:
+                      4.0, // Adjust the spacing between items horizontally
+                  mainAxisSpacing:
+                      4.0, // Adjust the spacing between items vertically
+                ),
+                itemCount: 2 *
+                    PBISPlusActionInteractionModalNew
+                        .PBISPlusActionInteractionIconsNew.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final item = PBISPlusActionInteractionModalNew
+                      .PBISPlusActionInteractionIconsNew[index % 6];
+                  return Expanded(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 0,
+                            blurRadius: 1,
+                            offset: Offset(0, 0),
                           ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                item.imagePath,
-                              ),
-                            ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            item.imagePath,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
+            // );
+            // },
+            // ),
             SpacerWidget(18),
           ],
         ),

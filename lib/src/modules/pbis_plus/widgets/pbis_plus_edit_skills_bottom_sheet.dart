@@ -6,9 +6,10 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -25,6 +26,8 @@ import 'package:pdf/widgets.dart' as pdfWidget;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
+
+import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
@@ -214,27 +217,28 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   showPopup({required String message, required String? title}) {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                backgroundColor: Theme.of(context).colorScheme.background ==
-                        Color(0xff000000)
-                    ? Color(0xff162429)
-                    : null,
-                isLogout: true,
-                orientation: MediaQuery.of(context).orientation,
-                context: context,
-                message: "Are you sure you want to delete this item",
-                title: '',
-                clearButton: true,
-                titleStyle: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontWeight: FontWeight.bold),
-              );
-            }));
+    // showDialog(
+    //     context: context,
+    //     builder: (context) =>
+    // OrientationBuilder(builder: (context, orientation) {
+    //   return
+    Navigator.of(context).pushReplacement(HeroDialogRoute(
+        builder: (context) => PBISPlusCommonPopup(
+              backgroundColor:
+                  Theme.of(context).colorScheme.background == Color(0xff000000)
+                      ? Color(0xff162429)
+                      : null,
+              orientation: MediaQuery.of(context).orientation,
+              context: context,
+              message: "Are you sure you want to delete this item",
+              title: '',
+              titleStyle: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )));
+    // );
+    // );
   }
 
   Widget EditName() {

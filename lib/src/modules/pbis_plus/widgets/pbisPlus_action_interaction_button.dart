@@ -19,7 +19,9 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final Key? scaffoldKey;
   final String? classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
-
+  final bool? isShowCircle;
+  final double? size;
+  // final Size
   // final Future<bool?> Function(bool)? onTapCallback;
 
   PBISPlusActionInteractionButton({
@@ -31,7 +33,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
     required this.scaffoldKey,
     required this.classroomCourseId,
     required this.onValueUpdate,
-
+    required this.isShowCircle,
+    required this.size,
     // required this.onTapCallback,
   }) : super(key: key);
 
@@ -104,7 +107,7 @@ class PBISPlusActionInteractionButtonState
                               widget.isFromStudentPlus == true ? 0 : 1000),
                       countPostion: CountPostion.right,
                       isLiked: null,
-                      size: 60,
+                      size: widget.size!,
                       onTap: widget.isLoading == true
                           ?
                           // Interaction should not be tappable in STUDENT+ module
@@ -143,17 +146,25 @@ class PBISPlusActionInteractionButtonState
                           valueListenable: onTapDetect,
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
-                            return widget.isLoading == true
-                                ? Utility.textWidget(
-                                    text: '0',
-                                    context: context,
-                                    textTheme: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18))
-                                : _getCounts();
+                            return Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.isShowCircle!
+                                      ? Colors.grey[300]
+                                      : Colors.transparent,
+                                ),
+                                child: widget.isLoading == true
+                                    ? Utility.textWidget(
+                                        text: '0',
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18))
+                                    : _getCounts());
                           }),
                     )
                   ],
@@ -169,7 +180,7 @@ class PBISPlusActionInteractionButtonState
                     textTheme: Theme.of(context)
                         .textTheme
                         .bodyText1!
-                        .copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
+                        .copyWith(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             ],
           ),

@@ -855,7 +855,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         builder: (context) => LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Set the maximum height of the bottom sheet based on the screen size
-
                 return PBISPlusSettingBottomSheet(
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
