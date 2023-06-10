@@ -141,15 +141,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   // GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
   // final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
 
-  LocalDatabase<dynamic> _googleClassRoomlocalDb = LocalDatabase(
-      Overrides.STANDALONE_GRADED_APP
-          ? Strings.googleClassroomCoursesList
-          : OcrOverrides.gradedPlusClassroomDB);
+  LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDbForStandAlone =
+      LocalDatabase(Strings.googleClassroomCoursesList);
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
 
   ValueNotifier<bool> isEditPerform = ValueNotifier<bool>(false);
+
+  LocalDatabase<ClassroomCourse> _googleClassRoomlocalDbForStandardApp =
+      LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
 
   @override
   void initState() {
@@ -808,9 +809,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       }
 
                       if (Overrides.STANDALONE_GRADED_APP) {
-                        var _googleClassroomCourseslocalData =
-                            await _googleClassRoomlocalDb.getData()
-                                as List<GoogleClassroomCourses>;
+                        List<GoogleClassroomCourses>
+                            _googleClassroomCourseslocalData =
+                            await _googleClassRoomlocalDbForStandAlone
+                                .getData();
 
                         for (GoogleClassroomCourses element
                             in _googleClassroomCourseslocalData) {
@@ -848,9 +850,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             : dashboardState.value = '';
                       }
 
-                      var _googleClassroomCourseslocalData =
-                          await _googleClassRoomlocalDb.getData()
-                              as List<ClassroomCourse>;
+                      List<ClassroomCourse> _googleClassroomCourseslocalData =
+                          await _googleClassRoomlocalDbForStandardApp.getData();
 
                       for (ClassroomCourse element
                           in _googleClassroomCourseslocalData) {
@@ -2290,8 +2291,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           isExtended: true,
           onPressed: () async {
             if (Overrides.STANDALONE_GRADED_APP) {
-              var _localData = await _googleClassRoomlocalDb.getData()
-                  as List<GoogleClassroomCourses>;
+              List<GoogleClassroomCourses> _localData =
+                  await _googleClassRoomlocalDbForStandAlone.getData();
               if (_localData.isEmpty) {
                 Utility.currentScreenSnackBar(
                     "You need to import roster first", null);
