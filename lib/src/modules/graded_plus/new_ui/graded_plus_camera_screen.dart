@@ -406,10 +406,27 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 listener: (context, state) {
                   print("state ------------------$state");
                   if (state is GradedPlusSaveResultToDashboardSuccess) {
-                    if (Overrides.STANDALONE_GRADED_APP) {
-                      _navigatetoResultSection();
-                    } else {
+                    // if (Overrides.STANDALONE_GRADED_APP) {
+                    //   _navigatetoResultSection();
+                    // } else {
+                    //   createClassRoomCourseWorkForStandardApp();
+                    // }
+
+                    ClassroomCourse
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp =
+                        widget.isFromHistoryAssessmentScanMore == true
+                            ? GoogleClassroomGlobals
+                                ?.studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                            : GoogleClassroomGlobals
+                                ?.studentAssessmentAndClassroomAssignmentForStandardApp;
+
+                    if (Overrides.STANDALONE_GRADED_APP == false &&
+                        (localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                                ?.id?.isNotEmpty ??
+                            false)) {
                       createClassRoomCourseWorkForStandardApp();
+                    } else {
+                      _navigatetoResultSection();
                     }
                   }
 
@@ -582,7 +599,9 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                           widget.isFromHistoryAssessmentScanMore ==
                                                   true
                                               ? _historystudentAssessmentInfoDb
-                                              : _studentAssessmentInfoDb);
+                                              : _studentAssessmentInfoDb,
+                                      isFromHistoryAssignment: widget
+                                          .isFromHistoryAssessmentScanMore);
 
                           if (notPresentStudentsInSelectedClass?.isNotEmpty ??
                               true) {
@@ -1156,7 +1175,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course \'$course\'. Do you still want to continue with these students?",
+                  //   "A few students not found in the selected course \'$course\'. Do you still want to continue with these students?",
+                  "A few students not found in the selected Google Classroom course. Do you still want to continue with these students?",
               studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
                   ? _historystudentAssessmentInfoDb
                   : _studentAssessmentInfoDb,
@@ -1369,12 +1389,14 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
   void createClassRoomCourseWorkForStandardApp() {
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
     _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
       isFromHistoryAssessmentScanMore: widget.isFromHistoryAssessmentScanMore,
       pointPossible: widget.pointPossible ?? '0',
-      studentClassObj:
-          GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp,
+      studentClassObj: widget.isFromHistoryAssessmentScanMore
+          ? GoogleClassroomGlobals
+              .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+          : GoogleClassroomGlobals
+              .studentAssessmentAndClassroomAssignmentForStandardApp,
       title: widget.isFromHistoryAssessmentScanMore
           ? Globals.historyAssessmentName ?? ''
           : Globals.assessmentName ?? '',

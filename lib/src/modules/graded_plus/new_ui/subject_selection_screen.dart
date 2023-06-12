@@ -1668,7 +1668,17 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
             //         ''));
             //! navigateToResultSummery();
-            createClassRoomCourseWorkForStandardApp();
+
+//If classroom course id is empty or null thats mean user didnt select any classroom course
+            if (GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                    .id
+                    ?.isNotEmpty ??
+                false) {
+              createClassRoomCourseWorkForStandardApp();
+            } else {
+              saveAssessmentToDashboardAndGetId();
+            }
           }
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
@@ -1919,11 +1929,12 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
   void createClassRoomCourseWorkForStandardApp() {
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
+    print(GoogleClassroomGlobals
+        .studentAssessmentAndClassroomAssignmentForStandardApp);
     _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
         studentAssessmentInfoDb: _studentAssessmentInfoDb,
-        studentClassObj:
-            GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp,
+        studentClassObj: GoogleClassroomGlobals
+            .studentAssessmentAndClassroomAssignmentForStandardApp,
         title: Globals.assessmentName ?? '',
         pointPossible: Globals.pointPossible ?? "0"));
   }
@@ -1933,8 +1944,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
     ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
         isMcqSheet: widget.isMcqSheet ?? false,
-        assessmentQueImage: studentAssessmentInfoDblist?.first?.questionImgUrl ??
-            '',
+        assessmentQueImage:
+            studentAssessmentInfoDblist?.first?.questionImgUrl ?? '',
         assessmentName: Globals.assessmentName ?? 'Assessment Name',
         rubricScore: Globals.scoringRubric ?? '2',
         subjectName: widget.isSearchPage == true
@@ -1954,20 +1965,22 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
         teacherEmail: Globals.teacherEmailId,
-        classroomCourseId:
-            Overrides.STANDALONE_GRADED_APP
-                ? GoogleClassroomGlobals
-                        ?.studentAssessmentAndClassroomObj?.courseId ??
-                    ''
-                : GoogleClassroomGlobals
-                        .studentAssessmentAndClassroomForStandardApp.id ??
-                    '',
-        classroomCourseWorkId: Overrides.STANDALONE_GRADED_APP
+        classroomCourseId: Overrides
+                .STANDALONE_GRADED_APP
+            ? GoogleClassroomGlobals
+                    ?.studentAssessmentAndClassroomObj?.courseId ??
+                ''
+            : GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomAssignmentForStandardApp.id ??
+                '',
+        classroomCourseWorkId: Overrides
+                .STANDALONE_GRADED_APP
             ? GoogleClassroomGlobals
                     ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                 ''
             : GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomForStandardApp.courseWorkId ??
+                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                    .courseWorkId ??
                 ''));
   }
 }

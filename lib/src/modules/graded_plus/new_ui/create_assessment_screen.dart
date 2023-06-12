@@ -85,7 +85,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           GoogleClassroomCourses();
       updateClassNameForStandAloneApp();
     } else {
-      GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+      GoogleClassroomGlobals
+              .studentAssessmentAndClassroomAssignmentForStandardApp =
           ClassroomCourse();
       // updateClassNameForStandardApp();
     }
@@ -730,7 +731,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                     return;
                   }
                 } else if (GoogleClassroomGlobals
-                        .studentAssessmentAndClassroomForStandardApp
+                        .studentAssessmentAndClassroomAssignmentForStandardApp
                         ?.id
                         ?.isNotEmpty ??
                     false) {
@@ -748,6 +749,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   List<StudentAssessmentInfo>
                       notPresentStudentListInSelectedClass = await OcrUtility
                           .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                              isFromHistoryAssignment: false,
                               title: Globals.assessmentName ?? '',
                               isScanMore: false,
                               studentInfoDB: _studentAssessmentInfoDb);
@@ -761,7 +763,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                         notPresentStudentsInSelectedClass:
                             notPresentStudentListInSelectedClass,
                         courseName: GoogleClassroomGlobals
-                            .studentAssessmentAndClassroomForStandardApp.name!);
+                            .studentAssessmentAndClassroomAssignmentForStandardApp
+                            .name!);
                     return;
                   }
                 }
@@ -1095,20 +1098,24 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
   Future<void> updateClassNameForStandardApp(
       {required String courseName}) async {
-    GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+    GoogleClassroomGlobals
+            .studentAssessmentAndClassroomAssignmentForStandardApp =
         ClassroomCourse(id: '');
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
+    print(GoogleClassroomGlobals
+        .studentAssessmentAndClassroomAssignmentForStandardApp);
 //get all classroom couses for localDB
     LocalDatabase<ClassroomCourse> _localDb =
         LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
     List<ClassroomCourse> googleClassroomCoursesDB = await _localDb.getData();
 
-    GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp =
+    GoogleClassroomGlobals
+            .studentAssessmentAndClassroomAssignmentForStandardApp =
         googleClassroomCoursesDB.firstWhere(
             (ClassroomCourse classroomCourses) =>
                 classroomCourses.name!.toLowerCase() ==
                 courseName.toLowerCase());
 
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp);
+    print(GoogleClassroomGlobals
+        .studentAssessmentAndClassroomAssignmentForStandardApp);
   }
 }

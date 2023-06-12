@@ -390,10 +390,20 @@ class OcrUtility {
   }
 
   static Future<List<StudentAssessmentInfo>>
-      checkAllStudentBelongsToSameClassOrNotForStandardApp(
-          {required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
-          required bool isScanMore,
-          required String title}) async {
+      checkAllStudentBelongsToSameClassOrNotForStandardApp({
+    required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
+    required bool isScanMore,
+    required String title,
+    required bool isFromHistoryAssignment,
+  }) async {
+    ClassroomCourse
+        localStudentAssessmentAndClassroomAssignmentObjForStandardApp =
+        isFromHistoryAssignment == true
+            ? GoogleClassroomGlobals
+                ?.studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+            : GoogleClassroomGlobals
+                ?.studentAssessmentAndClassroomAssignmentForStandardApp;
+
     try {
       List<StudentAssessmentInfo> studentInfo = await studentInfoDB.getData();
 
@@ -402,7 +412,7 @@ class OcrUtility {
             element?.isScanMore == null || element?.isScanMore == false);
 
         //event.studentClassObj = Google classroom Course Object come from import roster
-        if ((GoogleClassroomGlobals?.studentAssessmentAndClassroomForStandardApp
+        if ((localStudentAssessmentAndClassroomAssignmentObjForStandardApp
                 .courseWorkId?.isEmpty ??
             true)) {
           // courseWorkId is null or empty, and isHistorySanMore is either null or false
@@ -420,15 +430,23 @@ class OcrUtility {
                 // always check last "_" contains in title and get the subject
                 if ((title.split("_").last == classroom.name)) {
                   // print("insdie if loopppp");
-                  GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomForStandardApp
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
                       .name = classroom.name;
-                  GoogleClassroomGlobals
-                      ?.studentAssessmentAndClassroomForStandardApp
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
                       .id = classroom.id;
-                  GoogleClassroomGlobals
-                      ?.studentAssessmentAndClassroomForStandardApp
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
                       .students = classroom.students;
+
+                  if (isFromHistoryAssignment == true) {
+                    GoogleClassroomGlobals
+                            .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp;
+                  } else {
+                    GoogleClassroomGlobals
+                            .studentAssessmentAndClassroomAssignmentForStandardApp =
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp;
+                  }
+
                   break;
                 }
               }
@@ -437,13 +455,13 @@ class OcrUtility {
         }
       }
 
-      return GoogleClassroomGlobals
-                  ?.studentAssessmentAndClassroomForStandardApp?.students ==
+      return localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                  ?.students ==
               null
           ? []
           : studentInfo.where((student) {
-              return GoogleClassroomGlobals
-                  .studentAssessmentAndClassroomForStandardApp.students!
+              return localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                  .students!
                   .every((ClassroomStudents courseStudent) {
                 return courseStudent.profile!.emailAddress !=
                     student.studentEmail;

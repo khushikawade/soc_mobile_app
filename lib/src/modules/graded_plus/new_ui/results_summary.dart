@@ -668,28 +668,53 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         // await _historystudentAssessmentInfoDb.clear();
 
                         //Mark student that are already saved to google classroom
-                        state.obj
-                            .forEach((StudentAssessmentInfo student) async {
-                          if ((GoogleClassroomGlobals
-                                      .studentAssessmentAndClassroomObj
-                                      ?.courseId
-                                      ?.isNotEmpty ??
-                                  false) &&
-                              (GoogleClassroomGlobals
-                                      .studentAssessmentAndClassroomObj
-                                      ?.courseWorkId
-                                      ?.isNotEmpty ??
-                                  false)) {
-                            student.isgoogleClassRoomStudentProfileUpdated =
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          state.obj
+                              .forEach((StudentAssessmentInfo student) async {
+                            if ((GoogleClassroomGlobals
+                                        .studentAssessmentAndClassroomObj
+                                        ?.courseId
+                                        ?.isNotEmpty ??
+                                    false) &&
+                                (GoogleClassroomGlobals
+                                        .studentAssessmentAndClassroomObj
+                                        ?.courseWorkId
+                                        ?.isNotEmpty ??
+                                    false)) {
+                              student.isgoogleClassRoomStudentProfileUpdated =
+                                  true;
+                            }
+                            student.isStudentResultAssignmentSavedOnDashboard =
                                 true;
-                          }
-                          student.isStudentResultAssignmentSavedOnDashboard =
-                              true;
-                          //Mark student that are already saved to google Slides
-                          student.isSlideObjUpdated = true;
-                          await _historystudentAssessmentInfoDb
-                              .addData(student);
-                        });
+                            //Mark student that are already saved to google Slides
+                            student.isSlideObjUpdated = true;
+                            await _historystudentAssessmentInfoDb
+                                .addData(student);
+                          });
+                        } else {
+                          state.obj
+                              .forEach((StudentAssessmentInfo student) async {
+                            if ((GoogleClassroomGlobals
+                                        .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                                        ?.id
+                                        ?.isNotEmpty ??
+                                    false) &&
+                                (GoogleClassroomGlobals
+                                        .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                                        ?.courseWorkId
+                                        ?.isNotEmpty ??
+                                    false)) {
+                              student.isgoogleClassRoomStudentProfileUpdated =
+                                  true;
+                            }
+                            student.isStudentResultAssignmentSavedOnDashboard =
+                                true;
+                            //Mark student that are already saved to google Slides
+                            student.isSlideObjUpdated = true;
+                            await _historystudentAssessmentInfoDb
+                                .addData(student);
+                          });
+                        }
 
                         //Extract presentation url from the excel sheet
                         if (state.obj[0].googleSlidePresentationURL != 'NA' &&
@@ -867,7 +892,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               state.assessmentObj!.courseWorkId!;
 
                           GoogleClassroomGlobals
-                                  .studentAssessmentAndClassroomForStandardApp =
+                                  .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
                               element;
 
                           break;
@@ -876,7 +901,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                       savedRecordCount = state.resultRecordCount;
                       GoogleClassroomGlobals
-                              .studentAssessmentAndClassroomForStandardApp
+                              .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
                               .assessmentCId =
                           historyAssessmentId =
                               state.assessmentObj!.assessmentCId;
@@ -2203,7 +2228,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         _ocrBloc.add(GetDashBoardStatusForStandardApp(
             fileId: widget.fileId,
             assessmentObj: GoogleClassroomGlobals
-                .studentAssessmentAndClassroomForStandardApp));
+                .studentAssessmentAndClassroomHistoryAssignmentForStandardApp));
       }
 
       // _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));

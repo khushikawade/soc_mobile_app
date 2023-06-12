@@ -467,11 +467,11 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkId: list[index].classroomCourseWorkId);
             } else {
               GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomForStandardApp =
+                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
                   ClassroomCourse();
 
               GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomForStandardApp =
+                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
                   ClassroomCourse(
                       assessmentCId: list[index].assessmentId,
                       id: list[index].classroomCourseId,
@@ -479,7 +479,8 @@ class _GradedPlusAssessmentSummaryState
             }
 
             print(GoogleClassroomGlobals
-                .studentAssessmentAndClassroomForStandardApp.courseWorkId);
+                .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                .courseWorkId);
             Navigator.push(
               context,
               MaterialPageRoute(

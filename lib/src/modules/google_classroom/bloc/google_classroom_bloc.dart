@@ -481,15 +481,25 @@ class GoogleClassroomBloc
           print(obj);
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
-              GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
-                  .courseWorkId = obj.courseWorkId;
+              if (event.isFromHistoryAssessmentScanMore == true) {
+                GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                    .courseWorkId = obj.courseWorkId;
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomForStandardApp
-                  .courseWorkURL = obj.courseWorkURL;
+                GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                    .courseWorkURL = obj.courseWorkURL;
+              } else {
+                GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                    .courseWorkId = obj.courseWorkId;
+
+                GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                    .courseWorkURL = obj.courseWorkURL;
+              }
             }
-            print("wokr couse id-------");
-            print(GoogleClassroomGlobals
-                .studentAssessmentAndClassroomForStandardApp.courseWorkId);
+
 // Updating local database with already scanned students data true to avoid include them in next scan more case
             assessmentData.asMap().forEach(
               (i, element) async {
@@ -505,6 +515,16 @@ class GoogleClassroomBloc
             yield GoogleClassroomErrorState(errorMsg: obj[1].toString());
           }
         } else {
+// Updating local database with already scanned students data true to avoid include them in next scan more case
+          assessmentData.asMap().forEach(
+            (i, element) async {
+              if (element.isgoogleClassRoomStudentProfileUpdated != true) {
+                element.isgoogleClassRoomStudentProfileUpdated = true;
+                await event.studentAssessmentInfoDb.putAt(i, element);
+              }
+            },
+          );
+
           yield CreateClassroomCourseWorkSuccessForStandardApp();
         }
       } catch (e) {

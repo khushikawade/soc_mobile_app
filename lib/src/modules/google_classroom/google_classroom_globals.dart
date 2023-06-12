@@ -6,7 +6,10 @@ class GoogleClassroomGlobals {
   //Contains course detail for select course // single object only to use everywhere in the app
   static GoogleClassroomCourses studentAssessmentAndClassroomObj =
       GoogleClassroomCourses();
+  static ClassroomCourse studentAssessmentAndClassroomAssignmentForStandardApp =
+      ClassroomCourse();
 
-  static ClassroomCourse studentAssessmentAndClassroomForStandardApp =
+  static ClassroomCourse
+      studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
       ClassroomCourse();
 }
