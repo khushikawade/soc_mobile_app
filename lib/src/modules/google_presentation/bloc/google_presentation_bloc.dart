@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';

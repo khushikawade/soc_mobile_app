@@ -1,6 +1,6 @@
-import '../../../services/local_database/hive_db_services.dart';
-import '../../../services/local_database/local_db.dart';
-import '../../graded_plus/modal/user_info.dart';
+import 'local_database/hive_db_services.dart';
+import 'local_database/local_db.dart';
+import '../modules/graded_plus/modal/user_info.dart';
 
 class UserGoogleProfile {
   // static updateUserProfileIntoDB(updatedObj) async {

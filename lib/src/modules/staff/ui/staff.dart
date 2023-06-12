@@ -32,7 +32,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
 import '../../shared/ui/common_grid_widget.dart';
 

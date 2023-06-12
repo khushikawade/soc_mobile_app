@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';

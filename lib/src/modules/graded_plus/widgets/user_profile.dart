@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../../globals.dart';
 import '../../../styles/theme.dart';
 import '../../google_classroom/modal/google_classroom_list.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../home/ui/home.dart';
 import '../modal/student_assessment_info_modal.dart';
 
