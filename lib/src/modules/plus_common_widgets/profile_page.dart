@@ -230,11 +230,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.08,
                 ),
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: NetworkImage(widget.profile.profilePicture!),
-                  backgroundColor: Colors.white,
-                ),
+                // CircleAvatar(
+                //   radius: 50.0,
+                //   backgroundImage: NetworkImage(widget.profile.profilePicture!),
+                //   backgroundColor: Colors.white,
+                // ),
                 SizedBox(
                   height: 10.0,
                 ),
