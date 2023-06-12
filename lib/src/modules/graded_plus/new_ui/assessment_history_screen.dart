@@ -479,7 +479,7 @@ class _GradedPlusAssessmentSummaryState
             }
 
             print(GoogleClassroomGlobals
-                .studentAssessmentAndClassroomForStandardApp);
+                .studentAssessmentAndClassroomForStandardApp.courseWorkId);
             Navigator.push(
               context,
               MaterialPageRoute(
