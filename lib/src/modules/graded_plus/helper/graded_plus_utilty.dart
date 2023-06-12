@@ -344,6 +344,8 @@ class OcrUtility {
 
       await _studentInfoDb.addData(studentObj);
     });
+
+    return students;
   }
 
   static Future<List<StudentAssessmentInfo>> getSortedStudentInfoList(
@@ -351,22 +353,21 @@ class OcrUtility {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
     List<StudentAssessmentInfo> _studentInfoListDb = [];
-    _studentInfoListDb = await _studentInfoDb.getData();
 
     if (isEdit == true) {
       //Sorting Local db student list
-      await sortStudents(
+      _studentInfoListDb = await sortStudents(
         tableName: tableName,
       );
+    } else {
+      _studentInfoListDb = await _studentInfoDb.getData();
     }
-
     if (_studentInfoListDb.isNotEmpty) {
       if (_studentInfoListDb[0].studentId == 'Id' ||
           _studentInfoListDb[0].studentId == 'Name') {
         _studentInfoListDb.removeAt(0);
       }
     }
-
     return _studentInfoListDb;
   }
 

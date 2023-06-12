@@ -61,7 +61,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
   final _formKey = GlobalKey<FormState>();
   // GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
+  final ValueNotifier<String> selectedGrade = ValueNotifier<String>("PK");
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(
       false); //Used to manage the question image. Should not be editable if already sent to google classroom assignment
@@ -89,6 +89,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           ClassroomCourse();
       // updateClassNameForStandardApp();
     }
+    // get last selected grade
+    getLastSelectedGrade();
 
     // Globals.googleExcelSheetId = '';
     // Globals.googleSlidePresentationId = '';
@@ -498,9 +500,14 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   return Bouncing(
                     child: GestureDetector(
                       onTap: () {
+                        if (widget.customGrades[index] != '+') {
+                          // to updated selection to local db
+                          updateSelectedGrade(
+                              value: widget.customGrades[index]);
+                        }
                         widget.customGrades[index] == '+'
                             ? _updateGradeBottomSheet()
-                            : selectedGrade.value = index;
+                            : selectedGrade.value = widget.customGrades[index];
                       },
                       child: Transform.scale(
                         scale: 1, //_scale!,
@@ -509,7 +516,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                           padding: EdgeInsets.only(bottom: 5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: selectedGrade.value == index
+                            color: selectedGrade.value ==
+                                    widget.customGrades[index]
                                 ? AppTheme.kSelectedColor
                                 : Colors.grey,
                           ),
@@ -521,7 +529,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                                     : Color(0xff111C20),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: selectedGrade.value == index
+                                  color: selectedGrade.value ==
+                                          widget.customGrades[index]
                                       ? AppTheme.kSelectedColor
                                       : Colors.grey,
                                 )),
@@ -536,7 +545,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                                         .textTheme
                                         .headline1!
                                         .copyWith(
-                                            color: selectedGrade.value == index
+                                            color: selectedGrade.value ==
+                                                    widget.customGrades[index]
                                                 ? AppTheme.kSelectedColor
                                                 : Theme.of(context)
                                                     .colorScheme
@@ -874,7 +884,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                       ? "New York"
                       : selectedState,
                   // questionImageUrl: questionImageUrl ?? '',
-                  selectedClass: widget.customGrades[selectedGrade.value],
+                  selectedClass: selectedGrade.value,
                 )),
       );
     } else {
@@ -887,7 +897,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   selectedAnswer: widget.selectedAnswer,
                   isFromCreateAssessmentScreen: true,
                   // questionImageUrl: questionImageUrl ?? '',
-                  selectedClass: widget.customGrades[selectedGrade.value],
+                  selectedClass: selectedGrade.value,
                 )),
       );
     }
@@ -896,6 +906,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   _updateGradeBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
@@ -913,6 +924,10 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         valueChanged: (controller) async {
           await updateGradeList(
             sectionName: controller.text,
+          );
+          // to updated selection to local db
+          updateSelectedGrade(
+            value: controller.text,
           );
 
           controller.clear();
@@ -932,7 +947,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
       widget.customGrades.add('+');
 
       setState(() {});
-      selectedGrade.value = widget.customGrades.length - 2;
+      selectedGrade.value = widget.customGrades[widget.customGrades.length - 2];
     } else {
       Utility.showSnackBar(
           scaffoldKey, "Subject \'$sectionName\' Already Exist", context, null);
@@ -1057,6 +1072,25 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     await OcrUtility.sortStudents(
       tableName: Strings.studentInfoDbName,
     );
+  }
+
+  // Function to get last selected Index
+  getLastSelectedGrade() async {
+    SharedPreferences lastSelectedGrade = await SharedPreferences.getInstance();
+    var lastGrade =
+        await lastSelectedGrade.getString(OcrOverrides.lastSelectedGrade);
+    if (lastGrade != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        selectedGrade.value = lastGrade;
+      });
+    }
+  }
+
+  //Function to update last selected Index
+  updateSelectedGrade({required String value}) async {
+    SharedPreferences updateSelectedGrade =
+        await SharedPreferences.getInstance();
+    updateSelectedGrade.setString(OcrOverrides.lastSelectedGrade, value);
   }
 
   Future<void> updateClassNameForStandardApp(

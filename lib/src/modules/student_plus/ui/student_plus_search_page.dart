@@ -1,4 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -53,6 +56,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
   double _width = 100;
   double _height = Globals.deviceType == "phone" ? 180 : 450;
   final _deBouncer = Debouncer(milliseconds: 500);
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
   @override
   void initState() {
@@ -73,6 +77,10 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
       isRecentList.value = true;
       _height = 0;
       _width = 0;
+    } else {
+      //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
+      //is available or not if not this will create one or the available get the drive folder id
+      _checkDriveFolderExistsOrNot();
     }
 
     /*-------------------------User Activity Track START----------------------------*/
@@ -449,5 +457,25 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                 )
               : Container();
         });
+  }
+
+  void _checkDriveFolderExistsOrNot() async {
+    //FOR STUDENT PLUS
+    StudentPlusOverrides.studentPlusGoogleDriveFolderId = '';
+    StudentPlusOverrides.studentPlusGoogleDriveFolderPath = '';
+
+    //this is get the user profile details
+    final List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    final UserInformation userProfile = _profileData[0];
+
+    //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
+    //is available or not if not this will create one or the available get the drive folder id
+    googleDriveBloc.add(GetDriveFolderIdEvent(
+        fromGradedPlusAssessmentSection: false,
+        isReturnState: false,
+        token: userProfile.authorizationToken,
+        folderName: "SOLVED STUDENT+",
+        refreshToken: userProfile.refreshToken));
   }
 }

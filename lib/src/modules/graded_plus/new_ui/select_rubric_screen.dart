@@ -415,6 +415,7 @@ class _GradedPlusConstructedResponseState
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
+                  padding: EdgeInsets.only(bottom: 20),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
@@ -422,7 +423,7 @@ class _GradedPlusConstructedResponseState
                           bottom: MediaQuery.of(context).size.height * 0.1,
                           left: MediaQuery.of(context).size.width / 70,
                           right: MediaQuery.of(context).size.width / 70),
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent:
                               MediaQuery.of(context).orientation ==
                                       Orientation.portrait

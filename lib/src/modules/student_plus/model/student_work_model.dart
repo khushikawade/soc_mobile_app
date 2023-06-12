@@ -95,7 +95,7 @@ class StudentPlusWorkModel {
         "Assessment_Que_Image__c": assessmentQueImageC,
         "FirstName": firstName,
         "LastName": lastName,
-        "Subject__c":subjectC,
-        "Assessment_Type":assessmentType
+        "Subject__c": subjectC,
+        "Assessment_Type": assessmentType
       };
 }

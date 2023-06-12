@@ -888,15 +888,15 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       },
                       validator: (String? value) {
                         // isStudentIdFilled.value = value!;
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          isStudentIdFilled.value = value!;
-                        });
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //  isStudentIdFilled.value = value!;
+                        // });
                         return Overrides.STANDALONE_GRADED_APP == true
-                            ? isStudentIdFilled.value.isEmpty ||
-                                    !regex.hasMatch(isStudentIdFilled.value)
+                            ? idController.text.isEmpty ||
+                                    !regex.hasMatch(idController.text)
                                 ? ''
                                 : null
-                            : isStudentIdFilled.value.isEmpty
+                            : idController.text.isEmpty
                                 ? ''
                                 : null;
                       },
@@ -965,11 +965,11 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       : grade
                   : (grade == '' ? 2 : int.parse(grade)),
               isSuccessState: false),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(widget.isMcqSheet == true
+              ? StudentPlusOverrides.kSymmetricPadding * 0
+              : StudentPlusOverrides.kSymmetricPadding * 2.5),
           Center(child: imagePreviewWidget()),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
         ],
       ),
     );

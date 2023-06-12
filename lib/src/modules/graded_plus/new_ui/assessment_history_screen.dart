@@ -319,7 +319,7 @@ class _GradedPlusAssessmentSummaryState
           return index == _list.length
               ? isLoading == true
                   ? Container(
-                      padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 15, bottom: 40),
                       child: Center(
                         child: Platform.isIOS
                             ? CupertinoActivityIndicator(

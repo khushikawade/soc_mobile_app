@@ -591,31 +591,15 @@ class _GradedPlusSearchScreenPageState
                       floatingButtonOnTap();
                       //await saveToDrive();
                     },
-                    label: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: 'Save',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Container(
-                          //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                          child: Image(
-                            width: Globals.deviceType == "phone" ? 23 : 28,
-                            height: Globals.deviceType == "phone" ? 23 : 28,
-                            image: AssetImage(
-                              "assets/images/drive_ico.png",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
+                    label: Utility.textWidget(
+                        text: 'Save',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  )
                 : Container();
       },
     );
@@ -831,7 +815,25 @@ class _GradedPlusSearchScreenPageState
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
+          }
+        });
+  }
 
+  /* -------------------- Widget bloc listener to manage excel sheet upload data ------------------- */
+  Widget excelBlocListener() {
+    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
+        bloc: excelSheetBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("state is $state");
+          if (state is GoogleSuccess) {
+            Utility.updateLogs(
+                activityType: 'GRADED+',
+                activityId: '45',
+                description: 'G-Excel File Updated',
+                operationResult: 'Success');
+            assessmentStatus.value.excelSheetPrepared =
+                true; // update loading dialog and navigate
             Globals.currentAssessmentId = '';
 
             List<StudentAssessmentInfo> studentAssessmentInfoDblist =
@@ -864,26 +866,7 @@ class _GradedPlusSearchScreenPageState
                 classroomCourseWorkId: GoogleClassroomGlobals
                         ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                     ''));
-          }
-        });
-  }
-
-  /* -------------------- Widget bloc listener to manage excel sheet upload data ------------------- */
-  Widget excelBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: excelSheetBloc,
-        child: Container(),
-        listener: (context, state) async {
-          print("state is $state");
-          if (state is GoogleSuccess) {
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '45',
-                description: 'G-Excel File Updated',
-                operationResult: 'Success');
-            assessmentStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
-            navigateToResultSummery();
+            //! navigateToResultSummery();
           }
 
           if (state is ErrorState) {
