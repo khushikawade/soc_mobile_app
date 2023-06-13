@@ -67,11 +67,11 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(left: 16, top: 74, right: 16, bottom: 16),
+          height: MediaQuery.of(context).size.height / 4,
+          padding: EdgeInsets.only(left: 16, top: 54, right: 16, bottom: 16),
           margin: EdgeInsets.only(top: 54),
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              color: Colors.yellow,
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -96,19 +96,26 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text("Are you sure you want to delete this item",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 16)),
-              SpacerWidget(24),
+              SpacerWidget(MediaQuery.of(context).size.height / 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text("Are you sure you want to delete this item?",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(fontSize: 16)),
+              ),
+              SpacerWidget(MediaQuery.of(context).size.height / 40),
               Align(
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.bottomCenter,
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         CircularCustomButton(
+                          size: Size(MediaQuery.of(context).size.width / 3,
+                              MediaQuery.of(context).size.width / 10),
                           text: "Cancel",
                           onClick: () {
                             Navigator.pop(context!);
@@ -117,13 +124,19 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                           isBusy: false,
                           buttonRadius: 64,
                         ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.height / 40),
                         CircularCustomButton(
+                          borderColor: AppTheme.klistTileSecoandryDark,
                           text: "Delete",
+                          textColor: AppTheme.klistTileSecoandryDark,
                           onClick: () {
                             Navigator.pop(context!);
                           },
-                          backgroundColor: AppTheme.kButtonColor,
+                          backgroundColor: Colors.white,
                           isBusy: false,
+                          size: Size(MediaQuery.of(context).size.width / 3,
+                              MediaQuery.of(context).size.width / 10),
                           buttonRadius: 64,
                         )
                       ])),

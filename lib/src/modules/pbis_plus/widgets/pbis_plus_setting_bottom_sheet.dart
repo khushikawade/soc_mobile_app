@@ -19,6 +19,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../styles/theme.dart';
 import 'package:collection/collection.dart';
 
@@ -29,12 +30,15 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
   final double? constraintDeviceHeight;
   final PBISPlusBloc? pbisBloc;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  Function? editSkills;
+
   PBISPlusSettingBottomSheet(
       {Key? key,
       required this.googleClassroomCourseworkList,
       required this.constraintDeviceHeight,
       this.pbisBloc,
       this.height = 200,
+      required this.editSkills,
       required this.scaffoldKey})
       : super(key: key);
 
@@ -263,7 +267,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           sectionName = '';
           selectedRecords.clear();
           selectedStudentList.clear();
-
+          print(text);
           switch (text) {
             case 'All Courses & Students':
               sectionName = 'All Courses & Students';
@@ -289,26 +293,30 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
             case 'Edit Skills':
               sectionName = 'Skills';
+              // Navigator.pop(context);
+              pushNewScreen(
+                context,
+                screen: PBISPlusEditSkills(),
+                withNavBar: true,
+              );
+
               // _pageController.animateToPage(1,
               //     duration: const Duration(milliseconds: 100),
               //     curve: Curves.ease);
-
-              Navigator.of(context).push(
-                HeroDialogRoute(
-                  builder: (context) => Center(
-                    child: PBISPlusEditSkills(constraint: 450
-                        //  constraints.maxHeight,
-                        // onValueUpdate: (updatedStudentValueNotifier) {
-                        //   studentValueNotifier = updatedStudentValueNotifier;
-                        // },
-                        // studentValueNotifier: studentValueNotifier,
-                        // heroTag: heroTag,
-                        // classroomCourseId: classroomCourseId,
-                        // scaffoldKey: _scaffoldKey,
-                        ),
-                  ),
-                ),
-              );
+              // widget.editSkills;
+              // pushNewScreen(
+              //   context,
+              //   screen: PBISPlusEditSkills(),
+              //   withNavBar: true,
+              // );
+              // Navigator.pop(context);
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => Center(
+              //       child: PBISPlusEditSkills(constraint: 450),
+              //     ),
+              //   ),
+              // );
 
               break;
             default:

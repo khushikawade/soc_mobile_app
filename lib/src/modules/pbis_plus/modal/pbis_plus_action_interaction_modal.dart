@@ -78,11 +78,22 @@ class PBISPlusActionInteractionModalNew {
       title: 'Listening',
       color: Colors.red,
     ),
-    // PBISPlusActionInteractionModalNew(
-    //   imagePath: "assets/Pbis_plus/Engaged.svg",
-    //   title: 'Engaged',
-    //   color: Colors.red,
-    // ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/courteous.svg",
+      title: 'Courteous',
+      color: Colors.red,
+    ),
+
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/responsible.svg",
+      title: 'Responsible',
+      color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/punctual.svg",
+      title: 'Punctual',
+      color: Colors.red,
+    ),
     // PBISPlusActionInteractionModalNew(
     //   imagePath: "assets/Pbis_plus/Helpful.svg",
     //   title: 'Nice Work',
@@ -144,5 +155,50 @@ class PBISPlusDataTableModal {
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         color: Colors.transparent,
         title: 'Total')
+  ];
+}
+
+class PBISPlusDataTableModalNew {
+  String imagePath;
+  Color color;
+  String title;
+  PBISPlusDataTableModalNew(
+      {required this.imagePath, required this.color, required this.title});
+
+  static List<PBISPlusDataTableModalNew> PBISPlusDataTableHeadingRawNew = [
+    PBISPlusDataTableModalNew(
+        imagePath: "", color: Colors.transparent, title: 'Date'),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/Engaged.svg",
+      title: 'Engaged',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/Helpful.svg",
+      title: 'Nice Work',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/nice_work.svg",
+      title: 'Helpful',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/participation.svg",
+      title: 'Participation',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/collaboration.svg",
+      title: 'Collaboration',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+      imagePath: "assets/Pbis_plus/listening.svg",
+      title: 'Listening',
+      color: Colors.red,
+    ),
+    PBISPlusDataTableModalNew(
+        imagePath: "", color: Colors.transparent, title: 'Total')
   ];
 }

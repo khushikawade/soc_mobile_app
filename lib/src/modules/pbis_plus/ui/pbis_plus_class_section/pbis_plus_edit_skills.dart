@@ -23,15 +23,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
-  // ValueNotifier<ClassroomStudents> studentValueNotifier;
-  // final bool? isFromDashboardPage;
-  // final bool?
-  //     isFromStudentPlus; // to check it is from pbis plus or student plus
-  // final bool? isLoading; // to maintain loading when user came from student plus
-  // final String heroTag;
-  // final Key? scaffoldKey;
-  // String classroomCourseId;
-  final double? constraint;
   // final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   // final String? studentProfile;
   // bool? isFromEditSkills;
@@ -60,285 +51,55 @@ class PBISPlusEditSkills extends StatefulWidget {
     // this.isFromEditSkills = isFromEditSkills ?? true;
   }
 
+  // ValueNotifier<ClassroomStudents> studentValueNotifier;
+  // final bool? isFromDashboardPage;
+  // final bool?
+  //     isFromStudentPlus; // to check it is from pbis plus or student plus
+  // final bool? isLoading; // to maintain loading when user came from student plus
+  // final String heroTag;
+  // final Key? scaffoldKey;
+  // String classroomCourseId;
+  final double? constraint;
+
   @override
   State<PBISPlusEditSkills> createState() => _PBISPlusEditSkillsState();
 }
 
 class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
-  ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
+  ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
+  ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
+  //For now dynamic type we changes
+  ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
+      ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
+    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
+    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
+    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[2],
+    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[3],
+    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[4],
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/add_icon.svg",
+      title: '',
+      color: Colors.red,
+    ),
+  ]);
+  int? selectedIconIndex = -1;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<IconData> sheetIcons = [
+    Icons.account_circle,
+    Icons.mail,
+    Icons.phone,
+    Icons.camera,
+    // Add more icons to the sheet
+  ];
+
+  // List<IconData> containerIcons = [];
   @override
   void initState() {
     super.initState();
     trackUserActivity();
     // widget.studentValueNotifier.value = widget.student!;
-  }
-
-  Widget _buildHeader() {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05),
-      color: Colors.white,
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.height * 0.80,
-            decoration: BoxDecoration(
-              color: AppTheme.kButtonColor,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(8.0),
-                topLeft: Radius.circular(8.0),
-              ),
-            ),
-            // Set the background color for the heading
-            padding: EdgeInsets.all(16),
-            child: Text(
-              "Edit Skills",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
-                  color: Color(0xff000000) == Theme.of(context).backgroundColor
-                      ? Color(0xffFFFFFF)
-                      : Color(0xff000000),
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          SpacerWidget(24),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemCount: (PBISPlusActionInteractionModal
-                        .PBISPlusActionInteractionIcons.length /
-                    2)
-                .ceil(),
-            itemBuilder: (BuildContext context, int rowIndex) {
-              return Row(
-                children: List.generate(
-                  3,
-                  (int columnIndex) {
-                    final index = rowIndex * 3 + columnIndex;
-                    if (index >=
-                        PBISPlusActionInteractionModalNew
-                            .PBISPlusActionInteractionIconsNew.length) {
-                      return SizedBox(); // Return an empty SizedBox for excess cells
-                    }
-                    final item = PBISPlusActionInteractionModalNew
-                        .PBISPlusActionInteractionIconsNew[index];
-                    return Expanded(
-                        child: GestureDetector(
-                            onTap: () {
-                              isEditMode.value = true;
-                              print(isEditMode);
-                              changedIndex.value = index;
-                            },
-                            child: ValueListenableBuilder(
-                                valueListenable: changedIndex,
-                                builder: (context, value, _) =>
-                                    ValueListenableBuilder(
-                                      valueListenable: isEditMode,
-                                      builder: (context, value, _) => index ==
-                                              changedIndex.value
-                                          ? _buildEditWidget(item)
-                                          : Column(
-                                              children: [
-                                                index == changedIndex.value
-                                                    ? Icon(
-                                                        Icons.edit,
-                                                        size:
-                                                            Globals.deviceType ==
-                                                                    'phone'
-                                                                ? 30
-                                                                : 40,
-                                                        color: item.color,
-                                                      )
-                                                    : SvgPicture.asset(
-                                                        item.imagePath,
-                                                        // height: Globals.deviceType == 'phone' ? 64 : 74,
-                                                        // width: Globals.deviceType == 'phone' ? 64 : 74,
-                                                      ),
-                                                SpacerWidget(4),
-                                                Padding(
-                                                  padding: Globals.deviceType !=
-                                                          'phone'
-                                                      ? const EdgeInsets.only(
-                                                          top: 10, left: 10)
-                                                      : EdgeInsets.zero,
-                                                  child: Utility.textWidget(
-                                                      text: item.title,
-                                                      context: context,
-                                                      textTheme: Theme.of(
-                                                              context)
-                                                          .textTheme
-                                                          .bodyText1!
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 12)),
-                                                ),
-                                                SpacerWidget(32),
-                                              ],
-                                            ),
-                                    ))));
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEditWidget(item) {
-    return GestureDetector(
-      onTap: () {
-        _modalBottomSheetMenu();
-        // PBISPlusEditSkillsBottomSheet();
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 60,
-            decoration: BoxDecoration(
-              color: AppTheme.kButtonColor,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Icon(
-              Icons.edit,
-              size: Globals.deviceType == 'phone' ? 32 : 42,
-              color: Colors.white,
-            ),
-          ),
-          SpacerWidget(32),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdditionalBehaviour() {
-    return Expanded(
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05),
-        color: Colors.white,
-        child: Column(
-          // physics: NeverScrollableScrollPhysics(),
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 24, left: 16),
-              child: Text(
-                "Additional Behaviors",
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(color: Colors.black),
-              ),
-            ),
-            SpacerWidget(16),
-            // ListView.builder(
-            //   shrinkWrap: true,
-            //   physics: BouncingScrollPhysics(),
-            //   scrollDirection: Axis.vertical,
-            //   itemCount: (PBISPlusActionInteractionModal
-            //               .PBISPlusActionInteractionIcons.length /
-            //           2)
-            //       .ceil(),
-            //   itemBuilder: (BuildContext context, int rowIndex) {
-            //     return Row(
-            //       children: List.generate(
-            //         3,
-            //         (int columnIndex) {
-            //           final index = (rowIndex * 3 + columnIndex);
-            //           if (index >=
-            //               PBISPlusActionInteractionModalNew
-            //                   .PBISPlusActionInteractionIconsNew.length) {
-            //             return SizedBox
-            //                 .shrink(); // Return an empty SizedBox for excess cells
-            //           }
-            //           final item = PBISPlusActionInteractionModalNew
-            //               .PBISPlusActionInteractionIconsNew[index];
-            //           return
-            Expanded(
-              child: GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                // physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio:
-                      1.0, // Adjust this value to change item aspect ratio
-                  crossAxisSpacing:
-                      4.0, // Adjust the spacing between items horizontally
-                  mainAxisSpacing:
-                      4.0, // Adjust the spacing between items vertically
-                ),
-                itemCount: 2 *
-                    PBISPlusActionInteractionModalNew
-                        .PBISPlusActionInteractionIconsNew.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = PBISPlusActionInteractionModalNew
-                      .PBISPlusActionInteractionIconsNew[index % 6];
-                  return Expanded(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 0,
-                            blurRadius: 1,
-                            offset: Offset(0, 0),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SvgPicture.asset(
-                            item.imagePath,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            // );
-            // },
-            // ),
-            SpacerWidget(18),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget body(BuildContext context) {
@@ -359,27 +120,328 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         ),
         SpacerWidget(18),
         _buildHeader(),
-        SpacerWidget(16),
+        SpacerWidget(18),
         _buildAdditionalBehaviour(),
-        SpacerWidget(16),
+        SpacerWidget(48),
       ],
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackgroundImgWidget(),
-      Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PBISPlusAppBar(
-          title: "",
-          backButton: true,
-          scaffoldKey: _scaffoldKey,
+  void trackUserActivity() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_student_card_modal_view");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_student_card_modal_screen',
+        screenClass: 'PBISPlusEditSkills');
+    /*-------------------------------------------------------------------------------------*/
+    // Utility.updateLogs(
+    //     activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+    //     activityId: '37',
+    //     description:
+    //         'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+    //     operationResult: 'Success');
+  }
+
+  Widget _buildHeader() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      margin: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.05),
+      color: Color(0xffF7F8F9),
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.height * 0.80,
+            decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8.0),
+                topLeft: Radius.circular(8.0),
+              ),
+            ),
+            padding: EdgeInsets.all(16),
+            child: Text(
+              "Edit Skills",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline5!.copyWith(
+                  color: Color(0xff000000) == Theme.of(context).backgroundColor
+                      ? Color(0xffFFFFFF)
+                      : Color(0xff000000),
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          SpacerWidget(14),
+          Container(
+              // color: Colors.yellow,
+              child: DragTarget<PBISPlusActionInteractionModalNew>(
+                  builder: (context, candidateData, rejectedData) {
+            return GridView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio:
+                    1.5, // Adjust this value to change item aspect ratio
+                crossAxisSpacing:
+                    4.0, // Adjust the spacing between items horizontally
+                mainAxisSpacing:
+                    4.0, // Adjust the spacing between items vertically
+              ),
+              itemCount: (PBISPlusActionInteractionModalNew
+                      .PBISPlusActionInteractionIconsNew.length -
+                  3),
+              itemBuilder: (BuildContext context, int index) {
+                final item = containerIcons.value[index];
+                selectedIconIndex = index;
+                return GestureDetector(
+                    onTap: () {
+                      isEditMode.value = true;
+                      changedIndex.value = index;
+                    },
+                    child: ValueListenableBuilder(
+                        valueListenable: changedIndex,
+                        builder: (context, value, _) => ValueListenableBuilder(
+                              valueListenable: isEditMode,
+                              builder: (context, value, _) => index ==
+                                      changedIndex.value
+                                  ? _buildEditWidget(item)
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Draggable(
+                                          data: item,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          feedback: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          childWhenDragging: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                        SpacerWidget(4),
+                                        item.title != ""
+                                            ? Padding(
+                                                padding: Globals.deviceType !=
+                                                        'phone'
+                                                    ? const EdgeInsets.only(
+                                                        top: 10, left: 10)
+                                                    : EdgeInsets.zero,
+                                                child: Utility.textWidget(
+                                                    text: item.title,
+                                                    context: context,
+                                                    textTheme: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1!
+                                                        .copyWith(
+                                                            color: Colors.black,
+                                                            fontSize: 12)),
+                                              )
+                                            : SizedBox.shrink(),
+                                      ],
+                                    ),
+                            )));
+              },
+            );
+          }, onWillAccept: (PBISPlusActionInteractionModalNew? iconData) {
+            // print("--------on will accept------");
+            // print(iconData?.title);
+            // print("--------on will accept------");
+            return true;
+          }, onAccept: (PBISPlusActionInteractionModalNew? iconData) {
+            // print("inisde the on  acccept");
+            //ADD SET STATE OR VALUE LISTNER
+            // if (containerIcons.value.length < 3) {
+
+            //   containerIcons.value.add(iconData!);
+            // } else {
+            //   containerIcons.value[selectedIconIndex!] = iconData!;
+            // }
+            print(iconData?.title);
+            if (containerIcons.value.contains(iconData)) {
+            } else {
+              containerIcons.value[selectedIconIndex!] = iconData!;
+            }
+            setState(() {});
+          }, onAcceptWithDetails: (details) {
+            // print(
+            //     "------onAcceptWithDetails-----------0N ACCEPT WITH DETAILS-------------");
+            // print(details.data.color);
+          }, onMove: (details) {
+            // print("------onMove-----------details-------------");
+            // print(details.data.title);
+          }, onLeave: (PBISPlusActionInteractionModalNew? iconData) {
+            print("INSIDE THE ON LEAVE ");
+          })),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEditWidget(item) {
+    return GestureDetector(
+      onTap: () {
+        _modalBottomSheetMenu();
+        // PBISPlusEditSkillsBottomSheet();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.edit,
+              size: Globals.deviceType == 'phone' ? 24 : 32,
+              color: AppTheme.klistTileSecoandryDark,
+            ),
+          ),
+          SpacerWidget(16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdditionalBehaviour() {
+    return Expanded(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        body: body(context),
-      )
-    ]);
+        margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05),
+        color: Colors.white,
+        child: Column(
+          // physics: NeverScrollableScrollPhysics(),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 32, left: 16),
+              child: Text(
+                "Additional Behaviors",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(color: Colors.black),
+              ),
+            ),
+            SpacerWidget(16),
+            Expanded(
+              child: ValueListenableBuilder(
+                  valueListenable: containerIcons,
+                  builder: (context, value, _) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: NeverScrollableScrollPhysics(),
+                          // physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio:
+                                0.9, // Adjust this value to change item aspect ratio
+                            crossAxisSpacing:
+                                0.0, // Adjust the spacing between items horizontally
+                            mainAxisSpacing:
+                                4.0, // Adjust the spacing between items vertically
+                          ),
+                          itemCount: 2 *
+                              PBISPlusActionInteractionModalNew
+                                  .PBISPlusActionInteractionIconsNew.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final item = PBISPlusActionInteractionModalNew
+                                .PBISPlusActionInteractionIconsNew[index % 9];
+                            final isIconDisabled =
+                                containerIcons.value.contains(item);
+                            // print(isIconDisabled);
+                            return Draggable(
+                              data: item,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 0,
+                                      blurRadius: 1,
+                                      offset: Offset(0, 0),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: isIconDisabled
+                                        ? Opacity(
+                                            opacity: 0.2,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                            ))
+                                        : SvgPicture.asset(
+                                            item.imagePath,
+                                          ),
+                                  ),
+                                ),
+                              ),
+                              feedback: SvgPicture.asset(
+                                item.imagePath,
+                              ),
+                              childWhenDragging: SvgPicture.asset(
+                                item.imagePath,
+                              ),
+                            );
+                          },
+                        ),
+                      )),
+            ),
+            // );
+            // },
+            // ),
+            SpacerWidget(18),
+          ],
+        ),
+      ),
+    );
   }
 
   void _modalBottomSheetMenu() => showModalBottomSheet(
@@ -389,8 +451,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         isDismissible: true,
         enableDrag: true,
         backgroundColor: Colors.transparent,
-
-        // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
         builder: (BuildContext context) {
@@ -418,18 +478,19 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         },
       );
 
-  void trackUserActivity() {
-    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        "pbis_plus_student_card_modal_view");
-    FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'pbis_plus_student_card_modal_screen',
-        screenClass: 'PBISPlusEditSkills');
-    /*-------------------------------------------------------------------------------------*/
-    // Utility.updateLogs(
-    //     activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-    //     activityId: '37',
-    //     description:
-    //         'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-    //     operationResult: 'Success');
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      CommonBackgroundImgWidget(),
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: PBISPlusAppBar(
+          title: "",
+          backButton: true,
+          scaffoldKey: _scaffoldKey,
+        ),
+        body: body(context),
+      )
+    ]);
   }
 }

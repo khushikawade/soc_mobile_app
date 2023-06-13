@@ -2,6 +2,7 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_new_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -25,6 +26,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -176,6 +178,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           //----------setting bottom sheet funtion------------//
                           settingBottomSheet(
                               context, pbisBloc, googleClassroomCourseworkList);
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //       builder: (context) => PBISPlusEditSkills()),
+                          // );
                         },
                         icon: Icon(
                           IconData(
@@ -607,7 +613,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 // NEW FLOW
                 child: PBISPlusStudentCardNewModal(
               constraint: constraints.maxHeight,
-              isFromDashBoard: false,
+              isFromDashboardPage: false,
               onValueUpdate: (updatedStudentValueNotifier) {
                 studentValueNotifier = updatedStudentValueNotifier;
               },
@@ -856,6 +862,19 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Set the maximum height of the bottom sheet based on the screen size
                 return PBISPlusSettingBottomSheet(
+                    editSkills: () {
+                      print("----inddie the call back 0");
+                      // Navigator.pop(context);
+                      // pushNewScreen(
+                      //   context,
+                      //   screen: PBISPlusEditSkills(),
+                      //   withNavBar: true,
+                      // );
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //       builder: (context) => PBISPlusEditSkills()),
+                      // );
+                    },
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,

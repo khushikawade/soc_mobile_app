@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_new_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -17,6 +18,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:screenshot/screenshot.dart';
 
 class PBISPlusStudentDashBoard extends StatefulWidget {
@@ -135,7 +137,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               bloc: _bloc,
               builder: (BuildContext contxt, PBISPlusState state) {
                 if (state is PBISPlusLoading) {
-                  return PBISPlusStudentCardModal(
+                  return PBISPlusStudentCardNewModal(
                       studentProfile: widget.studentProfile,
                       constraint: widget.constraint,
                       isLoading:
@@ -153,7 +155,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       pbisHistoryData: state.pbisStudentInteractionList,
                     );
                   }
-                  return PBISPlusStudentCardModal(
+                  return PBISPlusStudentCardNewModal(
                       studentProfile: widget.studentProfile,
                       constraint: widget.constraint,
                       isLoading: false,
@@ -172,7 +174,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       pbisHistoryData: pbisHistoryData,
                     );
                   }
-                  return PBISPlusStudentCardModal(
+                  return PBISPlusStudentCardNewModal(
                       studentProfile: widget.studentProfile,
                       constraint: widget.constraint,
                       isLoading: false,
@@ -189,7 +191,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         // to remove hero widget for STUDENT+
         Container(
           alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).size.height * 0.36,
+          height: (widget.constraint <= 115)
+              ? MediaQuery.of(context).size.height * 0.30
+              : MediaQuery.of(context).size.height * 0.36,
+          // height: MediaQuery.of(context).size.height * 0.50,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 16),
           padding: EdgeInsets.only(bottom: 10),
@@ -207,10 +212,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   ));
                 } else if (state is PBISPlusStudentDashboardLogSuccess) {
                   return
-
                       // state.pbisStudentInteractionList.length > 0
                       //     ?
-
                       RefreshIndicator(
                     color: AppTheme.kButtonColor,
                     key: refreshKey,
@@ -305,15 +308,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             color: Colors.white,
           ),
         ),
-        columns: PBISPlusDataTableModal.PBISPlusDataTableHeadingRaw.map(
-            (PBISPlusDataTableModal item) {
+        columns: PBISPlusDataTableModalNew.PBISPlusDataTableHeadingRawNew.map(
+            (PBISPlusDataTableModalNew item) {
           return buildDataColumn(item, list);
         }).toList(),
         rows: List<DataRow>.generate(
             list.length, (index) => buildDataRow(index, list)),
       );
 
-  DataColumn buildDataColumn(PBISPlusDataTableModal item,
+  DataColumn buildDataColumn(PBISPlusDataTableModalNew item,
           List<PBISPlusTotalInteractionModal> list) =>
       DataColumn(
           label: Column(
@@ -321,34 +324,50 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            item.iconData,
-            color: item.color,
-            size: Globals.deviceType == 'phone' ? 35 : 25,
-          ),
-          Padding(padding: EdgeInsets.only(top: 5)),
+          // Icon(
+          //   item.iconData,
+          //   color: item.color,
+          //   size: Globals.deviceType == 'phone' ? 35 : 25,
+          // ),
+          // Padding(padding: EdgeInsets.only(top: 5)),
           Center(
-            widthFactor: item.title == 'Date' && list.length > 0 ? 2.45 : null,
-            // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
-            child: Utility.textWidget(
-              context: context,
-              text: item.title,
-              textAlign: TextAlign.center,
-              textTheme: Globals.deviceType == 'phone'
-                  ? Theme.of(context).textTheme.headline5!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Color(
-                          0xff000000,
-                        ),
-                      )
-                  : Theme.of(context).textTheme.headline1!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Color(
-                        0xff000000,
-                      ),
-                      fontSize: 16),
-            ),
-          ),
+              widthFactor:
+                  item.title == 'Date' && list.length > 0 ? 2.45 : null,
+              // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
+              child: item.title == 'Date' || item.title == 'Total'
+                  ? Utility.textWidget(
+                      context: context,
+                      text: item.title,
+                      textAlign: TextAlign.center,
+                      textTheme: Globals.deviceType == 'phone'
+                          ? Theme.of(context).textTheme.headline5!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Color(
+                                  0xff000000,
+                                ),
+                              )
+                          : Theme.of(context).textTheme.headline1!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Color(
+                                0xff000000,
+                              ),
+                              fontSize: 16),
+                    )
+                  : item.imagePath.isNotEmpty
+                      ? SvgPicture.asset(
+                          item.imagePath,
+                          height: Globals.deviceType == 'phone' ? 35 : 25,
+                          width: Globals.deviceType == 'phone' ? 35 : 25,
+                          // height: Globals.deviceType == 'phone' ? 64 : 74,
+                          // width: Globals.deviceType == 'phone' ? 64 : 74,
+                        )
+                      : SizedBox.shrink()
+              // Icon(
+              //     item.iconData,
+              //     color: item.color,
+              //     size: Globals.deviceType == 'phone' ? 35 : 25,
+              //   ),
+              ),
         ],
       ));
 
@@ -412,6 +431,54 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             child: Utility.textWidget(
               context: context,
               text: (list[index].helpful ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          )),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].participation ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          )),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].collabration ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          )),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].listening ?? 0).toString(),
               textAlign: TextAlign.center,
               textTheme: Globals.deviceType == 'phone'
                   ? Theme.of(context)

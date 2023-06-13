@@ -126,6 +126,8 @@ class PBISPlusActionInteractionButtonState
                       likeBuilder: (bool isLiked) {
                         return SvgPicture.asset(
                           widget.iconData.imagePath,
+                          height: widget.size,
+                          width: widget.size,
                           // height: Globals.deviceType == 'phone' ? 64 : 74,
                           // width: Globals.deviceType == 'phone' ? 64 : 74,
                         );

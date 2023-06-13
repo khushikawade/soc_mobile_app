@@ -51,11 +51,11 @@ class CircularCustomButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
               foregroundColor: AppTheme.kButtonColor,
               minimumSize: size,
-              backgroundColor: AppTheme.kButtonColor,
+              backgroundColor: backgroundColor,
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(buttonRadius!),
-                  side: BorderSide(color: AppTheme.kButtonColor)),
+                  side: BorderSide(color: borderColor!)),
               enableFeedback: false,
               animationDuration: Duration.zero,
               fixedSize: const Size(0, 20)),
@@ -64,7 +64,7 @@ class CircularCustomButton extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyText1!
-                  .copyWith(color: Colors.white, fontSize: 12)),
+                  .copyWith(color: textColor, fontSize: 12)),
         ));
   }
 }

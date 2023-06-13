@@ -26,13 +26,16 @@ class PBISPlusTotalInteractionModalAdapter
       helpful: fields[5] as int?,
       createdAt: fields[7] as String?,
       studentEmail: fields[6] as String?,
+      participation: fields[9] as int?,
+      collabration: fields[10] as int?,
+      listening: fields[11] as int?,
     )..classroomCourseId = fields[8] as String?;
   }
 
   @override
   void write(BinaryWriter writer, PBISPlusTotalInteractionModal obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.schoolId)
       ..writeByte(1)
@@ -50,7 +53,13 @@ class PBISPlusTotalInteractionModalAdapter
       ..writeByte(7)
       ..write(obj.createdAt)
       ..writeByte(8)
-      ..write(obj.classroomCourseId);
+      ..write(obj.classroomCourseId)
+      ..writeByte(9)
+      ..write(obj.participation)
+      ..writeByte(10)
+      ..write(obj.collabration)
+      ..writeByte(11)
+      ..write(obj.listening);
   }
 
   @override
