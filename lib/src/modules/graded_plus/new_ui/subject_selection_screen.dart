@@ -1633,8 +1633,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             assessmentExportAndSaveStatus.value.excelSheetPrepared =
                 true; // update loading dialog and navigate
 
-            Globals.currentAssessmentId = '';
-
             // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
             //     await OcrUtility.getSortedStudentInfoList(
             //         tableName: 'student_info');
@@ -1670,11 +1668,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             //! navigateToResultSummery();
 
 //If classroom course id is empty or null thats mean user didnt select any classroom course
-            if (GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomAssignmentForStandardApp
-                    .id
-                    ?.isNotEmpty ??
-                false) {
+
+            if ((GoogleClassroomGlobals
+                        .studentAssessmentAndClassroomAssignmentForStandardApp
+                        .id
+                        ?.isNotEmpty ??
+                    false) &&
+                Overrides.STANDALONE_GRADED_APP != true) {
               createClassRoomCourseWorkForStandardApp();
             } else {
               saveAssessmentToDashboardAndGetId();
@@ -1888,6 +1888,11 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       ));
     }
 
+    //google classroom with student details if not already updated
+    if (assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated == false) {
+      createClassRoomCourseWorkForStandardApp();
+    }
+
     //------------------------------------------------------------------------------
     //Updating student result to dashboard if not already updated
     if (assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
@@ -1926,16 +1931,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
       saveAssessmentToDashboardAndGetId();
     }
-
-    //google classroom with student details if not already updated
-    if (assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated == false) {
-      createClassRoomCourseWorkForStandardApp();
-    }
   }
 
   void createClassRoomCourseWorkForStandardApp() {
-    print(GoogleClassroomGlobals
-        .studentAssessmentAndClassroomAssignmentForStandardApp);
     _googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
         studentAssessmentInfoDb: _studentAssessmentInfoDb,
         studentClassObj: GoogleClassroomGlobals
@@ -1945,6 +1943,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
   Future<void> saveAssessmentToDashboardAndGetId() async {
+    Globals.currentAssessmentId = '';
     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
         await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
     ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(

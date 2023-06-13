@@ -269,39 +269,7 @@ class _GradedPlusSearchScreenPageState
         excelBlocListener(),
         slideBlocListener(),
         ocrAssessmentBlocListener(),
-        BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
-            bloc: widget.googleClassroomBloc,
-            child: Container(),
-            listener: (context, state) async {
-              if (state is CreateClassroomCourseWorkSuccess) {
-                Utility.updateLogs(
-                    activityType: 'GRADED+',
-                    activityId: '34',
-                    description: 'G-Classroom Created',
-                    operationResult: 'Success');
-                _navigatetoResultSection();
-              }
-              if (state is GoogleClassroomErrorState) {
-                if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
-
-                  widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
-                      studentAssessmentInfoDb: LocalDatabase('student_info'),
-                      pointPossible: Globals.pointPossible ?? '0',
-                      studentClassObj: GoogleClassroomGlobals
-                          .studentAssessmentAndClassroomObj!,
-                      title: Globals.assessmentName!.split("_")[1] ?? ''));
-                } else {
-                  Navigator.of(context).pop();
-                  Utility.currentScreenSnackBar(
-                      state.errorMsg?.toString() ?? "", null);
-                }
-              }
-            })
+        classRoomBlocListener()
       ],
     );
   }
@@ -837,37 +805,49 @@ class _GradedPlusSearchScreenPageState
                 true; // update loading dialog and navigate
             Globals.currentAssessmentId = '';
 
-            List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                await OcrUtility.getSortedStudentInfoList(
-                    tableName: 'student_info');
-            Globals.currentAssessmentId = '';
-            //Save Assessment To  Postgres Database
-            ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-                isMcqSheet: widget.isMcqSheet ?? false,
-                assessmentQueImage:
-                    studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
-                assessmentName: Globals.assessmentName ?? 'Assessment Name',
-                rubricScore: Globals.scoringRubric ?? '2',
-                subjectName: widget.selectedSubject ??
-                    'NA', //Student Id will not be there in case of custom subject
-                domainName: learningStandard ?? '',
-                subDomainName: subLearningStandard ?? '',
-                grade: widget.grade ?? '',
-                schoolId: Globals.appSetting.schoolNameC ?? '',
-                standardId: standardId ?? '',
-                scaffoldKey: _scaffoldKey,
-                context: context,
-                fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-                sessionId: Globals.sessionId,
-                teacherContactId: Globals.teacherId,
-                teacherEmail: Globals.teacherEmailId,
-                classroomCourseId: GoogleClassroomGlobals
-                        ?.studentAssessmentAndClassroomObj?.courseId ??
-                    '',
-                classroomCourseWorkId: GoogleClassroomGlobals
-                        ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-                    ''));
+            // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+            //     await OcrUtility.getSortedStudentInfoList(
+            //         tableName: 'student_info');
+            // Globals.currentAssessmentId = '';
+            // //Save Assessment To  Postgres Database
+            // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
+            //     isMcqSheet: widget.isMcqSheet ?? false,
+            //     assessmentQueImage:
+            //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
+            //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
+            //     rubricScore: Globals.scoringRubric ?? '2',
+            //     subjectName: widget.selectedSubject ??
+            //         'NA', //Student Id will not be there in case of custom subject
+            //     domainName: learningStandard ?? '',
+            //     subDomainName: subLearningStandard ?? '',
+            //     grade: widget.grade ?? '',
+            //     schoolId: Globals.appSetting.schoolNameC ?? '',
+            //     standardId: standardId ?? '',
+            //     scaffoldKey: _scaffoldKey,
+            //     context: context,
+            //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+            //     sessionId: Globals.sessionId,
+            //     teacherContactId: Globals.teacherId,
+            //     teacherEmail: Globals.teacherEmailId,
+            //     classroomCourseId: GoogleClassroomGlobals
+            //             ?.studentAssessmentAndClassroomObj?.courseId ??
+            //         '',
+            //     classroomCourseWorkId: GoogleClassroomGlobals
+            //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
+            //         ''));
             //! navigateToResultSummery();
+
+//If classroom course id is empty or null thats mean user didnt select any classroom course
+            if ((GoogleClassroomGlobals
+                        .studentAssessmentAndClassroomAssignmentForStandardApp
+                        .id
+                        ?.isNotEmpty ??
+                    false) &&
+                Overrides.STANDALONE_GRADED_APP != true) {
+              createClassRoomCourseWorkForStandardApp();
+            } else {
+              saveAssessmentToDashboardAndGetId();
+            }
           }
 
           if (state is ErrorState) {
@@ -1043,41 +1023,56 @@ class _GradedPlusSearchScreenPageState
       ));
     }
 
+
+  //google classroom with student details if not already updated
+    if (assessmentStatus.value.googleClassRoomIsUpdated == false) {
+      createClassRoomCourseWorkForStandardApp();
+    }
+
+
+
     //------------------------------------------------------------------------------
     //Updating student result to dashboard if not already updated
     if (assessmentStatus.value.saveAssessmentResultToDashboard == false) {
-      Globals.currentAssessmentId = '';
+      // Globals.currentAssessmentId = '';
 
-      List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-          await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
-      Globals.currentAssessmentId = '';
-      //Save Assessment To  Postgres Database
-      ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-          isMcqSheet: widget.isMcqSheet ?? false,
-          assessmentQueImage:
-              studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
-          assessmentName: Globals.assessmentName ?? 'Assessment Name',
-          rubricScore: Globals.scoringRubric ?? '2',
-          subjectName: widget.selectedSubject ??
-              '', //Student Id will not be there in case of custom subject
-          domainName: learningStandard ?? '',
-          subDomainName: subLearningStandard ?? '',
-          grade: widget.grade ?? '',
-          schoolId: Globals.appSetting.schoolNameC ?? '',
-          standardId: standardId ?? '',
-          scaffoldKey: _scaffoldKey,
-          context: context,
-          fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-          sessionId: Globals.sessionId,
-          teacherContactId: Globals.teacherId,
-          teacherEmail: Globals.teacherEmailId,
-          classroomCourseId: GoogleClassroomGlobals
-                  ?.studentAssessmentAndClassroomObj?.courseId ??
-              '',
-          classroomCourseWorkId: GoogleClassroomGlobals
-                  ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-              ''));
+      // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+      //     await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
+      // Globals.currentAssessmentId = '';
+      // //Save Assessment To  Postgres Database
+      // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
+      //     isMcqSheet: widget.isMcqSheet ?? false,
+      //     assessmentQueImage:
+      //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
+      //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
+      //     rubricScore: Globals.scoringRubric ?? '2',
+      //     subjectName: widget.selectedSubject ??
+      //         '', //Student Id will not be there in case of custom subject
+      //     domainName: learningStandard ?? '',
+      //     subDomainName: subLearningStandard ?? '',
+      //     grade: widget.grade ?? '',
+      //     schoolId: Globals.appSetting.schoolNameC ?? '',
+      //     standardId: standardId ?? '',
+      //     scaffoldKey: _scaffoldKey,
+      //     context: context,
+      //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+      //     sessionId: Globals.sessionId,
+      //     teacherContactId: Globals.teacherId,
+      //     teacherEmail: Globals.teacherEmailId,
+      //     classroomCourseId: GoogleClassroomGlobals
+      //             ?.studentAssessmentAndClassroomObj?.courseId ??
+      //         '',
+      //     classroomCourseWorkId: GoogleClassroomGlobals
+      //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
+      //         ''));
+
+      saveAssessmentToDashboardAndGetId();
     }
+
+
+
+
+
   }
 
   //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1103,5 +1098,95 @@ class _GradedPlusSearchScreenPageState
       schoolId: Globals.appSetting.schoolNameC!,
       // fileId: fileId,
     ));
+  }
+
+  Widget classRoomBlocListener() {
+    return BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+        bloc: widget.googleClassroomBloc,
+        child: Container(),
+        listener: (context, state) async {
+          if (state is CreateClassroomCourseWorkSuccess) {
+            Utility.updateLogs(
+                activityType: 'GRADED+',
+                activityId: '34',
+                description: 'G-Classroom Created',
+                operationResult: 'Success');
+            _navigatetoResultSection();
+          }
+          if (state is GoogleClassroomErrorState) {
+            if (state.errorMsg == 'ReAuthentication is required') {
+              await Utility.refreshAuthenticationToken(
+                  isNavigator: true,
+                  errorMsg: state.errorMsg!,
+                  context: context,
+                  scaffoldKey: _scaffoldKey);
+
+              widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
+                  studentAssessmentInfoDb: LocalDatabase('student_info'),
+                  pointPossible: Globals.pointPossible ?? '0',
+                  studentClassObj:
+                      GoogleClassroomGlobals.studentAssessmentAndClassroomObj!,
+                  title: Globals.assessmentName!.split("_")[1] ?? ''));
+            } else {
+              Navigator.of(context).pop();
+              Utility.currentScreenSnackBar(
+                  state.errorMsg?.toString() ?? "", null);
+            }
+          }
+
+          if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
+            assessmentStatus.value.googleClassRoomIsUpdated = true;
+            saveAssessmentToDashboardAndGetId();
+            navigateToResultSummery();
+          }
+        });
+  }
+
+
+
+  void createClassRoomCourseWorkForStandardApp() {
+
+  widget.googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
+        studentAssessmentInfoDb: _studentAssessmentInfoDb,
+        studentClassObj: GoogleClassroomGlobals
+            .studentAssessmentAndClassroomAssignmentForStandardApp,
+        title: Globals.assessmentName ?? '',
+        pointPossible: Globals.pointPossible ?? "0"));
+
+
+  }
+
+  Future<void> saveAssessmentToDashboardAndGetId() async {
+    Globals.currentAssessmentId = '';
+
+    List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+        await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
+    Globals.currentAssessmentId = '';
+    //Save Assessment To  Postgres Database
+    ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
+        isMcqSheet: widget.isMcqSheet ?? false,
+        assessmentQueImage:
+            studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
+        assessmentName: Globals.assessmentName ?? 'Assessment Name',
+        rubricScore: Globals.scoringRubric ?? '2',
+        subjectName: widget.selectedSubject ??
+            'NA', //Student Id will not be there in case of custom subject
+        domainName: learningStandard ?? '',
+        subDomainName: subLearningStandard ?? '',
+        grade: widget.grade ?? '',
+        schoolId: Globals.appSetting.schoolNameC ?? '',
+        standardId: standardId ?? '',
+        scaffoldKey: _scaffoldKey,
+        context: context,
+        fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+        sessionId: Globals.sessionId,
+        teacherContactId: Globals.teacherId,
+        teacherEmail: Globals.teacherEmailId,
+        classroomCourseId: GoogleClassroomGlobals
+                ?.studentAssessmentAndClassroomObj?.courseId ??
+            '',
+        classroomCourseWorkId: GoogleClassroomGlobals
+                ?.studentAssessmentAndClassroomObj?.courseWorkId ??
+            ''));
   }
 }
