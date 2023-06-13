@@ -67,7 +67,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     return Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height / 4,
+          height: MediaQuery.of(context).size.height * 0.26,
           padding: EdgeInsets.only(left: 16, top: 54, right: 16, bottom: 16),
           margin: EdgeInsets.only(top: 54),
           decoration: BoxDecoration(
@@ -114,7 +114,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         CircularCustomButton(
-                          size: Size(MediaQuery.of(context).size.width / 3,
+                          size: Size(MediaQuery.of(context).size.width * 0.29,
                               MediaQuery.of(context).size.width / 10),
                           text: "Cancel",
                           onClick: () {
@@ -127,15 +127,24 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                         SizedBox(
                             width: MediaQuery.of(context).size.height / 40),
                         CircularCustomButton(
-                          borderColor: AppTheme.klistTileSecoandryDark,
+                          borderColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
                           text: "Delete",
-                          textColor: AppTheme.klistTileSecoandryDark,
+                          textColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
                           onClick: () {
                             Navigator.pop(context!);
                           },
-                          backgroundColor: Colors.white,
+                          backgroundColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
                           isBusy: false,
-                          size: Size(MediaQuery.of(context).size.width / 3,
+                          size: Size(MediaQuery.of(context).size.width * 0.29,
                               MediaQuery.of(context).size.width / 10),
                           buttonRadius: 64,
                         )
@@ -151,7 +160,9 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   Widget _buildProfileWidget() {
     return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xffF7F8F9)
+              : Color(0xff111C20),
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(

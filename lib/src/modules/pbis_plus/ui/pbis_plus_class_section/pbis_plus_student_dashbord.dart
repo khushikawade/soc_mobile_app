@@ -193,7 +193,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           alignment: Alignment.topCenter,
           height: (widget.constraint <= 115)
               ? MediaQuery.of(context).size.height * 0.30
-              : MediaQuery.of(context).size.height * 0.36,
+              : MediaQuery.of(context).size.height * 0.32,
           // height: MediaQuery.of(context).size.height * 0.50,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 16),

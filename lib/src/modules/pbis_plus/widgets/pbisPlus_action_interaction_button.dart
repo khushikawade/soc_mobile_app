@@ -149,7 +149,10 @@ class PBISPlusActionInteractionButtonState
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
                             return Container(
-                                padding: EdgeInsets.all(4),
+                                height: 24,
+                                width: 24,
+                                alignment: Alignment.center,
+                                // padding: EdgeInsets.all(6),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: widget.isShowCircle!
@@ -396,13 +399,18 @@ class PBISPlusActionInteractionButtonState
     // return viewCount;
     return Padding(
       padding: Globals.deviceType != 'phone'
-          ? const EdgeInsets.only(top: 10, left: 10)
+          ? EdgeInsets.zero
+          // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
           : EdgeInsets.zero,
       child: Utility.textWidget(
           text: viewCount.toString(),
           context: context,
-          textTheme:
-              Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12)),
+          textAlign: TextAlign.center,
+          textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+              color: Color(0xff000000) == Theme.of(context).backgroundColor
+                  ? Color(0xff111C20)
+                  : Color(0xff111C20),
+              fontSize: 12)),
     );
   }
 }

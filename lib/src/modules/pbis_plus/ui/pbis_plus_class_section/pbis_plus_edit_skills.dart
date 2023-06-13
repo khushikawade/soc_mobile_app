@@ -79,7 +79,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[4],
     PBISPlusActionInteractionModalNew(
       imagePath: "assets/Pbis_plus/add_icon.svg",
-      title: '',
+      title: 'Add Skill',
       color: Colors.red,
     ),
   ]);
@@ -149,7 +149,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       ),
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05),
-      color: Color(0xffF7F8F9),
+      color: Theme.of(context).backgroundColor,
       child: Column(
         children: [
           Container(
@@ -205,60 +205,56 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         valueListenable: changedIndex,
                         builder: (context, value, _) => ValueListenableBuilder(
                               valueListenable: isEditMode,
-                              builder: (context, value, _) => index ==
-                                      changedIndex.value
-                                  ? _buildEditWidget(item)
-                                  : Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Draggable(
-                                          data: item,
-                                          child: Container(
-                                            height: 40,
-                                            width: 40,
-                                            child: SvgPicture.asset(
-                                              item.imagePath,
-                                              fit: BoxFit.contain,
+                              builder: (context, value, _) =>
+                                  index == changedIndex.value
+                                      ? _buildEditWidget(item)
+                                      : Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Draggable(
+                                              data: item,
+                                              child: Container(
+                                                height: 40,
+                                                width: 40,
+                                                child: SvgPicture.asset(
+                                                  item.imagePath,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                              feedback: Container(
+                                                height: 40,
+                                                width: 40,
+                                                child: SvgPicture.asset(
+                                                  item.imagePath,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                              childWhenDragging: Container(
+                                                height: 40,
+                                                width: 40,
+                                                child: SvgPicture.asset(
+                                                  item.imagePath,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          feedback: Container(
-                                            height: 40,
-                                            width: 40,
-                                            child: SvgPicture.asset(
-                                              item.imagePath,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
-                                          childWhenDragging: Container(
-                                            height: 40,
-                                            width: 40,
-                                            child: SvgPicture.asset(
-                                              item.imagePath,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
+                                            SpacerWidget(4),
+                                            Padding(
+                                              padding:
+                                                  Globals.deviceType != 'phone'
+                                                      ? const EdgeInsets.only(
+                                                          top: 10, left: 10)
+                                                      : EdgeInsets.zero,
+                                              child: Utility.textWidget(
+                                                  text: item.title,
+                                                  context: context,
+                                                  textTheme: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1!
+                                                      .copyWith(fontSize: 12)),
+                                            )
+                                          ],
                                         ),
-                                        SpacerWidget(4),
-                                        item.title != ""
-                                            ? Padding(
-                                                padding: Globals.deviceType !=
-                                                        'phone'
-                                                    ? const EdgeInsets.only(
-                                                        top: 10, left: 10)
-                                                    : EdgeInsets.zero,
-                                                child: Utility.textWidget(
-                                                    text: item.title,
-                                                    context: context,
-                                                    textTheme: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1!
-                                                        .copyWith(
-                                                            color: Colors.black,
-                                                            fontSize: 12)),
-                                              )
-                                            : SizedBox.shrink(),
-                                      ],
-                                    ),
                             )));
               },
             );
@@ -280,6 +276,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             if (containerIcons.value.contains(iconData)) {
             } else {
               containerIcons.value[selectedIconIndex!] = iconData!;
+              changedIndex.value = -1;
             }
             setState(() {});
           }, onAcceptWithDetails: (details) {
@@ -297,11 +294,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditWidget(item) {
+  Widget _buildEditWidget(PBISPlusActionInteractionModalNew item) {
     return GestureDetector(
-      onTap: () {
-        _modalBottomSheetMenu();
-        // PBISPlusEditSkillsBottomSheet();
+      onTap: () async {
+        await _modalBottomSheetMenu(item);
+        changedIndex.value = -1;
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -342,7 +339,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         ),
         margin: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.05),
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor,
         child: Column(
           // physics: NeverScrollableScrollPhysics(),
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,10 +349,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               child: Text(
                 "Additional Behaviors",
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(color: Colors.black),
+                style: Theme.of(context).textTheme.headline1!.copyWith(),
               ),
             ),
             SpacerWidget(16),
@@ -379,15 +373,16 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             mainAxisSpacing:
                                 4.0, // Adjust the spacing between items vertically
                           ),
-                          itemCount: 2 *
+                          itemCount: 3 *
                               PBISPlusActionInteractionModalNew
-                                  .PBISPlusActionInteractionIconsNew.length,
+                                  .PBISPlusActionInteractionIconsNew.length
+                                  .ceil(),
                           itemBuilder: (BuildContext context, int index) {
                             final item = PBISPlusActionInteractionModalNew
                                 .PBISPlusActionInteractionIconsNew[index % 9];
                             final isIconDisabled =
                                 containerIcons.value.contains(item);
-                            // print(isIconDisabled);
+
                             return Draggable(
                               data: item,
                               child: Container(
@@ -397,11 +392,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                     vertical: 8, horizontal: 8),
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).backgroundColor,
                                   borderRadius: BorderRadius.circular(8),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
+                                      color: Colors.grey.withOpacity(0.4),
                                       spreadRadius: 0,
                                       blurRadius: 1,
                                       offset: Offset(0, 0),
@@ -444,8 +439,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  void _modalBottomSheetMenu() => showModalBottomSheet(
-        // useRootNavigator: true,
+  _modalBottomSheetMenu(PBISPlusActionInteractionModalNew item) =>
+      showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
@@ -457,6 +452,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
+                iconName: item.title,
                 // fromClassScreen: false,
                 // scaffoldKey: _scaffoldKey,
                 // screenshotController: screenshotController,

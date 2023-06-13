@@ -31,9 +31,11 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
+  String? iconName;
   PBISPlusEditSkillsBottomSheet({
     Key? key,
     this.height = 100,
+    this.iconName = "",
   });
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
@@ -90,7 +92,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             allowImplicitScrolling: false,
             pageSnapping: false,
             controller: _pageController,
-            children: [EditAndDeleteIcon(), EditName()],
+            children: [EditAndDeleteIcon(), EditName(widget.iconName)],
           )),
     );
   }
@@ -241,7 +243,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     // );
   }
 
-  Widget EditName() {
+  Widget EditName(iconName) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -268,9 +270,11 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           Center(
             child: Utility.textWidget(
                 context: context,
-                text: 'Triangle',
+                text: "${"Edit "+ iconName}",
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
+          
+          
           // leading: IconButton(
           //   onPressed: () {
           //     _pageController.animateToPage(pageValue - 1,
@@ -285,15 +289,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           //   ),
           // ),
           // ),
-          SpacerWidget(15),
-          Utility.textWidget(
-              context: context,
-              textAlign: TextAlign.center,
-              text: 'Please input the name.',
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontSize: 18)),
+          // SpacerWidget(15),
+          // Utility.textWidget(
+          //     context: context,
+          //     textAlign: TextAlign.center,
+          //     text: 'Please input the name.',
+          //     textTheme: Theme.of(context)
+          //         .textTheme
+          //         .headline5!
+          //         .copyWith(fontSize: 18)),
 
           SpacerWidget(30),
           Form(
