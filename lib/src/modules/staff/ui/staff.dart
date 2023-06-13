@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart'
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -23,6 +24,7 @@ import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -263,6 +265,7 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
+//--------------------------------------------------------------------------------------------------------
   staffActionIconsOnTap({required String actionName}) async {
     await Utility.clearStudentInfo(tableName: 'student_info');
     await Utility.clearStudentInfo(tableName: 'history_student_info');
@@ -289,24 +292,41 @@ class _StaffPageState extends State<StaffPage> {
         await UserGoogleProfile.getUserProfile();
 
     if (_profileData.isEmpty) {
-      // await _launchURL('Google Authentication');
+      //   // await _launchURL('Google Authentication');
+      //   //Google Manual Sign in
+      //   if (Globals.appSetting.enableGoogleSSO != "true") {
       var value = await GoogleLogin.launchURL(
           'Google Authentication', context, _scaffoldKey, '', actionName);
       if (value == true) {
         navigatorToScreen(actionName: actionName);
       }
+      // }
+      // //Google Single Sign On
+      // else {
+      //   User? user = await Authentication.signInWithGoogle();
+      //   if (user != null) {
+      //     if (user.email != null && user.email != '') {
+      //       navigatorToScreen(actionName: actionName);
+      //     } else {
+      //       Utility.currentScreenSnackBar(
+      //           'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+      //           null);
+      //     }
+      //   } else {}
+      // }
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
       Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
+      // DateTime currentDateTime = DateTime.now();
 
       //    await _getLocalDb();
       navigatorToScreen(actionName: actionName);
     }
   }
 
+//--------------------------------------------------------------------------------------------------------
   navigatorToScreen({required String actionName}) {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       Navigator.of(context).pushReplacement(

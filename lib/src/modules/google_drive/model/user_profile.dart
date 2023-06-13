@@ -10,15 +10,10 @@ class UserGoogleProfile {
 
   static Future<List<UserInformation>> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.openBox('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    if (_userInformation.isNotEmpty) {
-      //print(_userInformation[0].authorizationToken);
-      //print(_userInformation[0].profilePicture);
-      //print(_userInformation[0].refreshToken);
-      //print(_userInformation[0].userEmail);
-      //print(_userInformation[0].userName);
-    }
-    //  await _localDb.close();
+    // if (_userInformation.isNotEmpty) {}
+    await _localDb.close();
     return _userInformation;
   }
 

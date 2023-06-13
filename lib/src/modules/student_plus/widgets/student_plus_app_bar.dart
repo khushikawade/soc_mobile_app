@@ -94,6 +94,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
+                                  plusAppName: 'STUDENT+',
                                   fromGradedPlus: false,
                                   hideStateSelection: true,
                                   profile: snapshot.data!,
