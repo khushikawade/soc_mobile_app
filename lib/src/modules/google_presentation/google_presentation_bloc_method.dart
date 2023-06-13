@@ -17,16 +17,17 @@ class GooglePresentationBlocMethods {
       2: student.teacherEmail ?? '',
       3: student.subjectC ?? '',
       //  4: student.dateC,
-      4: student.dateC != null && student.dateC!.isNotEmpty
+      4: student.standardAndDescriptionC ?? '',
+      5: student.dateC != null && student.dateC!.isNotEmpty
           ? DateFormat("MM/dd/yyyy")
               .format(DateTime.parse(student.dateC ?? '-'))
           : '-',
-      5: student.resultC ?? '',
-      6: StudentPlusUtility.getMaxPointPossible(rubric: student.rubricC ?? '')
+      6: student.resultC ?? '',
+      7: StudentPlusUtility.getMaxPointPossible(rubric: student.rubricC ?? '')
           .toString()
     };
 
-    return map[index] != null && map[index] != '' ? map[index] : '-';
+    return map[index] != null && map[index] != '' ? map[index] : 'NA';
   }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -37,23 +38,23 @@ class GooglePresentationBlocMethods {
       {required final StudentPlusDetailsModel studentDetails,
       required int index}) {
     Map map = {
-      0: "${studentDetails.firstNameC} ${studentDetails.lastNameC}" ?? '-',
-      1: studentDetails.id ?? '-',
-      2: studentDetails.parentPhoneC ?? '-',
-      3: studentDetails.emailC ?? '-',
-      4: studentDetails.gradeC ?? '-',
-      5: studentDetails.classC ?? '-',
-      6: studentDetails.currentAttendance ?? '-',
-      7: studentDetails.genderFullC ?? '-',
-      8: studentDetails.age ?? '-',
+      0: "${studentDetails.firstNameC} ${studentDetails.lastNameC}" ?? '',
+      1: studentDetails.id ?? '',
+      2: studentDetails.parentPhoneC ?? '',
+      3: studentDetails.emailC ?? '',
+      4: studentDetails.gradeC ?? '',
+      5: studentDetails.classC ?? '',
+      6: studentDetails.currentAttendance ?? '',
+      7: studentDetails.genderFullC ?? '',
+      8: studentDetails.age ?? '',
       // 9: studentDetails.dobC ?? '-'
       9: studentDetails.dobC != null && studentDetails.dobC!.isNotEmpty
           ? DateFormat("MM/dd/yyyy")
-              .format(DateTime.parse(studentDetails.dobC ?? '-'))
-          : '-'
+              .format(DateTime.parse(studentDetails.dobC ?? ''))
+          : ''
     };
 
-    return map[index] != null && map[index] != '' ? map[index] : '-';
+    return map[index] != null && map[index] != '' ? map[index] : 'NA';
   }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -113,6 +114,7 @@ class GooglePresentationBlocMethods {
         'Assignment Type',
         'Teacher',
         'Assignment Subject',
+        'Assignment Standard',
         'Date',
         'Points Earned',
         'Points Possible'
@@ -263,7 +265,7 @@ class GooglePresentationBlocMethods {
                 "scaleX": 1,
                 "scaleY": 1,
                 "translateX": 3005000,
-                "translateY": 1050000,
+                "translateY": 850000,
                 "unit": "EMU"
               }
             },
@@ -291,10 +293,25 @@ class GooglePresentationBlocMethods {
                 }
               },
             );
+
+            slideRequiredObjectsList.add({
+              "updateTextStyle": {
+                "objectId": tableObjectUniqueId,
+                "style": {
+                  "fontSize": {"magnitude": 10, "unit": "PT"},
+                  "bold": columnIndex == 0
+                },
+                "fields": "*",
+                "cellLocation": {
+                  "columnIndex": columnIndex,
+                  "rowIndex": rowIndex
+                }
+              }
+            });
           }
         });
       });
-      //  print(assessmentData);
+
       return slideRequiredObjectsList;
     } catch (e) {
       print(e);
