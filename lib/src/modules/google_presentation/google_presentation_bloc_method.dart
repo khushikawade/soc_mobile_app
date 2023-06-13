@@ -293,7 +293,7 @@ class GooglePresentationBlocMethods {
                 }
               },
             );
-
+            //update the textstyle and fontsize of table cells
             slideRequiredObjectsList.add({
               "updateTextStyle": {
                 "objectId": tableObjectUniqueId,
