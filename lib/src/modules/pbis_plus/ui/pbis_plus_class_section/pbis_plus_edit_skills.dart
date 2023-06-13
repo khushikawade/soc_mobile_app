@@ -172,7 +172,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          SpacerWidget(14),
+          SpacerWidget(18),
           Container(
               // color: Colors.yellow,
               child: DragTarget<PBISPlusActionInteractionModalNew>(
@@ -279,7 +279,18 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               changedIndex.value = -1;
             }
             setState(() {});
-          }, onAcceptWithDetails: (details) {
+          }, onAcceptWithDetails:
+                      (DragTargetDetails<PBISPlusActionInteractionModalNew>
+                          details) {
+            final item = details.data;
+            // final hoveredIndex = details.index;
+
+            // Use the hoveredIndex and item as needed
+            // ...
+
+            print("Hovered Index: $item");
+            print("Item Title: ${item?.title}");
+
             // print(
             //     "------onAcceptWithDetails-----------0N ACCEPT WITH DETAILS-------------");
             // print(details.data.color);
@@ -345,7 +356,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 32, left: 16),
+              padding: const EdgeInsets.only(top: 16, left: 16),
               child: Text(
                 "Additional Behaviors",
                 textAlign: TextAlign.center,
@@ -361,7 +372,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         child: GridView.builder(
                           shrinkWrap: true,
                           padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: BouncingScrollPhysics(),
                           // physics: NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
@@ -382,60 +393,96 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                 .PBISPlusActionInteractionIconsNew[index % 9];
                             final isIconDisabled =
                                 containerIcons.value.contains(item);
-
-                            return Draggable(
-                              data: item,
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.4),
-                                      spreadRadius: 0,
-                                      blurRadius: 1,
-                                      offset: Offset(0, 0),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: isIconDisabled
-                                        ? Opacity(
-                                            opacity: 0.2,
-                                            child: SvgPicture.asset(
-                                              item.imagePath,
-                                            ))
-                                        : SvgPicture.asset(
-                                            item.imagePath,
-                                          ),
-                                  ),
-                                ),
-                              ),
-                              feedback: SvgPicture.asset(
-                                item.imagePath,
-                              ),
-                              childWhenDragging: SvgPicture.asset(
-                                item.imagePath,
-                              ),
-                            );
+                            return isIconDisabled
+                                ? _buildNonDraggbleIcon(item, isIconDisabled)
+                                : _buildEditSkillIcon(item, isIconDisabled);
                           },
                         ),
                       )),
             ),
-            // );
-            // },
-            // ),
             SpacerWidget(18),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNonDraggbleIcon(item, isIconDisabled) {
+    return Container(
+      width: 40,
+      height: 40,
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.4),
+            spreadRadius: 0,
+            blurRadius: 1,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Opacity(
+                opacity: 0.2,
+                child: SvgPicture.asset(
+                  item.imagePath,
+                ))),
+      ),
+    );
+  }
+
+  Widget _buildEditSkillIcon(item, isIconDisabled) {
+    return Draggable(
+      data: item,
+      ignoringFeedbackPointer: !isIconDisabled,
+      child: Container(
+        width: 40,
+        height: 40,
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.4),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: Offset(0, 0),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: isIconDisabled
+                ? Opacity(
+                    opacity: 0.2,
+                    child: SvgPicture.asset(
+                      item.imagePath,
+                    ))
+                : SvgPicture.asset(
+                    item.imagePath,
+                  ),
+          ),
+        ),
+      ),
+      feedback: isIconDisabled
+          ? SizedBox.shrink()
+          : SvgPicture.asset(
+              item.imagePath,
+            ),
+      childWhenDragging: isIconDisabled
+          ? SizedBox.shrink()
+          : SvgPicture.asset(
+              item.imagePath,
+            ),
     );
   }
 
@@ -452,7 +499,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                iconName: item.title,
+                item: item,
                 // fromClassScreen: false,
                 // scaffoldKey: _scaffoldKey,
                 // screenshotController: screenshotController,

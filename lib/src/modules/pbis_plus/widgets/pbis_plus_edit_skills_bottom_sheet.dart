@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/overrides.dart';
@@ -31,11 +32,11 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  String? iconName;
+  PBISPlusActionInteractionModalNew? item;
   PBISPlusEditSkillsBottomSheet({
     Key? key,
     this.height = 100,
-    this.iconName = "",
+    required this.item,
   });
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
@@ -92,12 +93,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             allowImplicitScrolling: false,
             pageSnapping: false,
             controller: _pageController,
-            children: [EditAndDeleteIcon(), EditName(widget.iconName)],
+            children: [
+              EditAndDeleteIcon(widget.item),
+              EditName(widget.item?.title)
+            ],
           )),
     );
   }
 
-  Widget EditAndDeleteIcon() {
+  Widget EditAndDeleteIcon(PBISPlusActionInteractionModalNew? item) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -270,11 +274,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           Center(
             child: Utility.textWidget(
                 context: context,
-                text: "${"Edit "+ iconName}",
+                text: "${"Edit " + iconName}",
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
-          
-          
+
           // leading: IconButton(
           //   onPressed: () {
           //     _pageController.animateToPage(pageValue - 1,
