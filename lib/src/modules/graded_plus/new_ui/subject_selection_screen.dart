@@ -1926,6 +1926,11 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
       saveAssessmentToDashboardAndGetId();
     }
+
+    //google classroom with student details if not already updated
+    if (assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated == false) {
+      createClassRoomCourseWorkForStandardApp();
+    }
   }
 
   void createClassRoomCourseWorkForStandardApp() {

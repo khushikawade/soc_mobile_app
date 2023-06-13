@@ -78,8 +78,10 @@ class NonCourseGoogleClassroomStudentPopupState
       int indexToRemoveFromCureentList = notPresentStudentsInSelectedClass
           .indexWhere((e) => e.studentId == student.studentId);
 
-      if ((indexToRemoveFromCureentList != -1 &&
-              notPresentStudentsInSelectedClass.length > 1) &&
+      if ((indexToRemoveFromCureentList != -1
+          //  &&
+          //         notPresentStudentsInSelectedClass.length > 1
+          ) &&
           (indexToRemoveFromStudentDB != -1 && studentInfo.length > 1)) {
         print(indexToRemoveFromCureentList);
         // removing student from local db

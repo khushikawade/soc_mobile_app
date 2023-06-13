@@ -1042,7 +1042,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               title: 'Action Required!',
               message:
                   // "A few students not found in the selected course \'${classController.text}\'. Do you still want to continue with these students?",
-                  "A few students not found in the selected course \'$courseName\'. Do you still want to continue with these students?",
+                  "A few students not found in the selected Google Classroom course. Do you still want to continue with these students?",
               studentInfoDb: _studentAssessmentInfoDb,
               onTapCallback: () {
                 // Close the dialog from outside
