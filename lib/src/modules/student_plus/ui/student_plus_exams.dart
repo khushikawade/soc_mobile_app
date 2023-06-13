@@ -115,6 +115,23 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           shrinkWrap: true,
           children: [
             TabBar(
+              onTap: (i) {
+                print(i);
+                if (i == 0) {
+                  Utility.updateLogs(
+                      activityType: 'STUDENT+',
+                      activityId: '50',
+                      description: 'Student+ MATH Screen',
+                      operationResult: 'Success');
+                }
+                if (i == 1) {
+                  Utility.updateLogs(
+                      activityType: 'STUDENT+',
+                      activityId: '51',
+                      description: 'Student+ ELA Screen',
+                      operationResult: 'Success');
+                }
+              },
               indicatorSize: TabBarIndicatorSize.tab,
               labelColor: Theme.of(context)
                   .colorScheme
