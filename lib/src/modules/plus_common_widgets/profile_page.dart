@@ -230,11 +230,32 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.08,
                 ),
-                // CircleAvatar(
-                //   radius: 50.0,
-                //   backgroundImage: NetworkImage(widget.profile.profilePicture!),
-                //   backgroundColor: Colors.white,
-                // ),
+                widget.profile.profilePicture != null
+                    ? CircleAvatar(
+                        radius: 50.0,
+                        backgroundImage:
+                            NetworkImage(widget.profile.profilePicture!),
+                        backgroundColor: Colors.white,
+                      )
+                    : CircleAvatar(
+                        radius: 50.0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: Globals.deviceType == "phone" ? 28 : 32,
+                          width: Globals.deviceType == "phone" ? 28 : 32,
+                          color: Color.fromARGB(255, 29, 146, 242),
+                          child: Text(widget.profile.userName != null &&
+                                  widget.profile.userName != ''
+                              ? widget.profile.userName!.split(' ').length > 1
+                                  ? widget.profile.userName!.substring(0, 1) +
+                                      widget.profile.userName!.substring(1, 2)
+                                  : widget.profile.userName!.split(' ').length >
+                                          0
+                                      ? widget.profile.userName!.substring(0, 1)
+                                      : 'Unknown'
+                              : 'Unknown'),
+                        ),
+                      ),
                 SizedBox(
                   height: 10.0,
                 ),
