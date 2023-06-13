@@ -331,7 +331,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               PlusScreenTitleWidget(
                 kLabelSpacing: widget.assessmentDetailPage!
                     ? 0
-                    : StudentPlusOverrides.kLabelSpacing,
+                    : StudentPlusOverrides.kLabelSpacing / 2,
                 text: 'Results Summary',
                 backButton: widget.assessmentDetailPage,
               ),
@@ -422,23 +422,23 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             ),
           ),
 
-          !widget.assessmentDetailPage!
-              ? studentSummaryCardWidget()
-              : BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
-                  bloc: _driveBloc,
-                  builder: (context, state) {
-                    if (state is AssessmentDetailSuccess) {
-                      if (state.obj.length > 0 &&
-                          state.obj[0].answerKey != '' &&
-                          state.obj[0].answerKey != 'NA' &&
-                          state.obj[0].answerKey != null) {
-                        widget.isMcqSheet = true;
-                      }
-                      return studentSummaryCardWidget(list: state.obj);
-                    }
-                    return Container();
-                  },
-                ),
+          // !widget.assessmentDetailPage!
+          //     ? studentSummaryCardWidget()
+          //     : BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
+          //         bloc: _driveBloc,
+          //         builder: (context, state) {
+          //           if (state is AssessmentDetailSuccess) {
+          //             if (state.obj.length > 0 &&
+          //                 state.obj[0].answerKey != '' &&
+          //                 state.obj[0].answerKey != 'NA' &&
+          //                 state.obj[0].answerKey != null) {
+          //               widget.isMcqSheet = true;
+          //             }
+          //             return studentSummaryCardWidget(list: state.obj);
+          //           }
+          //           return Container();
+          //         },
+          //       ),
           SpacerWidget(_KVerticalSpace / 5),
           !widget.assessmentDetailPage!
               ? Expanded(
