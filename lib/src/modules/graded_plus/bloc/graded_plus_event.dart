@@ -309,3 +309,9 @@ class GetDashBoardStatusForStandardApp extends OcrEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $fileId}';
 }
+
+class FetchGradedApprovedDomains extends OcrEvent {
+  FetchGradedApprovedDomains();
+  @override
+  List<Object> get props => [];
+}

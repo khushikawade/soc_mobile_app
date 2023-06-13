@@ -10,13 +10,11 @@ import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
-import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -119,9 +117,12 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
   bool isRubricChanged = false; // boolean to check rubric is change or not
   String uniqueId = DateTime.now().microsecondsSinceEpoch.toString(); // Unq
   bool initialCursorPositionAtLast = true; //To manage textfield cursor position
+
+  //Used to detect the student id change when user changes the id even after successful detection
+  String? detectStudentIdChange = '';
+
   void initState() {
     super.initState();
-
     _bloc.add(FetchTextFromImage(
         selectedAnswer: widget.selectedAnswer,
         isMcqSheet: widget.isMcqSheet ?? false,
@@ -190,21 +191,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       isHomeButtonPopup: true,
       isBackOnSuccess: isBackFromCamera,
       actionIcon: Container(),
-
-      // scanFailure.value == "Failure"
-      //     ? Container()
-      //     : IconButton(
-      //         onPressed: () {
-      //           onPressAction();
-      //         },
-      //         icon: Icon(
-      //           IconData(0xe877,
-      //               fontFamily: Overrides.kFontFam,
-      //               fontPackage: Overrides.kFontPkg),
-      //           size: 30,
-      //           color: AppTheme.kButtonColor,
-      //         ),
-      //       ),
       key: null,
     );
   }
@@ -309,39 +295,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
               },
             );
           }
-          // return scanFailure.value == "Success"
-          //     ? ValueListenableBuilder(
-          //         valueListenable: isBackFromCamera,
-          //         child: Container(),
-          //         builder:
-          //             (BuildContext context, dynamic value, Widget? child) {
-          //           return
-          //               // isBackFromCamera.value != true
-          //               //     ?
-          //               Align(
-          //             alignment: Alignment.bottomCenter,
-          //             child: ValueListenableBuilder(
-          //                 valueListenable: animationStart,
-          //                 child: Container(),
-          //                 builder: (BuildContext context, dynamic value,
-          //                     Widget? child) {
-          //                   return InkWell(
-          //                     onTap: () async {
-          //                       onPressSuccessFloatingButton();
-          //                     },
-          //                     child: GradedPlusNextScanAnimationButton(
-          //                       width: MediaQuery.of(context).size.width * 0.4,
-          //                       height:
-          //                           MediaQuery.of(context).size.height * 0.055,
-          //                       animationDuration: Duration(milliseconds: 4950),
-          //                       animationStart: animationStart.value,
-          //                     ),
-          //                   );
-          //                 }),
-          //           );
-          //           //  : Container();
-          //         })
-          //     :
         });
   }
 
@@ -472,7 +425,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                                     state.studentId != '' &&
                                     state.studentName == '')
                                 ? 'Unable to detect Student Name OR Student does not exist in the database'
-                                : 'Unable to fatch details(Scan Failure)',
+                                : 'Unable to fetch details(Scan Failure)',
                 operationResult: 'Failure');
 
             onChange == false
@@ -506,7 +459,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             onChange == false ? idController.text = state.studentId! : null;
             pointScored.value = state.grade!;
 
-            return GradedPlusScanResult(
+            return gradedPlusSuccessScanResult(
                 id: state.studentId!, grade: state.grade!);
           } else if (state is FetchTextFromImageFailure) {
             onChange == false
@@ -700,91 +653,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             },
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     Row(
-          //       children: [
-          //         Container(
-          //             child: PlusScreenTitleWidget(
-          //                 kLabelSpacing: 0, text: 'Manual Entry')),
-          //         SizedBox(
-          //           width: 5.0,
-          //         ),
-          //         Container(
-          //           decoration: BoxDecoration(
-          //             shape: BoxShape.circle,
-          //             color: Color(0xffCF6679),
-          //           ),
-          //           child: Icon(
-          //               IconData(0xe838,
-          //                   fontFamily: Overrides.kFontFam,
-          //                   fontPackage: Overrides.kFontPkg),
-          //               // size: 19,
-          //               color: Colors.white),
-          //         ),
-          //       ],
-          //     ),
-
-          //     // Retry and  next button widget
-          //     ValueListenableBuilder(
-          //       valueListenable: isStudentIdFilled,
-          //       child: Container(),
-          //       builder: (context, value, child) {
-          //         return SizedBox(
-          //           height: MediaQuery.of(context).size.height * 0.05,
-          //           child: FloatingActionButton.extended(
-          //             backgroundColor: AppTheme.kButtonColor,
-          //             onPressed: () {
-          //               //  Condition to check id is validate or not
-          //               if (validateStudentId(value: idController.text)) {
-          //                 onPressAction();
-          //               } else {
-          //                 Utility.updateLogs(
-          //                     activityType: 'GRADED+',
-          //                     activityId: '9',
-          //                     description:
-          //                         'Scan Failure and teacher retry scan',
-          //                     operationResult: 'Failure');
-
-          //                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          //                 Navigator.of(context).pop(widget.isFlashOn);
-          //               }
-          //             },
-          //             label: Row(
-          //               children: [
-          //                 Utility.textWidget(
-          //                     text: validateStudentId(value: idController.text)
-          //                         ? "Next"
-          //                         : 'Retry',
-          //                     context: context,
-          //                     textTheme: Theme.of(context)
-          //                         .textTheme
-          //                         .headline4!
-          //                         .copyWith(
-          //                             color:
-          //                                 Theme.of(context).backgroundColor)),
-          //               ],
-          //             ),
-          //             icon: validateStudentId(value: idController.text)
-          //                 ? Icon(
-          //                     IconData(0xe877,
-          //                         fontFamily: Overrides.kFontFam,
-          //                         fontPackage: Overrides.kFontPkg),
-          //                     size: 20,
-          //                     color: Theme.of(context).backgroundColor,
-          //                     // color: AppTheme.kButtonColor,
-          //                   )
-          //                 : Icon(
-          //                     Icons.refresh,
-          //                     color: Theme.of(context).backgroundColor,
-          //                   ),
-          //           ),
-          //         );
-          //       },
-          //     ),
-          //   ],
-          // ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Utility.textWidget(
               text: 'Student Name',
@@ -884,7 +752,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                       onSaved: (String value) {
                         initialCursorPositionAtLast = false;
-                        studentIdOnSaveFailure(value);
+                        studentIdOnSaveFailure(value, false);
                       },
                       validator: (String? value) {
                         // isStudentIdFilled.value = value!;
@@ -1096,7 +964,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     //   : Container();
   }
 
-  Widget GradedPlusScanResult({required String id, required String grade}) {
+  Widget gradedPlusSuccessScanResult(
+      {required String id, required String grade}) {
     return Form(
       key: _formKey2,
       child: ListView(
@@ -1197,8 +1066,11 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       // errormsg:
                       //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                       onSaved: (String value) {
+                        if (detectStudentIdChange == '') {
+                          detectStudentIdChange = value;
+                        }
                         initialCursorPositionAtLast = false;
-                        studentIdOnSaveFailure(value);
+                        studentIdOnSaveFailure(value, true);
                       },
                       validator: (String? value) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1385,7 +1257,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                           if (widget.isMcqSheet == true) {
                             Utility.updateLogs(
                                 activityType: 'GRADED+',
-                                activityId: '30',
+                                activityId: '8',
                                 description:
                                     'Answer Key changed from ${pointScored.value} to ${index.toString()}',
                                 operationResult: 'Success');
@@ -1960,7 +1832,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     }
   }
 
-  studentIdOnSaveFailure(value) {
+  studentIdOnSaveFailure(value, bool? isDetectionSuccess) {
     isStudentIdFilled.value = value;
     _formKey1.currentState!.validate();
     suggestionEmailList.clear();
@@ -2041,7 +1913,22 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         }
       }
     } else {}
+    //---------------------------------------------------------------
+    //(Failure Case Check)||(Success Case Check)
+    if ((isDetectionSuccess == false) ||
+        (detectStudentIdChange != value && detectStudentIdChange != '')) {
+      //update changed value and log the change
+      detectStudentIdChange = value;
 
+      //Every time when student id detection fails, user manually enter the student id
+      Utility.updateLogs(
+          activityType: 'Graded+',
+          activityId: '55',
+          sessionId: Globals.sessionId,
+          description: 'Student Id/Email Change',
+          operationResult: 'Success');
+    }
+    //---------------------------------------------------------------
     // //Assign the length of suggestion emails
     suggestionEmailListLenght.value = suggestionEmailList.length;
 

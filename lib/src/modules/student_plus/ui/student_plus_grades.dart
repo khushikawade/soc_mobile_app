@@ -46,6 +46,12 @@ class individual extends State<StudentPlusGradesPage> {
         screenTitle: 'student_plus_grades_screen',
         screenClass: 'StudentPlusGradesPage');
 
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '53',
+        description: 'Student+ Grades Screen',
+        operationResult: 'Success');
+
     super.initState();
   }
 

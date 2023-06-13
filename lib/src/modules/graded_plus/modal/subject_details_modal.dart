@@ -54,7 +54,6 @@ class SubjectDetailList {
   String? subjectNameC;
   @HiveField(14)
   DateTime? dateTime;
- 
 
   factory SubjectDetailList.fromRawJson(String str) =>
       SubjectDetailList.fromJson(json.decode(str));

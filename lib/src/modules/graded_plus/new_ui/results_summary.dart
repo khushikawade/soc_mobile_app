@@ -17,11 +17,11 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/result_summary_action_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_action_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
@@ -1832,178 +1832,179 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Widget detailPageActionButtons(iconName, index) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 5.0),
-      //UNCOMMENT
-      //  color: Colors.black,
-      child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: iconsName[index] == 'Share' &&
-                  !widget.assessmentDetailPage! &&
-                  widget.isScanMore == null
-              ? detailsPageActionWithDashboard(index)
-              : detailPageActionsWithoutDashboard(index: index),
-          onPressed: () async {
-            if (iconsName[index] == 'Share') {
-              Utility.updateLogs(
-                  activityType: 'GRADED+',
-                  activityId: '13',
-                  sessionId: widget.assessmentDetailPage == true
-                      ? widget.obj!.sessionId
-                      : '',
-                  description: widget.assessmentDetailPage == true
-                      ? 'Share Button pressed from Assessment History Detail Page'
-                      : 'Share Button pressed from Result Summary',
-                  operationResult: 'Success');
-              widget.shareLink != null && widget.shareLink!.isNotEmpty
-                  ? Share.share(widget.shareLink!)
-                  : print("no link ");
-            } else if (iconsName[index] == 'History') {
-              Utility.updateLogs(
-                  activityType: 'GRADED+',
-                  activityId: '15',
-                  description: 'History Assessment button pressed',
-                  operationResult: 'Success');
+  // Widget detailPageActionButtons(iconName, index) {
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: 5.0),
+  //     //UNCOMMENT
+  //     //  color: Colors.black,
+  //     child: IconButton(
+  //         padding: EdgeInsets.zero,
+  //         icon: iconsName[index] == 'Share' &&
+  //                 !widget.assessmentDetailPage! &&
+  //                 widget.isScanMore == null
+  //             ? detailsPageActionWithDashboard(index)
+  //             : detailPageActionsWithoutDashboard(index: index),
+  //         onPressed: () async {
+  //           if (iconsName[index] == 'Share') {
+  //             Utility.updateLogs(
+  //                 activityType: 'GRADED+',
+  //                 activityId: '13',
+  //                 sessionId: widget.assessmentDetailPage == true
+  //                     ? widget.obj!.sessionId
+  //                     : '',
+  //                 description: widget.assessmentDetailPage == true
+  //                     ? 'Share Button pressed from Assessment History Detail Page'
+  //                     : 'Share Button pressed from Result Summary',
+  //                 operationResult: 'Success');
 
-              _showDataSavedPopup(
-                  historyAssessmentSection: true,
-                  title: 'Are you sure?',
-                  msg:
-                      'If you exit now, you will not be able to return to this page. Continue?',
-                  noActionText: 'No',
-                  yesActionText: 'Yes, Take Me There');
-            } else if ((iconName[index] == 'Sheet' ||
-                    iconName[index] == 'Dashboard') &&
-                dashboardState.value == '') {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                if (widget.shareLink == null) {
-                  Utility.currentScreenSnackBar('Please Wait', null,
-                      marginFromBottom: 90);
-                } else {
-                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                }
+  //             widget.shareLink != null && widget.shareLink!.isNotEmpty
+  //                 ? Share.share(widget.shareLink!)
+  //                 : print("no link ");
+  //           } else if (iconsName[index] == 'History') {
+  //             Utility.updateLogs(
+  //                 activityType: 'GRADED+',
+  //                 activityId: '15',
+  //                 description: 'History Assessment button pressed',
+  //                 operationResult: 'Success');
 
-                return;
-              }
+  //             _showDataSavedPopup(
+  //                 historyAssessmentSection: true,
+  //                 title: 'Are you sure?',
+  //                 msg:
+  //                     'If you exit now, you will not be able to return to this page. Continue?',
+  //                 noActionText: 'No',
+  //                 yesActionText: 'Yes, Take Me There');
+  //           } else if ((iconName[index] == 'Sheet' ||
+  //                   iconName[index] == 'Dashboard') &&
+  //               dashboardState.value == '') {
+  //             if (Overrides.STANDALONE_GRADED_APP == true) {
+  //               if (widget.shareLink == null) {
+  //                 Utility.currentScreenSnackBar('Please Wait', null,
+  //                     marginFromBottom: 90);
+  //               } else {
+  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+  //               }
 
-              if (widget.assessmentDetailPage == true &&
-                  widget.createdAsPremium == false) {
-                Utility.updateLogs(
-                    activityType: 'GRADED+',
-                    activityId: '14',
-                    description:
-                        'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-                    operationResult: 'Failed');
-                popupModal(
-                    title: 'Data Not Saved',
-                    message:
-                        'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-                Globals.scanMoreStudentInfoLength =
-                    await OcrUtility.getStudentInfoListLength(
-                            tableName: 'student_info') -
-                        1;
-              } else {
-                List list = await OcrUtility.getSortedStudentInfoList(
-                    tableName: 'student_info');
+  //               return;
+  //             }
 
-                if (widget.isScanMore == true &&
-                    widget.assessmentListLength != null &&
-                    widget.assessmentListLength! < list.length) {
-                  Utility.updateLogs(
-                      activityType: 'GRADED+',
-                      activityId: '14',
-                      description:
-                          'Save to dashboard pressed in case for scan more',
-                      operationResult: 'Success');
-                } else {
-                  // Adding the non saved record of dashboard in the list
-                  List<StudentAssessmentInfo> _listRecord = [];
+  //             if (widget.assessmentDetailPage == true &&
+  //                 widget.createdAsPremium == false) {
+  //               Utility.updateLogs(
+  //                   activityType: 'GRADED+',
+  //                   activityId: '14',
+  //                   description:
+  //                       'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
+  //                   operationResult: 'Failed');
+  //               popupModal(
+  //                   title: 'Data Not Saved',
+  //                   message:
+  //                       'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
+  //               Globals.scanMoreStudentInfoLength =
+  //                   await OcrUtility.getStudentInfoListLength(
+  //                           tableName: 'student_info') -
+  //                       1;
+  //             } else {
+  //               List list = await OcrUtility.getSortedStudentInfoList(
+  //                   tableName: 'student_info');
 
-                  if (widget.assessmentDetailPage! &&
-                      savedRecordCount != null &&
-                      historyRecordList.length != savedRecordCount!) {
-                    _listRecord = historyRecordList.sublist(
-                        savedRecordCount!, historyRecordList.length);
-                  } else {
-                    //
-                    _listRecord = historyRecordList;
-                  }
-                }
-              }
+  //               if (widget.isScanMore == true &&
+  //                   widget.assessmentListLength != null &&
+  //                   widget.assessmentListLength! < list.length) {
+  //                 Utility.updateLogs(
+  //                     activityType: 'GRADED+',
+  //                     activityId: '14',
+  //                     description:
+  //                         'Save to dashboard pressed in case for scan more',
+  //                     operationResult: 'Success');
+  //               } else {
+  //                 // Adding the non saved record of dashboard in the list
+  //                 List<StudentAssessmentInfo> _listRecord = [];
 
-              // }
-            } else if (dashboardState.value == 'Success') {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                if (widget.shareLink == null) {
-                  Utility.currentScreenSnackBar('Please Wait', null,
-                      marginFromBottom: 90);
-                } else {
-                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                }
+  //                 if (widget.assessmentDetailPage! &&
+  //                     savedRecordCount != null &&
+  //                     historyRecordList.length != savedRecordCount!) {
+  //                   _listRecord = historyRecordList.sublist(
+  //                       savedRecordCount!, historyRecordList.length);
+  //                 } else {
+  //                   //
+  //                   _listRecord = historyRecordList;
+  //                 }
+  //               }
+  //             }
 
-                return;
-              }
-              popupModal(
-                  title: 'Already Saved',
-                  message:
-                      'The data has already been saved to the data dashboard.');
-            }
-          }),
-    );
-  }
+  //             // }
+  //           } else if (dashboardState.value == 'Success') {
+  //             if (Overrides.STANDALONE_GRADED_APP == true) {
+  //               if (widget.shareLink == null) {
+  //                 Utility.currentScreenSnackBar('Please Wait', null,
+  //                     marginFromBottom: 90);
+  //               } else {
+  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+  //               }
+
+  //               return;
+  //             }
+  //             popupModal(
+  //                 title: 'Already Saved',
+  //                 message:
+  //                     'The data has already been saved to the data dashboard.');
+  //           }
+  //         }),
+  //   );
+  // }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Widget detailPageActionsWithoutDashboard({required int index}) {
-    if (Overrides.STANDALONE_GRADED_APP == true &&
-        iconsName[index] == 'Sheet') {
-      return Container(
-          height: 28,
+  // Widget detailPageActionsWithoutDashboard({required int index}) {
+  //   if (Overrides.STANDALONE_GRADED_APP == true &&
+  //       iconsName[index] == 'Sheet') {
+  //     return Container(
+  //         height: 28,
 
-          // margin: EdgeInsets.only(right: 15, bottom: 1),
-          //padding: EdgeInsets.symmetric(vertical: 9),
-          child: SvgPicture.asset(Strings.googleSheetIcon));
-    } else {
-      return Icon(
-        IconData(
-            (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                    dashboardState.value == 'Success'
-                ? 0xe877
-                : iconsList[index],
-            fontFamily: Overrides.kFontFam,
-            fontPackage: Overrides.kFontPkg),
-        size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                dashboardState.value == ''
-            ? Globals.deviceType == 'phone'
-                ? 33
-                : 55
-            : Globals.deviceType == 'phone'
-                ? 33
-                : 48,
-        color: iconsName[index] == 'History'
-            ? AppTheme.kButtonbackColor
-            : iconsName[index] == 'Share'
-                ? AppTheme.kButtonColor
-                : (widget.assessmentDetailPage! &&
-                            index == 2 &&
-                            isAssessmentAlreadySaved == 'YES') ||
-                        (widget.assessmentDetailPage! &&
-                            index == 2 &&
-                            dashboardState.value == 'Success')
-                    ? Colors.green
-                    : index == 2 || (index == 3 && dashboardState.value == '')
-                        ? Theme.of(context).backgroundColor == Color(0xff000000)
-                            ? Colors.white
-                            : Colors.black
-                        : (widget.assessmentDetailPage!
-                                    ? index == 2
-                                    : index == 3) &&
-                                dashboardState.value == 'Success'
-                            ? Colors.green
-                            : AppTheme.kButtonColor,
-      );
-    }
-  }
+  //         // margin: EdgeInsets.only(right: 15, bottom: 1),
+  //         //padding: EdgeInsets.symmetric(vertical: 9),
+  //         child: SvgPicture.asset(Strings.googleSheetIcon));
+  //   } else {
+  //     return Icon(
+  //       IconData(
+  //           (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+  //                   dashboardState.value == 'Success'
+  //               ? 0xe877
+  //               : iconsList[index],
+  //           fontFamily: Overrides.kFontFam,
+  //           fontPackage: Overrides.kFontPkg),
+  //       size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+  //               dashboardState.value == ''
+  //           ? Globals.deviceType == 'phone'
+  //               ? 33
+  //               : 55
+  //           : Globals.deviceType == 'phone'
+  //               ? 33
+  //               : 48,
+  //       color: iconsName[index] == 'History'
+  //           ? AppTheme.kButtonbackColor
+  //           : iconsName[index] == 'Share'
+  //               ? AppTheme.kButtonColor
+  //               : (widget.assessmentDetailPage! &&
+  //                           index == 2 &&
+  //                           isAssessmentAlreadySaved == 'YES') ||
+  //                       (widget.assessmentDetailPage! &&
+  //                           index == 2 &&
+  //                           dashboardState.value == 'Success')
+  //                   ? Colors.green
+  //                   : index == 2 || (index == 3 && dashboardState.value == '')
+  //                       ? Theme.of(context).backgroundColor == Color(0xff000000)
+  //                           ? Colors.white
+  //                           : Colors.black
+  //                       : (widget.assessmentDetailPage!
+  //                                   ? index == 2
+  //                                   : index == 3) &&
+  //                               dashboardState.value == 'Success'
+  //                           ? Colors.green
+  //                           : AppTheme.kButtonColor,
+  //     );
+  //   }
+  // }
 
 //--------------------------------------------------------------------------------------------------------------------------
   void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
@@ -2051,7 +2052,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Future<String> _getpointPossible({required String tableName}) async {
+  Future<String> _getPointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
         await OcrUtility.getSortedStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
@@ -2097,42 +2098,42 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  Widget _slidableDecorationWidget(
-      {required String label, required IconData icon}) {
-    final children = <Widget>[];
+  // Widget _slidableDecorationWidget(
+  //     {required String label, required IconData icon}) {
+  //   final children = <Widget>[];
 
-    children.add(
-      Icon(icon),
-    );
+  //   children.add(
+  //     Icon(icon),
+  //   );
 
-    children.add(
-      SizedBox(height: 4),
-    );
+  //   children.add(
+  //     SizedBox(height: 4),
+  //   );
 
-    children.add(
-      TranslationWidget(
-          message: label,
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) {
-            return Text(
-              translatedMessage,
-              overflow: TextOverflow.ellipsis,
-            );
-          }),
-    );
+  //   children.add(
+  //     TranslationWidget(
+  //         message: label,
+  //         fromLanguage: "en",
+  //         toLanguage: Globals.selectedLanguage,
+  //         builder: (translatedMessage) {
+  //           return Text(
+  //             translatedMessage,
+  //             overflow: TextOverflow.ellipsis,
+  //           );
+  //         }),
+  //   );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ...children.map(
-          (child) => Flexible(
-            child: child,
-          ),
-        )
-      ],
-    );
-  }
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       ...children.map(
+  //         (child) => Flexible(
+  //           child: child,
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
 //--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
@@ -2145,22 +2146,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------performScanMore-----------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   void performScanMore() async {
-    // if ((widget.assessmentDetailPage == true) &&
-    //     ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
-    //         (widget.createdAsPremium == false &&
-    //             Globals.isPremiumUser == true))) {
-    //   popupModal(
-    //       title: 'Alert!',
-    //       message: Globals.isPremiumUser == true
-    //           ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-    //           : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-    //   return;
-    // }
     String scanMoreLogMsg =
         'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-
+//--------------------------------------------------------------------------
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     Utility.updateLogs(
@@ -2170,14 +2162,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',
         description: scanMoreLogMsg,
         operationResult: 'Success');
+//--------------------------------------------------------------------------
 
     if (widget.obj != null && widget.obj!.isCreatedAsPremium == "true") {
       createdAsPremium = true;
     }
-    String pointPossible = await _getpointPossible(
+    String pointPossible = await _getPointPossible(
         tableName: widget.assessmentDetailPage == true
             ? 'history_student_info'
             : 'student_info');
+//--------------------------------------------------------------------------
 
     Fluttertoast.cancel();
     Navigator.push(
@@ -2201,7 +2195,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     : '2')));
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------_initState-------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
       // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
@@ -2246,7 +2242,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
-//--------------------------------------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------fabButton--------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------------*/
   Widget fabButton(
     BuildContext context,
   ) =>

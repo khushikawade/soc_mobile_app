@@ -42,6 +42,12 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'student_plus_info_screen',
         screenClass: 'StudentPlusGradesPage');
+
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '49',
+        description: 'Student+ Info Screen',
+        operationResult: 'Success');
   }
 
   @override

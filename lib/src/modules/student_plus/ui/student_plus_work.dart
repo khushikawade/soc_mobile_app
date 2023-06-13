@@ -68,6 +68,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'student_plus_work_screen',
         screenClass: 'StudentPlusWorkScreen');
+
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '52',
+        description: 'Student+ Work Screen',
+        operationResult: 'Success');
   }
 
   @override
