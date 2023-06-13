@@ -95,6 +95,9 @@ class NonCourseGoogleClassroomStudentPopupState
             'Action Not Performed. Student List Cannot Be Empty.', null,
             marginFromBottom: 90);
       }
+      // //updating the valuenotifier with new values
+      notPresentStudentsInSelectedClassValueNotifier.value =
+          notPresentStudentsInSelectedClass;
     } catch (e) {
       //updating the valuenotifier with new values
       notPresentStudentsInSelectedClassValueNotifier.value =
