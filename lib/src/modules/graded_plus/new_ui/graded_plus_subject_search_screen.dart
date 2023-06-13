@@ -35,18 +35,6 @@ import '../../google_classroom/bloc/google_classroom_bloc.dart';
 
 // ignore: must_be_immutable
 class GradedPlusSearchScreenPage extends StatefulWidget {
-  final bool? isMcqSheet;
-  final String? selectedAnswer;
-  final String? selectedKeyword;
-  final String? grade;
-  // final String? questionImage;
-  final String? selectedSubject;
-  final String? subjectId;
-  final String? stateName;
-
-  GoogleDriveBloc googleDriveBloc;
-  GoogleClassroomBloc googleClassroomBloc;
-  final File? gradedPlusQueImage;
   GradedPlusSearchScreenPage(
       {Key? key,
       this.isMcqSheet,
@@ -62,6 +50,19 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
       required this.gradedPlusQueImage})
       : super(key: key);
 
+  GoogleClassroomBloc googleClassroomBloc;
+  GoogleDriveBloc googleDriveBloc;
+  final String? grade;
+  final File? gradedPlusQueImage;
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
+  final String? selectedKeyword;
+  // final String? questionImage;
+  final String? selectedSubject;
+
+  final String? stateName;
+  final String? subjectId;
+
   @override
   State<GradedPlusSearchScreenPage> createState() =>
       _GradedPlusSearchScreenPageState();
@@ -69,13 +70,6 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
 
 class _GradedPlusSearchScreenPageState
     extends State<GradedPlusSearchScreenPage> {
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final searchController = TextEditingController();
-  final ValueNotifier<int> nycSubIndex1 =
-      ValueNotifier<int>(5000); //To bypass the default selection
-  final ValueNotifier<int> listLength =
-      ValueNotifier<int>(5000); //To bypass the default selection
-
   ValueNotifier<AssessmentStatusModel> assessmentStatus =
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
           excelSheetPrepared: false,
@@ -83,30 +77,43 @@ class _GradedPlusSearchScreenPageState
           saveAssessmentResultToDashboard: false,
           googleClassRoomIsUpdated: false));
 
-  GoogleDriveBloc googleBloc = GoogleDriveBloc();
   GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();
+  GoogleDriveBloc googleBloc = GoogleDriveBloc();
   GoogleDriveBloc googleSlideBloc = GoogleDriveBloc();
-  OcrBloc ocrAssessmentBloc = OcrBloc();
-
-  static const double _KVertcalSpace = 60.0;
-  OcrBloc _ocrBloc = OcrBloc();
-  OcrBloc _ocrBloc2 = OcrBloc();
-  String? standardId;
-
-  final _debouncer = Debouncer(milliseconds: 10);
-  List<SubjectDetailList> searchList = [];
-  int standardLearningLength = 0;
-  String? learningStandard;
-  String? subLearningStandard;
-  String? standardDescription;
-  final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
+  String? learningStandard;
+  final ValueNotifier<int> listLength =
+      ValueNotifier<int>(5000); //To bypass the default selection
+
+  final ValueNotifier<int> nycSubIndex1 =
+      ValueNotifier<int>(5000); //To bypass the default selection
+
+  OcrBloc ocrAssessmentBloc = OcrBloc();
+  final searchController = TextEditingController();
+  List<SubjectDetailList> searchList = [];
+  StateSetter? showDialogSetState;
+  String? standardDescription;
+  String? standardId;
+  int standardLearningLength = 0;
+  String? subLearningStandard;
+
+  static const double _KVertcalSpace = 60.0;
+
+  final _debouncer = Debouncer(milliseconds: 10);
+  OcrBloc _ocrBloc = OcrBloc();
+  OcrBloc _ocrBloc2 = OcrBloc();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
       LocalDatabase('student_info');
-  final ScrollController _scrollController = ScrollController();
 
-  StateSetter? showDialogSetState;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -125,153 +132,6 @@ class _GradedPlusSearchScreenPageState
     FirebaseAnalyticsService.addCustomAnalyticsEvent("search_screen_page");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'search_screen_page', screenClass: 'SearchScreenPage');
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackgroundImgWidget(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          floatingActionButton: submitAssessmentButton(),
-          appBar: CustomOcrAppBarWidget(
-            fromGradedPlus: true,
-            onTap: () {
-              Utility.scrollToTop(scrollController: _scrollController);
-            },
-            isSuccessState: ValueNotifier<bool>(true),
-            isBackButton: true,
-            isBackOnSuccess: isBackFromCamera,
-            key: _scaffoldKey,
-          ),
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: ListView(
-              shrinkWrap: true,
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: SearchBar(
-                    stateName: widget.stateName!,
-                    //    isCommonCore: widget.isCommonCore,
-                    isSearchPage: true,
-                    readOnly: false,
-                    controller: searchController,
-                    onSaved: (value) {
-                      if (searchController.text.isEmpty) {
-                        _ocrBloc.add(FetchRecentSearch(
-                            type: 'nycSub',
-                            subjectName: widget.selectedKeyword,
-                            // isSearchPage: true,
-                            className: widget.grade));
-                        _ocrBloc2.add(FetchRecentSearch(
-                            type: 'nyc',
-                            subjectName: widget.selectedKeyword,
-                            // isSearchPage: true,
-                            className: widget.grade));
-                      } else {
-                        _debouncer.run(() async {
-                          _ocrBloc.add(SearchSubjectDetails(
-                              subjectSelected: widget.selectedSubject,
-                              stateName: widget.stateName!,
-                              searchKeyword: searchController.text,
-                              type: 'nycSub',
-                              selectedKeyword: widget.selectedKeyword,
-                              isSearchPage: true,
-                              grade: widget.grade));
-                          _ocrBloc2.add(SearchSubjectDetails(
-                            subjectSelected: widget.selectedSubject,
-                            searchKeyword: searchController.text,
-                            type: 'nyc',
-                            stateName: widget.stateName!,
-                            selectedKeyword: widget.selectedKeyword,
-                            isSearchPage: true,
-                            grade: widget.grade,
-                          ));
-                          setState(() {});
-                        });
-                      }
-                    },
-                  ),
-                ),
-                // SpacerWidget(10),
-                BlocListener<OcrBloc, OcrState>(
-                  bloc: _ocrBloc,
-                  listener: (context, state) {
-                    if (state is RecentListSuccess) {
-                      searchList.clear();
-                      searchList.addAll(state.obj!);
-                      listLength.value = searchList.length;
-                      isRecentList.value = true;
-                    } else if (state is SearchSubjectDetailsSuccess) {
-                      List<SubjectDetailList> list = [];
-
-                      for (int i = 0; i < state.obj!.length; i++) {
-                        if (state.obj![i].standardAndDescriptionC!
-                            .toUpperCase()
-                            .contains(searchController.text.toUpperCase())) {
-                          list.add(state.obj![i]);
-                        }
-                      }
-                      searchList.clear();
-                      searchList.addAll(list);
-                      listLength.value = searchList.length;
-                      isRecentList.value = false;
-                    }
-
-                    // do stuff here based on BlocA's state
-                  },
-                  child: Container(),
-                ),
-                BlocListener<OcrBloc, OcrState>(
-                  bloc: _ocrBloc2,
-                  listener: (context, state) {
-                    if (state is RecentListSuccess) {
-                      searchList.insertAll(0, state.obj!);
-                      standardLearningLength = state.obj!.length;
-                      listLength.value = searchList.length;
-                      isRecentList.value = true;
-                    } else if (state is SearchSubjectDetailsSuccess) {
-                      List<SubjectDetailList> list = [];
-
-                      for (int i = 0; i < state.obj!.length; i++) {
-                        if (state.obj![i].domainNameC!
-                            .toUpperCase()
-                            .contains(searchController.text.toUpperCase())) {
-                          list.add(state.obj![i]);
-                        }
-                      }
-                      //print(searchList[0].standardAndDescriptionC);
-                      searchList.insertAll(0, list);
-                      standardLearningLength = list.length;
-                      listLength.value = searchList.length;
-                      isRecentList.value = false;
-                    }
-                    // do stuff here based on BlocA's state
-                  },
-                  child: Container(),
-                ),
-                SpacerWidget(20),
-                verticalListWidget()
-              ],
-            ),
-          ),
-        ),
-        googleBlocListener(),
-        excelBlocListener(),
-        slideBlocListener(),
-        ocrAssessmentBlocListener(),
-        classRoomBlocListener()
-      ],
-    );
   }
 
   Widget verticalListWidget() {
@@ -613,21 +473,6 @@ class _GradedPlusSearchScreenPageState
     _localData.forEach((SubjectDetailList e) {
       _localDb.addData(e);
     });
-  }
-
-  void _navigatetoResultSection() {
-    // Navigator.of(context).pop();
-
-    GradedGlobals.loadingMessage = null;
-    //widget.googleDriveBloc.close();
-
-    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        "save_to_drive_from_subject_search");
-    Utility.updateLogs(
-        activityType: 'GRADED+',
-        activityId: '12',
-        description: 'Save to drive',
-        operationResult: 'Success');
   }
 
   Future saveToDrive() async {
@@ -1023,13 +868,10 @@ class _GradedPlusSearchScreenPageState
       ));
     }
 
-
-  //google classroom with student details if not already updated
+    //google classroom with student details if not already updated
     if (assessmentStatus.value.googleClassRoomIsUpdated == false) {
       createClassRoomCourseWorkForStandardApp();
     }
-
-
 
     //------------------------------------------------------------------------------
     //Updating student result to dashboard if not already updated
@@ -1068,36 +910,6 @@ class _GradedPlusSearchScreenPageState
 
       saveAssessmentToDashboardAndGetId();
     }
-
-
-
-
-
-  }
-
-  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  void _saveResultAssignmentsToDashboard(
-      {required String assessmentId,
-      required String googleSpreadsheetUrl,
-      // required String subjectId,
-      required String assessmentName,
-      //  required String fileId,
-      required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    if (showDialogSetState != null) {
-      showDialogSetState!(() {
-        GradedGlobals.loadingMessage = 'Result Detail is Updating';
-      });
-    }
-
-    ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
-      assessmentId: assessmentId,
-      assessmentSheetPublicURL: googleSpreadsheetUrl,
-      studentInfoDb: studentAssessmentInfoDb,
-      assessmentName: assessmentName,
-      // subjectId: subjectId,
-      schoolId: Globals.appSetting.schoolNameC!,
-      // fileId: fileId,
-    ));
   }
 
   Widget classRoomBlocListener() {
@@ -1142,18 +954,13 @@ class _GradedPlusSearchScreenPageState
         });
   }
 
-
-
   void createClassRoomCourseWorkForStandardApp() {
-
-  widget.googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
+    widget.googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
         studentAssessmentInfoDb: _studentAssessmentInfoDb,
         studentClassObj: GoogleClassroomGlobals
             .studentAssessmentAndClassroomAssignmentForStandardApp,
         title: Globals.assessmentName ?? '',
         pointPossible: Globals.pointPossible ?? "0"));
-
-
   }
 
   Future<void> saveAssessmentToDashboardAndGetId() async {
@@ -1188,5 +995,186 @@ class _GradedPlusSearchScreenPageState
         classroomCourseWorkId: GoogleClassroomGlobals
                 ?.studentAssessmentAndClassroomObj?.courseWorkId ??
             ''));
+  }
+
+  void _navigatetoResultSection() {
+    // Navigator.of(context).pop();
+
+    GradedGlobals.loadingMessage = null;
+    //widget.googleDriveBloc.close();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "save_to_drive_from_subject_search");
+    Utility.updateLogs(
+        activityType: 'GRADED+',
+        activityId: '12',
+        description: 'Save to drive',
+        operationResult: 'Success');
+  }
+
+  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  void _saveResultAssignmentsToDashboard(
+      {required String assessmentId,
+      required String googleSpreadsheetUrl,
+      // required String subjectId,
+      required String assessmentName,
+      //  required String fileId,
+      required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    if (showDialogSetState != null) {
+      showDialogSetState!(() {
+        GradedGlobals.loadingMessage = 'Result Detail is Updating';
+      });
+    }
+
+    ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
+      assessmentId: assessmentId,
+      assessmentSheetPublicURL: googleSpreadsheetUrl,
+      studentInfoDb: studentAssessmentInfoDb,
+      assessmentName: assessmentName,
+      // subjectId: subjectId,
+      schoolId: Globals.appSetting.schoolNameC!,
+      // fileId: fileId,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CommonBackgroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          floatingActionButton: submitAssessmentButton(),
+          appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: true,
+            onTap: () {
+              Utility.scrollToTop(scrollController: _scrollController);
+            },
+            isSuccessState: ValueNotifier<bool>(true),
+            isBackButton: true,
+            isBackOnSuccess: isBackFromCamera,
+            key: _scaffoldKey,
+          ),
+          body: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: ListView(
+              shrinkWrap: true,
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  // padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: SearchBar(
+                    stateName: widget.stateName!,
+                    //    isCommonCore: widget.isCommonCore,
+                    isSearchPage: true,
+                    readOnly: false,
+                    controller: searchController,
+                    onSaved: (value) {
+                      if (searchController.text.isEmpty) {
+                        _ocrBloc.add(FetchRecentSearch(
+                            type: 'nycSub',
+                            subjectName: widget.selectedKeyword,
+                            // isSearchPage: true,
+                            className: widget.grade));
+                        _ocrBloc2.add(FetchRecentSearch(
+                            type: 'nyc',
+                            subjectName: widget.selectedKeyword,
+                            // isSearchPage: true,
+                            className: widget.grade));
+                      } else {
+                        _debouncer.run(() async {
+                          _ocrBloc.add(SearchSubjectDetails(
+                              subjectSelected: widget.selectedSubject,
+                              stateName: widget.stateName!,
+                              searchKeyword: searchController.text,
+                              type: 'nycSub',
+                              selectedKeyword: widget.selectedKeyword,
+                              isSearchPage: true,
+                              grade: widget.grade));
+                          _ocrBloc2.add(SearchSubjectDetails(
+                            subjectSelected: widget.selectedSubject,
+                            searchKeyword: searchController.text,
+                            type: 'nyc',
+                            stateName: widget.stateName!,
+                            selectedKeyword: widget.selectedKeyword,
+                            isSearchPage: true,
+                            grade: widget.grade,
+                          ));
+                          setState(() {});
+                        });
+                      }
+                    },
+                  ),
+                ),
+                // SpacerWidget(10),
+                BlocListener<OcrBloc, OcrState>(
+                  bloc: _ocrBloc,
+                  listener: (context, state) {
+                    if (state is RecentListSuccess) {
+                      searchList.clear();
+                      searchList.addAll(state.obj!);
+                      listLength.value = searchList.length;
+                      isRecentList.value = true;
+                    } else if (state is SearchSubjectDetailsSuccess) {
+                      List<SubjectDetailList> list = [];
+
+                      for (int i = 0; i < state.obj!.length; i++) {
+                        if (state.obj![i].standardAndDescriptionC!
+                            .toUpperCase()
+                            .contains(searchController.text.toUpperCase())) {
+                          list.add(state.obj![i]);
+                        }
+                      }
+                      searchList.clear();
+                      searchList.addAll(list);
+                      listLength.value = searchList.length;
+                      isRecentList.value = false;
+                    }
+
+                    // do stuff here based on BlocA's state
+                  },
+                  child: Container(),
+                ),
+                BlocListener<OcrBloc, OcrState>(
+                  bloc: _ocrBloc2,
+                  listener: (context, state) {
+                    if (state is RecentListSuccess) {
+                      searchList.insertAll(0, state.obj!);
+                      standardLearningLength = state.obj!.length;
+                      listLength.value = searchList.length;
+                      isRecentList.value = true;
+                    } else if (state is SearchSubjectDetailsSuccess) {
+                      List<SubjectDetailList> list = [];
+
+                      for (int i = 0; i < state.obj!.length; i++) {
+                        if (state.obj![i].domainNameC!
+                            .toUpperCase()
+                            .contains(searchController.text.toUpperCase())) {
+                          list.add(state.obj![i]);
+                        }
+                      }
+                      //print(searchList[0].standardAndDescriptionC);
+                      searchList.insertAll(0, list);
+                      standardLearningLength = list.length;
+                      listLength.value = searchList.length;
+                      isRecentList.value = false;
+                    }
+                    // do stuff here based on BlocA's state
+                  },
+                  child: Container(),
+                ),
+                SpacerWidget(20),
+                verticalListWidget()
+              ],
+            ),
+          ),
+        ),
+        googleBlocListener(),
+        excelBlocListener(),
+        slideBlocListener(),
+        ocrAssessmentBlocListener(),
+        classRoomBlocListener()
+      ],
+    );
   }
 }
