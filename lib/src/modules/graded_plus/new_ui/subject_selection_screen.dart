@@ -1804,7 +1804,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             true) {
       Navigator.pop(context);
       OcrUtility.showSuccessDialog(context: context);
-      Timer(Duration(seconds: 5), () {
+      Timer(Duration(seconds: 2), () {
         // <-- Delay here
         Navigator.pushReplacement(
           context,
