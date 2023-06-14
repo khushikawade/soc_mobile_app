@@ -1397,6 +1397,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       required String studentSelection}) {
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
         isScrollControlled: true,
         isDismissible: true,
         enableDrag: true,
@@ -2215,7 +2216,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       : widget.shareLink ?? '',
                   'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
-                  'Dashboard': Globals.appSetting.dashboardUrlC == null ? 'https://www.${Globals.schoolDbnC}.com/': Globals.appSetting.dashboardUrlC!,       //'Dashboard',
+                  'Dashboard': Globals.appSetting.dashboardUrlC == null
+                      ? 'https://www.${Globals.schoolDbnC}.com/'
+                      : Globals.appSetting.dashboardUrlC!, //'Dashboard',
                   'Slides': Globals.googleSlidePresentationLink ?? '',
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''

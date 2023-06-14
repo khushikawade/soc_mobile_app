@@ -342,6 +342,7 @@ class OcrUtility {
           ..questionImgUrl = firstStudent.questionImgUrl
           ..googleSlidePresentationURL = firstStudent.googleSlidePresentationURL
           ..standardDescription = firstStudent.standardDescription
+          ..pointPossible = firstStudent.pointPossible
           ..questionImgFilePath = firstStudent.questionImgFilePath;
       }
 
@@ -392,7 +393,6 @@ class OcrUtility {
     return _studentInfoListDb.length;
   }
 
-
   static void showProgressLoadingDialog({
     BuildContext? context,
     required Function(StateSetter) state,
@@ -403,7 +403,6 @@ class OcrUtility {
       useRootNavigator: false,
       context: context!,
       barrierDismissible: true,
-
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
@@ -416,7 +415,8 @@ class OcrUtility {
               child: SimpleDialog(
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+                  backgroundColor:
+                      Color(0xff000000) != Theme.of(context).backgroundColor
                           ? Color(0xff111C20)
                           : Color(0xffF7F8F9), //Colors.black54,
                   children: <Widget>[
@@ -450,18 +450,24 @@ class OcrUtility {
                                                 .colorScheme
                                                 .secondary),
                                   ),
-                                  progressWidget(value: item,assessmentExportAndSaveStatus: assessmentExportAndSaveStatus)
+                                  progressWidget(
+                                      value: item,
+                                      assessmentExportAndSaveStatus:
+                                          assessmentExportAndSaveStatus)
                                 ],
                               ),
                             ))
                         .toList(),
-                 
                   ]));
         });
       },
     );
   }
-   static Widget progressWidget({required String value,required ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus}) {
+
+  static Widget progressWidget(
+      {required String value,
+      required ValueNotifier<AssessmentStatusModel>
+          assessmentExportAndSaveStatus}) {
     if ((value == 'Google Sheet' &&
             assessmentExportAndSaveStatus.value.excelSheetPrepared) ||
         (value == 'Google Slides' &&
@@ -521,7 +527,6 @@ class OcrUtility {
                                     offset: Offset(0, 2),
                                     blurRadius: 10),
                               ],
-                             
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
