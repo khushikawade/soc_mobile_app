@@ -120,12 +120,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 pageSnapping: false,
                 controller: _pageController,
                 children: [
-                  settingWidget(
-                      context), //-----------------setting widget design------------//
-                  buildGoogleClassroomCourseWidget(
-                      context), //----------select ClassroomCourse view-----------------//
-                  buildSelectStudentBottomsheetWidget(
-                      context), //----------------------select student view---------------//
+                  //-----------------setting widget design------------//
+                  settingWidget(context),
+                  //----------select ClassroomCourse view-----------------//
+                  buildGoogleClassroomCourseWidget(context),
+                  //----------------------select student view---------------//
+                  buildSelectStudentBottomsheetWidget(context),
                   warningWidget(),
                   commonLoaderWidget(),
                 ],
