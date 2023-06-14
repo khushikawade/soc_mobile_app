@@ -38,7 +38,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------------PBISPlusImportRoster--------------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
-
+    print("PBISPlusBloc bloc event recived ---------------->> $event");
     if (event is PBISPlusImportRoster) {
       try {
         //Fetch logged in user profile
@@ -786,8 +786,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 "', '"); // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
+      } else if (type == 'Students by Course') {
+        // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
+        String studentIds = selectedCourses
+            .expand((course) => course.students ?? [])
+            .map((student) => student.profile?.id)
+            .where((id) => id != null && id.isNotEmpty)
+            .toSet() // Convert to Set to remove duplicates
+            .map((id) => "$id")
+            .join(
+                "', '"); // Surround the string with double quotes and  (parentheses)
+
+        // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
+        String classroomCourseIds =
+            selectedCourses.map((course) => course.id).join("','");
+
+        body.addAll({"Student_Id": "('$studentIds')"});
+        body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
       }
+
       print(body);
+
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
