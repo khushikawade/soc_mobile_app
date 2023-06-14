@@ -80,7 +80,7 @@ class _StaffPageState extends State<StaffPage> {
   final StudentPlusDetailsModel studentDetails = new StudentPlusDetailsModel();
 
   @override
-  void initState() {
+  void initState() {    
     super.initState();
     _height = 150;
     _bloc.add(StaffPageEvent());
