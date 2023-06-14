@@ -1,28 +1,12 @@
 import 'dart:io';
 
-import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
-import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:open_apps_settings/open_apps_settings.dart';
-import 'package:open_apps_settings/settings_enum.dart';
-import 'package:shimmer/shimmer.dart';
-import '../../../services/utility.dart';
 
 class PBISPlusCommonPopup extends StatefulWidget {
   final Orientation? orientation;
@@ -31,6 +15,8 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
+  final PBISPlusActionInteractionModalNew item;
+  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
     Key? key,
     required this.orientation,
@@ -39,6 +25,8 @@ class PBISPlusCommonPopup extends StatefulWidget {
     required this.title,
     required this.titleStyle,
     required this.backgroundColor,
+    required this.item,
+    required this.containerIcons,
   }) : super(key: key);
 
   @override
@@ -61,6 +49,23 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
       backgroundColor: Colors.transparent,
       child: contentBox(context),
     );
+  }
+
+  bool replaceItems(String title) {
+    try {
+      int index = widget.containerIcons!.value
+          .indexWhere((item) => item.title == title);
+      if (index != -1) {
+        widget.containerIcons!.value[index] = PBISPlusActionInteractionModalNew(
+          imagePath: "assets/Pbis_plus/add_icon.svg",
+          title: 'Add Skill',
+          color: Colors.red,
+        );
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   contentBox(context) {
@@ -136,8 +141,8 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                                   Theme.of(context).backgroundColor
                               ? Color(0xff111C20)
                               : Color(0xffF7F8F9),
-                          onClick: () {
-                            Navigator.pop(context!);
+                          onClick: () async {
+                            _handleDeleteItem();
                           },
                           backgroundColor: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor
@@ -152,12 +157,25 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
             ],
           ),
         ),
-        Positioned(top: 0, left: 16, right: 16, child: _buildProfileWidget()),
+        Positioned(
+            top: 0, left: 16, right: 16, child: _buildIconWidget(widget.item)),
       ],
     );
   }
 
-  Widget _buildProfileWidget() {
+  void _handleDeleteItem() async {
+    bool res = await replaceItems(widget.item.title);
+    if (res) {
+      Utility.currentScreenSnackBar("Skills deleted successfully", null);
+      Navigator.pop(context);
+    } else {
+      Utility.currentScreenSnackBar(
+          "Failed to delete skills. Please try again.", null);
+      Navigator.pop(context);
+    }
+  }
+
+  Widget _buildIconWidget(PBISPlusActionInteractionModalNew item) {
     return Container(
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -169,42 +187,10 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           radius: 42.0,
           backgroundColor: Colors.transparent,
           child: SvgPicture.asset(
-            'assets/Pbis_plus/Helpful.svg',
+            item.imagePath,
             // width: 108.0,
             // height: 108.0,
           ),
         ));
-
-    //  CachedNetworkImage(
-    //   imageBuilder: (context, imageProvider) => CircleAvatar(
-    //     radius: PBISPlusOverrides.profilePictureSize,
-    //     backgroundImage: imageProvider,
-    //   ),
-    //   imageUrl: "https://picsum.photos/250?image=9",
-    //   placeholder: (context, url) => Shimmer.fromColors(
-    //     baseColor: Colors.grey[300]!,
-    //     highlightColor: Colors.grey[100]!,
-    //     child: Container(
-    //       // padding: EdgeInsets.all(2),
-    //       decoration: BoxDecoration(
-    //         shape: BoxShape.circle,
-    //         border: Border.all(
-    //           color: Colors.grey[300]!,
-    //           width: 0.5,
-    //         ),
-    //       ),
-    //       child: CircleAvatar(
-    //         radius: PBISPlusOverrides.profilePictureSize,
-    //         backgroundColor: Colors.transparent,
-    //         child: Icon(
-    //           Icons.person,
-    //           // size: profilePictureSize,
-    //           color: Colors.grey[300]!,
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    //   errorWidget: (context, url, error) => Icon(Icons.error),
-    // ));
   }
 }

@@ -33,11 +33,12 @@ import 'hero_dialog_route.dart';
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
   PBISPlusActionInteractionModalNew? item;
-  PBISPlusEditSkillsBottomSheet({
-    Key? key,
-    this.height = 100,
-    required this.item,
-  });
+  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  PBISPlusEditSkillsBottomSheet(
+      {Key? key,
+      this.height = 100,
+      required this.item,
+      required this.containerIcons});
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
       _PBISPlusBottomSheetState();
@@ -76,9 +77,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
       child: Container(
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           decoration: BoxDecoration(
-            color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
+            color: Utility.getContrastColor(context),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
@@ -95,10 +94,26 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             controller: _pageController,
             children: [
               EditAndDeleteIcon(widget.item),
-              EditName(widget.item?.title)
+              _buildEditNameWidget(widget.item?.title)
             ],
           )),
     );
+  }
+
+  Widget _buildCloseIcon() {
+    return Container(
+        alignment: Alignment.topRight,
+        child: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          icon: Icon(
+            Icons.clear,
+            color: AppTheme.kButtonColor,
+            size: Globals.deviceType == "phone" ? 28 : 36,
+          ),
+        ));
   }
 
   Widget EditAndDeleteIcon(PBISPlusActionInteractionModalNew? item) {
@@ -107,114 +122,29 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                icon: Icon(
-                  Icons.clear,
-                  color: AppTheme.kButtonColor,
-                  size: Globals.deviceType == "phone" ? 28 : 36,
-                ),
-              )),
+          _buildCloseIcon(),
           SpacerWidget(16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  _pageController.animateToPage(1,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.ease);
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: 136,
-                  decoration: BoxDecoration(
-                    color: AppTheme.kButtonColor,
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/Pbis_plus/Edit.svg",
-                        // height: Globals.deviceType == 'phone' ? 64 : 74,
-                        // width: Globals.deviceType == 'phone' ? 64 : 74,
-                      ),
-                      Padding(
-                        padding: Globals.deviceType != 'phone'
-                            ? const EdgeInsets.only(top: 14, left: 14)
-                            : EdgeInsets.zero,
-                        child: Utility.textWidget(
-                            text: "Edit Name",
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(color: Colors.black, fontSize: 12)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showPopup(message: "hi", title: "ji");
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: 136,
-                  decoration: BoxDecoration(
-                    color: AppTheme.kButtonColor,
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/Pbis_plus/delete.svg",
-                        // height: Globals.deviceType == 'phone' ? 64 : 74,
-                        // width: Globals.deviceType == 'phone' ? 64 : 74,
-                      ),
-                      Padding(
-                        padding: Globals.deviceType != 'phone'
-                            ? const EdgeInsets.only(top: 14, left: 14)
-                            : EdgeInsets.zero,
-                        child: Utility.textWidget(
-                            text: "Delete",
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(color: Colors.black, fontSize: 12)),
-                      ),
-                    ],
-                  ),
-                ),
-              )
+              _buildCard(
+                  onTap: () {
+                    _pageController.animateToPage(1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.ease);
+                  },
+                  iconPath: "assets/Pbis_plus/Edit.svg",
+                  tittle: "Edit Name"),
+              _buildCard(
+                  onTap: () {
+                    showPopup(
+                        message: "Are you sure you want to delete this item",
+                        title: "",
+                        item: item);
+                  },
+                  iconPath: "assets/Pbis_plus/delete.svg",
+                  tittle: "Delete"),
             ],
           )
         ],
@@ -222,32 +152,76 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  showPopup({required String message, required String? title}) {
-    // showDialog(
-    //     context: context,
-    //     builder: (context) =>
-    // OrientationBuilder(builder: (context, orientation) {
-    //   return
+  Widget _buildCard(
+      {void Function()? onTap, String? iconPath, String? tittle}) {
+    return GestureDetector(
+      onTap: onTap!,
+      child: Container(
+        width: MediaQuery.of(context).size.width / 3,
+        height: 136,
+        decoration: BoxDecoration(
+          color: AppTheme.kButtonColor,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              iconPath!,
+              // height: Globals.deviceType == 'phone' ? 64 : 74,
+              // width: Globals.deviceType == 'phone' ? 64 : 74,
+            ),
+            Padding(
+              padding: Globals.deviceType != 'phone'
+                  ? const EdgeInsets.only(top: 14, left: 14)
+                  : EdgeInsets.zero,
+              child: Utility.textWidget(
+                  text: tittle!,
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Colors.black, fontSize: 12)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  showPopup(
+      {required String message,
+      required String? title,
+      PBISPlusActionInteractionModalNew? item}) {
     Navigator.of(context).pushReplacement(HeroDialogRoute(
         builder: (context) => PBISPlusCommonPopup(
+              item: item!,
+              containerIcons: widget.containerIcons,
               backgroundColor:
                   Theme.of(context).colorScheme.background == Color(0xff000000)
                       ? Color(0xff162429)
                       : null,
               orientation: MediaQuery.of(context).orientation,
               context: context,
-              message: "Are you sure you want to delete this item",
+              message: message,
               title: '',
               titleStyle: Theme.of(context)
                   .textTheme
                   .headline1!
                   .copyWith(fontWeight: FontWeight.bold),
             )));
-    // );
-    // );
   }
 
-  Widget EditName(iconName) {
+  Widget _buildEditNameWidget(iconName) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -266,42 +240,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   size: Globals.deviceType == "phone" ? 28 : 36,
                 ),
               )),
-          // ListTile(
-          //   contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          //   minLeadingWidth: 70,
-          //   title:
-
           Center(
             child: Utility.textWidget(
                 context: context,
                 text: "${"Edit " + iconName}",
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
-
-          // leading: IconButton(
-          //   onPressed: () {
-          //     _pageController.animateToPage(pageValue - 1,
-          //         duration: const Duration(milliseconds: 400),
-          //         curve: Curves.ease);
-          //   },
-          //   icon: Icon(
-          //     IconData(0xe80d,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg),
-          //     color: AppTheme.kButtonColor,
-          //   ),
-          // ),
-          // ),
-          // SpacerWidget(15),
-          // Utility.textWidget(
-          //     context: context,
-          //     textAlign: TextAlign.center,
-          //     text: 'Please input the name.',
-          //     textTheme: Theme.of(context)
-          //         .textTheme
-          //         .headline5!
-          //         .copyWith(fontSize: 18)),
-
           SpacerWidget(30),
           Form(
             key: _formKey,

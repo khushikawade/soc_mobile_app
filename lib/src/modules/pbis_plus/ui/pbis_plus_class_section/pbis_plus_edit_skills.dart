@@ -70,6 +70,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   //For now dynamic type we changes
+
+  List<PBISPlusActionInteractionModalNew> currentBehaviourList =
+      PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew.map(
+          (item) {
+    return item;
+  }).toList();
+
   ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
       ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
@@ -85,14 +92,23 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ]);
   int? selectedIconIndex = -1;
 
+  // void removeItems(String removedtitle) {
+  //   containerIcons.value.removeWhere((item) => item.title == removedtitle);
+  // }
+
+  void replaceItems(String removedtitle) {
+    int index =
+        containerIcons.value.indexWhere((item) => item.title == removedtitle);
+    if (index != -1) {
+      containerIcons.value[index] = PBISPlusActionInteractionModalNew(
+        imagePath: "assets/Pbis_plus/add_icon.svg",
+        title: 'Add Skill',
+        color: Colors.red,
+      );
+    }
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<IconData> sheetIcons = [
-    Icons.account_circle,
-    Icons.mail,
-    Icons.phone,
-    Icons.camera,
-    // Add more icons to the sheet
-  ];
 
   // List<IconData> containerIcons = [];
   @override
@@ -191,8 +207,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     4.0, // Adjust the spacing between items vertically
               ),
               itemCount: (PBISPlusActionInteractionModalNew
-                      .PBISPlusActionInteractionIconsNew.length -
-                  3),
+                  .PBISPlusActionInteractionIconsNew.length),
               itemBuilder: (BuildContext context, int index) {
                 final item = containerIcons.value[index];
                 selectedIconIndex = index;
@@ -385,12 +400,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                 4.0, // Adjust the spacing between items vertically
                           ),
                           itemCount: 3 *
-                              PBISPlusActionInteractionModalNew
-                                  .PBISPlusActionInteractionIconsNew.length
+                              PBISPlusAdditionalBehaviourModal
+                                  .PBISPlusAdditionalBehaviourModalIcons.length
                                   .ceil(),
                           itemBuilder: (BuildContext context, int index) {
                             final item = PBISPlusActionInteractionModalNew
-                                .PBISPlusActionInteractionIconsNew[index % 9];
+                                .PBISPlusActionInteractionIconsNew[index % 6];
                             final isIconDisabled =
                                 containerIcons.value.contains(item);
                             return isIconDisabled
@@ -499,6 +514,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
+                containerIcons,
                 item: item,
                 // fromClassScreen: false,
                 // scaffoldKey: _scaffoldKey,
