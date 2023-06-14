@@ -1336,9 +1336,14 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         //Updating remaining common details of assignment
         StudentAssessmentInfo element = studentAssessmentInfoDblist.first;
 
-        element.subject = subject == null || subject == '' ? "NA" : subject;
-        element.learningStandard =
-            learningStandard == null || learningStandard == ''
+        element.subject = widget.isSearchPage == true
+            ? widget.selectedSubject
+            : subject == null || subject == ''
+                ? "NA"
+                : subject;
+        element.learningStandard = widget.isSearchPage == true
+            ? widget.domainNameC
+            : learningStandard == null || learningStandard == ''
                 ? "NA"
                 : learningStandard;
         element.subLearningStandard = subLearningStandard == null ||
@@ -1797,34 +1802,38 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         assessmentExportAndSaveStatus.value.slidePrepared == true &&
         assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
             true) {
-      showDialogSetState!(() {
-        allProcessDone == true;
+      Navigator.pop(context);
+      OcrUtility.showSuccessDialog(context: context);
+      Timer(Duration(seconds: 5), () {
+        // <-- Delay here
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GradedPlusResultsSummary(
+              isMcqSheet: widget.isMcqSheet,
+              selectedAnswer: widget.selectedAnswer,
+              fileId: Globals.googleExcelSheetId,
+              subjectId: subjectId ?? '',
+              standardId: standardId ?? '',
+              assessmentName: Globals.assessmentName,
+              shareLink: '',
+              assessmentDetailPage: false,
+            ),
+          ),
+        );
       });
 
-      // Future.delayed(const Duration(milliseconds: 5000), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-            isMcqSheet: widget.isMcqSheet,
-            selectedAnswer: widget.selectedAnswer,
-            fileId: Globals.googleExcelSheetId,
-            subjectId: subjectId ?? '',
-            standardId: standardId ?? '',
-            assessmentName: Globals.assessmentName,
-            shareLink: '',
-            assessmentDetailPage: false,
-          ),
-        ),
-      );
       //    });
     }
   }
 
   /* ------ Function call when someone tap on skip button or save button ------ */
   floatingButtonOnTap() async {
-    showLoadingDialog(
-        context: context, state: (p0) => {showDialogSetState = p0});
+    OcrUtility.showProgressLoadingDialog(
+        context: context,
+        state: (p0) => {showDialogSetState = p0},
+        assessmentExportAndSaveStatus: assessmentExportAndSaveStatus,
+        processList: processList);
     // Utility.showLoadingDialog(
     //     context: context, isOCR: true, msg: "Please Wait");
 
@@ -1929,267 +1938,188 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     }
   }
 
-  void showLoadingDialog({
-    BuildContext? context,
-    required Function(StateSetter) state,
-  }) async {
-    return showDialog<void>(
-      useRootNavigator: false,
-      context: context!,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          if (state != null) {
-            state(setState);
-          }
+  // void showLoadingDialog({
+  //   BuildContext? context,
+  //   required Function(StateSetter) state,
+  // }) async {
+  //   return showDialog<void>(
+  //     useRootNavigator: false,
+  //     context: context!,
+  //     barrierDismissible: true,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //           builder: (BuildContext context, StateSetter setState) {
+  //         if (state != null) {
+  //           state(setState);
+  //         }
 
-          return WillPopScope(
-              onWillPop: () async => true,
-              child: SimpleDialog(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  backgroundColor: allProcessDone == true
-                      ? Colors.transparent
-                      : Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9), //Colors.black54,
-                  children: allProcessDone == true
-                      ? <Widget>[
-                          Container(
-                            color: Colors.transparent,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: <Widget>[
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.18,
-                                    width: MediaQuery.of(context).size.width,
-                                    margin: EdgeInsets.only(top: 45),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff000000) !=
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xff111C20)
-                                          : Color(0xffF7F8F9),
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(5),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            offset: Offset(0, 2),
-                                            blurRadius: 10),
-                                      ],
-                                      // gradient: LinearGradient(
-                                      //   begin: Alignment.topCenter,
-                                      //   end: Alignment.bottomCenter,
-                                      //   colors: [
-                                      //     AppTheme.kButtonColor,
-                                      //     Color(0xff000000) !=
-                                      //             Theme.of(context)
-                                      //                 .backgroundColor
-                                      //         ? Color(0xffF7F8F9)
-                                      //         : Color(0xff111C20),
-                                      //   ],
-                                      //   stops: [
-                                      //     0.6,
-                                      //     0.5,
-                                      //   ],
-                                      // ),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Text(
-                                          'Awesome!',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline1!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          'Student Assessments Saved Successfully',
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-                                        ),
-                                      ],
-                                    )
-                                    // child: FittedBox(child: pbisStudentDetailWidget)
-                                    ),
-                                Positioned(
-                                  top: 0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Color(0xff000000) !=
-                                                  Theme.of(context)
-                                                      .backgroundColor
-                                              ? Color(0xff111C20)
-                                              : Color(0xffF7F8F9),
-                                          width: 8),
-                                      //color: AppTheme.kButtonColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.kButtonColor,
-                                        //color: AppTheme.kButtonColor,
-                                        shape: BoxShape.circle,
-                                      ),
+  //         return WillPopScope(
+  //             onWillPop: () async => false,
+  //             child: SimpleDialog(
+  //                 contentPadding:
+  //                     EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+  //                 backgroundColor: allProcessDone == true
+  //                     ? Colors.transparent
+  //                     : Color(0xff000000) != Theme.of(context).backgroundColor
+  //                         ? Color(0xff111C20)
+  //                         : Color(0xffF7F8F9), //Colors.black54,
+  //                 children: <Widget>[
+  //                   Text(
+  //                     "Saving",
+  //                     style: Theme.of(context).textTheme.headline1!.copyWith(
+  //                         color: Theme.of(context).colorScheme.secondary,
+  //                         fontWeight: FontWeight.bold),
+  //                   ),
+  //                   SpacerWidget(10),
+  //                   ...processList
+  //                       .map((item) => Container(
+  //                             margin: EdgeInsets.symmetric(vertical: 7),
+  //                             padding: EdgeInsets.symmetric(horizontal: 10),
+  //                             height: 55,
+  //                             decoration: BoxDecoration(
+  //                                 border:
+  //                                     Border.all(color: AppTheme.kButtonColor),
+  //                                 borderRadius: BorderRadius.circular(10)),
+  //                             child: Row(
+  //                               mainAxisAlignment:
+  //                                   MainAxisAlignment.spaceBetween,
+  //                               children: [
+  //                                 Text(
+  //                                   item,
+  //                                   style: Theme.of(context)
+  //                                       .textTheme
+  //                                       .headline3!
+  //                                       .copyWith(
+  //                                           color: Theme.of(context)
+  //                                               .colorScheme
+  //                                               .secondary),
+  //                                 ),
+  //                                 progressWidget(value: item)
+  //                               ],
+  //                             ),
+  //                           ))
+  //                       .toList(),
 
-                                      height: 80,
-                                      width: 80,
-                                      child: Icon(
-                                        IconData(0xe877,
-                                            fontFamily: Overrides.kFontFam,
-                                            fontPackage: Overrides.kFontPkg),
-                                        color: Color(0xff000000) !=
-                                                Theme.of(context)
-                                                    .backgroundColor
-                                            ? Color(0xff111C20)
-                                            : Color(0xffF7F8F9),
-                                        size: 40,
-                                      ),
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius:
-                                      //         BorderRadius.circular(20)),
-                                      // child: widget,
-                                    ),
-                                    //child:
-                                    //  PBISCommonProfileWidget(
-                                    //     studentProfile:widget.studentProfile,
-                                    //     isFromStudentPlus: widget.isFromStudentPlus,
-                                    //     isLoading: widget.isLoading,
-                                    //     valueChange: valueChange,
-                                    //     countWidget: true,
-                                    //     studentValueNotifier: widget.studentValueNotifier,
-                                    //     profilePictureSize: PBISPlusOverrides.profilePictureSize,
-                                    //     imageUrl:
-                                    //         widget.studentValueNotifier.value.profile!.photoUrl!),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ]
-                      : <Widget>[
-                          Text(
-                            "Saving",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                          SpacerWidget(10),
-                          ...processList
-                              .map((item) => Container(
-                                    margin: EdgeInsets.symmetric(vertical: 7),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    height: 55,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppTheme.kButtonColor),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          item,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary),
-                                        ),
-                                        progressWidget(value: item)
-                                      ],
-                                    ),
-                                  ))
-                              .toList(),
-                          // Container(
-                          //   child: ListView.builder(
-                          //     //shrinkWrap: true,
-                          //     itemBuilder: (context, index) {
-                          //       return
-                          //     },
-                          //     itemCount: processList.length,
-                          //   ),
-                          // )
+  //                 ]));
+  //       });
+  //     },
+  //   );
+  // }
 
-                          // Container(
-                          //   height: Globals.deviceType == 'phone' ? 80 : 100,
-                          //   width: Globals.deviceType == 'phone'
-                          //       ? MediaQuery.of(context).size.width * 0.4
-                          //       : MediaQuery.of(context).size.width * 0.5,
-                          //   child: Column(
-                          //     crossAxisAlignment: CrossAxisAlignment.center,
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: [
-                          //       Padding(
-                          //         padding: const EdgeInsets.symmetric(horizontal: 10),
-                          //         child: FittedBox(
-                          //           child: Utility.textWidget(
-                          //               text: msg ??
-                          //                   GradedGlobals.loadingMessage ??
-                          //                   'Please Wait...',
-                          //               context: context,
-                          //               textTheme: Theme.of(context)
-                          //                   .textTheme
-                          //                   .headline6!
-                          //                   .copyWith(
-                          //                     color: Color(0xff000000) !=
-                          //                             Theme.of(context)
-                          //                                 .backgroundColor
-                          //                         ? Color(0xffFFFFFF)
-                          //                         : Color(0xff000000),
-                          //                     fontSize: Globals.deviceType == "phone"
-                          //                         ? AppTheme.kBottomSheetTitleSize
-                          //                         : AppTheme.kBottomSheetTitleSize *
-                          //                             1.3,
-                          //                   )),
-                          //         ),
-                          //       ),
-                          //       SizedBox(
-                          //         height: 10,
-                          //       ),
-                          //       Container(
-                          //         alignment: Alignment.center,
-                          //         margin: EdgeInsets.symmetric(horizontal: 10),
-                          //         child: CircularProgressIndicator(
-                          //           color: isOCR! ? AppTheme.kButtonColor : null,
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // )
-                        ]));
-        });
-      },
-    );
-  }
+  // void showSuccessLoadingDialog({
+  //   BuildContext? context,
+  // }) async {
+  //   return showDialog<void>(
+  //     useRootNavigator: false,
+  //     context: context!,
+  //     barrierDismissible: true,
+  //     builder: (BuildContext context) {
+  //       return WillPopScope(
+  //           onWillPop: () async => false,
+  //           child: SimpleDialog(
+  //               contentPadding:
+  //                   EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+  //               backgroundColor: Colors.transparent,
+  //               children: <Widget>[
+  //                 Container(
+  //                   color: Colors.transparent,
+  //                   child: Stack(
+  //                     alignment: Alignment.center,
+  //                     children: <Widget>[
+  //                       Container(
+  //                           alignment: Alignment.center,
+  //                           height: MediaQuery.of(context).size.height * 0.18,
+  //                           width: MediaQuery.of(context).size.width,
+  //                           margin: EdgeInsets.only(top: 45),
+  //                           decoration: BoxDecoration(
+  //                             color: Color(0xff000000) !=
+  //                                     Theme.of(context).backgroundColor
+  //                                 ? Color(0xff111C20)
+  //                                 : Color(0xffF7F8F9),
+  //                             shape: BoxShape.rectangle,
+  //                             borderRadius: BorderRadius.circular(5),
+  //                             boxShadow: [
+  //                               BoxShadow(
+  //                                   color: Colors.black,
+  //                                   offset: Offset(0, 2),
+  //                                   blurRadius: 10),
+  //                             ],
+
+  //                           ),
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               SizedBox(
+  //                                 height: 20,
+  //                               ),
+  //                               Text(
+  //                                 'Awesome!',
+  //                                 style: Theme.of(context)
+  //                                     .textTheme
+  //                                     .headline1!
+  //                                     .copyWith(
+  //                                         color: Theme.of(context)
+  //                                             .colorScheme
+  //                                             .secondary,
+  //                                         fontWeight: FontWeight.bold),
+  //                               ),
+  //                               Text(
+  //                                 'Student Assessments Saved Successfully',
+  //                                 textAlign: TextAlign.center,
+  //                                 style: Theme.of(context)
+  //                                     .textTheme
+  //                                     .headline4!
+  //                                     .copyWith(
+  //                                       color: Theme.of(context)
+  //                                           .colorScheme
+  //                                           .secondary,
+  //                                     ),
+  //                               ),
+  //                             ],
+  //                           )
+  //                           // child: FittedBox(child: pbisStudentDetailWidget)
+  //                           ),
+  //                       Positioned(
+  //                         top: 0,
+  //                         child: Container(
+  //                           decoration: BoxDecoration(
+  //                             border: Border.all(
+  //                                 color: Color(0xff000000) !=
+  //                                         Theme.of(context).backgroundColor
+  //                                     ? Color(0xff111C20)
+  //                                     : Color(0xffF7F8F9),
+  //                                 width: 8),
+  //                             //color: AppTheme.kButtonColor,
+  //                             shape: BoxShape.circle,
+  //                           ),
+  //                           child: Container(
+  //                             decoration: BoxDecoration(
+  //                               color: AppTheme.kButtonColor,
+  //                               //color: AppTheme.kButtonColor,
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             height: 80,
+  //                             width: 80,
+  //                             child: Icon(
+  //                               IconData(0xe877,
+  //                                   fontFamily: Overrides.kFontFam,
+  //                                   fontPackage: Overrides.kFontPkg),
+  //                               color: Color(0xff000000) !=
+  //                                       Theme.of(context).backgroundColor
+  //                                   ? Color(0xff111C20)
+  //                                   : Color(0xffF7F8F9),
+  //                               size: 40,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 )
+  //               ]));
+  //     },
+  //   );
+  // }
 
   Widget progressWidget({required String value}) {
     if ((value == 'Google Sheet' &&
