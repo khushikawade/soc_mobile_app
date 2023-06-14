@@ -263,21 +263,38 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
           switch (text) {
             case 'All Courses & Students':
+              Utility.updateLogs(
+                  activityType: 'PBIS+',
+                  activityId: '58',
+                  description:
+                      'PBIS+ Save & Reset Points: All Courses & Students',
+                  operationResult: 'Success');
+              //-------------------------------------------------------------
               sectionName = 'All Courses & Students';
-
               _pageController.animateToPage(3,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
             case 'Select Students':
+              Utility.updateLogs(
+                  activityType: 'PBIS+',
+                  activityId: '60',
+                  description: 'Save & Reset Points: Select Students',
+                  operationResult: 'Success');
+              //-------------------------------------------------------------
               sectionName = 'Students';
-
               _pageController.animateToPage(2,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
 
               break;
             case 'Select Courses':
+              Utility.updateLogs(
+                  activityType: 'PBIS+',
+                  activityId: '59',
+                  description: 'PBIS+ Save & Reset Points: Select Courses',
+                  operationResult: 'Success');
+              //-------------------------------------------------------------
               sectionName = 'Courses';
               _pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 100),
