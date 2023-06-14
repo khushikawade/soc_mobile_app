@@ -121,14 +121,14 @@ class _GradedPlusResultOptionBottomSheetState
             context: context,
             textTheme: Theme.of(context).textTheme.headline3!),
         onTap: () {
-          if (element.title == "Dashboard") {
-            Utility.launchUrlOnExternalBrowser(
-                "https://www.${Globals.schoolDbnC}.com/");
-          } else {
-            bottomIconsOnTap(
-                title: element.title ?? '',
-                url: widget.allUrls[element.title] ?? '');
-          }
+          // if (element.title == "Dashboard") {
+          //   Utility.launchUrlOnExternalBrowser(
+          //       "https://www.${Globals.schoolDbnC}.com/");
+          // } else {
+          bottomIconsOnTap(
+              title: element.title ?? '',
+              url: widget.allUrls[element.title] ?? '');
+          //  }
         });
   }
 
@@ -152,6 +152,7 @@ class _GradedPlusResultOptionBottomSheetState
         }
         break;
       case 'Dashboard':
+        Utility.launchUrlOnExternalBrowser(url);
         break;
       case 'Slides':
         String slidesLogMsg =

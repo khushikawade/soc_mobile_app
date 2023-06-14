@@ -2215,7 +2215,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       : widget.shareLink ?? '',
                   'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
-                  'Dashboard': 'Dashboard',
+                  'Dashboard': Globals.appSetting.dashboardUrlC == null ? 'https://www.${Globals.schoolDbnC}.com/': Globals.appSetting.dashboardUrlC!,       //'Dashboard',
                   'Slides': Globals.googleSlidePresentationLink ?? '',
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
