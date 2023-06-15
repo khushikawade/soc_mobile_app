@@ -52,10 +52,10 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<String> refreshToken() async {
     print("Token Refresh");
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId: Platform.isIOS
-            ? DefaultFirebaseOptions.currentPlatform.iosClientId
-            : DefaultFirebaseOptions.currentPlatform.androidClientId,
+    final GoogleSignIn googleSignIn = await GoogleSignIn(
+        // clientId: Platform.isIOS
+        //     ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+        //     : '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com', //DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
         forceCodeForRefreshToken: true,
         scopes: scopes);
 
@@ -128,10 +128,11 @@ class Authentication {
       }
     } else {
       //clientId: DefaultFirebaseOptions.currentPlatform.iosClientId
-      final GoogleSignIn googleSignIn = GoogleSignIn(
+      final GoogleSignIn googleSignIn = await GoogleSignIn(
           clientId: Platform.isIOS
               ? DefaultFirebaseOptions.currentPlatform.iosClientId
-              : DefaultFirebaseOptions.currentPlatform.androidClientId,
+              : DefaultFirebaseOptions.currentPlatform.androidClientId ??
+                  '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com',
           forceCodeForRefreshToken: true,
           scopes: scopes);
 
@@ -227,6 +228,7 @@ class Authentication {
         userEmail: user.email,
         profilePicture: user.photoURL,
         authorizationToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally

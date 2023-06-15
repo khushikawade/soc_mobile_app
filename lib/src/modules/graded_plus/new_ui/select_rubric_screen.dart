@@ -656,20 +656,20 @@ class _GradedPlusConstructedResponseState
     navigateToCamera();
   }
 
-  void _beforenavigateOnAssessmentSection() {
-    if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-    }
+  // void _beforenavigateOnAssessmentSection() {
+  //   if (Globals.sessionId == '') {
+  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+  //   }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GradedPlusAssessmentSummary(
-                selectedFilterValue: 'Constructed Response',
-                isFromHomeSection: true,
-              )),
-    );
-  }
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => GradedPlusAssessmentSummary(
+  //               selectedFilterValue: 'Constructed Response',
+  //               isFromHomeSection: true,
+  //             )),
+  //   );
+  // }
 
   void navigateToPdfViewer({required RubricPdfModal pdfObject}) {
     if (pdfObject.rubricPdfC == null ||

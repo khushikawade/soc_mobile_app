@@ -352,7 +352,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             yield NycDataSuccess(
               obj: recentAddedList,
             );
-            return;
+            // return;
           }
 
           // calling function for getting particular subject related data

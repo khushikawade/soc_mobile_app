@@ -83,8 +83,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         folderObject = await _getGoogleDriveFolderId(
             token: _userProfileLocalData[0].authorizationToken, // event.token,
             folderName: event.folderName,
-            refreshToken: _userProfileLocalData[0]
-                .authorizationToken); // event.refreshToken);
+            refreshToken: event.refreshToken); // event.refreshToken);
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
