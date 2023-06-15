@@ -1618,8 +1618,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   _list[0].googleSlidePresentationURL
                               ..standardDescription =
                                   _list[0].standardDescription
+                              ..pointPossible = _list[0].pointPossible
+                              ..answerKey = _list[0].answerKey
                               ..questionImgFilePath =
                                   _list[0].questionImgFilePath;
+
                             await _studentAssessmentInfoDb.putAt(0, obj);
                           }
                           String deleteRecordLogMsg =

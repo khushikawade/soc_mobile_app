@@ -343,6 +343,7 @@ class OcrUtility {
           ..googleSlidePresentationURL = firstStudent.googleSlidePresentationURL
           ..standardDescription = firstStudent.standardDescription
           ..pointPossible = firstStudent.pointPossible
+          ..answerKey = firstStudent.answerKey
           ..questionImgFilePath = firstStudent.questionImgFilePath;
       }
 
