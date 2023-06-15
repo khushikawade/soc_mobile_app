@@ -61,6 +61,12 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'student_plus_pbis_screen',
         screenClass: 'StudentPlusPBISScreen');
+
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '54',
+        description: 'Student+ PBIS Screen',
+        operationResult: 'Success');
   }
 
   @override

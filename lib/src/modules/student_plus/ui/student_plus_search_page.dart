@@ -202,6 +202,12 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
             isOCR: true,
           );
         } else if (state is StudentPlusInfoSuccess) {
+          Utility.updateLogs(
+              activityType: 'STUDENT+',
+              activityId: '48',
+              description: 'Student Search Success',
+              operationResult: 'Success');
+
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (context) => StudentPlusHome(

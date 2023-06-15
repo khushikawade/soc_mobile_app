@@ -825,39 +825,6 @@ class _GradedPlusSearchScreenPageState
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
-
-            // Globals.currentAssessmentId = '';
-
-            // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-            //     await OcrUtility.getSortedStudentInfoList(
-            //         tableName: 'student_info');
-            // Globals.currentAssessmentId = '';
-            // //Save Assessment To  Postgres Database
-            // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-            //     isMcqSheet: widget.isMcqSheet ?? false,
-            //     assessmentQueImage:
-            //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
-            //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
-            //     rubricScore: Globals.scoringRubric ?? '2',
-            //     subjectName: widget.selectedSubject ??
-            //         'NA', //Student Id will not be there in case of custom subject
-            //     domainName: learningStandard ?? '',
-            //     subDomainName: subLearningStandard ?? '',
-            //     grade: widget.grade ?? '',
-            //     schoolId: Globals.appSetting.schoolNameC ?? '',
-            //     standardId: standardId ?? '',
-            //     scaffoldKey: _scaffoldKey,
-            //     context: context,
-            //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-            //     sessionId: Globals.sessionId,
-            //     teacherContactId: Globals.teacherId,
-            //     teacherEmail: Globals.teacherEmailId,
-            //     classroomCourseId: GoogleClassroomGlobals
-            //             ?.studentAssessmentAndClassroomObj?.courseId ??
-            //         '',
-            //     classroomCourseWorkId: GoogleClassroomGlobals
-            //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-            //         ''));
           }
         });
   }
@@ -875,12 +842,8 @@ class _GradedPlusSearchScreenPageState
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
-
-            showDialogSetState!(() {
-              assessmentExportAndSaveStatus.value.excelSheetPrepared =
-                  true; // update loading dialog and navigate
-            });
-
+            assessmentStatus.value.excelSheetPrepared =
+                true; // update loading dialog and navigate
             Globals.currentAssessmentId = '';
 
             List<StudentAssessmentInfo> studentAssessmentInfoDblist =
@@ -895,7 +858,7 @@ class _GradedPlusSearchScreenPageState
                 assessmentName: Globals.assessmentName ?? 'Assessment Name',
                 rubricScore: Globals.scoringRubric ?? '2',
                 subjectName: widget.selectedSubject ??
-                    '', //Student Id will not be there in case of custom subject
+                    'NA', //Student Id will not be there in case of custom subject
                 domainName: learningStandard ?? '',
                 subDomainName: subLearningStandard ?? '',
                 grade: widget.grade ?? '',
@@ -913,7 +876,7 @@ class _GradedPlusSearchScreenPageState
                 classroomCourseWorkId: GoogleClassroomGlobals
                         ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                     ''));
-            navigateToResultSummery();
+            //! navigateToResultSummery();
           }
 
           if (state is ErrorState) {

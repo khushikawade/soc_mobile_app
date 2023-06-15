@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_pa
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart'
+import 'package:Soc/src/modules/graded_plus/new_ui/help.dart'
     as customIntroLayout;
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
@@ -251,6 +251,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        plusAppName: 'Graded+',
                                         fromGradedPlus: widget.fromGradedPlus,
                                         hideStateSelection:
                                             widget.hideStateSelection ?? false,

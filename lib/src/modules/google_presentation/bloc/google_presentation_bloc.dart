@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -219,10 +220,13 @@ class GoogleSlidesPresentationBloc
 
         return [true, data];
       } else if (retry > 0) {
-        var result = await googleDriveBloc
-            .toRefreshAuthenticationToken(userProfile.refreshToken!);
+        // var result = await googleDriveBloc
+        //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
 
-        if (result == true) {
+        var result = await Authentication.refreshToken();
+
+        // if (result == true) {
+        if (result != null && result != '') {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
@@ -273,10 +277,13 @@ class GoogleSlidesPresentationBloc
         var slideCount = data != null ? data.length : 0;
         return [true, slideCount];
       } else if (retry > 0) {
-        var result = await googleDriveBloc
-            .toRefreshAuthenticationToken(userProfile.refreshToken!);
+        // var result = await googleDriveBloc
+        //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
 
-        if (result == true) {
+        var result = await Authentication.refreshToken();
+
+        // if (result == true) {
+        if (result != null && result != '') {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
           return await getSlidesCountFromGooglePresentation(
@@ -333,9 +340,12 @@ class GoogleSlidesPresentationBloc
       if (response.statusCode == 200) {
         return [true, true];
       } else if (retry > 0) {
-        var result = googleDriveBloc
-            .toRefreshAuthenticationToken(userProfile.refreshToken!);
-        if (result == true) {
+        // var result = googleDriveBloc
+        //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
+        var result = await Authentication.refreshToken();
+
+        // if (result == true) {
+        if (result != null && result != '') {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 

@@ -11,7 +11,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -170,6 +170,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfilePage(
+                                                  plusAppName: 'Graded+',
                                                   fromGradedPlus: true,
                                                   profile: snapshot.data!,
                                                 )),
@@ -443,16 +444,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
-    _ocrBlocLogs.add(LogUserActivityEvent(
-        activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
-        activityId: '4',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType:"Premium", //Globals.isPremiumUser == true ? "Premium" : "Free",
-        dateTime: currentDateTime.toString(),
-        description: 'Assessment History page for home page',
-        operationResult: 'Success'));
+
     Navigator.push(
       context,
       MaterialPageRoute(

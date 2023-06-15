@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_staff.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
@@ -49,47 +49,42 @@ class GradedPlusBottomNavBar {
       {required BuildContext context}) {
     List<PersistentBottomNavBarItem> items = [
       PersistentBottomNavBarItem(
-        icon: gardedPlusBottomNavBarIcons(
-          iconData: IconData(0xe825,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        ),
-        title: 'Class',
-        activeColorPrimary: AppTheme.kButtonColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
+          icon: gardedPlusBottomNavBarIcons(
+              iconData: IconData(0xe825,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg)),
+          title: 'Class',
+          activeColorPrimary: AppTheme.kButtonColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
-        icon: gardedPlusBottomNavBarIcons(
-          iconData: IconData(0xe824,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        ),
-        title: 'History',
-        activeColorPrimary: AppTheme.kButtonColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
+          icon: gardedPlusBottomNavBarIcons(
+              iconData: IconData(0xe824,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg)),
+          title: 'History',
+          activeColorPrimary: AppTheme.kButtonColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
-        iconSize: 30,
-        icon: const Icon(Icons.add),
-        title: 'Scan',
-        activeColorPrimary: AppTheme.kButtonColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
+          iconSize: 30,
+          icon: const Icon(Icons.add),
+          title: 'Scan',
+          activeColorPrimary: AppTheme.kButtonColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
-        icon: gardedPlusBottomNavBarIcons(
-          iconData: IconData(0xe849,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        ),
-        title: ('Help'),
-        activeColorPrimary: AppTheme.kButtonColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
+          icon: gardedPlusBottomNavBarIcons(
+              iconData: IconData(0xe849,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg)),
+          title: ('Help'),
+          activeColorPrimary: AppTheme.kButtonColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
-        icon: gardedPlusBottomNavBarIcons(
-          iconData: getStaffIconCode(),
-        ),
-        title: 'Staff',
-        activeColorPrimary: AppTheme.kButtonColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
+          icon: gardedPlusBottomNavBarIcons(
+            iconData: getStaffIconCode(),
+          ),
+          title: 'Staff',
+          activeColorPrimary: AppTheme.kButtonColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey)
     ];
 
     return Overrides.STANDALONE_GRADED_APP

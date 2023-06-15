@@ -423,7 +423,7 @@ class _GradedPlusConstructedResponseState
                           bottom: MediaQuery.of(context).size.height * 0.1,
                           left: MediaQuery.of(context).size.width / 70,
                           right: MediaQuery.of(context).size.width / 70),
-                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent:
                               MediaQuery.of(context).orientation ==
                                       Orientation.portrait
@@ -660,16 +660,7 @@ class _GradedPlusConstructedResponseState
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
-    _ocrBlocLogs.add(LogUserActivityEvent(
-        activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
-        activityId: '4',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
-        description: 'Assessment History page for home page',
-        operationResult: 'Success'));
+
     Navigator.push(
       context,
       MaterialPageRoute(
