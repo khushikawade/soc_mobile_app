@@ -204,11 +204,7 @@ class PBISPlusActionInteractionButtonState
     }
 
     /*-------------------------User Activity Track START----------------------------*/
-    Utility.updateLogs(
-        activityType: 'PBIS+',
-        activityId: '38',
-        description: 'User Interaction PBIS+',
-        operationResult: 'Success');
+    //Postgres event track for interaction added to bloc success
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));
