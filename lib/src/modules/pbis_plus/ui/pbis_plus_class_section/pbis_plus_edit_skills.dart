@@ -514,7 +514,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                containerIcons,
+                containerIcons: containerIcons,
                 item: item,
                 // fromClassScreen: false,
                 // scaffoldKey: _scaffoldKey,
