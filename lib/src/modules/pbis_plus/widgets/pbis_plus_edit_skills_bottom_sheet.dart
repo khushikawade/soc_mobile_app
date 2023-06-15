@@ -27,18 +27,19 @@ import 'package:pdf/widgets.dart' as pdfWidget;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
-
 import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
   PBISPlusActionInteractionModalNew? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  BoxConstraints? constraints;
   PBISPlusEditSkillsBottomSheet(
       {Key? key,
       this.height = 100,
       required this.item,
-      required this.containerIcons});
+      required this.containerIcons,
+      required BoxConstraints constraints});
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
       _PBISPlusBottomSheetState();
@@ -158,7 +159,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
       onTap: onTap!,
       child: Container(
         width: MediaQuery.of(context).size.width / 3,
-        height: 136,
+        height:
+            // widget.constraints!.maxHeight <= 115
+            //     ?
+            MediaQuery.of(context).size.width / 3
+        // : MediaQuery.of(context).size.width / 4,
+        ,
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,
           borderRadius: BorderRadius.circular(16.0),
@@ -246,7 +252,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 text: "${"Edit " + iconName}",
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
-          SpacerWidget(30),
+          SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           Form(
             key: _formKey,
             child: Container(
@@ -260,7 +266,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     controller: pointPossibleController,
                     onSaved: (String value) {})),
           ),
-          SpacerWidget(20),
+          SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),

@@ -176,6 +176,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           //----------setting bottom sheet funtion------------//
+
                           settingBottomSheet(
                               context, pbisBloc, googleClassroomCourseworkList);
                           // Navigator.of(context).pushReplacement(
@@ -863,7 +864,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 // Set the maximum height of the bottom sheet based on the screen size
                 return PBISPlusSettingBottomSheet(
                     editSkills: () {
-                      print("----inddie the call back 0");
+                      print("----index the call back 0=====");
                       // Navigator.pop(context);
                       // pushNewScreen(
                       //   context,

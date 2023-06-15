@@ -166,7 +166,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   void _handleDeleteItem() async {
     bool res = await replaceItems(widget.item.title);
     if (res) {
-      Utility.currentScreenSnackBar("Skills deleted successfully", null);
+      Utility.currentScreenSnackBar("Skills deleted successfully.", null);
       Navigator.pop(context);
     } else {
       Utility.currentScreenSnackBar(
