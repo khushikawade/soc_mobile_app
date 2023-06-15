@@ -52,7 +52,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
-    // print("drive bloc event received ---------------->> $event");
+    print("drive bloc event recived ---------------->> $event");
 
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
@@ -388,6 +388,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     // --------------------Event To Update Excel Sheet On Drive------------------
     if (event is UpdateDocOnDrive) {
+      print("CREATED EXCEL EVENT CALLED");
       if (event.isLoading) {
         yield GoogleDriveLoading();
       }
@@ -1495,13 +1496,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': '$mimeType'
       };
-
+      // print("API CALL TO UPDATED THE EXCEL SHEET");
       final ResponseModel response = await _dbServices.patchApi(
         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
         //  "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
         headers: headers,
         body: file.readAsBytesSync(),
       );
+
+      // print(
+      //     "API CALL TO UPDATED THE EXCEL SHEET RESPONSE RECIVED ${response.data['statusCode']}");
+
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
@@ -2699,20 +2704,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         return 'Done';
       }
 
+      // print(
+      //     "-------------------PRINTINNG THE REQUEST BODY LIST IN SLDIES--------------------------");
+      for (var map in slideRequiredObjectsList) {
+        print(map);
+      }
+      // print(
+      //     "----------------------PRINTINNG THE REQUEST BODY LIST IN SLDIES-----------------------");
       Map body = {"requests": slideRequiredObjectsList};
 
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json'
       };
-
+      // print("addAndUpdateStudentAssessmentDetailsToSlide called api ");
       final ResponseModel response = await _dbServices.postApi(
           //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           body: body,
           headers: headers,
           isGoogleApi: true);
-
+      // print(
+      //     "addAndUpdateStudentAssessmentDetailsToSlide APP RESPOSE RECOVED ${response.statusCode}");
       if (response.statusCode == 200) {
         List<StudentAssessmentInfo> assessmentData =
             await studentInfoDb.getData();
@@ -2739,12 +2752,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isScanMore: isScanMore,
               retry: retry - 1);
           return result;
+        } else {
+          return 'ReAuthentication is required';
         }
-        //  else {
-        //   return 'ReAuthentication is required';
-        // }
       }
-      return 'ReAuthentication is required';
+      return response.statusCode;
     } catch (e) {
       return e.toString();
     }
@@ -2792,6 +2804,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           String tableObjectuniqueId = "tableObjectId" +
               DateTime.now().microsecondsSinceEpoch.toString() +
               "$index";
+          String imageObjectuniqueId = "imageObjectuniqueId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
           print(pageObjectuniqueId);
           print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images
@@ -2816,7 +2831,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 "elementProperties": {
                   "pageObjectId": pageObjectuniqueId,
                 },
-                "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+                "objectId": imageObjectuniqueId
               }
             };
             slideRequiredObjectsList.add(obj);

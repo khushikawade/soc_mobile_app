@@ -43,7 +43,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Stream<OcrState> mapEventToState(
     OcrEvent event,
   ) async* {
-    
     if (event is FetchTextFromImage) {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
