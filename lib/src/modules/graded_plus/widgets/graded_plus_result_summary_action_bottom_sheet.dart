@@ -169,8 +169,7 @@ class _GradedPlusResultOptionBottomSheetState
             description: dashboardLogMsg,
             operationResult: 'Success');
         //-------------------------------------------------------------------------
-        Utility.launchUrlOnExternalBrowser(
-            "https://www.${Globals.schoolDbnC}.com/");
+        Utility.launchUrlOnExternalBrowser(url);
         break;
       case 'Slides':
         String slidesLogMsg =
