@@ -617,7 +617,7 @@ class OcrUtility {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  height: 20,
+                                  height: 25,
                                 ),
                                 Text(
                                   'Awesome!',
