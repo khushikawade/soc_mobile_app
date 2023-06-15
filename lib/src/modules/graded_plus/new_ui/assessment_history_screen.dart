@@ -590,6 +590,7 @@ class _GradedPlusAssessmentSummaryState
 
   filterBottomSheet() {
     showModalBottomSheet(
+      useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
@@ -622,6 +623,7 @@ class _GradedPlusAssessmentSummaryState
 
   _saveAndShareBottomSheetMenu({required HistoryAssessment assessment}) {
     showModalBottomSheet(
+   
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,

@@ -1397,6 +1397,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       required String studentSelection}) {
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
         isScrollControlled: true,
         isDismissible: true,
         enableDrag: true,
@@ -1617,8 +1618,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   _list[0].googleSlidePresentationURL
                               ..standardDescription =
                                   _list[0].standardDescription
+                              ..pointPossible = _list[0].pointPossible
+                              ..answerKey = _list[0].answerKey
                               ..questionImgFilePath =
                                   _list[0].questionImgFilePath;
+
                             await _studentAssessmentInfoDb.putAt(0, obj);
                           }
                           String deleteRecordLogMsg =
@@ -2213,7 +2217,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       : widget.shareLink ?? '',
                   'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
-                  'Dashboard': 'Dashboard',
+                  'Dashboard': Globals.appSetting.dashboardUrlC == null
+                      ? 'https://www.${Globals.schoolDbnC}.com/'
+                      : Globals.appSetting.dashboardUrlC!, //'Dashboard',
                   'Slides': Globals.googleSlidePresentationLink ?? '',
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''

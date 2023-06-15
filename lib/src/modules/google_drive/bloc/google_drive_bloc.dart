@@ -11,13 +11,11 @@ import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
-import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/schedule/modal/event.dart';
-import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -38,7 +36,6 @@ import 'package:path/path.dart';
 import '../../google_classroom/google_classroom_globals.dart';
 import '../../graded_plus/modal/custom_rubic_modal.dart';
 import '../../graded_plus/modal/student_assessment_info_modal.dart';
-
 import 'package:dio/dio.dart';
 import '../../../services/user_profile.dart';
 part 'google_drive_event.dart';
@@ -55,7 +52,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
-    // print("drive bloc event recived ---------------->> $event");
+    // print("drive bloc event received ---------------->> $event");
 
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
@@ -71,8 +68,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //     token: event.token, folderName: event.folderName);
 
         // To get updated auth toke for google login
-        //  await _toRefreshAuthenticationToken(event.refreshToken ?? '');
-        await Authentication.refreshToken();
+        await _toRefreshAuthenticationToken(event.refreshToken ?? '');
+        //await Authentication.refreshToken();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
@@ -142,8 +139,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           // To Refresh Authentication Token In Case Of Auth Token Expired
-          // var result = await _toRefreshAuthenticationToken(refreshToken!);
-          var result = await Authentication.refreshToken();
+          var result = await _toRefreshAuthenticationToken(event.refreshToken!);
+          // var result = await Authentication.refreshToken();
 
           // if (result == true) {
           if (result != null && result != '') {
@@ -240,6 +237,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
 
         final List result = await createSheetOnDrive(
+            refreshToken: _userProfileLocalData[0].refreshToken,
             description: event.description ?? '',
             name: event.name ?? '',
             folderId: event.folderId,
@@ -644,6 +642,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (Globals.googleDriveFolderId != null &&
             Globals.googleDriveFolderId != "") {
           List pair = await _fetchHistoryAssessment(
+              refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: event.isSearchPage,
               filterType: event.filterType,
               token: _userProfileLocalData[0].authorizationToken,
@@ -737,6 +736,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         if (Globals.googleDriveFolderId != null) {
           List pair = await _fetchHistoryAssessment(
+              refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: false,
               filterType: event.filterType, //   "All",
               token: _userProfileLocalData[0].authorizationToken,
@@ -1156,6 +1156,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         //FIRST CREATE TABS ON SPREADSHEET DRIVE AS PER THE CHOSEN COURSES
         isBlankSpreadsheetTabsAdded = await addTabsOnSpreadSheet(
+            refreshToken: _profileData[0].refreshToken,
             spreadSheetFileObj: event.spreadSheetFileObj,
             userProfile: _profileData[0],
             classroomCourseList: localClassroomCourseworkList);
@@ -1164,10 +1165,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (isBlankSpreadsheetTabsAdded == true) {
           //update all tabs with data once blank tabs crated in the sheet
           isSpreadsheetTabsUpdated = await updateAllTabsDataInsideSpreadSheet(
-            spreadSheetFileObj: event.spreadSheetFileObj,
-            classroomCourseworkList: localClassroomCourseworkList,
-            userProfile: _profileData[0],
-          );
+              spreadSheetFileObj: event.spreadSheetFileObj,
+              classroomCourseworkList: localClassroomCourseworkList,
+              userProfile: _profileData[0],
+              refreshToken: _profileData[0].refreshToken);
         }
 
         if (isBlankSpreadsheetTabsAdded == true &&
@@ -1334,8 +1335,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           return data[0];
         }
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1426,6 +1427,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     String? folderId,
     required UserInformation userProfile,
     int retry = 3,
+    required String? refreshToken,
   }) async {
     try {
       Map body = {
@@ -1459,8 +1461,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         ];
       } else if (retry > 0) {
         //To regenerated fresh access token
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1469,6 +1471,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           userProfile = _userProfileLocalData[0];
 
           return await createSheetOnDrive(
+              refreshToken: refreshToken,
               description: description,
               name: name!,
               folderId: folderId,
@@ -1514,8 +1517,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           _totalRetry < 3) {
         _totalRetry++;
 
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1707,6 +1710,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       required bool isSearchPage,
       required String filterType,
       String? folderId,
+      required String? refreshToken,
       bool? isPagination,
       String? nextPageUrl,
       String? searchKey}) async {
@@ -1813,9 +1817,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1823,6 +1826,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               await UserGoogleProfile.getUserProfile();
 
           List pair = await _fetchHistoryAssessment(
+              refreshToken: refreshToken,
               isSearchPage: isSearchPage,
               filterType: filterType,
               token: _userProfileLocalData[0].authorizationToken,
@@ -1890,8 +1894,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return [true, response.data['body']['webViewLink']];
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1929,8 +1933,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
         _totalRetry++;
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2008,49 +2012,49 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return path;
   }
 
-  // Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
-  //   try {
-  //     final body = {"refreshToken": refreshToken};
-  //     final ResponseModel response = await _dbServices.postApi(
-  //         "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
-  //         body: body,
-  //         isGoogleApi: true);
-  //     if (response.statusCode != 401 &&
-  //         response.statusCode == 200 &&
-  //         response.data['statusCode'] != 500) {
-  //       var newToken = response.data['body']; //["access_token"]
-  //       //!=null?response.data['body']["access_token"]:response.data['body']["error"];
-  //       if (newToken["access_token"] != null) {
-  //         List<UserInformation> _userProfileLocalData =
-  //             await UserGoogleProfile.getUserProfile();
+  Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
+    try {
+      final body = {"refreshToken": refreshToken};
+      final ResponseModel response = await _dbServices.postApi(
+          "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        var newToken = response.data['body']; //["access_token"]
+        //!=null?response.data['body']["access_token"]:response.data['body']["error"];
+        if (newToken["access_token"] != null) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
 
-  //         UserInformation updatedObj = UserInformation(
-  //             userName: _userProfileLocalData[0].userName,
-  //             userEmail: _userProfileLocalData[0].userEmail,
-  //             profilePicture: _userProfileLocalData[0].profilePicture,
-  //             refreshToken: _userProfileLocalData[0].refreshToken,
-  //             authorizationToken: newToken["access_token"]);
+          UserInformation updatedObj = UserInformation(
+              userName: _userProfileLocalData[0].userName,
+              userEmail: _userProfileLocalData[0].userEmail,
+              profilePicture: _userProfileLocalData[0].profilePicture,
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              authorizationToken: newToken["access_token"]);
 
-  //         // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+          // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
 
-  //         await UserGoogleProfile.updateUserProfile(updatedObj);
+          await UserGoogleProfile.updateUserProfile(updatedObj);
 
-  //         //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
+          //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  //     } else {
-  //       return false;
-  //       //  throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     //print(" errrrror  ");
-  //     print(e);
-  //     throw (e);
-  //   }
-  // }
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+        //  throw ('something_went_wrong');
+      }
+    } catch (e) {
+      //print(" errrrror  ");
+      print(e);
+      throw (e);
+    }
+  }
 
   Future<String> uploadImgB64AndGetUrl(
       {required String? imgBase64,
@@ -2124,8 +2128,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         _totalRetry++;
 
         //To regenerate fresh access token
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        //var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2198,8 +2202,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } else if (retry > 0) {
         _totalRetry++;
         //To regernerate fresh access token
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        //  var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2254,8 +2258,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        //  var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2497,8 +2501,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         return 'Done';
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2726,8 +2730,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         });
         return 'Done';
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        //var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2917,8 +2921,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.data['statusCode'] != 500) {
         return 'Done';
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        //var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -3053,6 +3057,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<dynamic> addTabsOnSpreadSheet(
       {required Map<String, dynamic> spreadSheetFileObj,
       required UserInformation userProfile,
+      required String? refreshToken,
       required final List<ClassroomCourse> classroomCourseList,
       int retry = 3}) async {
     try {
@@ -3080,14 +3085,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return true;
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
           return await addTabsOnSpreadSheet(
+              refreshToken: refreshToken,
               spreadSheetFileObj: spreadSheetFileObj,
               classroomCourseList: classroomCourseList,
               userProfile: _userProfileLocalData[0],
@@ -3253,6 +3259,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future updateAllTabsDataInsideSpreadSheet(
       {required Map<String, dynamic> spreadSheetFileObj,
       required UserInformation userProfile,
+      required String? refreshToken,
       required final List<ClassroomCourse> classroomCourseworkList,
       int retry = 3}) async {
     try {
@@ -3293,14 +3300,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         );
         return true;
       } else if (retry > 0) {
-        // var result = await _toRefreshAuthenticationToken(refreshToken!);
-        var result = await Authentication.refreshToken();
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        // var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
           return await updateAllTabsDataInsideSpreadSheet(
+              refreshToken: refreshToken,
               classroomCourseworkList: classroomCourseworkList,
               spreadSheetFileObj: spreadSheetFileObj,
               userProfile: _userProfileLocalData[0],
