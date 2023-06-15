@@ -1500,6 +1500,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         bloc: _googleClassroomBloc,
         child: Container(),
         listener: (context, state) async {
+          print("state is $state");
           if (state is CreateClassroomCourseWorkSuccess) {
             Utility.updateLogs(
                 activityType: 'GRADED+',
@@ -1531,7 +1532,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           }
 
           if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
-            assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated = true;
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated =
+                  true;
+            });
             saveAssessmentToDashboardAndGetId();
             navigateToResultSummery();
           }
@@ -1634,6 +1638,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
+            assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             Utility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '45',
