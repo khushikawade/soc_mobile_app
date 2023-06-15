@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
@@ -385,5 +386,19 @@ class OcrUtility {
     }
 
     return _studentInfoListDb.length;
+  }
+
+  static Future<void> clearOlderAssignmentdetails() async {
+    print(
+        "------------------------ CLEAN ODLER ASSIGNNMENT DETAILS -------------------------");
+    //Clean older ids related to presentaion and spreadsheets sheet
+    Globals.googleExcelSheetId = '';
+    Globals.googleSlidePresentationId = '';
+    Globals.googleSlidePresentationLink = '';
+
+    LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
+        LocalDatabase(Strings.studentInfoDbName);
+
+    await _studentAssessmentInfoDb.clear();
   }
 }
