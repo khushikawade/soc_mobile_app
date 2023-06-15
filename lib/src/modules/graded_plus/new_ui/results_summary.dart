@@ -691,11 +691,14 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             state.obj[0].googleSlidePresentationURL != null &&
                             state.obj[0].googleSlidePresentationURL!
                                 .isNotEmpty) {
-                          Globals.googleSlidePresentationId = state
-                              .obj[0].googleSlidePresentationURL!
-                              .split('/')[5];
+                          OcrOverrides
+                                  .gradedPlusHistoryAssignmentGooglePresentationId =
+                              state.obj[0].googleSlidePresentationURL!
+                                  .split('/')[5];
                         } else {
-                          Globals.googleSlidePresentationId = 'NA';
+                          OcrOverrides
+                                  .gradedPlusHistoryAssignmentGooglePresentationId =
+                              'NA';
                         }
 
                         if (state.obj[0].answerKey != '' &&
@@ -704,7 +707,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           widget.isMcqSheet = true;
                           widget.selectedAnswer = state.obj[0].answerKey;
                         }
-                        Globals.googleSlidePresentationLink =
+                        OcrOverrides
+                                .gradedPlusHistoryAssignmentGooglePresentationLink =
                             state.obj[0].googleSlidePresentationURL;
                         savedRecordCount != null
                             ? savedRecordCount == state.obj.length
@@ -2220,7 +2224,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Dashboard': Globals.appSetting.dashboardUrlC == null
                       ? 'https://www.${Globals.schoolDbnC}.com/'
                       : Globals.appSetting.dashboardUrlC!, //'Dashboard',
-                  'Slides': Globals.googleSlidePresentationLink ?? '',
+                  'Slides': !widget.assessmentDetailPage!
+                      ? Globals.googleSlidePresentationLink ?? ''
+                      : OcrOverrides
+                              .gradedPlusHistoryAssignmentGooglePresentationLink ??
+                          "",
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',

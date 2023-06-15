@@ -122,6 +122,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
   String? detectStudentIdChange = '';
 
   void initState() {
+    print(Globals.googleSlidePresentationId);
     super.initState();
     _bloc.add(FetchTextFromImage(
         selectedAnswer: widget.selectedAnswer,
