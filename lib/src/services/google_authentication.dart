@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,8 +52,12 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<String> refreshToken() async {
     print("Token Refresh");
-    final GoogleSignIn googleSignIn =
-        GoogleSignIn(forceCodeForRefreshToken: true, scopes: scopes);
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId
+            : DefaultFirebaseOptions.currentPlatform.androidClientId,
+        forceCodeForRefreshToken: true,
+        scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signInSilently();
@@ -121,8 +128,12 @@ class Authentication {
       }
     } else {
       //clientId: DefaultFirebaseOptions.currentPlatform.iosClientId
-      final GoogleSignIn googleSignIn =
-          GoogleSignIn(forceCodeForRefreshToken: true, scopes: scopes);
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+          clientId: Platform.isIOS
+              ? DefaultFirebaseOptions.currentPlatform.iosClientId
+              : DefaultFirebaseOptions.currentPlatform.androidClientId,
+          forceCodeForRefreshToken: true,
+          scopes: scopes);
 
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
