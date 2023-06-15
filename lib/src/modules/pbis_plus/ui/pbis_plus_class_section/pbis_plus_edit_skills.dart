@@ -89,15 +89,18 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
     PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[2],
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[3],
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[4],
-    PBISPlusActionInteractionModalNew(
-      imagePath: "assets/Pbis_plus/add_icon.svg",
-      title: 'Add Skill',
-      color: Colors.red,
-    ),
+    // PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[3],
+    // PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[4],
+    // PBISPlusActionInteractionModalNew(
+    //   imagePath: "assets/Pbis_plus/add_icon.svg",
+    //   title: 'Add Skill',
+    //   color: Colors.red,
+    // ),
   ]);
   int? selectedIconIndex = -1;
+  int hoveredIconIndex = -1;
+  // ValueNotifier<int> hoveredIconIndex =
+  //     ValueNotifier<int>(-1); // Track the index of the hovered icon
 
   // void removeItems(String removedtitle) {
   //   containerIcons.value.removeWhere((item) => item.title == removedtitle);
@@ -232,127 +235,146 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   Widget _buildEditSkillCards() {
     return Container(
         // color: Colors.yellow,
-        child: DragTarget<PBISPlusActionInteractionModalNew>(
-            builder: (context, candidateData, rejectedData) {
-      return GridView.builder(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio:
-              1.5, // Adjust this value to change item aspect ratio
-          crossAxisSpacing:
-              4.0, // Adjust the spacing between items horizontally
-          mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
-        ),
-        itemCount: (PBISPlusActionInteractionModalNew
-            .PBISPlusActionInteractionIconsNew.length),
-        itemBuilder: (BuildContext context, int index) {
-          final item = containerIcons.value[index];
-          selectedIconIndex = index;
-          return GestureDetector(
-              onTap: () {
-                isEditMode.value = true;
-                changedIndex.value = index;
-              },
-              child: ValueListenableBuilder(
-                  valueListenable: changedIndex,
-                  builder: (context, value, _) => ValueListenableBuilder(
-                        valueListenable: isEditMode,
-                        builder: (context, value, _) =>
-                            index == changedIndex.value
-                                ? _buildEditWidget(item)
-                                : Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Draggable(
-                                        data: item,
-                                        child: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: SvgPicture.asset(
-                                            item.imagePath,
-                                            fit: BoxFit.contain,
+        child: GridView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1.5, // Adjust this value to change item aspect ratio
+        crossAxisSpacing: 4.0, // Adjust the spacing between items horizontally
+        mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
+      ),
+      itemCount: (PBISPlusActionInteractionModalNew
+                  .PBISPlusActionInteractionIconsNew.length /
+              2)
+          .ceil(),
+      itemBuilder: (BuildContext context, int index) {
+        final item = containerIcons.value[index];
+        selectedIconIndex = index;
+        return DragTarget<PBISPlusActionInteractionModalNew>(
+          onWillAccept: (PBISPlusActionInteractionModalNew? iconData) {
+            hoveredIconIndex = index; // Update the hovered icon index
+            setState(() {});
+            return true;
+            // print("--------on will accept------");
+            // print(iconData?.title);
+            // print("--------on will accept------");
+            // return true;
+          },
+          onAccept: (draggedData) {
+            // print("inisde the on  acccept");
+            //ADD SET STATE OR VALUE LISTNER
+            // if (containerIcons.value.length < 3) {
+
+            //   containerIcons.value.add(iconData!);
+            // } else {
+            //   containerIcons.value[selectedIconIndex!] = iconData!;
+            // }
+            // print(iconData?.title);
+            // if (containerIcons.value.contains(iconData)) {
+            // } else {
+            //   containerIcons.value[selectedIconIndex!] = iconData!;
+            //   changedIndex.value = -1;
+            // }
+            // setState(() {});
+
+            if (containerIcons.value.length < 2) {
+              containerIcons.value.add(draggedData);
+            } else {
+              containerIcons.value[hoveredIconIndex] =
+                  draggedData; // Change the hovered icon
+            }
+            hoveredIconIndex = -1; // Reset the hovered icon index
+
+            setState(() {});
+          },
+          onAcceptWithDetails:
+              (DragTargetDetails<PBISPlusActionInteractionModalNew> details) {
+            final item = details.data;
+            // final hoveredIndex = details.index;
+
+            // Use the hoveredIndex and item as needed
+            // ...
+
+            print("Hovered Index: $item");
+            print("Item Title: ${item?.title}");
+
+            // print(
+            //     "------onAcceptWithDetails-----------0N ACCEPT WITH DETAILS-------------");
+            // print(details.data.color);
+          },
+          onMove: (details) {
+            // print("------onMove-----------details-------------");
+            // print(details.data.title);
+          },
+          onLeave: (PBISPlusActionInteractionModalNew? iconData) {
+            print("INSIDE THE ON LEAVE ");
+          },
+          builder: (context, candidateData, rejectedData) {
+            return GestureDetector(
+                onTap: () {
+                  isEditMode.value = true;
+                  changedIndex.value = index;
+                },
+                child: ValueListenableBuilder(
+                    valueListenable: changedIndex,
+                    builder: (context, value, _) => ValueListenableBuilder(
+                          valueListenable: isEditMode,
+                          builder: (context, value, _) =>
+                              index == changedIndex.value
+                                  ? _buildEditWidget(item)
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Draggable(
+                                          data: item,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          feedback: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          childWhenDragging: Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: SvgPicture.asset(
+                                              item.imagePath,
+                                              fit: BoxFit.contain,
+                                            ),
                                           ),
                                         ),
-                                        feedback: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: SvgPicture.asset(
-                                            item.imagePath,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                        childWhenDragging: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: SvgPicture.asset(
-                                            item.imagePath,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      SpacerWidget(4),
-                                      Padding(
-                                        padding: Globals.deviceType != 'phone'
-                                            ? const EdgeInsets.only(
-                                                top: 10, left: 10)
-                                            : EdgeInsets.zero,
-                                        child: Utility.textWidget(
-                                            text: item.title,
-                                            context: context,
-                                            textTheme: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!
-                                                .copyWith(fontSize: 12)),
-                                      )
-                                    ],
-                                  ),
-                      )));
-        },
-      );
-    }, onWillAccept: (PBISPlusActionInteractionModalNew? iconData) {
-      // print("--------on will accept------");
-      // print(iconData?.title);
-      // print("--------on will accept------");
-      return true;
-    }, onAccept: (PBISPlusActionInteractionModalNew? iconData) {
-      // print("inisde the on  acccept");
-      //ADD SET STATE OR VALUE LISTNER
-      // if (containerIcons.value.length < 3) {
-
-      //   containerIcons.value.add(iconData!);
-      // } else {
-      //   containerIcons.value[selectedIconIndex!] = iconData!;
-      // }
-      print(iconData?.title);
-      if (containerIcons.value.contains(iconData)) {
-      } else {
-        containerIcons.value[selectedIconIndex!] = iconData!;
-        changedIndex.value = -1;
-      }
-      setState(() {});
-    }, onAcceptWithDetails:
-                (DragTargetDetails<PBISPlusActionInteractionModalNew> details) {
-      final item = details.data;
-      // final hoveredIndex = details.index;
-
-      // Use the hoveredIndex and item as needed
-      // ...
-
-      print("Hovered Index: $item");
-      print("Item Title: ${item?.title}");
-
-      // print(
-      //     "------onAcceptWithDetails-----------0N ACCEPT WITH DETAILS-------------");
-      // print(details.data.color);
-    }, onMove: (details) {
-      // print("------onMove-----------details-------------");
-      // print(details.data.title);
-    }, onLeave: (PBISPlusActionInteractionModalNew? iconData) {
-      print("INSIDE THE ON LEAVE ");
-    }));
+                                        SpacerWidget(4),
+                                        Padding(
+                                          padding: Globals.deviceType != 'phone'
+                                              ? const EdgeInsets.only(
+                                                  top: 10, left: 10)
+                                              : EdgeInsets.zero,
+                                          child: Utility.textWidget(
+                                              text: item.title,
+                                              context: context,
+                                              textTheme: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(fontSize: 12)),
+                                        )
+                                      ],
+                                    ),
+                        )));
+          },
+        );
+      },
+    ));
   }
 
   Widget _buildEditWidget(PBISPlusActionInteractionModalNew item) {
@@ -461,18 +483,24 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     mainAxisSpacing:
                         4.0, // Adjust the spacing between items vertically
                   ),
-                  itemCount: isShimmer!
-                      ? 3 *
-                          PBISPlusAdditionalBehaviourModal
-                              .PBISPlusAdditionalBehaviourModalIcons.length
-                              .ceil()
-                      : behaviourList!.length.ceil(),
+                  itemCount: PBISPlusAdditionalBehaviourModal
+                      .PBISPlusAdditionalBehaviourModalIcons.length
+                      .ceil(),
+                  // isShimmer!
+                  //     ? 3 *
+                  //         PBISPlusAdditionalBehaviourModal
+                  //             .PBISPlusAdditionalBehaviourModalIcons.length
+                  //             .ceil()
+                  //     : behaviourList!.length.ceil(),
                   itemBuilder: (BuildContext context, int index) {
-                    final item = isShimmer
-                        ? PBISPlusAdditionalBehaviourModal
-                            .PBISPlusAdditionalBehaviourModalIcons[index % 6]
-                        : behaviourList![index];
-                    final isIconDisabled = isShimmer ? false : false;
+                    final item = PBISPlusAdditionalBehaviourModal
+                        .PBISPlusAdditionalBehaviourModalIcons[index % 6];
+
+                    //  isShimmer
+                    //     ? PBISPlusAdditionalBehaviourModal
+                    //         .PBISPlusAdditionalBehaviourModalIcons[index % 6]
+                    //     : behaviourList![index];
+                    final isIconDisabled = isShimmer! ? false : false;
                     return isShimmer
                         ? _buildShimmer()
                         : isIconDisabled
@@ -539,52 +567,72 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             padding: const EdgeInsets.all(8.0),
             child: Opacity(
                 opacity: 0.2,
-                child: CommonCachedNetworkImage(
-                  imagePath: item.iconUrlC,
-                ))),
+                child: SvgPicture.asset(
+                  item.imagePath,
+                  fit: BoxFit.contain,
+                )
+                //  CommonCachedNetworkImage(
+                //   imagePath: item.iconUrlC,
+                // )
+
+                )),
       ),
     );
   }
 
   Widget _buildEditSkillIcon(item, isIconDisabled) {
     return Draggable(
-        data: item,
-        ignoringFeedbackPointer: !isIconDisabled,
-        child: Container(
-          width: 40,
-          height: 40,
-          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                spreadRadius: 0,
-                blurRadius: 1,
-                offset: Offset(0, 0),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CommonCachedNetworkImage(
-                  imagePath: item.iconUrlC,
-                )),
-          ),
+      data: item,
+      ignoringFeedbackPointer: !isIconDisabled,
+      child: Container(
+        width: 40,
+        height: 40,
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.4),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: Offset(0, 0),
+            ),
+          ],
         ),
-        feedback: isIconDisabled
-            ? SizedBox.shrink()
-            : CommonCachedNetworkImage(
-                imagePath: item.iconUrlC,
+        child: Center(
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                item.imagePath,
+                fit: BoxFit.contain,
+              )
+              //  CommonCachedNetworkImage(
+              //   imagePath: item.iconUrlC,
+              // )
               ),
-        childWhenDragging: isIconDisabled
-            ? SizedBox.shrink()
-            : CommonCachedNetworkImage(
-                imagePath: item.iconUrlC,
-              ));
+        ),
+      ),
+      feedback: isIconDisabled
+          ? SizedBox.shrink()
+          : SvgPicture.asset(
+              item.imagePath,
+              fit: BoxFit.contain,
+            ),
+      // CommonCachedNetworkImage(
+      //     imagePath: item.iconUrlC,
+      //   ),
+      childWhenDragging: isIconDisabled
+          ? SizedBox.shrink()
+          : SvgPicture.asset(
+              item.imagePath,
+              fit: BoxFit.contain,
+            ),
+      // CommonCachedNetworkImage(
+      //     imagePath: item.iconUrlC,
+      //   )
+    );
   }
 
   _modalBottomSheetMenu(PBISPlusActionInteractionModalNew item) =>
