@@ -394,6 +394,20 @@ class OcrUtility {
     return _studentInfoListDb.length;
   }
 
+  static Future<void> clearOlderAssignmentdetails() async {
+    print(
+        "------------------------ CLEAN ODLER ASSIGNNMENT DETAILS -------------------------");
+    //Clean older ids related to presentaion and spreadsheets sheet
+    Globals.googleExcelSheetId = '';
+    Globals.googleSlidePresentationId = '';
+    Globals.googleSlidePresentationLink = '';
+
+    LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
+        LocalDatabase(Strings.studentInfoDbName);
+
+    await _studentAssessmentInfoDb.clear();
+  }
+
   static void showProgressLoadingDialog({
     BuildContext? context,
     required Function(StateSetter) state,
