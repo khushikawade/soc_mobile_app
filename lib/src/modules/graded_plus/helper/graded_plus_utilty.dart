@@ -1,11 +1,16 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/graded_plus/modal/assessment_status_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../google_classroom/google_classroom_globals.dart';
@@ -337,6 +342,8 @@ class OcrUtility {
           ..questionImgUrl = firstStudent.questionImgUrl
           ..googleSlidePresentationURL = firstStudent.googleSlidePresentationURL
           ..standardDescription = firstStudent.standardDescription
+          ..pointPossible = firstStudent.pointPossible
+          ..answerKey = firstStudent.answerKey
           ..questionImgFilePath = firstStudent.questionImgFilePath;
       }
 
@@ -385,5 +392,215 @@ class OcrUtility {
     }
 
     return _studentInfoListDb.length;
+  }
+
+  static void showProgressLoadingDialog({
+    BuildContext? context,
+    required Function(StateSetter) state,
+    required List<String> processList,
+    required ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus,
+  }) async {
+    return showDialog<void>(
+      useRootNavigator: false,
+      context: context!,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          if (state != null) {
+            state(setState);
+          }
+
+          return WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                  backgroundColor:
+                      Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color(0xff111C20)
+                          : Color(0xffF7F8F9), //Colors.black54,
+                  children: <Widget>[
+                    Text(
+                      "Saving",
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SpacerWidget(10),
+                    ...processList
+                        .map((item) => Container(
+                              margin: EdgeInsets.symmetric(vertical: 7),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              height: 55,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: AppTheme.kButtonColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    item,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                  ),
+                                  progressWidget(
+                                      value: item,
+                                      assessmentExportAndSaveStatus:
+                                          assessmentExportAndSaveStatus)
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ]));
+        });
+      },
+    );
+  }
+
+  static Widget progressWidget(
+      {required String value,
+      required ValueNotifier<AssessmentStatusModel>
+          assessmentExportAndSaveStatus}) {
+    if ((value == 'Google Sheet' &&
+            assessmentExportAndSaveStatus.value.excelSheetPrepared) ||
+        (value == 'Google Slides' &&
+            assessmentExportAndSaveStatus.value.slidePrepared) ||
+        (value == 'Google Classroom' &&
+            assessmentExportAndSaveStatus.value.saveGoogleClassroom) ||
+        (value == '${Globals.schoolDbnC} Dashboard' &&
+            assessmentExportAndSaveStatus
+                .value.saveAssessmentResultToDashboard)) {
+      return Icon(
+        IconData(0xe877,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: AppTheme.kButtonColor,
+      );
+    } else {
+      return CupertinoActivityIndicator(
+        color: AppTheme.kButtonColor,
+      );
+    }
+  }
+
+  static void showSuccessDialog({
+    BuildContext? context,
+  }) async {
+    return showDialog<void>(
+      useRootNavigator: false,
+      context: context!,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async => false,
+            child: SimpleDialog(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                backgroundColor: Colors.transparent,
+                children: <Widget>[
+                  Container(
+                    color: Colors.transparent,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.18,
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.only(top: 45),
+                            decoration: BoxDecoration(
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(0, 2),
+                                    blurRadius: 10),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 25,
+                                ),
+                                Text(
+                                  'Awesome!',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Student Assessments Saved Successfully',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
+                                ),
+                              ],
+                            )
+                            // child: FittedBox(child: pbisStudentDetailWidget)
+                            ),
+                        Positioned(
+                          top: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Color(0xff000000) !=
+                                          Theme.of(context).backgroundColor
+                                      ? Color(0xff111C20)
+                                      : Color(0xffF7F8F9),
+                                  width: 8),
+                              //color: AppTheme.kButtonColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.kButtonColor,
+                                //color: AppTheme.kButtonColor,
+                                shape: BoxShape.circle,
+                              ),
+                              height: 80,
+                              width: 80,
+                              child: Icon(
+                                IconData(0xe877,
+                                    fontFamily: Overrides.kFontFam,
+                                    fontPackage: Overrides.kFontPkg),
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xff111C20)
+                                    : Color(0xffF7F8F9),
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ]));
+      },
+    );
   }
 }

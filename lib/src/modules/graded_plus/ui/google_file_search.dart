@@ -862,6 +862,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
         isDismissible: true,
         enableDrag: true,
         backgroundColor: Colors.transparent,
+        useRootNavigator: true,
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
