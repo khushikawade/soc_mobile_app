@@ -143,16 +143,22 @@ class Authentication {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
+        print('Google Auth Call Details');
+        print(googleSignInAuthentication.accessToken);
+        print(googleSignInAuthentication.idToken);
+
         final AuthCredential credential = GoogleAuthProvider.credential(
             accessToken: googleSignInAuthentication.accessToken,
             idToken: googleSignInAuthentication.idToken);
 
         print(googleSignInAuthentication.accessToken);
         try {
+          print('Google Auth Credentials::::::: $credential');
           final UserCredential userCredential =
               await auth.signInWithCredential(credential);
 
           user = userCredential.user;
+          print('Google Auth User::::::: $user');
           // Retrieve the refresh token
           // Access the refresh token from the UserCredential
           final String? refreshToken = userCredential.user!.refreshToken!;

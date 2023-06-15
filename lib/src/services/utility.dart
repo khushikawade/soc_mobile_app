@@ -24,7 +24,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-import '../modules/google_drive/model/user_profile.dart';
+import 'user_profile.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -948,8 +948,6 @@ class Utility {
         LocalDatabase(tableName);
     await _studentInfoDb.clear();
   }
-
- 
 
   static List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
     List<DateTime> days = [];
