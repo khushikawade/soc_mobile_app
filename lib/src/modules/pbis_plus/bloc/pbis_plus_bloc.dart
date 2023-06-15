@@ -211,6 +211,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           "Status": "active"
         });
 
+        /*-------------------------User Activity Track START----------------------------*/
+        Utility.updateLogs(
+            activityType: 'PBIS+',
+            activityId: '38',
+            description:
+                'User Interaction PBIS+ for student ${event.studentId}',
+            operationResult: 'Success');
+        /*-------------------------User Activity Track END----------------------------*/
+
         yield AddPBISInteractionSuccess(
           obj: data,
         );

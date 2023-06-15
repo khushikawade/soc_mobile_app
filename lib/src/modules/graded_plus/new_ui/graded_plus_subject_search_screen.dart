@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -76,11 +77,20 @@ class _GradedPlusSearchScreenPageState
   final ValueNotifier<int> listLength =
       ValueNotifier<int>(5000); //To bypass the default selection
 
-  ValueNotifier<AssessmentStatusModel> assessmentStatus =
+  // Value Notifier to check which is update or not
+  ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus =
       ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
           excelSheetPrepared: false,
           slidePrepared: false,
-          saveAssessmentResultToDashboard: false));
+          saveAssessmentResultToDashboard: false,
+          saveGoogleClassroom: true));
+
+  List<String> processList = [
+    'Google Sheet',
+    'Google Slides',
+    'Google Classroom',
+    '${Globals.schoolDbnC} Dashboard'
+  ];
 
   GoogleDriveBloc googleBloc = GoogleDriveBloc();
   GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();
@@ -832,7 +842,7 @@ class _GradedPlusSearchScreenPageState
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
-            assessmentStatus.value.excelSheetPrepared =
+            assessmentExportAndSaveStatus.value.excelSheetPrepared =
                 true; // update loading dialog and navigate
             Globals.currentAssessmentId = '';
 
@@ -922,7 +932,9 @@ class _GradedPlusSearchScreenPageState
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "assessment_detail_added_first_slide");
 
-            assessmentStatus.value.slidePrepared = true;
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.slidePrepared = true;
+            });
 
             navigateToResultSummery();
           }
@@ -945,7 +957,10 @@ class _GradedPlusSearchScreenPageState
           Navigator.of(context).pop();
           Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
         } else if (state is GradedPlusSaveResultToDashboardSuccess) {
-          assessmentStatus.value.saveAssessmentResultToDashboard = true;
+          showDialogSetState!(() {
+            assessmentExportAndSaveStatus
+                .value.saveAssessmentResultToDashboard = true;
+          });
           navigateToResultSummery();
         }
       },
@@ -956,31 +971,41 @@ class _GradedPlusSearchScreenPageState
   /* ----- Function will navigate to result summery when all process done ----- */
   navigateToResultSummery() {
     // check all process is done or not
-    if (assessmentStatus.value.excelSheetPrepared == true &&
-        assessmentStatus.value.slidePrepared == true &&
-        assessmentStatus.value.saveAssessmentResultToDashboard == true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-            isMcqSheet: widget.isMcqSheet,
-            selectedAnswer: widget.selectedAnswer,
-            fileId: Globals.googleExcelSheetId,
-            //subjectId: subjectId ?? '',
-            standardId: standardId ?? '',
-            assessmentName: Globals.assessmentName,
-            shareLink: '',
-            assessmentDetailPage: false,
+    if (assessmentExportAndSaveStatus.value.excelSheetPrepared == true &&
+        assessmentExportAndSaveStatus.value.slidePrepared == true &&
+        assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
+            true) {
+      Navigator.pop(context);
+      OcrUtility.showSuccessDialog(context: context);
+      Timer(Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GradedPlusResultsSummary(
+              isMcqSheet: widget.isMcqSheet,
+              selectedAnswer: widget.selectedAnswer,
+              fileId: Globals.googleExcelSheetId,
+              //subjectId: subjectId ?? '',
+              standardId: standardId ?? '',
+              assessmentName: Globals.assessmentName,
+              shareLink: '',
+              assessmentDetailPage: false,
+            ),
           ),
-        ),
-      );
+        );
+      });
     }
   }
 
   /* ------ Function call when someone tap on skip button or save button ------ */
   floatingButtonOnTap() async {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: "Please Wait");
+    OcrUtility.showProgressLoadingDialog(
+        context: context,
+        state: (p0) => {showDialogSetState = p0},
+        assessmentExportAndSaveStatus: assessmentExportAndSaveStatus,
+        processList: processList);
+    // Utility.showLoadingDialog(
+    //     context: context, isOCR: true, msg: "Please Wait");
 
     if (Globals.googleExcelSheetId == null ||
         Globals.googleExcelSheetId?.isEmpty == true) {
@@ -1029,13 +1054,13 @@ class _GradedPlusSearchScreenPageState
 
     //------------------------------------------------------------------------------
     //Updating Excel sheet with student details if not already updated
-    if (assessmentStatus.value.excelSheetPrepared == false) {
+    if (assessmentExportAndSaveStatus.value.excelSheetPrepared == false) {
       saveToDrive();
     }
 
     //------------------------------------------------------------------------------
     //Updating Google Slide with student details if not already updated
-    if (assessmentStatus.value.slidePrepared == false) {
+    if (assessmentExportAndSaveStatus.value.slidePrepared == false) {
       googleSlideBloc.add(AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
         studentInfoDb: _studentAssessmentInfoDb,
         slidePresentationId: Globals.googleSlidePresentationId,
@@ -1044,7 +1069,8 @@ class _GradedPlusSearchScreenPageState
 
     //------------------------------------------------------------------------------
     //Updating student result to dashboard if not already updated
-    if (assessmentStatus.value.saveAssessmentResultToDashboard == false) {
+    if (assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
+        false) {
       Globals.currentAssessmentId = '';
 
       List<StudentAssessmentInfo> studentAssessmentInfoDblist =
