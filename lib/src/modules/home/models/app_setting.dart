@@ -123,6 +123,8 @@ class AppSetting {
   @HiveField(58)
   String? calendarBannerColor;
   @HiveField(59)
+  String? dashboardUrlC;
+  @HiveField(60)
   String? enableGoogleSSO;
 
   AppSetting(
@@ -184,7 +186,9 @@ class AppSetting {
       this.parentCoordinatorEmailc,
       this.calendarId,
       this.calendarBannerImage,
+      // this.calendarBannerColor,this.dashboardUrlC//Dashboard_URL__c
       this.calendarBannerColor,
+      this.dashboardUrlC,
       this.enableGoogleSSO});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
@@ -266,6 +270,7 @@ class AppSetting {
       calendarId: json['Calendar_Id__c'],
       calendarBannerImage: json['Calendar_Banner_Image__c'],
       calendarBannerColor: json['Calendar_Banner_Color__c'],
+      dashboardUrlC: json['Dashboard_URL__c'],
       enableGoogleSSO: json['Enable_Google_SSO__c'] as String?);
 
   Map<String, dynamic> toJson() => {
@@ -328,6 +333,7 @@ class AppSetting {
         'Calendar_Id__c': calendarId,
         'Calendar_Banner_Image__c': calendarBannerImage,
         'Calendar_Banner_Color__c': calendarBannerColor,
+        'Dashboard_URL__c': dashboardUrlC,
         'Enable_Google_SSO__c': enableGoogleSSO
       };
 
@@ -392,6 +398,7 @@ class AppSetting {
       String? calendarId,
       String? calendarBannerImage,
       String? calendarBannerColor,
+      String? dashboardUrlC,
       String? enableGoogleSSO}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
@@ -457,6 +464,7 @@ class AppSetting {
         calendarId: calendarId ?? this.calendarId,
         calendarBannerImage: calendarBannerImage ?? this.aboutBannerImageC,
         calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC,
+        dashboardUrlC: dashboardUrlC ?? this.dashboardUrlC,
         enableGoogleSSO: enableGoogleSSO ?? this.enableGoogleSSO);
   }
 }
