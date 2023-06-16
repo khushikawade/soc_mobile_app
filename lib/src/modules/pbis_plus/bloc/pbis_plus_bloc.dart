@@ -44,8 +44,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           "called the classroom section event for GARDED+ ${event.isGradedPlus}");
 
       String plusClassroomDBTableName = event.isGradedPlus == true
-          ? OcrOverrides.gradedPlusClassroomDB
-          : PBISPlusOverrides.pbisPlusClassroomDB;
+          ? OcrOverrides
+              .gradedPlusClassroomDB //Managed separate db for graded plus
+          : PBISPlusOverrides
+              .pbisPlusClassroomDB; //Managed separate db for pbis plus
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
