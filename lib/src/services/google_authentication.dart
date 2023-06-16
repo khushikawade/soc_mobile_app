@@ -56,7 +56,7 @@ class Authentication {
         clientId: Platform.isIOS
             ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
             : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
-        forceCodeForRefreshToken: true,
+        forceCodeForRefreshToken: false,
         scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -131,9 +131,8 @@ class Authentication {
       final GoogleSignIn googleSignIn = await GoogleSignIn(
           clientId: Platform.isIOS
               ? DefaultFirebaseOptions.currentPlatform.iosClientId
-              : DefaultFirebaseOptions.currentPlatform.androidClientId ??
-                '',
-          forceCodeForRefreshToken: true,
+              : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+          forceCodeForRefreshToken: false,
           scopes: scopes);
 
       final GoogleSignInAccount? googleSignInAccount =

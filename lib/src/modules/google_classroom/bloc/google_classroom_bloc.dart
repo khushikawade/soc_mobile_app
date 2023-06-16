@@ -8,7 +8,7 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -459,7 +459,8 @@ class GoogleClassroomBloc
                   event.isFromHistoryAssessmentScanMore,
               authorizationToken:
                   userProfileLocalData[0].authorizationToken ?? '',
-              refreshToken: userProfileLocalData[0].refreshToken ?? '',
+              refreshToken: userProfileLocalData[0].authorizationToken ??
+                  '', //!userProfileLocalData[0].refreshToken ?? '', Issue because refresh token is null
               maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
               studentProfileDetails: studentAssessmentDetails,
               title: event.title,

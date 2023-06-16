@@ -13,7 +13,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/scan_result_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -584,33 +584,34 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                     notPresentStudentsInSelectedClass);
                             return;
                           }
-                        } else {
-                          //Preparing list of student not belong to selected class
-                          List<StudentAssessmentInfo>
-                              notPresentStudentsInSelectedClass =
-                              await OcrUtility
-                                  .checkAllStudentBelongsToSameClassOrNotForStandardApp(
-                                      title: widget
-                                              .isFromHistoryAssessmentScanMore
-                                          ? Globals.historyAssessmentName ?? ''
-                                          : Globals.assessmentName ?? '',
-                                      isScanMore: true,
-                                      studentInfoDB:
-                                          widget.isFromHistoryAssessmentScanMore ==
-                                                  true
-                                              ? _historystudentAssessmentInfoDb
-                                              : _studentAssessmentInfoDb,
-                                      isFromHistoryAssignment: widget
-                                          .isFromHistoryAssessmentScanMore);
-
-                          if (notPresentStudentsInSelectedClass?.isNotEmpty ??
-                              true) {
-                            notPresentStudentsPopupModal(
-                                notPresentStudentsInSelectedClass:
-                                    notPresentStudentsInSelectedClass);
-                            return;
-                          }
                         }
+                        // else {
+                        //Preparing list of student not belong to selected class
+                        //   List<StudentAssessmentInfo>
+                        //       notPresentStudentsInSelectedClass =
+                        //       await OcrUtility
+                        //           .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                        //               title: widget
+                        //                       .isFromHistoryAssessmentScanMore
+                        //                   ? Globals.historyAssessmentName ?? ''
+                        //                   : Globals.assessmentName ?? '',
+                        //               isScanMore: true,
+                        //               studentInfoDB:
+                        //                   widget.isFromHistoryAssessmentScanMore ==
+                        //                           true
+                        //                       ? _historystudentAssessmentInfoDb
+                        //                       : _studentAssessmentInfoDb,
+                        //               isFromHistoryAssignment: widget
+                        //                   .isFromHistoryAssessmentScanMore);
+
+                        //   if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                        //       true) {
+                        //     notPresentStudentsPopupModal(
+                        //         notPresentStudentsInSelectedClass:
+                        //             notPresentStudentsInSelectedClass);
+                        //     return;
+                        //   }
+                        // }
                       }
                       //--------------------------------------------------------------
                       if (widget.isFromHistoryAssessmentScanMore == true ||

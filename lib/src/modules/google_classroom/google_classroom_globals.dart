@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 
 import 'modal/google_classroom_courses.dart';
 
