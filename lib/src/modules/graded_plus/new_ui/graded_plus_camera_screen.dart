@@ -1146,9 +1146,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  _navigateToCreateAssessment(
-      {required List<String> suggestionList,
-      required List<String> classroomsuggestionList}) {
+  _navigateToCreateAssessment({
+    required List<String> suggestionList,
+    //required List<String> classroomsuggestionList
+  }) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -1157,7 +1158,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 selectedAnswer: widget.selectedAnswer,
                 customGrades: classList,
                 classSuggestions: suggestionList,
-                classroomSuggestions: classroomsuggestionList,
+                // classroomSuggestions: classroomsuggestionList,
               )),
     );
   }
@@ -1278,19 +1279,19 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           await getSuggestionChipsForStandAloneApp();
       Navigator.of(context).pop();
 
-      _navigateToCreateAssessment(
-          suggestionList: suggestionListSatandAlone,
-          classroomsuggestionList: []);
+      _navigateToCreateAssessment(suggestionList: suggestionListSatandAlone);
+      // classroomsuggestionList: []);
     } else {
-      List<String> suggestionListForStandardApp =
-          await getSuggestionChipsForStandardApp();
+      // List<String> suggestionListForStandardApp =
+      //     await getSuggestionChipsForStandardApp();
 
       List<String> classroomsuggestionListForStandardApp =
           await getClassroomSuggestionChipsForStandardApp();
 
       _navigateToCreateAssessment(
-          suggestionList: suggestionListForStandardApp,
-          classroomsuggestionList: classroomsuggestionListForStandardApp);
+        suggestionList: classroomsuggestionListForStandardApp,
+        // classroomsuggestionList: classroomsuggestionListForStandardApp
+      );
     }
   }
 

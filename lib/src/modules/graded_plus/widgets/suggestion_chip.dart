@@ -48,6 +48,8 @@ class _ChipsFilterState extends State<ChipsFilter> {
   Widget build(BuildContext context) {
     return Container(
       child: ListView.builder(
+        shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
         itemBuilder: this.chipBuilder,
         itemCount: widget.filters!.length,
         scrollDirection: Axis.horizontal,
@@ -67,21 +69,46 @@ class _ChipsFilterState extends State<ChipsFilter> {
 
     return GestureDetector(
       onTap: () {
-        active = true;
         setState(() {
-          widget.selectedValue(widget.filters![currentIndex!]);
-          selectedIndex = currentIndex;
+          if (selectedIndex == currentIndex) {
+            active = false;
+            // Deselect the chip
+            selectedIndex = null;
+            widget.selectedValue('');
+          } else {
+            // Select the chip
+            active = true;
+            selectedIndex = currentIndex;
+            widget.selectedValue(filter);
+          }
         });
+
+        // if (widget.isSelectedChipWithColor) {
+        //   active = !active;
+        //   setState(() {
+        //     widget.selectedValue(selectedIndex == currentIndex
+        //         ? ''
+        //         : widget.filters![currentIndex!]);
+        //     selectedIndex == currentIndex ? null : selectedIndex = currentIndex;
+        //   });
+        // } else {
+        //   active = true;
+        //   setState(() {
+        //     widget.selectedValue(widget.filters![currentIndex!]);
+        //     selectedIndex = currentIndex;
+        //   });
+        // }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        margin: EdgeInsets.only(left: 5),
+        margin: EdgeInsets.only(left: currentIndex == 0 ? 0 : 5),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(),
           ],
-          color: //Colors.transparent,
-              Color(0xff000000) != Theme.of(context).backgroundColor
+          color: isActive && active
+              ? AppTheme.kSelectedColor
+              : Color(0xff000000) != Theme.of(context).backgroundColor
                   ? Color(0xffF7F8F9)
                   : Color(0xff111C20),
           border: Border.all(
@@ -94,8 +121,11 @@ class _ChipsFilterState extends State<ChipsFilter> {
           children: [
             Text(
               filter,
-              style:
-                  Theme.of(context).textTheme.headline6!.copyWith(fontSize: 12),
+              style: Theme.of(context).textTheme.headline6!.copyWith(
+                  fontSize: 12,
+                  color: isActive && active
+                      ? Theme.of(context).backgroundColor
+                      : null),
             ),
           ],
         ),

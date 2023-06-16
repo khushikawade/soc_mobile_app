@@ -486,10 +486,15 @@ class OcrUtility {
     Globals.googleSlidePresentationId = '';
     Globals.googleSlidePresentationLink = '';
 
+//clean older scaned stduent records DB
     LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
         LocalDatabase(Strings.studentInfoDbName);
-
     await _studentAssessmentInfoDb.clear();
+
+// clean older classroom related ids
+    GoogleClassroomGlobals
+            .studentAssessmentAndClassroomAssignmentForStandardApp =
+        ClassroomCourse(id: '');
   }
 
   static void showProgressLoadingDialog({

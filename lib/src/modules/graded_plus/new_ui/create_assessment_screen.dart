@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -36,19 +37,19 @@ import '../widgets/student_popup.dart';
 import '../widgets/suggestion_chip.dart';
 
 class GradedPlusCreateAssessment extends StatefulWidget {
-  GradedPlusCreateAssessment(
-      {Key? key,
-      required this.classSuggestions,
-      required this.customGrades,
-      this.isMcqSheet,
-      required this.selectedAnswer,
-      required this.classroomSuggestions})
-      : super(key: key);
+  GradedPlusCreateAssessment({
+    Key? key,
+    required this.classSuggestions,
+    required this.customGrades,
+    this.isMcqSheet,
+    required this.selectedAnswer,
+    // required this.classroomSuggestions
+  }) : super(key: key);
   final List<String> classSuggestions;
   final List<String> customGrades;
   final bool? isMcqSheet;
   final String? selectedAnswer;
-  final List<String> classroomSuggestions;
+  // final List<String> classroomSuggestions;
   @override
   State<GradedPlusCreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -77,17 +78,23 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
   final addController = TextEditingController();
 
+  bool isClassroomSelectedForStandardApp = false;
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrOverrides.gradedPlusNavBarIsHide.value = false;
+    });
+
     //Managing suggestion chips // course name // class name
     if (Overrides.STANDALONE_GRADED_APP) {
       GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
           GoogleClassroomCourses();
       updateClassNameForStandAloneApp();
     } else {
-      GoogleClassroomGlobals
-              .studentAssessmentAndClassroomAssignmentForStandardApp =
-          ClassroomCourse();
+      // GoogleClassroomGlobals
+      //         .studentAssessmentAndClassroomAssignmentForStandardApp =
+      //     ClassroomCourse(id: '');
       // updateClassNameForStandardApp();
     }
     // get last selected grade
@@ -256,9 +263,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                         builder: (BuildContext context, dynamic value,
                             Widget? child) {
                           return Container(
-                            padding: classError.value.isEmpty
-                                ? EdgeInsets.only(top: 8)
-                                : null,
+                            padding: EdgeInsets.only(top: 8),
                             alignment: Alignment.centerLeft,
                             child: TranslationWidget(
                                 message: classError.value.isEmpty
@@ -269,7 +274,10 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                                 builder: (translatedMessage) {
                                   return Text(
                                     translatedMessage,
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(
+                                        color: classError.value.isEmpty
+                                            ? Colors.red
+                                            : Colors.transparent),
                                   );
                                 }),
                           );
@@ -278,25 +286,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 ),
                 if (widget.classSuggestions.length > 0)
                   SpacerWidget(_KVerticalSpace / 8),
-                if (widget.classSuggestions.length > 0)
-                  Container(
-                      height: 30, //!isAlreadySelected.value ? 30 : 0.0,
-                      //padding: EdgeInsets.only(left: 2.0),
-                      child: ChipsFilter(
-                        selectedValue: (String value) {
-                          if (value.isNotEmpty) {
-                            classController.text = value;
-                            classError.value = value;
-
-                            updateClassNameForStandAloneApp();
-                          }
-                        },
-                        selected: 1, // Select the second filter as default
-                        filters: widget.classSuggestions,
-                      )),
-
-                if (widget.classroomSuggestions.length > 0)
-                  SpacerWidget(_KVerticalSpace / 8),
                 highlightText(
                     text: 'Select Classroom',
                     theme: Theme.of(context).textTheme.headline2!.copyWith(
@@ -304,19 +293,56 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                             .colorScheme
                             .primaryVariant
                             .withOpacity(0.3))),
-                if (widget.classroomSuggestions.length > 0)
-                  SpacerWidget(_KVerticalSpace / 4),
+                if (widget.classSuggestions.length > 0)
+                  SpacerWidget(_KVerticalSpace / 5),
                 Container(
                     height: 30,
                     child: ChipsFilter(
                       selectedValue: (String value) {
-                        if (value.isNotEmpty) {
+                        //update the class textformfield controller
+                        //and it's error msg variable
+                        classController.text = value;
+                        classError.value = value;
+
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          updateClassNameForStandAloneApp();
+                        } else {
                           updateClassNameForStandardApp(courseName: value);
+
+                          // update the
+                          if (value?.isNotEmpty ?? false) {
+                            isClassroomSelectedForStandardApp = true;
+                          } else {
+                            isClassroomSelectedForStandardApp = false;
+                          }
                         }
                       },
                       selected: 1, // Select the second filter as default
-                      filters: widget.classroomSuggestions,
+                      filters: widget.classSuggestions,
                     )),
+
+                // if (widget.classroomSuggestions.length > 0)
+                //   SpacerWidget(_KVerticalSpace / 8),
+                // highlightText(
+                //     text: 'Select Classroom',
+                //     theme: Theme.of(context).textTheme.headline2!.copyWith(
+                //         color: Theme.of(context)
+                //             .colorScheme
+                //             .primaryVariant
+                //             .withOpacity(0.3))),
+                // if (widget.classroomSuggestions.length > 0)
+                //   SpacerWidget(_KVerticalSpace / 4),
+                // Container(
+                //     height: 30,
+                //     child: ChipsFilter(
+                //       selectedValue: (String value) {
+                //         if (value.isNotEmpty) {
+                //           updateClassNameForStandardApp(courseName: value);
+                //         }
+                //       },
+                //       selected: 1, // Select the second filter as default
+                //       filters: widget.classroomSuggestions,
+                //     )),
 
                 SpacerWidget(_KVerticalSpace / 2),
                 highlightText(
@@ -730,43 +756,52 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                         courseName: classController.text);
                     return;
                   }
-                } else if (GoogleClassroomGlobals
-                        .studentAssessmentAndClassroomAssignmentForStandardApp
-                        ?.id
-                        ?.isNotEmpty ??
-                    false) {
-                  /* -------------------------------------------------------------------------- */
-                  /*                              StandDart app                                 */
-                  /* -------------------------------------------------------------------------- */
+                }
 
-                  /* ------------------ This will works for Standart App    -------------------- */
+                // else if (GoogleClassroomGlobals
+                //         .studentAssessmentAndClassroomAssignmentForStandardApp
+                //         ?.id
+                //         ?.isNotEmpty ??
+                //     false) {
 
-                  Utility.showLoadingDialog(
-                    context: context,
-                    isOCR: true,
-                  );
+                //   Utility.showLoadingDialog(
+                //     context: context,
+                //     isOCR: true,
+                //   );
 
-                  List<StudentAssessmentInfo>
-                      notPresentStudentListInSelectedClass = await OcrUtility
-                          .checkAllStudentBelongsToSameClassOrNotForStandardApp(
-                              isFromHistoryAssignment: false,
-                              title: Globals.assessmentName ?? '',
-                              isScanMore: false,
-                              studentInfoDB: _studentAssessmentInfoDb);
+                //   List<StudentAssessmentInfo>
+                //       notPresentStudentListInSelectedClass = await OcrUtility
+                //           .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                //               isFromHistoryAssignment: false,
+                //               title: Globals.assessmentName ?? '',
+                //               isScanMore: false,
+                //               studentInfoDB: _studentAssessmentInfoDb);
 
-                  Navigator.of(context).pop();
+                //   Navigator.of(context).pop();
 
-                  //Check student and show popup modal in case of scan more
-                  if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
-                      true)) {
-                    notPresentStudentsPopupModal(
-                        notPresentStudentsInSelectedClass:
-                            notPresentStudentListInSelectedClass,
-                        courseName: GoogleClassroomGlobals
-                            .studentAssessmentAndClassroomAssignmentForStandardApp
-                            .name!);
-                    return;
-                  }
+                //   //Check student and show popup modal in case of scan more
+                //   if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
+                //       true)) {
+                //     notPresentStudentsPopupModal(
+                //         notPresentStudentsInSelectedClass:
+                //             notPresentStudentListInSelectedClass,
+                //         courseName: GoogleClassroomGlobals
+                //             .studentAssessmentAndClassroomAssignmentForStandardApp
+                //             .name!);
+                //     return;
+                //   }
+                // }
+
+                //   /* -------------------------------------------------------------------------- */
+                //   /*                              StandDart app                                 */
+                //   /* -------------------------------------------------------------------------- */
+
+                //   /* ------------------ This will works for Standart App    -------------------- */
+
+                if (Overrides.STANDALONE_GRADED_APP == false &&
+                    isClassroomSelectedForStandardApp == false) {
+                  popupModal();
+                  return;
                 }
 
                 performOnTapOnNext();
@@ -1101,8 +1136,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     GoogleClassroomGlobals
             .studentAssessmentAndClassroomAssignmentForStandardApp =
         ClassroomCourse(id: '');
-    print(GoogleClassroomGlobals
-        .studentAssessmentAndClassroomAssignmentForStandardApp);
+
+    if (courseName?.isEmpty ?? true) {
+      return;
+    }
+
 //get all classroom couses for localDB
     LocalDatabase<ClassroomCourse> _localDb =
         LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
@@ -1111,11 +1149,37 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     GoogleClassroomGlobals
             .studentAssessmentAndClassroomAssignmentForStandardApp =
         googleClassroomCoursesDB.firstWhere(
-            (ClassroomCourse classroomCourses) =>
-                classroomCourses.name!.toLowerCase() ==
-                courseName.toLowerCase());
+      (ClassroomCourse classroomCourses) =>
+          classroomCourses.name!.toLowerCase() == courseName.toLowerCase(),
+      orElse: () {
+        // Handle the case when no element is found
+        // For example, you can return null or throw an exception
+        return ClassroomCourse(id: '');
+        // or throw Exception('No matching element found');
+      },
+    );
+  }
 
-    print(GoogleClassroomGlobals
-        .studentAssessmentAndClassroomAssignmentForStandardApp);
+// show warning popup
+  popupModal() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message:
+                    "You have not selected any Google Classroom course you still want to Continue?",
+                title: "Action Required!",
+                confirmationButtonTitle: "Continue",
+                deniedButtonTitle: "Select",
+                confirmationOnPressed: () async {
+                  Navigator.pop(context);
+                  performOnTapOnNext();
+                },
+              );
+            }));
   }
 }
