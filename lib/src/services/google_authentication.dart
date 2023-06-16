@@ -56,7 +56,7 @@ class Authentication {
         clientId: Platform.isIOS
             ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
             : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
-        forceCodeForRefreshToken: true,
+        // forceCodeForRefreshToken: true,
         scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -132,7 +132,7 @@ class Authentication {
           clientId: Platform.isIOS
               ? DefaultFirebaseOptions.currentPlatform.iosClientId
               : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
-          forceCodeForRefreshToken: true,
+          // forceCodeForRefreshToken: true,
           scopes: scopes);
 
       final GoogleSignInAccount? googleSignInAccount =
