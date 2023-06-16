@@ -68,7 +68,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         // To get updated auth toke for google login
         // await _toRefreshAuthenticationToken(event.refreshToken ?? '');
-        await Authentication.refreshToken();
+   //     await Authentication.refreshToken();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
@@ -83,7 +83,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
-          print("insode folder obj::::::${folderObject}");
+          print("inside folder obj::::::${folderObject}");
           //Which means folder API return 200 but folder not found
           if (folderObject.length == 0) {
             print("${event.folderName} is not available on drive Create one ");

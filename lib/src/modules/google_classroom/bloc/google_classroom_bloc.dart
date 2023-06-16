@@ -459,7 +459,8 @@ class GoogleClassroomBloc
                   event.isFromHistoryAssessmentScanMore,
               authorizationToken:
                   userProfileLocalData[0].authorizationToken ?? '',
-              refreshToken: userProfileLocalData[0].refreshToken ?? '',
+              refreshToken: userProfileLocalData[0].authorizationToken ??
+                  '', //!userProfileLocalData[0].refreshToken ?? '', Issue because refresh token is null
               maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
               studentProfileDetails: studentAssessmentDetails,
               title: event.title,
