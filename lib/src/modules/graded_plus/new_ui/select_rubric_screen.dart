@@ -248,7 +248,7 @@ class _GradedPlusConstructedResponseState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context: context, isOCR: true);
+                Utility.showLoadingDialog(context: context, isOCR: true, msg: 'Please Wait');
               }
               if (state is GoogleSuccess) {
                 if (Globals.googleDriveFolderId != null &&
@@ -579,7 +579,7 @@ class _GradedPlusConstructedResponseState
               imageURL: customScoreObj.imgUrl!));
     } else if (customScoreObj.imgBase64 != null &&
         customScoreObj.imgBase64!.isNotEmpty) {
-      Utility.showLoadingDialog(context: context, isOCR: true);
+      Utility.showLoadingDialog(context: context, isOCR: true, msg: 'Please Wait');
       _googleDriveBloc.add(ImageToAwsBucket(
           customRubricModal: customScoreObj, getImageUrl: true));
     } else {
