@@ -37,7 +37,7 @@ import '../../google_classroom/google_classroom_globals.dart';
 import '../../graded_plus/modal/custom_rubic_modal.dart';
 import '../../graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:dio/dio.dart';
-import '../model/user_profile.dart';
+import '../../../services/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -60,6 +60,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var folderObject;
 
         //isReturnState is used to check if the we are waiting for state on UI or not to move further
+        print('event.isReturnState! ::::::: ${event.isReturnState!}');
         if (event.isReturnState!) {
           yield GoogleDriveLoading();
         }
@@ -72,15 +73,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
+        print(
+            "user profile from bloc::::::::: ${_userProfileLocalData[0].authorizationToken}");
+
         //Get Folder Id if folder already exist
         folderObject = await _getGoogleDriveFolderId(
             token: _userProfileLocalData[0].authorizationToken, // event.token,
             folderName: event.folderName,
-            refreshToken: _userProfileLocalData[0]
-                .authorizationToken); // event.refreshToken);
+            refreshToken: event.refreshToken); // event.refreshToken);
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
+          print("insode folder obj::::::${folderObject}");
           //Which means folder API return 200 but folder not found
           if (folderObject.length == 0) {
             print("${event.folderName} is not available on drive Create one ");
@@ -171,6 +175,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield ErrorState();
         rethrow;
       } catch (e) {
+        print('Inside Catch');
         print(e);
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -1277,6 +1282,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       required String? refreshToken,
       int retry = 3}) async {
     try {
+      print("API call _getGoogleDriveFolderId");
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'

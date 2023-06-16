@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,8 +52,12 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<String> refreshToken() async {
     print("Token Refresh");
-    final GoogleSignIn googleSignIn =
-        GoogleSignIn(forceCodeForRefreshToken: true, scopes: scopes);
+    final GoogleSignIn googleSignIn = await GoogleSignIn(
+        // clientId: Platform.isIOS
+        //     ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+        //     : '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com', //DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+        forceCodeForRefreshToken: true,
+        scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signInSilently();
@@ -121,8 +128,13 @@ class Authentication {
       }
     } else {
       //clientId: DefaultFirebaseOptions.currentPlatform.iosClientId
-      final GoogleSignIn googleSignIn =
-          GoogleSignIn(forceCodeForRefreshToken: true, scopes: scopes);
+      final GoogleSignIn googleSignIn = await GoogleSignIn(
+          clientId: Platform.isIOS
+              ? DefaultFirebaseOptions.currentPlatform.iosClientId
+              : DefaultFirebaseOptions.currentPlatform.androidClientId ??
+                  '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com',
+          forceCodeForRefreshToken: true,
+          scopes: scopes);
 
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
@@ -132,16 +144,22 @@ class Authentication {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
+        print('Google Auth Call Details');
+        print(googleSignInAuthentication.accessToken);
+        print(googleSignInAuthentication.idToken);
+
         final AuthCredential credential = GoogleAuthProvider.credential(
             accessToken: googleSignInAuthentication.accessToken,
             idToken: googleSignInAuthentication.idToken);
 
         print(googleSignInAuthentication.accessToken);
         try {
+          print('Google Auth Credentials::::::: $credential');
           final UserCredential userCredential =
               await auth.signInWithCredential(credential);
 
           user = userCredential.user;
+          print('Google Auth User::::::: $user');
           // Retrieve the refresh token
           // Access the refresh token from the UserCredential
           final String? refreshToken = userCredential.user!.refreshToken!;
@@ -210,6 +228,7 @@ class Authentication {
         userEmail: user.email,
         profilePicture: user.photoURL,
         authorizationToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally

@@ -32,7 +32,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
@@ -294,26 +294,26 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       //   // await _launchURL('Google Authentication');
       //   //Google Manual Sign in
-      //   if (Globals.appSetting.enableGoogleSSO != "true") {
-      var value = await GoogleLogin.launchURL(
-          'Google Authentication', context, _scaffoldKey, '', actionName);
-      if (value == true) {
-        navigatorToScreen(actionName: actionName);
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', actionName);
+        if (value == true) {
+          navigatorToScreen(actionName: actionName);
+        }
       }
-      // }
-      // //Google Single Sign On
-      // else {
-      //   User? user = await Authentication.signInWithGoogle();
-      //   if (user != null) {
-      //     if (user.email != null && user.email != '') {
-      //       navigatorToScreen(actionName: actionName);
-      //     } else {
-      //       Utility.currentScreenSnackBar(
-      //           'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-      //           null);
-      //     }
-      //   } else {}
-      // }
+      //Google Single Sign On
+      else {
+        User? user = await Authentication.signInWithGoogle();
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        } else {}
+      }
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
