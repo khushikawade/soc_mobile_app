@@ -1392,7 +1392,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                             )),
                       )),
                   //Compare Correct Answer Key
-                  if (index == widget.selectedAnswer)
+                  if (index == widget.selectedAnswer )
                     Expanded(child: animatedArrowWidget())
                 ],
               );
