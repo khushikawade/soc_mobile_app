@@ -19,23 +19,23 @@ class ClassroomCourse {
   @HiveField(6)
   List<ClassroomStudents>? students;
   @HiveField(7)
-  String? courseWorkId;
+  String? courseWorkId; //used in GRADED+
   @HiveField(8)
-  String? assessmentCId;
+  String? assessmentCId; //used in GRADED+
   @HiveField(9)
-  String? courseWorkURL;
+  String? courseWorkURL; //used in GRADED+
 
-  ClassroomCourse({
-    this.id,
-    this.name,
-    this.descriptionHeading,
-    this.ownerId,
-    this.enrollmentCode,
-    this.courseState,
-    this.students,
-    this.courseWorkId,this.assessmentCId,this.courseWorkURL
-
-  });
+  ClassroomCourse(
+      {this.id,
+      this.name,
+      this.descriptionHeading,
+      this.ownerId,
+      this.enrollmentCode,
+      this.courseState,
+      this.students,
+      this.courseWorkId,
+      this.assessmentCId,
+      this.courseWorkURL});
 
   ClassroomCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';

@@ -18,10 +18,9 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
