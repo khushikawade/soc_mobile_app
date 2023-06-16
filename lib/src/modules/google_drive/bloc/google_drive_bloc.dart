@@ -19,6 +19,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:csv/csv.dart';
@@ -2206,7 +2207,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         _totalRetry++;
         //To regernerate fresh access token
         // var result = await _toRefreshAuthenticationToken(refreshToken!);
-         var result = await Authentication.refreshToken();
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2262,7 +2263,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
         // var result = await _toRefreshAuthenticationToken(refreshToken!);
-         var result = await Authentication.refreshToken();
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
