@@ -148,6 +148,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
   @override
   void initState() {
+    print(Globals.googleSlidePresentationId);
     // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
     // widget.isFlashOn!.value = widget.isFlashOn;
     initMethod();
@@ -1108,13 +1109,17 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     );
 
     if (widget.isFromHistoryAssessmentScanMore == true) {
+      print(Globals.googleSlidePresentationId);
+
       _driveBloc.add(UpdateGoogleSlideOnScanMore(
           studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
           isMcqSheet: widget.isMcqSheet ?? false,
           assessmentName: widget.assessmentName ?? '',
           isFromHistoryAssessment: widget.isFromHistoryAssessmentScanMore,
           lastAssessmentLength: widget.lastAssessmentLength ?? 0,
-          slidePresentationId: Globals.googleSlidePresentationId!));
+          slidePresentationId:
+              OcrOverrides.gradedPlusHistoryAssignmentGooglePresentationId ??
+                  ''));
     } else if (!widget.isFromHistoryAssessmentScanMore &&
         widget.isScanMore == true) {
       _driveBloc.add(AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(

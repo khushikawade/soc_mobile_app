@@ -19,4 +19,8 @@ class OcrOverrides {
   // To manage Graded plus bottom nav bar
   static final ValueNotifier<bool> gradedPlusNavBarIsHide =
       ValueNotifier<bool>(false);
+
+  static String? gradedPlusHistoryAssignmentGooglePresentationId;
+
+  static String? gradedPlusHistoryAssignmentGooglePresentationLink;
 }
