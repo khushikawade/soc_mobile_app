@@ -112,7 +112,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          // home: SignInScreen(),
+          //home: SignInScreen(),
           home: StartupPage(
               isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
               //false,  /For standard app

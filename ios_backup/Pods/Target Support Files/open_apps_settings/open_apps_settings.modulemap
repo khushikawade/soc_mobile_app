@@ -1,6 +1,0 @@
-framework module open_apps_settings {
-  umbrella header "open_apps_settings-umbrella.h"
-
-  export *
-  module * { export * }
-}
