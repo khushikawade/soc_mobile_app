@@ -976,6 +976,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                   await learningRecentOptionDB
                                       .addData(learningRecentObject);
                                 }
+                                
                               } else {
                                 learningRecentObject.domainNameC =
                                     list[index].domainNameC;

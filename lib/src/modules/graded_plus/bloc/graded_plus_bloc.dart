@@ -349,10 +349,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             List<SubjectDetailList> recentAddedList =
                 await addRecentDateTimeDetails(list: _list);
 
-            yield NycDataSuccess(
-              obj: recentAddedList,
-            );
-            // return;
+            // it would change after pushing the app
+            if (_list.isEmpty || _list == null || _list.length == 0) {
+              yield OcrLoading();
+            } else {
+              yield NycDataSuccess(
+                obj: recentAddedList,
+              );
+              return;
+            }
           }
 
           // calling function for getting particular subject related data
@@ -1572,7 +1577,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           e, s, '_getTheDashBoardStatus Method');
       return data;
       // throw ('something_went_wrong');
-
     }
   }
 
