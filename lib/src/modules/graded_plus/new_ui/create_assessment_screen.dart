@@ -1131,6 +1131,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     updateSelectedGrade.setString(OcrOverrides.lastSelectedGrade, value);
   }
 
+//this will get all necessary information related to selected classroom will use while updating the google classroom
   Future<void> updateClassNameForStandardApp(
       {required String courseName}) async {
     GoogleClassroomGlobals
@@ -1146,6 +1147,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
     List<ClassroomCourse> googleClassroomCoursesDB = await _localDb.getData();
 
+//this will find the selected course name in local db and get  all information related to that google classroom course
     GoogleClassroomGlobals
             .studentAssessmentAndClassroomAssignmentForStandardApp =
         googleClassroomCoursesDB.firstWhere(
@@ -1171,7 +1173,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 orientation: orientation,
                 context: context,
                 message:
-                    "You have not selected any Google Classroom course you still want to Continue?",
+                    "You haven't selected any Google Classroom Course. Do you still want to continue?",
                 title: "Action Required!",
                 confirmationButtonTitle: "Continue",
                 deniedButtonTitle: "Select",
