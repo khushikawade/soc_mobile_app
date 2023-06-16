@@ -68,7 +68,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         // To get updated auth toke for google login
         // await _toRefreshAuthenticationToken(event.refreshToken ?? '');
-   //     await Authentication.refreshToken();
+        await Authentication.refreshToken();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
