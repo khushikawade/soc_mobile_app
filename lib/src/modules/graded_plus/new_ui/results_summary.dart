@@ -437,10 +437,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             width: MediaQuery.of(context).size.width * 0.75,
                             child: Utility.textWidget(
                                 text: widget.assessmentDetailPage == true
-                                    ? Globals.historyAssessmentName!
-                                    : widget.assessmentName == null
-                                        ? 'Assessment Name'
-                                        : widget.assessmentName!,
+                                    ? Globals.historyAssessmentName ?? ''
+                                    : Globals.assessmentName ?? '',
                                 context: context,
                                 maxLines: 2,
                                 textAlign: TextAlign.left,
