@@ -22,4 +22,7 @@ class OcrOverrides {
 
   static final String gradedPlusClassroomDB =
       'GradedPlus_student_course_details';
+  static String? gradedPlusHistoryAssignmentGooglePresentationId;
+
+  static String? gradedPlusHistoryAssignmentGooglePresentationLink;
 }
