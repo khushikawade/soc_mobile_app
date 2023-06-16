@@ -131,8 +131,7 @@ class Authentication {
       final GoogleSignIn googleSignIn = await GoogleSignIn(
           clientId: Platform.isIOS
               ? DefaultFirebaseOptions.currentPlatform.iosClientId
-              : DefaultFirebaseOptions.currentPlatform.androidClientId ??
-                '',
+              : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
           forceCodeForRefreshToken: true,
           scopes: scopes);
 
