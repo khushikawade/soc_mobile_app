@@ -60,7 +60,7 @@ class GradedPlusResultsSummary extends StatefulWidget {
       required this.shareLink,
       required this.assessmentName,
       this.historySecondTime,
-      this.isMcqSheet = false,
+      this.isMcqSheet,
       this.selectedAnswer})
       : super(key: key);
   final bool? assessmentDetailPage;
@@ -115,7 +115,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   List iconsList = [];
   List iconsName = [];
   bool createdAsPremium = false;
-
+  bool isMcqSheet = false;
+  String? selectedAnswer;
   final editingStudentNameController = TextEditingController();
   final editingStudentIdController = TextEditingController();
   final studentScoreController = TextEditingController();
@@ -153,7 +154,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     _initState();
 
     _scrollController.addListener(_scrollListener);
-
+    if (widget.isMcqSheet != null) {
+      isMcqSheet = widget.isMcqSheet!;
+    }
+    if (widget.selectedAnswer != null) {
+      selectedAnswer = widget.selectedAnswer;
+    }
     super.initState();
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
@@ -269,6 +275,27 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             floatingActionButton: fabButton(context),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniCenterFloat,
+          ),
+          BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _driveBloc,
+            child: Container(),
+            listener: (context, state) {
+              if (state is AssessmentDetailSuccess) {
+                if (state.obj.length > 0 &&
+                    state.obj[0].answerKey != '' &&
+                    state.obj[0].answerKey != 'NA' &&
+                    state.obj[0].answerKey != null) {
+                  widget.isMcqSheet = true;
+                  widget.selectedAnswer = state.obj[0].answerKey;
+                  isMcqSheet = true;
+                  selectedAnswer = state.obj[0].answerKey;
+                  print(
+                      'mcq updated ----------------------------- ${widget.isMcqSheet}');
+                }
+                // return studentSummaryCardWidget(list: state.obj);
+              }
+              //return Container();
+            },
           ),
           BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
               bloc: _googleClassroomBloc,
@@ -2108,14 +2135,15 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 //--------------------------------------------------------------------------
 
     Fluttertoast.cancel();
+    print('Result Summery mcq updated         ${widget.isMcqSheet}');
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
+                isMcqSheet: isMcqSheet, // widget.isMcqSheet ?? false,
+                selectedAnswer: selectedAnswer, //widget.selectedAnswer,
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
