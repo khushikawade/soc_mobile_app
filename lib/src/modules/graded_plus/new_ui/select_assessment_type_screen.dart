@@ -1,13 +1,10 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
-import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/select_rubric_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/select_mcq_key_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
@@ -19,8 +16,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GradedPlusSelectAssessmentTypeSection extends StatefulWidget {
@@ -346,19 +341,19 @@ class _GradedPlusSelectAssessmentTypeSectionState
   //       : Container();
   // }
 
-  void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
-    List<UserInformation> _profileData =
-        await UserGoogleProfile.getUserProfile();
+  // void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
+  //   List<UserInformation> _profileData =
+  //       await UserGoogleProfile.getUserProfile();
 
-    _googleDriveBloc.add(GetDriveFolderIdEvent(
-        fromGradedPlusAssessmentSection:
-            isTriggerdbyAssessmentSection ? true : null,
-        isReturnState: true,
-        //  filePath: file,
-        token: _profileData[0].authorizationToken,
-        folderName: "SOLVED GRADED+",
-        refreshToken: _profileData[0].refreshToken));
-  }
+  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
+  //       fromGradedPlusAssessmentSection:
+  //           isTriggerdbyAssessmentSection ? true : null,
+  //       isReturnState: true,
+  //       //  filePath: file,
+  //       token: _profileData[0].authorizationToken,
+  //       folderName: "SOLVED GRADED+",
+  //       refreshToken: _profileData[0].refreshToken));
+  // }
 
   // void _beforenavigateOnAssessmentSection() {
   //   if (Globals.sessionId == '') {

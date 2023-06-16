@@ -16,7 +16,7 @@ import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/db_service_response.model.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
 import 'dart:convert';
 import 'dart:io';

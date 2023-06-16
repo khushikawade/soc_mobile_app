@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -91,8 +91,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     teacherId: Globals.teacherId,
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
-                    accountType:
-                        "Premium",
+                    accountType: "Premium",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
@@ -279,7 +278,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType:"Premium",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));
