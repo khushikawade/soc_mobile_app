@@ -53,9 +53,9 @@ class Authentication {
   static Future<String> refreshToken() async {
     print("Token Refresh");
     final GoogleSignIn googleSignIn = await GoogleSignIn(
-        // clientId: Platform.isIOS
-        //     ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
-        //     : '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com', //DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+            : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
         forceCodeForRefreshToken: true,
         scopes: scopes);
 
@@ -131,8 +131,7 @@ class Authentication {
       final GoogleSignIn googleSignIn = await GoogleSignIn(
           clientId: Platform.isIOS
               ? DefaultFirebaseOptions.currentPlatform.iosClientId
-              : DefaultFirebaseOptions.currentPlatform.androidClientId ??
-                  '675468736684-co9bviqql6hvnfogc88173lt4j1skug9.apps.googleusercontent.com',
+              : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
           forceCodeForRefreshToken: true,
           scopes: scopes);
 
