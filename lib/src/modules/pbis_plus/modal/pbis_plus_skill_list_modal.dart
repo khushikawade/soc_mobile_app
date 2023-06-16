@@ -1,20 +1,20 @@
 import 'package:hive/hive.dart';
-part 'pbis_skill_modal.g.dart';
+part 'pbis_plus_skill_list_modal.g.dart';
 
 @HiveType(typeId: 43)
-class PBISPlusSkillsModal extends HiveObject {
+class PBISPlusSkillsListModal extends HiveObject {
   @HiveField(0)
-  late List<PBISPlusActionInteractionModal> dataList;
+  late List<PBISPlusSkills> dataList;
 
-  PBISPlusSkillsModal({
+  PBISPlusSkillsListModal({
     required this.dataList,
   });
 
-  PBISPlusSkillsModal.fromJson(Map<String, dynamic> json) {
+  PBISPlusSkillsListModal.fromJson(Map<String, dynamic> json) {
     if (json['dataList'] != null) {
-      dataList = <PBISPlusActionInteractionModal>[];
+      dataList = <PBISPlusSkills>[];
       json['dataList'].forEach((v) {
-        dataList!.add(new PBISPlusActionInteractionModal.fromJson(v));
+        dataList!.add(new PBISPlusSkills.fromJson(v));
       });
     } else {
       dataList = [];
@@ -33,7 +33,7 @@ class PBISPlusSkillsModal extends HiveObject {
 }
 
 @HiveType(typeId: 44)
-class PBISPlusActionInteractionModal extends HiveObject {
+class PBISPlusSkills extends HiveObject {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -47,7 +47,7 @@ class PBISPlusActionInteractionModal extends HiveObject {
   @HiveField(5)
   String? counter;
 
-  PBISPlusActionInteractionModal({
+  PBISPlusSkills({
     required this.id,
     required this.activeStatusC,
     required this.iconUrlC,
@@ -56,7 +56,7 @@ class PBISPlusActionInteractionModal extends HiveObject {
     required this.counter,
   });
 
-  PBISPlusActionInteractionModal.fromJson(Map<String, dynamic> json) {
+  PBISPlusSkills.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
     activeStatusC = json['activeStatusC'] ?? '';
     iconUrlC = json['iconUrlC'].toString().contains('http')

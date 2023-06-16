@@ -1,28 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'pbis_plus_skill_modal.dart';
+part of 'pbis_plus_skill_list_modal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PBISPlusSkillsModalAdapter extends TypeAdapter<PBISPlusSkillsModal> {
+class PBISPlusSkillsListModalAdapter
+    extends TypeAdapter<PBISPlusSkillsListModal> {
   @override
   final int typeId = 43;
 
   @override
-  PBISPlusSkillsModal read(BinaryReader reader) {
+  PBISPlusSkillsListModal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PBISPlusSkillsModal(
-      dataList: (fields[0] as List).cast<PBISPlusActionInteractionModal>(),
+    return PBISPlusSkillsListModal(
+      dataList: (fields[0] as List).cast<PBISPlusSkills>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, PBISPlusSkillsModal obj) {
+  void write(BinaryWriter writer, PBISPlusSkillsListModal obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
@@ -35,23 +36,22 @@ class PBISPlusSkillsModalAdapter extends TypeAdapter<PBISPlusSkillsModal> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PBISPlusSkillsModalAdapter &&
+      other is PBISPlusSkillsListModalAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
 
-class PBISPlusActionInteractionModalAdapter
-    extends TypeAdapter<PBISPlusActionInteractionModal> {
+class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
   @override
   final int typeId = 44;
 
   @override
-  PBISPlusActionInteractionModal read(BinaryReader reader) {
+  PBISPlusSkills read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PBISPlusActionInteractionModal(
+    return PBISPlusSkills(
       id: fields[0] as String?,
       activeStatusC: fields[1] as String?,
       iconUrlC: fields[2] as String?,
@@ -62,7 +62,7 @@ class PBISPlusActionInteractionModalAdapter
   }
 
   @override
-  void write(BinaryWriter writer, PBISPlusActionInteractionModal obj) {
+  void write(BinaryWriter writer, PBISPlusSkills obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -85,7 +85,7 @@ class PBISPlusActionInteractionModalAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PBISPlusActionInteractionModalAdapter &&
+      other is PBISPlusSkillsAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

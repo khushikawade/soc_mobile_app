@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_plus_total_interaction_modal.g.dart';
 
@@ -72,3 +73,4 @@ class PBISPlusTotalInteractionModal {
     return data;
   }
 }
+//  PBISPlusSkills intern;

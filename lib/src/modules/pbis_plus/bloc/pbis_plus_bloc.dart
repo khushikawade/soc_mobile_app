@@ -4,7 +4,9 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -50,6 +52,48 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
+        LocalDatabase<PBISPlusSkillsListModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
+        List<PBISPlusSkillsListModal>? _pbisPlusSkillsData =
+            await _pbisPlusSkillsDB.getData();
+        _pbisPlusSkillsData.clear();
+        var list;
+        if (_pbisPlusSkillsData.isEmpty) {
+          list = PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist.map(
+            (item) => PBISPlusSkillsListModal(
+              dataList: [
+                PBISPlusSkills(
+                  id: item.id,
+                  activeStatusC: item.activeStatusC,
+                  iconUrlC: item.iconUrlC,
+                  name: item.name,
+                  sortOrderC: item.sortOrderC,
+                  counter: item.counter,
+                )
+              ],
+            ),
+          ).toList();
+        }
+        print(list.runtimeType);
+        if (_pbisPlusSkillsData.isEmpty) {
+          _pbisPlusSkillsData.forEach((element) async {
+            await _localDb.addData(list);
+          });
+        }
+        final check = await _pbisPlusSkillsDB.getData();
+        for (var item in check) {
+          for (var data in item.dataList) {
+            print('----------------------------');
+            print('ID: ${data.id}');
+            print('Active Status: ${data.activeStatusC}');
+            print('Icon URL: ${data.iconUrlC}');
+            print('Name: ${data.name}');
+            print('Sort Order: ${data.sortOrderC}');
+            print('Counter: ${data.counter}');
+            print('----------------------------');
+          }
+        }
+
         //Clear Roster local data to manage loading issue
         SharedPreferences clearRosterCache =
             await SharedPreferences.getInstance();
@@ -72,9 +116,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        LocalDatabase<ClassroomCourse> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<ClassroomCourse>? _pbisPlusSkillsData = await _localDb.getData();
 
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
@@ -91,7 +132,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             yield PBISPlusInitialImportRosterSuccess(
                 googleClassroomCourseList: responseList[0]);
           }
-
+          //OLDER WAY TO GET THE INTERRACTION
           List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
               await getPBISTotalInteractionByTeacher(
                   teacherEmail: userProfileLocalData[0].userEmail!);

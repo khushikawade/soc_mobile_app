@@ -156,6 +156,74 @@ class PBISPlusAdditionalBehaviourModal {
   ];
 }
 
+class PBISPlusSkillsModalLocal {
+  String id;
+  String activeStatusC;
+  String iconUrlC;
+  String name;
+  String sortOrderC;
+  String counter;
+  PBISPlusSkillsModalLocal({
+    required this.id,
+    required this.activeStatusC,
+    required this.iconUrlC,
+    required this.name,
+    required this.sortOrderC,
+    required this.counter,
+  });
+
+  static List<PBISPlusSkillsModalLocal> PBISPlusSkillLocalModallist = [
+    PBISPlusSkillsModalLocal(
+      id: "0",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      name: 'Engaged',
+      sortOrderC: "0",
+      counter: "0",
+    ),
+    PBISPlusSkillsModalLocal(
+      id: "1",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/Helpful.svg",
+      name: 'Nice Work',
+      sortOrderC: "1",
+      counter: "0",
+    ),
+    PBISPlusSkillsModalLocal(
+      id: "2",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/nice_work.svg",
+      name: 'Helpful',
+      sortOrderC: "2",
+      counter: "0",
+    ),
+    PBISPlusSkillsModalLocal(
+      id: "3",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/participation.svg",
+      name: 'Participation',
+      sortOrderC: "3",
+      counter: "0",
+    ),
+    PBISPlusSkillsModalLocal(
+      id: "4",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/collaboration.svg",
+      name: 'Collaboration',
+      sortOrderC: "4",
+      counter: "0",
+    ),
+    PBISPlusSkillsModalLocal(
+      id: "5",
+      activeStatusC: "Show",
+      iconUrlC: "assets/Pbis_plus/listening.svg",
+      name: 'Listening',
+      sortOrderC: "5",
+      counter: "0",
+    ),
+  ];
+}
+
 class PBISPlusDataTableModal {
   String title;
   Color color;
