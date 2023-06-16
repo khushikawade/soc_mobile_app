@@ -11,7 +11,6 @@ import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
-
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -37,7 +36,7 @@ import '../../google_classroom/google_classroom_globals.dart';
 import '../../graded_plus/modal/custom_rubic_modal.dart';
 import '../../graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:dio/dio.dart';
-import '../model/user_profile.dart';
+import '../../../services/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -52,7 +51,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
-    // print("drive bloc event received ---------------->> $event");
+    print("drive bloc event recived ---------------->> $event");
 
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
@@ -60,6 +59,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var folderObject;
 
         //isReturnState is used to check if the we are waiting for state on UI or not to move further
+        print('event.isReturnState! ::::::: ${event.isReturnState!}');
         if (event.isReturnState!) {
           yield GoogleDriveLoading();
         }
@@ -67,20 +67,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //     token: event.token, folderName: event.folderName);
 
         // To get updated auth toke for google login
-        await _toRefreshAuthenticationToken(event.refreshToken ?? '');
-        //await Authentication.refreshToken();
+        // await _toRefreshAuthenticationToken(event.refreshToken ?? '');
+        await Authentication.refreshToken();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
+
+        print(
+            "user profile from bloc::::::::: ${_userProfileLocalData[0].authorizationToken}");
 
         //Get Folder Id if folder already exist
         folderObject = await _getGoogleDriveFolderId(
             token: _userProfileLocalData[0].authorizationToken, // event.token,
             folderName: event.folderName,
-            refreshToken: _userProfileLocalData[0]
-                .authorizationToken); // event.refreshToken);
+            refreshToken: event.refreshToken); // event.refreshToken);
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
+          print("insode folder obj::::::${folderObject}");
           //Which means folder API return 200 but folder not found
           if (folderObject.length == 0) {
             print("${event.folderName} is not available on drive Create one ");
@@ -135,8 +138,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           // To Refresh Authentication Token In Case Of Auth Token Expired
-          var result = await _toRefreshAuthenticationToken(event.refreshToken!);
-          // var result = await Authentication.refreshToken();
+          // var result = await _toRefreshAuthenticationToken(event.refreshToken!);
+          var result = await Authentication.refreshToken();
 
           // if (result == true) {
           if (result != null && result != '') {
@@ -171,6 +174,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield ErrorState();
         rethrow;
       } catch (e) {
+        print('Inside Catch');
         print(e);
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -388,6 +392,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     // --------------------Event To Update Excel Sheet On Drive------------------
     if (event is UpdateDocOnDrive) {
+      print("CREATED EXCEL EVENT CALLED");
       if (event.isLoading) {
         yield GoogleDriveLoading();
       }
@@ -1276,6 +1281,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       required String? refreshToken,
       int retry = 3}) async {
     try {
+      print("API call _getGoogleDriveFolderId");
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
@@ -1329,8 +1335,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           return data[0];
         }
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1455,8 +1461,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         ];
       } else if (retry > 0) {
         //To regenerated fresh access token
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1495,13 +1501,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': '$mimeType'
       };
-
+      // print("API CALL TO UPDATED THE EXCEL SHEET");
       final ResponseModel response = await _dbServices.patchApi(
         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
         //  "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
         headers: headers,
         body: file.readAsBytesSync(),
       );
+
+      // print(
+      //     "API CALL TO UPDATED THE EXCEL SHEET RESPONSE RECIVED ${response.data['statusCode']}");
+
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
@@ -1511,8 +1521,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           _totalRetry < 3) {
         _totalRetry++;
 
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1811,8 +1821,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1888,8 +1898,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return [true, response.data['body']['webViewLink']];
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -1927,8 +1937,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
         _totalRetry++;
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2122,8 +2132,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         _totalRetry++;
 
         //To regenerate fresh access token
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        //var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2196,8 +2206,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } else if (retry > 0) {
         _totalRetry++;
         //To regernerate fresh access token
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        //  var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2252,8 +2262,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        //  var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2495,8 +2505,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         return 'Done';
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2699,20 +2709,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         return 'Done';
       }
 
+      // print(
+      //     "-------------------PRINTINNG THE REQUEST BODY LIST IN SLDIES--------------------------");
+      for (var map in slideRequiredObjectsList) {
+        print(map);
+      }
+      // print(
+      //     "----------------------PRINTINNG THE REQUEST BODY LIST IN SLDIES-----------------------");
       Map body = {"requests": slideRequiredObjectsList};
 
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json'
       };
-
+      // print("addAndUpdateStudentAssessmentDetailsToSlide called api ");
       final ResponseModel response = await _dbServices.postApi(
           //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           body: body,
           headers: headers,
           isGoogleApi: true);
-
+      // print(
+      //     "addAndUpdateStudentAssessmentDetailsToSlide APP RESPOSE RECOVED ${response.statusCode}");
       if (response.statusCode == 200) {
         List<StudentAssessmentInfo> assessmentData =
             await studentInfoDb.getData();
@@ -2724,8 +2742,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         });
         return 'Done';
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        //var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -2739,12 +2757,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isScanMore: isScanMore,
               retry: retry - 1);
           return result;
+        } else {
+          return 'ReAuthentication is required';
         }
-        //  else {
-        //   return 'ReAuthentication is required';
-        // }
       }
-      return 'ReAuthentication is required';
+      return response.statusCode;
     } catch (e) {
       return e.toString();
     }
@@ -2792,6 +2809,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           String tableObjectuniqueId = "tableObjectId" +
               DateTime.now().microsecondsSinceEpoch.toString() +
               "$index";
+          String imageObjectuniqueId = "imageObjectuniqueId" +
+              DateTime.now().microsecondsSinceEpoch.toString() +
+              "$index";
           print(pageObjectuniqueId);
           print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images
@@ -2816,7 +2836,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 "elementProperties": {
                   "pageObjectId": pageObjectuniqueId,
                 },
-                "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+                "objectId": imageObjectuniqueId
               }
             };
             slideRequiredObjectsList.add(obj);
@@ -2915,8 +2935,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.data['statusCode'] != 500) {
         return 'Done';
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        //var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -3079,8 +3099,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return true;
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
@@ -3294,8 +3314,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         );
         return true;
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        // var result = await Authentication.refreshToken();
+        // var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshToken();
 
         // if (result == true) {
         if (result != null && result != '') {
