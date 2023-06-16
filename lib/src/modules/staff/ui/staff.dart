@@ -280,11 +280,11 @@ class _StaffPageState extends State<StaffPage> {
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
     final clearCacheResult =
-        await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
+        await clearGoogleLoginLocalDb.getBool('delete_local_login_details13');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
       await clearGoogleLoginLocalDb.setBool(
-          'delete_local_login_details12', true);
+          'delete_local_login_details13', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -294,26 +294,26 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       //   // await _launchURL('Google Authentication');
       //   //Google Manual Sign in
-      //  if (Globals.appSetting.enableGoogleSSO != "true") {
-      var value = await GoogleLogin.launchURL(
-          'Google Authentication', context, _scaffoldKey, '', actionName);
-      if (value == true) {
-        navigatorToScreen(actionName: actionName);
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', actionName);
+        if (value == true) {
+          navigatorToScreen(actionName: actionName);
+        }
       }
-      //}
       //Google Single Sign On
-      // else {
-      //   User? user = await Authentication.signInWithGoogle();
-      //   if (user != null) {
-      //     if (user.email != null && user.email != '') {
-      //       navigatorToScreen(actionName: actionName);
-      //     } else {
-      //       Utility.currentScreenSnackBar(
-      //           'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-      //           null);
-      //     }
-      //   } else {}
-      // }
+      else {
+        User? user = await Authentication.signInWithGoogle();
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        } else {}
+      }
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 

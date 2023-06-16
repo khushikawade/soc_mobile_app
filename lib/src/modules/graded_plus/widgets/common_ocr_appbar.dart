@@ -300,7 +300,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 context: context,
                 message: message,
                 title: title!,
-                confirmationButtonTitle: "ok",
+                //  confirmationButtonTitle: "ok",
                 confirmationOnPressed: () async {
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
