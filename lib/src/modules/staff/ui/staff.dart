@@ -303,16 +303,21 @@ class _StaffPageState extends State<StaffPage> {
       }
       //Google Single Sign On
       else {
-        User? user = await Authentication.signInWithGoogle();
-        if (user != null) {
-          if (user.email != null && user.email != '') {
-            navigatorToScreen(actionName: actionName);
-          } else {
-            Utility.currentScreenSnackBar(
-                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-                null);
-          }
-        } else {}
+        try {
+          User? user = await Authentication.signInWithGoogle();
+          if (user != null) {
+            if (user.email != null && user.email != '') {
+              navigatorToScreen(actionName: actionName);
+            } else {
+              Utility.currentScreenSnackBar(
+                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                  null);
+            }
+          } else {}
+        } catch (e) {
+          
+          print(e);
+        }
       }
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
