@@ -246,15 +246,22 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(
                                             animating: true, radius: 10))
-                                : Container(
-                                    alignment: Alignment.center,
-                                    height:
-                                        Globals.deviceType == "phone" ? 28 : 32,
-                                    width:
-                                        Globals.deviceType == "phone" ? 28 : 32,
-                                    color: Color.fromARGB(255, 29, 146, 242),
-                                    child: Text(snapshot.data!.userName!
-                                        .substring(0, 1)),
+                                : CircleAvatar(
+                                    // alignment: Alignment.center,
+                                    // height:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // width:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // color: Color.fromARGB(255, 29, 146, 242),
+                                    child: Text(
+                                      snapshot.data!.userName!.substring(0, 1),
+                                      style: TextStyle(
+                                          color: Color(0xff000000) ==
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
                                   ),
                           ),
                           onPressed: () async {
