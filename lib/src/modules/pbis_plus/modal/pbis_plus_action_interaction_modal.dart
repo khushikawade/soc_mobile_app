@@ -78,6 +78,21 @@ class PBISPlusActionInteractionModalNew {
       title: 'Listening',
       color: Colors.red,
     ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/courteous.svg",
+      title: 'Courteous',
+      color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/responsible.svg",
+      title: 'Responsible',
+      color: Colors.red,
+    ),
+    PBISPlusActionInteractionModalNew(
+      imagePath: "assets/Pbis_plus/punctual.svg",
+      title: 'Punctual',
+      color: Colors.red,
+    ),
   ];
 }
 
