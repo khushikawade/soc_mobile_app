@@ -85,12 +85,19 @@ class _GradedPlusSearchScreenPageState
           saveAssessmentResultToDashboard: false,
           googleClassRoomIsUpdated: false));
 
-  List<String> processList = [
-    'Google Sheet',
-    'Google Slides',
-    'Google Classroom',
-    '${Globals.schoolDbnC} Dashboard'
-  ];
+   List<String> processList = ((GoogleClassroomGlobals
+                  .studentAssessmentAndClassroomAssignmentForStandardApp
+                  .id
+                  ?.isNotEmpty ??
+              false) &&
+          Overrides.STANDALONE_GRADED_APP != true)
+      ? [
+          'Google Sheet',
+          'Google Slides',
+          'Google Classroom',
+          '${Globals.schoolDbnC} Dashboard'
+        ]
+      : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
 
   GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();
   GoogleDriveBloc googleBloc = GoogleDriveBloc();
@@ -661,8 +668,9 @@ class _GradedPlusSearchScreenPageState
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
-            assessmentExportAndSaveStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
+          showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
+            });
             Globals.currentAssessmentId = '';
 
             // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
@@ -706,6 +714,8 @@ class _GradedPlusSearchScreenPageState
                 Overrides.STANDALONE_GRADED_APP != true) {
               createClassRoomCourseWorkForStandardApp();
             } else {
+               assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated =
+                  true;
               saveAssessmentToDashboardAndGetId();
             }
           }

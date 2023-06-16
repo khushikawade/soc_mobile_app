@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
@@ -25,9 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:string_similarity/string_similarity.dart';
-
 import '../../google_drive/model/assessment_detail_modal.dart';
-import '../../pbis_plus/modal/pbis_course_modal.dart';
 part 'graded_plus_event.dart';
 part 'graded_plus_state.dart';
 
@@ -357,6 +355,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
 
           // calling function for getting particular subject related data
+
           List<SubjectDetailList> _list =
               await saveSubjectListDetails(id: event.subjectId!);
           // calling function for getting particular subject related data
@@ -365,7 +364,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               keyword: event.selectedKeyword!,
               list: _list,
               type: event.type!);
-
           // Syncing the Local database with remote data
           await _localDb.clear();
           _list.forEach((SubjectDetailList e) {
