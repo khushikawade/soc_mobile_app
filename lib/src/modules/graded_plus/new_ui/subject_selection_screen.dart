@@ -120,12 +120,19 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           saveAssessmentResultToDashboard: false,
           googleClassRoomIsUpdated: false));
 
-  List<String> processList = [
-    'Google Sheet',
-    'Google Slides',
-    'Google Classroom',
-    '${Globals.schoolDbnC} Dashboard'
-  ];
+  List<String> processList = ((GoogleClassroomGlobals
+                  .studentAssessmentAndClassroomAssignmentForStandardApp
+                  .id
+                  ?.isNotEmpty ??
+              false) &&
+          Overrides.STANDALONE_GRADED_APP != true)
+      ? [
+          'Google Sheet',
+          'Google Slides',
+          'Google Classroom',
+          '${Globals.schoolDbnC} Dashboard'
+        ]
+      : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
 
 //---------------------------------------------------------------------------------------------------------------
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
@@ -1638,7 +1645,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
-            assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
+            });
+
             Utility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '45',
@@ -1689,6 +1699,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 Overrides.STANDALONE_GRADED_APP != true) {
               createClassRoomCourseWorkForStandardApp();
             } else {
+              assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated =
+                  true;
               saveAssessmentToDashboardAndGetId();
             }
           }
