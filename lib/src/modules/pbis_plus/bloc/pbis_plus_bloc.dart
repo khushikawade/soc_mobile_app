@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
@@ -449,8 +450,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await googleClassroomBloc
-            .toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken ?? '');
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =

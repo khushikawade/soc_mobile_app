@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -772,12 +773,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }
               if (state is ErrorState) {
                 if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: widget.scaffoldKey);
-
+                  // await Utility.refreshAuthenticationToken(
+                  //     isNavigator: true,
+                  //     errorMsg: state.errorMsg!,
+                  //     context: context,
+                  //     scaffoldKey: widget.scaffoldKey);
+ await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
                   // Navigator.of(context).pop();
                   Utility.currentScreenSnackBar('Please try again', null);
                 } else {
