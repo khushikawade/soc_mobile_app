@@ -345,10 +345,12 @@ class GoogleClassroomBloc
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-        //get the student records from localdb to prepare assessment request body
+        //get the student records from local db to prepare assessment request body
         List<StudentAssessmentInfo>? assessmentData =
             await event.studentAssessmentInfoDb.getData();
 
+        //---------------------------------------------------------------------------------------------------------------------------------------------
+        //Execute in case of scan more only
         //event.studentClassObj = Google classroom Course Object come from import roster
         if ((event.studentClassObj.id?.isEmpty ?? true) &&
             // (event.isFromHistoryAssessmentScanMore == true)
@@ -359,8 +361,9 @@ class GoogleClassroomBloc
           List<ClassroomCourse> _googleClassRoomLocalData =
               await _googleClassRoomLocalDb.getData();
 
-//Update the studentclassobject when the user tries to scan older records that are not available on Google Classroom
-// checking the class name by title
+          //---------------------------------------------------------------------------------------------------------------------------------------------
+          //Update the studentclassobject when the user tries to scan older records that are not available on Google Classroom
+          // checking the class name by title
           bool isClassroomCourseAdded = false;
           if ((_googleClassRoomLocalData?.isNotEmpty ?? false) &&
               (assessmentData?.isNotEmpty ?? false)) {
@@ -378,7 +381,8 @@ class GoogleClassroomBloc
               }
             }
 
-//check the class name is updated if not update the class name by student first records details - Worst scenario
+            //---------------------------------------------------------------------------------------------------------------------------------------------
+            //check the class name is updated if not update the class name by student first records details - Worst scenario
             if (!isClassroomCourseAdded) {
               for (ClassroomCourse classroom in _googleClassRoomLocalData) {
                 for (var student in classroom.students!) {
@@ -396,6 +400,7 @@ class GoogleClassroomBloc
           }
         }
 
+        //---------------------------------------------------------------------------------------------------------------------------------------------
         // get local stored classroom course list
         List<ClassroomStudents> classRoomCoursesStudentList =
             event.studentClassObj?.students ?? [];
@@ -403,9 +408,10 @@ class GoogleClassroomBloc
         //create student details as per the request body keys
         List<ClassRoomStudentProfile> studentAssessmentDetails = [];
 
-        //update if any assessment images is not updated and update student profile list
+        //---------------------------------------------------------------------------------------------------------------------------------------------
+        //update if any student assessment images is not updated and update student profile list
         for (int i = 0; i < assessmentData.length; i++) {
-          if (assessmentData[i].assessmentImage?.isNotEmpty != true) {
+          if (assessmentData[i].assessmentImage?.isEmpty ?? true) {
             // if any assessment images url is not updated
             String imgUrl = await updateImg(
                 filePath: assessmentData[i]?.assessmentImgPath ?? '');
@@ -416,7 +422,9 @@ class GoogleClassroomBloc
             }
           }
 
-          //Check if assignment image and update in case found empty
+          //---------------------------------------------------------------------------------------------------------------------------------------------
+          //Check assignment question image and update in case found empty
+          // Checking only at index 0 and then will copy the same for all students //same que image for all students
           if ((i == 0) &&
               (assessmentData[0]?.questionImgUrl?.isEmpty ?? true) &&
               (assessmentData[0]?.questionImgFilePath?.isNotEmpty ?? false)) {
@@ -428,7 +436,8 @@ class GoogleClassroomBloc
             }
           }
 
-          //update student googleClassRoomStudentProfileId into list
+          //---------------------------------------------------------------------------------------------------------------------------------------------
+          //update student googleClassRoomStudentProfileId into list // userid
           classRoomCoursesStudentList.forEach((studentProfileObj) async {
             if ((studentProfileObj.profile?.emailAddress?.isNotEmpty ??
                     false) &&
@@ -450,7 +459,8 @@ class GoogleClassroomBloc
             }
           });
         }
-        print(event.studentClassObj);
+
+        //---------------------------------------------------------------------------------------------------------------------------------------------
         if (studentAssessmentDetails.isNotEmpty) {
           List<dynamic> result = await _createClassRoomCourseWorkForStanDardApp(
               questionImageUrl: assessmentData.first.questionImgUrl,
@@ -471,6 +481,7 @@ class GoogleClassroomBloc
           dynamic obj =
               GoogleClassroomCourseworkModal(); // `dynamic` type is used here to allow either `GoogleClassroomCourseworkModal` or `String`
 
+          //---------------------------------------------------------------------------------------------------------------------------------------------
           // Conditionally cast the `obj` based on the value of `isClassRoomUpdated`
           if (isClassRoomUpdated) {
             obj = result[1]
@@ -479,7 +490,8 @@ class GoogleClassroomBloc
             obj = result[1]
                 as String; // set to a string if `isClassRoomUpdated` is false
           }
-          print(obj);
+
+          //---------------------------------------------------------------------------------------------------------------------------------------------
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
               if (event.isFromHistoryAssessmentScanMore == true) {
@@ -501,7 +513,8 @@ class GoogleClassroomBloc
               }
             }
 
-// Updating local database with already scanned students data true to avoid include them in next scan more case
+            //---------------------------------------------------------------------------------------------------------------------------------------------
+            // Updating local database with already scanned students data true to avoid include them in next scan more case
             assessmentData.asMap().forEach(
               (i, element) async {
                 if (element.isgoogleClassRoomStudentProfileUpdated != true) {
@@ -942,16 +955,16 @@ class GoogleClassroomBloc
             .toList()
       };
 
-//if courseWorkId is available need to update the classroom with new student or edit the student info
+      //if courseWorkId is available need to update the classroom with new student or edit the student info
       body['courseWorkId'] = studentClassObj.courseWorkId?.isNotEmpty == true
           ? studentClassObj.courseWorkId
           : null;
       // body['courseWorkId'] = null;
 
-//If courseWorkId is null, prepare request body to add a assignment in Google Classroom
+      //If courseWorkId is null, prepare request body to add a assignment in Google Classroom
       if (body['courseWorkId'] == null) {
-        int lastUnderscoreIndex = title.lastIndexOf(
-            "_"); // find the index of the last underscore character
+        // find the index of the last underscore character and pick the title before last underscore
+        int lastUnderscoreIndex = title.lastIndexOf("_");
         title = lastUnderscoreIndex == -1
             ? title
             : title.substring(0, lastUnderscoreIndex);
@@ -976,10 +989,11 @@ class GoogleClassroomBloc
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         GoogleClassroomCourseworkModal data =
             GoogleClassroomCourseworkModal.fromJson(response.data);
+
+        //Call only in case of scan more
         if ((studentClassObj.id?.isEmpty ?? true) &&
             (isFromHistoryAssessmentScanMore == true)) {
           // If courseWorkId is null or empty, and isHistorySanMore is either null or false
-
           //Updating classroomCourseId and courseWorkId on DATABASE ASSESSMENT_C for recent assessment scan only
           await _bloc.updateAssessmentOnDashboardOnHistoryScanMore(
               assessmentId: studentClassObj.assessmentCId,
