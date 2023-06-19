@@ -807,14 +807,12 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             ? MediaQuery.of(context).size.height * 0.82
             : MediaQuery.of(context).size.height / 2.5,
         valueChanged: (controller) async {
-          await CreateAssessmentScreenMethod.updateGradeList(
+          await updateGradeList(
               context: context,
               sectionName: controller.text,
               customGrades: widget.customGrades,
               selectedGrade: selectedGrade,
-              scaffoldKey: scaffoldKey,
-              setState: null //setState(() {})
-              );
+              scaffoldKey: scaffoldKey);
 
           // to updated selection to local db
           CreateAssessmentScreenMethod.updateSelectedGrade(
@@ -899,5 +897,37 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 },
               );
             }));
+  }
+
+/*------------------------------------------------------------------------------------------------*/
+/*---------------------------------------updateGradeList------------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+  updateGradeList({
+    context,
+    required String sectionName,
+    required customGrades,
+    required selectedGrade,
+    required scaffoldKey,
+  }) async {
+    LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
+
+    if (!customGrades.contains(sectionName)) {
+      customGrades.removeLast();
+      customGrades.add(sectionName);
+      customGrades.add('+');
+      //-----------------------------
+      setState(() {});
+      //-----------------------------
+
+      selectedGrade.value = customGrades[customGrades.length - 2];
+    } else {
+      Utility.showSnackBar(
+          scaffoldKey, "Subject \'$sectionName\' Already Exist", context, null);
+    }
+
+    await _localDb.clear();
+    customGrades.forEach((String e) {
+      _localDb.addData(e);
+    });
   }
 }
