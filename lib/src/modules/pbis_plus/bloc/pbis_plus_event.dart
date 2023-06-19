@@ -96,3 +96,9 @@ class GetPBISPlusBehaviour extends PBISPlusEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetPBISSkills extends PBISPlusEvent {
+  GetPBISSkills();
+  @override
+  List<Object> get props => [];
+}

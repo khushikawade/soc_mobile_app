@@ -123,7 +123,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
         mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
       ),
       itemCount: PBISPlusActionInteractionModalNew
-          .PBISPlusActionInteractionIconsNew.length,
+              .PBISPlusActionInteractionIconsNew.length -
+          3,
       itemBuilder: (BuildContext context, int index) {
         final iconData = PBISPlusActionInteractionModalNew
             .PBISPlusActionInteractionIconsNew[index];

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
@@ -67,7 +68,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   @override
   void initState() {
     super.initState();
-    pbisPlusClassroomBloc.add(GetPBISPlusBehaviour());
+    // pbisPlusClassroomBloc.add(GetPBISPlusBehaviour());
+    pbisPlusClassroomBloc.add(GetPBISSkills());
     // widget.studentValueNotifier.value = widget.student!;
   }
 
@@ -145,121 +147,150 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             ),
           ),
           SpacerWidget(18),
-          DragTarget<PBISPlusActionInteractionModalNew>(
-            builder: (context, candidateData, rejectedData) {
-              return GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.5,
-                  crossAxisSpacing: 4.0,
-                  mainAxisSpacing: 4.0,
-                ),
-                itemCount: 6,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = containerIcons.value[index];
-                  return DragTarget<PBISPlusActionInteractionModalNew>(
-                      onWillAccept: (draggedData) {
-                    hoveredIconIndex.value =
-                        index; // Update the hovered icon index
-                    print(hoveredIconIndex);
-                    return true;
-                  }, onAccept: (draggedData) {
-                    print(isItemExist(draggedData));
-                    if (isItemExist(draggedData) == false) {
-                      int count;
-                      count = getcount();
-                      if (count < 6) {
-                        if (hoveredIconIndex.value < count) {
-                          containerIcons.value[hoveredIconIndex.value] =
-                              draggedData;
-                        } else {
-                          containerIcons.value[count] = draggedData;
-                        }
-                      } else {
-                        containerIcons.value[hoveredIconIndex.value] =
-                            draggedData; // Change the hovered icon
-                      }
-
-                      hoveredIconIndex.value = -1;
-                      changedIndex.value = -1;
-                    }
-                    setState(() {});
-                  }, builder: (context, candidateData, rejectedData) {
-                    return GestureDetector(
-                        onTap: () {
-                          if (containerIcons.value[index].title !=
-                              "Add Skill") {
-                            isEditMode.value = true;
-                            changedIndex.value = index;
-                          }
-                        },
-                        child: ValueListenableBuilder(
-                            valueListenable: changedIndex,
-                            builder: (context, value, _) =>
-                                ValueListenableBuilder(
-                                  valueListenable: isEditMode,
-                                  builder: (context, value, _) => index ==
-                                          changedIndex.value
-                                      ? _buildEditWidget(item)
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Draggable(
-                                              data: item,
-                                              child: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                              feedback: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                              childWhenDragging: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            SpacerWidget(4),
-                                            Padding(
-                                              padding:
-                                                  Globals.deviceType != 'phone'
-                                                      ? const EdgeInsets.only(
-                                                          top: 10, left: 10)
-                                                      : EdgeInsets.zero,
-                                              child: Utility.textWidget(
-                                                  text: item.title,
-                                                  context: context,
-                                                  textTheme: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1!
-                                                      .copyWith(fontSize: 12)),
-                                            )
-                                          ],
-                                        ),
-                                )));
-                  });
-                },
-              );
-            },
-          ),
+          BlocConsumer(
+              bloc: pbisPlusClassroomBloc,
+              builder: (context, state) {
+                print(state);
+                if (state is PBISPlusSkillsLoading) {
+                  return Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor,
+                      ));
+                } else if (state is PBISPlusSkillsSucess) {
+                  if (state.skillsList.isNotEmpty ?? false) {
+                    return _buildEditItemList(state.skillsList);
+                  } else {
+                    return _noDataFoundWidget();
+                  }
+                } else if (state is PBISErrorState) return _noDataFoundWidget();
+                return _noDataFoundWidget();
+              },
+              listener: (context, state) async {}
+              //_buildEditSkillCards()
+              ),
         ],
       ),
     );
+  }
+
+  Widget _noDataFoundWidget() {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.all(8),
+        alignment: Alignment.center,
+        child: Text("No Skills Found"),
+      ),
+    );
+  }
+
+  Widget _buildEditItemList(List<PBISPlusSkillsListModal> skillsList) {
+    return DragTarget<PBISPlusActionInteractionModalNew>(
+        builder: (context, candidateData, rejectedData) {
+      return GridView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1.5,
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+          ),
+          itemCount: 6,
+          itemBuilder: (BuildContext context, int index) {
+            final item = containerIcons.value[index];
+            return DragTarget<PBISPlusActionInteractionModalNew>(
+                onWillAccept: (draggedData) {
+              hoveredIconIndex.value = index; // Update the hovered icon index
+              print(hoveredIconIndex);
+              return true;
+            }, onAccept: (draggedData) {
+              print(isItemExist(draggedData));
+              if (isItemExist(draggedData) == false) {
+                int count;
+                count = getcount();
+                if (count < 6) {
+                  if (hoveredIconIndex.value < count) {
+                    containerIcons.value[hoveredIconIndex.value] = draggedData;
+                  } else {
+                    containerIcons.value[count] = draggedData;
+                  }
+                } else {
+                  containerIcons.value[hoveredIconIndex.value] =
+                      draggedData; // Change the hovered icon
+                }
+
+                hoveredIconIndex.value = -1;
+                changedIndex.value = -1;
+              }
+              setState(() {});
+            }, builder: (context, candidateData, rejectedData) {
+              return GestureDetector(
+                  onTap: () {
+                    if (containerIcons.value[index].title != "Add Skill") {
+                      isEditMode.value = true;
+                      changedIndex.value = index;
+                    }
+                  },
+                  child: ValueListenableBuilder(
+                      valueListenable: changedIndex,
+                      builder: (context, value, _) => ValueListenableBuilder(
+                            valueListenable: isEditMode,
+                            builder: (context, value, _) =>
+                                index == changedIndex.value
+                                    ? _buildEditWidget(item)
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Draggable(
+                                            data: item,
+                                            child: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child: SvgPicture.asset(
+                                                item.imagePath,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                            feedback: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child: SvgPicture.asset(
+                                                item.imagePath,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                            childWhenDragging: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child: SvgPicture.asset(
+                                                item.imagePath,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                          SpacerWidget(4),
+                                          Padding(
+                                            padding:
+                                                Globals.deviceType != 'phone'
+                                                    ? const EdgeInsets.only(
+                                                        top: 10, left: 10)
+                                                    : EdgeInsets.zero,
+                                            child: Utility.textWidget(
+                                                text: item.title,
+                                                context: context,
+                                                textTheme: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .copyWith(fontSize: 12)),
+                                          )
+                                        ],
+                                      ),
+                          )));
+            });
+          });
+    });
   }
 
   Widget _buildaddSkillsWidget() {
