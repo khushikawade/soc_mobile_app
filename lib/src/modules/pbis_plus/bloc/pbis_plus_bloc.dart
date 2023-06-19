@@ -308,7 +308,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _pbisPlusSkillsData.add(newListEntry);
 
             // Put the updated list back to the Hive box
-            _pbisPlusSkillsData.addAll(_pbisPlusSkillsData);
+        
+        
+          
 
             // _pbisPlusSkillsDB.putAll(Map.fromIterable(_pbisPlusSkillsData,
             //     key: (item) => _pbisPlusSkillsData.indexOf(item)));
