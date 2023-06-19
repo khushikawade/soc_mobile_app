@@ -30,7 +30,7 @@ class Authentication {
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/classroom.profile.emails",
     "https://www.googleapis.com/auth/classroom.profile.photos",
-    "https://www.googleapis.com/auth/spreadsheets"
+   
   ];
   /* -------------------------------------------------------------------------------------- */
   /* ------------------------------------initializeFirebase-------------------------------- */
