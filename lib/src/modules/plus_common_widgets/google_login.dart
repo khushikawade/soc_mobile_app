@@ -170,7 +170,7 @@ class GoogleLogin {
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc
-        .add(AuthorizedUserWithDatabase(email: _userProfileLocalData[0].userEmail,isAuthorized: false));
+        .add(AuthorizedUserWithDatabase(email: _userProfileLocalData[0].userEmail,isAuthorizedUser: false));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
     Globals.googleDriveFolderId = '';
