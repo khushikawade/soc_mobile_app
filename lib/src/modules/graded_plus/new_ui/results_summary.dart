@@ -2,10 +2,11 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/services/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -15,7 +16,7 @@ import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.da
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -140,13 +141,17 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   final ScrollController _scrollController = ScrollController();
   // GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
   // final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
-  LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDb =
+
+  LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDbForStandAlone =
       LocalDatabase(Strings.googleClassroomCoursesList);
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
 
   ValueNotifier<bool> isEditPerform = ValueNotifier<bool>(false);
+
+  LocalDatabase<ClassroomCourse> _googleClassRoomlocalDbForStandardApp =
+      LocalDatabase(OcrOverrides.gradedPlusStandardClassroomDB);
 
   @override
   void initState() {
@@ -316,7 +321,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     _googleClassroomBloc.add(CreateClassRoomCourseWork(
                         isEditStudentInfo: true,
                         studentAssessmentInfoDb: LocalDatabase('student_info'),
-                        studentClassObj: GoogleClassroomGlobals
+                        studentClassObj: GoogleClassroomOverrides
                             .studentAssessmentAndClassroomObj,
                         title: Globals.assessmentName!,
                         pointPossible: Globals.pointPossible ?? "0"));
@@ -334,7 +339,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         null);
                   }
 
-                  GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  GoogleClassroomOverrides.studentAssessmentAndClassroomObj
                       .courseWorkURL = state.classroomCouseWorkURL ?? '';
                   classroomUrlStatus.value = true;
                 }
@@ -431,9 +436,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             alignment: Alignment.centerLeft,
                             width: MediaQuery.of(context).size.width * 0.75,
                             child: Utility.textWidget(
-                                text: widget.assessmentName == null
-                                    ? 'Assessment Name'
-                                    : widget.assessmentName!,
+                                text: widget.assessmentDetailPage == true
+                                    ? Globals.historyAssessmentName ?? ''
+                                    : Globals.assessmentName ?? '',
                                 context: context,
                                 maxLines: 2,
                                 textAlign: TextAlign.left,
@@ -528,7 +533,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                         isEditStudentInfo: true,
                                         studentAssessmentInfoDb:
                                             LocalDatabase('student_info'),
-                                        studentClassObj: GoogleClassroomGlobals
+                                        studentClassObj: GoogleClassroomOverrides
                                             .studentAssessmentAndClassroomObj,
                                         title: Globals.assessmentName!,
                                         pointPossible:
@@ -691,28 +696,53 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         // await _historystudentAssessmentInfoDb.clear();
 
                         //Mark student that are already saved to google classroom
-                        state.obj
-                            .forEach((StudentAssessmentInfo student) async {
-                          if ((GoogleClassroomGlobals
-                                      .studentAssessmentAndClassroomObj
-                                      ?.courseId
-                                      ?.isNotEmpty ??
-                                  false) &&
-                              (GoogleClassroomGlobals
-                                      .studentAssessmentAndClassroomObj
-                                      ?.courseWorkId
-                                      ?.isNotEmpty ??
-                                  false)) {
-                            student.isgoogleClassRoomStudentProfileUpdated =
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          state.obj
+                              .forEach((StudentAssessmentInfo student) async {
+                            if ((GoogleClassroomOverrides
+                                        .studentAssessmentAndClassroomObj
+                                        ?.courseId
+                                        ?.isNotEmpty ??
+                                    false) &&
+                                (GoogleClassroomOverrides
+                                        .studentAssessmentAndClassroomObj
+                                        ?.courseWorkId
+                                        ?.isNotEmpty ??
+                                    false)) {
+                              student.isgoogleClassRoomStudentProfileUpdated =
+                                  true;
+                            }
+                            student.isStudentResultAssignmentSavedOnDashboard =
                                 true;
-                          }
-                          student.isStudentResultAssignmentSavedOnDashboard =
-                              true;
-                          //Mark student that are already saved to google Slides
-                          student.isSlideObjUpdated = true;
-                          await _historystudentAssessmentInfoDb
-                              .addData(student);
-                        });
+                            //Mark student that are already saved to google Slides
+                            student.isSlideObjUpdated = true;
+                            await _historystudentAssessmentInfoDb
+                                .addData(student);
+                          });
+                        } else {
+                          state.obj
+                              .forEach((StudentAssessmentInfo student) async {
+                            if ((GoogleClassroomOverrides
+                                        .historyStudentResultSummaryForStandardApp
+                                        ?.id
+                                        ?.isNotEmpty ??
+                                    false) &&
+                                (GoogleClassroomOverrides
+                                        .historyStudentResultSummaryForStandardApp
+                                        ?.courseWorkId
+                                        ?.isNotEmpty ??
+                                    false)) {
+                              student.isgoogleClassRoomStudentProfileUpdated =
+                                  true;
+                            }
+                            student.isStudentResultAssignmentSavedOnDashboard =
+                                true;
+                            //Mark student that are already saved to google Slides
+                            student.isSlideObjUpdated = true;
+                            await _historystudentAssessmentInfoDb
+                                .addData(student);
+                          });
+                        }
 
                         //Extract presentation url from the excel sheet
                         if (state.obj[0].googleSlidePresentationURL != 'NA' &&
@@ -759,7 +789,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                       //Get Course URL on detail page load
                       _googleClassroomBloc.add(GetClassroomCourseWorkURL(
-                          obj: GoogleClassroomGlobals
+                          obj: GoogleClassroomOverrides
                               .studentAssessmentAndClassroomObj));
                     } else if (state is ErrorState) {
                       if (state.errorMsg == 'ReAuthentication is required') {
@@ -829,7 +859,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   } else if (state is OcrErrorReceived) {
                     disableSlidableAction.value = false;
                   }
-                  if (state is AssessmentDashboardStatus) {
+                  if (state is AssessmentDashboardStatusForStandaloneApp) {
                     if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
                         false) {
                       List list = await OcrUtility.getSortedStudentInfoList(
@@ -844,17 +874,18 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       if (Overrides.STANDALONE_GRADED_APP) {
                         List<GoogleClassroomCourses>
                             _googleClassroomCourseslocalData =
-                            await _googleClassRoomlocalDb.getData();
+                            await _googleClassRoomlocalDbForStandAlone
+                                .getData();
 
                         for (GoogleClassroomCourses element
                             in _googleClassroomCourseslocalData) {
                           if (element.courseId ==
                               state.assessmentObj!.courseId) {
-                            //update the classroom course work id in GoogleClassroomGlobals obj
+                            //update the classroom course work id in GoogleClassroomOverrides obj
                             element.courseWorkId =
                                 state.assessmentObj!.courseWorkId!;
 
-                            GoogleClassroomGlobals
+                            GoogleClassroomOverrides
                                 .studentAssessmentAndClassroomObj = element;
 
                             break;
@@ -863,8 +894,47 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       }
 
                       savedRecordCount = state.resultRecordCount;
-                      GoogleClassroomGlobals
+                      GoogleClassroomOverrides
                               .studentAssessmentAndClassroomObj.assessmentCId =
+                          historyAssessmentId =
+                              state.assessmentObj!.assessmentCId;
+                    }
+                  }
+
+                  if (state is AssessmentDashboardStatusForStandardApp) {
+                    if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
+                        false) {
+                      List list = await OcrUtility.getSortedStudentInfoList(
+                          tableName: 'history_student_info');
+
+                      if (isGoogleSheetStateReceived.value == true) {
+                        state.resultRecordCount == list.length
+                            ? dashboardState.value = 'Success'
+                            : dashboardState.value = '';
+                      }
+
+                      List<ClassroomCourse> _googleClassroomCourseslocalData =
+                          await _googleClassRoomlocalDbForStandardApp.getData();
+
+                      for (ClassroomCourse element
+                          in _googleClassroomCourseslocalData) {
+                        if (element.id == state.assessmentObj!.id) {
+                          //update the classroom course work id in GoogleClassroomOverrides obj
+                          element.courseWorkId =
+                              state.assessmentObj!.courseWorkId!;
+
+                          GoogleClassroomOverrides
+                                  .historyStudentResultSummaryForStandardApp =
+                              element;
+
+                          break;
+                        }
+                      }
+
+                      savedRecordCount = state.resultRecordCount;
+                      GoogleClassroomOverrides
+                              .historyStudentResultSummaryForStandardApp
+                              .assessmentCId =
                           historyAssessmentId =
                               state.assessmentObj!.assessmentCId;
                     }
@@ -1073,72 +1143,72 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-  Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
-    return ValueListenableBuilder(
-      valueListenable: disableSlidableAction,
-      builder: (context, value, child) {
-        return FutureBuilder(
-          future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
-              isMcqSheet: widget.isMcqSheet ?? false,
-              assessmentDetailPage: widget.assessmentDetailPage ?? false,
-              width: MediaQuery.of(context).size.width * 0.9,
-              assessmentList: list),
-          builder: (context,
-              AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
-            if (snapshot.hasData) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Row(
-                  children: snapshot.data!
-                      .map((item) => Container(
-                            width: item.width,
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: item.color,
-                                      border: Border.all(
-                                          color: Color(0xff000000) !=
-                                                  Theme.of(context)
-                                                      .backgroundColor
-                                              ? Color(0xffF7F8F9)
-                                              : Color(0xff111C20),
-                                          width: 2)),
-                                  width: item.width,
-                                  height: 25,
-                                  child: Center(
-                                    child: Utility.textWidget(
-                                        text: "${item.count}",
-                                        context: context,
-                                        textTheme: Theme.of(context)
-                                            .textTheme
-                                            .displaySmall!),
-                                  ),
-                                ),
-                                FittedBox(
-                                  child: Utility.textWidget(
-                                      text: widget.isMcqSheet == true
-                                          ? "${item.value}"
-                                          : "${item.value}/${item.pointPossible}",
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .displaySmall!
-                                          .copyWith(fontSize: 10)),
-                                )
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                ),
-              );
-            }
-            return Container();
-          },
-        );
-      },
-    );
-  }
+  // Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
+  //   return ValueListenableBuilder(
+  //     valueListenable: disableSlidableAction,
+  //     builder: (context, value, child) {
+  //       return FutureBuilder(
+  //         future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
+  //             isMcqSheet: widget.isMcqSheet ?? false,
+  //             assessmentDetailPage: widget.assessmentDetailPage ?? false,
+  //             width: MediaQuery.of(context).size.width * 0.9,
+  //             assessmentList: list),
+  //         builder: (context,
+  //             AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
+  //           if (snapshot.hasData) {
+  //             return Container(
+  //               width: MediaQuery.of(context).size.width * 0.9,
+  //               child: Row(
+  //                 children: snapshot.data!
+  //                     .map((item) => Container(
+  //                           width: item.width,
+  //                           child: Column(
+  //                             children: [
+  //                               Container(
+  //                                 decoration: BoxDecoration(
+  //                                     color: item.color,
+  //                                     border: Border.all(
+  //                                         color: Color(0xff000000) !=
+  //                                                 Theme.of(context)
+  //                                                     .backgroundColor
+  //                                             ? Color(0xffF7F8F9)
+  //                                             : Color(0xff111C20),
+  //                                         width: 2)),
+  //                                 width: item.width,
+  //                                 height: 25,
+  //                                 child: Center(
+  //                                   child: Utility.textWidget(
+  //                                       text: "${item.count}",
+  //                                       context: context,
+  //                                       textTheme: Theme.of(context)
+  //                                           .textTheme
+  //                                           .displaySmall!),
+  //                                 ),
+  //                               ),
+  //                               FittedBox(
+  //                                 child: Utility.textWidget(
+  //                                     text: widget.isMcqSheet == true
+  //                                         ? "${item.value}"
+  //                                         : "${item.value}/${item.pointPossible}",
+  //                                     context: context,
+  //                                     textTheme: Theme.of(context)
+  //                                         .textTheme
+  //                                         .displaySmall!
+  //                                         .copyWith(fontSize: 10)),
+  //                               )
+  //                             ],
+  //                           ),
+  //                         ))
+  //                     .toList(),
+  //               ),
+  //             );
+  //           }
+  //           return Container();
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   // Widget _scanFloatingWidget() {
   //   return ValueListenableBuilder<bool>(
@@ -1737,8 +1807,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
 //--------------------------------------------------------------------------------------------------------------------------
   Future<void> updateCount() async {
-    _listCount.value =
-        await OcrUtility.getStudentInfoListLength(tableName: 'student_info');
+    _listCount.value = await OcrUtility.getResultSummaryStudentInfoListLength(
+        tableName: 'student_info');
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -2167,7 +2237,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 /*--------------------------------------------------------------------------------------------------------------------------*/
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
-      // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
+      // GoogleClassroomOverrides.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
       await _historystudentAssessmentInfoDb.clear();
       if (widget.historySecondTime == true) {
         widget.assessmentName = Globals.historyAssessmentName;
@@ -2182,10 +2252,18 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       _driveBloc
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
 
-      _ocrBloc.add(GetDashBoardStatus(
-          fileId: widget.fileId,
-          assessmentObj:
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+      if (Overrides.STANDALONE_GRADED_APP) {
+        _ocrBloc.add(GetAssessmentAndSavedStudentResultSummaryForStandaloneApp(
+            fileId: widget.fileId,
+            assessmentObj:
+                GoogleClassroomOverrides.studentAssessmentAndClassroomObj));
+      } else {
+        _ocrBloc.add(GetAssessmentAndSavedStudentResultSummaryForStandardApp(
+            fileId: widget.fileId,
+            assessmentObj: GoogleClassroomOverrides
+                .historyStudentResultSummaryForStandardApp));
+      }
+
       // _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
       updateAssessmentToDb();
@@ -2261,7 +2339,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Class': GoogleClassroomGlobals
+                  'Class': GoogleClassroomOverrides
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
                 },
@@ -2289,7 +2367,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           onPressed: () async {
             if (Overrides.STANDALONE_GRADED_APP) {
               List<GoogleClassroomCourses> _localData =
-                  await _googleClassRoomlocalDb.getData();
+                  await _googleClassRoomlocalDbForStandAlone.getData();
               if (_localData.isEmpty) {
                 Utility.currentScreenSnackBar(
                     "You need to import roster first", null);

@@ -8,11 +8,12 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment/create_assessment_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/scan_result_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/scan_result/scan_result_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -31,7 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../google_classroom/bloc/google_classroom_bloc.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 
 class GradedPlusCameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -149,7 +150,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   @override
   void initState() {
     print(Globals.googleSlidePresentationId);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
+    // print(GoogleClassroomOverrides.studentAssessmentAndClassroomObj);
     // widget.isFlashOn!.value = widget.isFlashOn;
     initMethod();
     super.initState();
@@ -277,7 +278,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         isFromHistoryAssessmentScanMore:
                             widget.isFromHistoryAssessmentScanMore,
                         pointPossible: widget.pointPossible ?? '0',
-                        studentClassObj: GoogleClassroomGlobals
+                        studentClassObj: GoogleClassroomOverrides
                             .studentAssessmentAndClassroomObj,
                         title: widget.isFromHistoryAssessmentScanMore
                             ? Globals.historyAssessmentName ?? ''
@@ -293,7 +294,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       // Trigger this when user scanning more records from history assignment section
                       if (widget.isFromHistoryAssessmentScanMore == true) {
                         _saveResultAssignmentsToDashboard(
-                            assessmentId: GoogleClassroomGlobals
+                            assessmentId: GoogleClassroomOverrides
                                     .studentAssessmentAndClassroomObj
                                     .assessmentCId ??
                                 '',
@@ -303,6 +304,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                 _historystudentAssessmentInfoDb);
                       } else {
                         // Trigger this when user scanning more from new assignment on result summary
+
                         _saveResultAssignmentsToDashboard(
                             assessmentId: Globals.currentAssessmentId ?? '',
                             googleSpreadsheetUrl: Globals.shareableLink ?? '',
@@ -399,13 +401,30 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 }),
         widget.onlyForPicture
             ? Container()
+            //Used in scan more scenario
             : BlocListener<OcrBloc, OcrState>(
                 bloc: _ocrBloc,
                 child: Container(),
                 listener: (context, state) {
-                  print("state ------------------$state");
                   if (state is GradedPlusSaveResultToDashboardSuccess) {
-                    _navigatetoResultSection();
+                    ClassroomCourse
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp =
+                        widget.isFromHistoryAssessmentScanMore == true
+                            //From history assessment scan more
+                            ? GoogleClassroomOverrides
+                                ?.historyStudentResultSummaryForStandardApp
+                            //From recent assessment scan more
+                            : GoogleClassroomOverrides
+                                ?.recentStudentResultSummaryForStandardApp;
+
+                    if (Overrides.STANDALONE_GRADED_APP == false &&
+                        (localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                                ?.id?.isNotEmpty ??
+                            false)) {
+                      createClassRoomCourseWorkForStandardApp();
+                    } else {
+                      _navigateToResultSection();
+                    }
                   }
 
                   if (state is OcrErrorReceived) {
@@ -419,12 +438,13 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                 }),
         widget.onlyForPicture
             ? Container()
+            //Used in scan more scenario
             : BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
                 bloc: _googleClassroomBloc,
                 child: Container(),
                 listener: (context, state) async {
                   if (state is CreateClassroomCourseWorkSuccess) {
-                    _navigatetoResultSection();
+                    _navigateToResultSection();
                   }
                   if (state is GoogleClassroomErrorState) {
                     if (state.errorMsg == 'ReAuthentication is required') {
@@ -433,26 +453,14 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           errorMsg: state.errorMsg!,
                           context: context,
                           scaffoldKey: _scaffoldKey);
-
-                      _googleClassroomBloc.add(CreateClassRoomCourseWork(
-                        isFromHistoryAssessmentScanMore:
-                            widget.isFromHistoryAssessmentScanMore,
-                        pointPossible: widget.pointPossible ?? '0',
-                        studentClassObj: GoogleClassroomGlobals
-                            .studentAssessmentAndClassroomObj,
-                        title: widget.isFromHistoryAssessmentScanMore
-                            ? Globals.historyAssessmentName ?? ''
-                            : Globals.assessmentName ?? '',
-                        studentAssessmentInfoDb:
-                            widget.isFromHistoryAssessmentScanMore
-                                ? _historystudentAssessmentInfoDb
-                                : _studentAssessmentInfoDb,
-                      ));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
                           state.errorMsg?.toString() ?? "", null);
                     }
+                  }
+                  if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
+                    _navigateToResultSection();
                   }
                 }),
         widget.onlyForPicture
@@ -492,33 +500,101 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                     ? Strings.historyStudentInfoDbName
                                     : Strings.studentInfoDbName);
 
+                    // if (studentAssessmentInfoDb.length > 0) {
+                    //   // Check if all students belong to same class
+                    //   if (Overrides.STANDALONE_GRADED_APP &&
+                    //       (widget.isFromHistoryAssessmentScanMore == true ||
+                    //           widget.isScanMore == true)) {
+                    //     //Preparing list of student not belong to selected class
+                    //     List<StudentAssessmentInfo>
+                    //         notPresentStudentsInSelectedClass = await OcrUtility
+                    //             .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
+                    //                 title: widget
+                    //                         .isFromHistoryAssessmentScanMore
+                    //                     ? Globals.historyAssessmentName ?? ''
+                    //                     : Globals.assessmentName ?? '',
+                    //                 isScanMore: true,
+                    //                 studentInfoDB:
+                    //                     widget.isFromHistoryAssessmentScanMore ==
+                    //                             true
+                    //                         ? _historystudentAssessmentInfoDb
+                    //                         : _studentAssessmentInfoDb);
+
+                    //     if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                    //         true) {
+                    //       notPresentStudentsPopupModal(
+                    //           notPresentStudentsInSelectedClass:
+                    //               notPresentStudentsInSelectedClass);
+                    //       return;
+                    //     }
+                    //   }
+                    //   //--------------------------------------------------------------
+                    //   if (widget.isFromHistoryAssessmentScanMore == true ||
+                    //       (!widget.isFromHistoryAssessmentScanMore &&
+                    //           widget.isScanMore == true)) {
+                    //     preparingStudentAssessmentImageUpdateToSlideFiles();
+                    //   } else {
+                    //     prepareClassSuggestionListForCreateAssessmentScreen();
+                    //   }
+                    //   //--------------------------------------------------------------
+                    // }
+
                     if (studentAssessmentInfoDb.length > 0) {
                       // Check if all students belong to same class
-                      if (Overrides.STANDALONE_GRADED_APP &&
-                          (widget.isFromHistoryAssessmentScanMore == true ||
-                              widget.isScanMore == true)) {
-                        //Preparing list of student not belong to selected class
-                        List<StudentAssessmentInfo>
-                            notPresentStudentsInSelectedClass = await OcrUtility
-                                .checkAllStudentBelongsToSameClassOrNot(
-                                    title: widget
-                                            .isFromHistoryAssessmentScanMore
-                                        ? Globals.historyAssessmentName ?? ''
-                                        : Globals.assessmentName ?? '',
-                                    isScanMore: true,
-                                    studentInfoDB:
-                                        widget.isFromHistoryAssessmentScanMore ==
-                                                true
-                                            ? _historystudentAssessmentInfoDb
-                                            : _studentAssessmentInfoDb);
+                      if ((widget.isFromHistoryAssessmentScanMore == true ||
+                          widget.isScanMore == true)) {
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          //Preparing list of student not belong to selected class
+                          List<StudentAssessmentInfo>
+                              notPresentStudentsInSelectedClass =
+                              await OcrUtility
+                                  .checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
+                                      title: widget
+                                              .isFromHistoryAssessmentScanMore
+                                          ? Globals.historyAssessmentName ?? ''
+                                          : Globals.assessmentName ?? '',
+                                      isScanMore: true,
+                                      studentInfoDB:
+                                          widget.isFromHistoryAssessmentScanMore ==
+                                                  true
+                                              ? _historystudentAssessmentInfoDb
+                                              : _studentAssessmentInfoDb);
 
-                        if (notPresentStudentsInSelectedClass?.isNotEmpty ??
-                            true) {
-                          notPresentStudentsPopupModal(
-                              notPresentStudentsInSelectedClass:
-                                  notPresentStudentsInSelectedClass);
-                          return;
+                          if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                              true) {
+                            notPresentStudentsPopupModal(
+                                notPresentStudentsInSelectedClass:
+                                    notPresentStudentsInSelectedClass);
+                            return;
+                          }
                         }
+                        // else {
+                        //Preparing list of student not belong to selected class
+                        //   List<StudentAssessmentInfo>
+                        //       notPresentStudentsInSelectedClass =
+                        //       await OcrUtility
+                        //           .checkAllStudentBelongsToSameClassOrNotForStandardApp(
+                        //               title: widget
+                        //                       .isFromHistoryAssessmentScanMore
+                        //                   ? Globals.historyAssessmentName ?? ''
+                        //                   : Globals.assessmentName ?? '',
+                        //               isScanMore: true,
+                        //               studentInfoDB:
+                        //                   widget.isFromHistoryAssessmentScanMore ==
+                        //                           true
+                        //                       ? _historystudentAssessmentInfoDb
+                        //                       : _studentAssessmentInfoDb,
+                        //               isFromHistoryAssignment: widget
+                        //                   .isFromHistoryAssessmentScanMore);
+
+                        //   if (notPresentStudentsInSelectedClass?.isNotEmpty ??
+                        //       true) {
+                        //     notPresentStudentsPopupModal(
+                        //         notPresentStudentsInSelectedClass:
+                        //             notPresentStudentsInSelectedClass);
+                        //     return;
+                        //   }
+                        // }
                       }
                       //--------------------------------------------------------------
                       if (widget.isFromHistoryAssessmentScanMore == true ||
@@ -931,7 +1007,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Will be used in standalone app only
-  Future<List<String>> getSuggestionChips() async {
+  Future<List<String>> getSuggestionChipsForStandAloneApp() async {
     List<String> classSuggestionsList = [];
 
     try {
@@ -998,7 +1074,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  Future<void> _navigatetoResultSection() async {
+//Navigate to result summary screen in case of any scan more //recent assessment scan more // history scan more
+  Future<void> _navigateToResultSection() async {
     Navigator.of(context).pop();
     if (widget.isFromHistoryAssessmentScanMore == true) {
       Navigator.of(context)
@@ -1054,19 +1131,25 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  _navigateToCreateAssessment({required List<String> suggestionList}) {
+  _navigateToCreateAssessment({
+    required List<String> suggestionList,
+    //required List<String> classroomsuggestionList
+  }) {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
-              isMcqSheet: widget.isMcqSheet,
-              selectedAnswer: widget.selectedAnswer,
-              customGrades: classList,
-              classSuggestions: suggestionList)),
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                customGrades: classList,
+                classSuggestions: suggestionList,
+                // classroomSuggestions: classroomsuggestionList,
+              )),
     );
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//Used only in standalone app
   notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
           notPresentStudentsInSelectedClass}) async {
@@ -1079,7 +1162,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course \'$course\'. Do you still want to continue with these students?",
+                  //   "A few students not found in the selected course \'$course\'. Do you still want to continue with these students?",
+                  "A few students not found in the selected Google Classroom course. Do you still want to continue with these students?",
               studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
                   ? _historystudentAssessmentInfoDb
                   : _studentAssessmentInfoDb,
@@ -1101,6 +1185,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//Used in case of scan more assessments
   Future<void> preparingStudentAssessmentImageUpdateToSlideFiles() async {
     await OcrUtility.sortStudents(
       tableName: widget.isFromHistoryAssessmentScanMore == true
@@ -1109,8 +1194,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     );
 
     if (widget.isFromHistoryAssessmentScanMore == true) {
-      print(Globals.googleSlidePresentationId);
-
       _driveBloc.add(UpdateGoogleSlideOnScanMore(
           studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
           isMcqSheet: widget.isMcqSheet ?? false,
@@ -1130,50 +1213,25 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     }
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//Preparing classroom suggestion list
   Future<void> prepareClassSuggestionListForCreateAssessmentScreen() async {
+    //Prepare suggestion chips for create screen //course list from google classroom
+    Utility.showLoadingDialog(context: context, isOCR: true);
+
     if (Overrides.STANDALONE_GRADED_APP == true) {
-      //Prepare suggestion chips for create screen //course list from google classroom
-      Utility.showLoadingDialog(context: context, isOCR: true);
-      List<String> suggestionList = await getSuggestionChips();
+      List<String> suggestionListSatandAlone =
+          await getSuggestionChipsForStandAloneApp();
       Navigator.of(context).pop();
 
-      _navigateToCreateAssessment(suggestionList: suggestionList);
+      _navigateToCreateAssessment(suggestionList: suggestionListSatandAlone);
     } else {
-      //Locally added classes suggestion list
-      List<String> classSuggestions = await _localDb.getData();
-      LocalDatabase<String> classSectionLocalDb =
-          LocalDatabase('class_section_list');
+      List<String> classroomsuggestionListForStandardApp =
+          await getClassroomSuggestionChipsForStandardApp();
+      Navigator.of(context).pop();
 
-      List<String> localSectionList = await classSectionLocalDb.getData();
-
-      // Compares 2 list and update the changes in local database.
-      bool isClassChanges = false;
-      for (int i = 0; i < classList.length; i++) {
-        if (!localSectionList.contains(classList[i])) {
-          isClassChanges = true;
-          break;
-        }
-      }
-
-      if (localSectionList.isEmpty || isClassChanges) {
-        //print("local db is empty");
-        classSectionLocalDb.clear();
-        classList.forEach((String e) {
-          classSectionLocalDb.addData(e);
-        });
-      } else {
-        //print("local db is not empty");
-        classList = [];
-        classList.addAll(localSectionList);
-      }
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => GradedPlusCreateAssessment(
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
-                customGrades: classList,
-                classSuggestions: classSuggestions)),
+      _navigateToCreateAssessment(
+        suggestionList: classroomsuggestionListForStandardApp,
       );
     }
   }
@@ -1206,6 +1264,85 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       //subjectId: subjectId,
       schoolId: Globals.appSetting.schoolNameC!,
       //fileId: fileId,
+    ));
+  }
+
+  // Future<List<String>> getSuggestionChipsForStandardApp() async {
+  //   //Locally added classes suggestion list
+  //   List<String> classSuggestions = await _localDb.getData();
+  //   LocalDatabase<String> classSectionLocalDb =
+  //       LocalDatabase('class_section_list');
+
+  //   List<String> localSectionList = await classSectionLocalDb.getData();
+
+  //   // Compares 2 list and update the changes in local database.
+  //   bool isClassChanges = false;
+  //   for (int i = 0; i < classList.length; i++) {
+  //     if (!localSectionList.contains(classList[i])) {
+  //       isClassChanges = true;
+  //       break;
+  //     }
+  //   }
+
+  //   if (localSectionList.isEmpty || isClassChanges) {
+  //     //print("local db is empty");
+  //     classSectionLocalDb.clear();
+  //     classList.forEach((String e) {
+  //       classSectionLocalDb.addData(e);
+  //     });
+  //   } else {
+  //     classList = [];
+  //     classList.addAll(localSectionList);
+  //   }
+  //   return classSuggestions;
+  // }
+
+  Future<List<String>> getClassroomSuggestionChipsForStandardApp() async {
+    List<String> classroomSuggestionsList = [];
+    try {
+      List<StudentAssessmentInfo> studentInfo =
+          await OcrUtility.getSortedStudentInfoList(
+              tableName: Strings.studentInfoDbName);
+
+      LocalDatabase<ClassroomCourse> _localDb =
+          LocalDatabase(OcrOverrides.gradedPlusStandardClassroomDB);
+
+      List<ClassroomCourse>? _localData = await _localDb.getData();
+
+// filteredCourses only the courses that contain all scanned students
+      classroomSuggestionsList = _localData
+          .where((course) => course.students != null)
+          .where((course) => course.students!.any((student) => studentInfo
+              .any((s) => s.studentEmail == student.profile!.emailAddress)))
+          .map((course) => course.name!)
+          .toSet() // remove duplicates
+          .toList();
+
+// if classSuggestionList is empty or null so get all local classroom courses
+      classroomSuggestionsList = classroomSuggestionsList?.isNotEmpty ?? false
+          ? classroomSuggestionsList
+          : _localData.map((course) => course.name!).toList();
+
+      classroomSuggestionsList.sort();
+      return classroomSuggestionsList ?? [];
+    } catch (e) {
+      return classroomSuggestionsList;
+    }
+  }
+
+  void createClassRoomCourseWorkForStandardApp() {
+    _googleClassroomBloc.add(CreateClassroomCourseWorkForStandardApp(
+      isFromHistoryAssessmentScanMore: widget.isFromHistoryAssessmentScanMore,
+      pointPossible: widget.pointPossible ?? '0',
+      studentClassObj: widget.isFromHistoryAssessmentScanMore
+          ? GoogleClassroomOverrides.historyStudentResultSummaryForStandardApp
+          : GoogleClassroomOverrides.recentStudentResultSummaryForStandardApp,
+      title: widget.isFromHistoryAssessmentScanMore
+          ? Globals.historyAssessmentName ?? ''
+          : Globals.assessmentName ?? '',
+      studentAssessmentInfoDb: widget.isFromHistoryAssessmentScanMore
+          ? _historystudentAssessmentInfoDb
+          : _studentAssessmentInfoDb,
     ));
   }
 }

@@ -38,7 +38,7 @@ class GooglePresentationBlocMethods {
       {required final StudentPlusDetailsModel studentDetails,
       required int index}) {
     Map map = {
-      0: "${studentDetails.firstNameC} ${studentDetails.lastNameC}" ?? '',
+      0: (studentDetails.firstNameC ?? '') + (studentDetails.lastNameC ?? ''),
       1: studentDetails.id ?? '',
       2: studentDetails.parentPhoneC ?? '',
       3: studentDetails.emailC ?? '',

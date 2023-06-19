@@ -444,7 +444,6 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
-
     Navigator.push(
       context,
       MaterialPageRoute(

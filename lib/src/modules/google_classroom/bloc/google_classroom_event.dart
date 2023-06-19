@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'google_classroom_bloc.dart';
 
 abstract class GoogleClassroomEvent extends Equatable {
@@ -36,7 +38,6 @@ class CreateClassRoomCourseWork extends GoogleClassroomEvent {
   List<Object> get props => [];
 }
 
-// ignore: must_be_immutable
 class GetClassroomCourseWorkURL extends GoogleClassroomEvent {
   GoogleClassroomCourses? obj;
   GetClassroomCourseWorkURL({required this.obj});
@@ -55,6 +56,26 @@ class CreatePBISClassroomCoursework extends GoogleClassroomEvent {
     required this.courseAndStudentList,
     this.studentAssessmentInfoDb,
   });
+  @override
+  List<Object> get props => [];
+}
+
+//Graded + Standard Apps
+class CreateClassroomCourseWorkForStandardApp extends GoogleClassroomEvent {
+  final String title;
+  final String pointPossible;
+  ClassroomCourse studentClassObj;
+  LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb;
+  final bool? isFromHistoryAssessmentScanMore;
+  final bool? isEditStudentInfo;
+
+  CreateClassroomCourseWorkForStandardApp(
+      {required this.title,
+      required this.pointPossible,
+      required this.studentClassObj,
+      required this.studentAssessmentInfoDb,
+      this.isFromHistoryAssessmentScanMore,
+      this.isEditStudentInfo});
   @override
   List<Object> get props => [];
 }

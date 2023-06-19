@@ -1,21 +1,23 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/assessment_status_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 
 class OcrUtility {
+/*------------------------------------------------------------------------------------------------*/
+/*----------------------------  ------checkEmailFromGoogleClassroom---------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static Future<bool> checkEmailFromGoogleClassroom(
       {required String studentEmail}) async {
     try {
@@ -41,6 +43,9 @@ class OcrUtility {
     }
   }
 
+/*------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------getStudentList-------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static Future<List<StudentClassroomInfo>> getStudentList() async {
     try {
       List<StudentClassroomInfo> studentList = [];
@@ -70,6 +75,9 @@ class OcrUtility {
     }
   }
 
+/*------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------getMcqAnswer--------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static String getMcqAnswer({required String detectedAnswer}) {
     try {
       switch (detectedAnswer) {
@@ -104,8 +112,11 @@ class OcrUtility {
     }
   }
 
+/*------------------------------------------------------------------------------------------------*/
+/*---------------------------checkAllStudentBelongsToSameClassOrNotForStandAloneApp---------------*/
+/*------------------------------------------------------------------------------------------------*/
   static Future<List<StudentAssessmentInfo>>
-      checkAllStudentBelongsToSameClassOrNot(
+      checkAllStudentBelongsToSameClassOrNotForStandAloneApp(
           {required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
           required bool isScanMore,
           required String title}) async {
@@ -117,7 +128,7 @@ class OcrUtility {
             element?.isScanMore == null || element?.isScanMore == false);
 
         //event.studentClassObj = Google classroom Course Object come from import roster
-        if ((GoogleClassroomGlobals
+        if ((GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj.courseWorkId?.isEmpty ??
             true)) {
           // courseWorkId is null or empty, and isHistorySanMore is either null or false
@@ -136,11 +147,11 @@ class OcrUtility {
                 // always check last "_" contains in title and get the subject
                 if ((title.split("_").last == classroom.name)) {
                   // print("insdie if loopppp");
-                  GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name =
-                      classroom.name;
-                  GoogleClassroomGlobals?.studentAssessmentAndClassroomObj
+                  GoogleClassroomOverrides
+                      .studentAssessmentAndClassroomObj.name = classroom.name;
+                  GoogleClassroomOverrides?.studentAssessmentAndClassroomObj
                       .courseId = classroom.courseId;
-                  GoogleClassroomGlobals?.studentAssessmentAndClassroomObj
+                  GoogleClassroomOverrides?.studentAssessmentAndClassroomObj
                       .studentList = classroom.studentList;
                   break;
                 }
@@ -150,12 +161,12 @@ class OcrUtility {
         }
       }
 
-      return GoogleClassroomGlobals
+      return GoogleClassroomOverrides
                   ?.studentAssessmentAndClassroomObj?.studentList ==
               null
           ? []
           : studentInfo.where((student) {
-              return GoogleClassroomGlobals
+              return GoogleClassroomOverrides
                   .studentAssessmentAndClassroomObj.studentList!
                   .every((courseStudent) {
                 return courseStudent["profile"]["emailAddress"] !=
@@ -167,109 +178,9 @@ class OcrUtility {
     }
   }
 
-  static Future<List<ResultSummeryDetailModel>>
-      getResultSummaryCardDetailsAndBarSize(
-          {required double width,
-          required bool isMcqSheet,
-          required bool assessmentDetailPage,
-          List<StudentAssessmentInfo>? assessmentList}) async {
-    List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
-        ? assessmentList
-        : await OcrUtility.getSortedStudentInfoList(
-            tableName: assessmentDetailPage == true
-                ? 'history_student_info'
-                : 'student_info');
-
-    //List to be return
-    List<ResultSummeryDetailModel> summaryCardDetailsList = [];
-    List<String> studentEarnedPoint = [];
-
-    //Comparing Rubric with students earned point
-    for (var i = 0; i < studentAssessmentList.length; i++) {
-      //Check if earned point matches with correct response key /rubric
-      if (studentEarnedPoint.contains(isMcqSheet == true
-          ? studentAssessmentList[i].studentResponseKey
-          : studentAssessmentList[i].studentGrade)) {
-        for (var j = 0; j < summaryCardDetailsList.length; j++) {
-          if (summaryCardDetailsList[j].value ==
-              (isMcqSheet == true
-                  ? studentAssessmentList[i].studentResponseKey
-                  : studentAssessmentList[i].studentGrade)) {
-            //Increasing count of number of student exist with same score or selected key
-            summaryCardDetailsList[j].count =
-                summaryCardDetailsList[j].count! + 1;
-          }
-        }
-      } else {
-        //Updating list to compare next values of studentAssessmentList
-        studentEarnedPoint.add(isMcqSheet == true
-            ? studentAssessmentList[i].studentResponseKey!
-            : studentAssessmentList[i].studentGrade!);
-        summaryCardDetailsList.add(ResultSummeryDetailModel(
-            value: isMcqSheet == true
-                ? studentAssessmentList[i].studentResponseKey
-                : studentAssessmentList[i].studentGrade,
-            count: 1,
-            pointPossible: isMcqSheet == true
-                ? studentAssessmentList[i].answerKey
-                : studentAssessmentList[i].pointPossible));
-      }
-    }
-
-    //Returning width for each result for summary card with their value
-    for (var i = 0; i < summaryCardDetailsList.length; i++) {
-      //Formula :::::::Totalwidth /AssessmentListLength/ StudentEarnedPointCount
-//-------------------------------------------------------------------
-      summaryCardDetailsList[i].width = (width /
-          (studentAssessmentList.length / summaryCardDetailsList[i].count!));
-//-------------------------------------------------------------------
-      Color color = AppTheme.kPrimaryColor;
-      if (isMcqSheet == true) {
-        color = studentAssessmentList[i].answerKey ==
-                summaryCardDetailsList[i].value
-            ? Color(0xAA7ac36a)
-            : Color(0xAAe57373);
-      } else {
-        switch (summaryCardDetailsList[i].value) {
-          case '0':
-            {
-              color = Color(0xAAe57373);
-              break;
-            }
-          case '1':
-            {
-              color = summaryCardDetailsList[i].pointPossible == '4'
-                  ? Color(0xAAe57373)
-                  : Color(0xAAffd54f);
-              break;
-            }
-          case '2':
-            {
-              color = summaryCardDetailsList[i].pointPossible == '2'
-                  ? Color(0xAA7ac36a)
-                  : Color(0xAAffd54f);
-              break;
-            }
-          case '3':
-            {
-              color = summaryCardDetailsList[i].pointPossible == '3'
-                  ? Color(0xAA7ac36a)
-                  : Color(0xAAffd54f);
-              break;
-            }
-          case '4':
-            {
-              color = Color(0xAA7ac36a);
-              break;
-            }
-        }
-      }
-      summaryCardDetailsList[i].color = color;
-    }
-    summaryCardDetailsList.sort((a, b) => a.value!.compareTo(b.value!));
-    return summaryCardDetailsList;
-  }
-
+/*------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------sortStudents--------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static Future sortStudents({
     required tableName,
   }) async {
@@ -353,6 +264,9 @@ class OcrUtility {
     return students;
   }
 
+/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------getSortedStudentInfoList----------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static Future<List<StudentAssessmentInfo>> getSortedStudentInfoList(
       {required String tableName, bool? isEdit}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
@@ -376,7 +290,10 @@ class OcrUtility {
     return _studentInfoListDb;
   }
 
-  static Future<int> getStudentInfoListLength(
+/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------getResultSummaryStudentInfoListLength---------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+  static Future<int> getResultSummaryStudentInfoListLength(
       {required String tableName}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
@@ -394,25 +311,122 @@ class OcrUtility {
     return _studentInfoListDb.length;
   }
 
-  static Future<void> clearOlderAssignmentdetails() async {
-    print(
-        "------------------------ CLEAN ODLER ASSIGNNMENT DETAILS -------------------------");
+/*------------------------------------------------------------------------------------------------*/
+/*------------------------checkAllStudentBelongsToSameClassOrNotForStandardApp--------------------*/
+/*------------------------------------------------------------------------------------------------*/
+  static Future<List<StudentAssessmentInfo>>
+      checkAllStudentBelongsToSameClassOrNotForStandardApp({
+    required LocalDatabase<StudentAssessmentInfo> studentInfoDB,
+    required bool isScanMore,
+    required String title,
+    required bool isFromHistoryAssignment,
+  }) async {
+    ClassroomCourse
+        localStudentAssessmentAndClassroomAssignmentObjForStandardApp =
+        isFromHistoryAssignment == true
+            ? GoogleClassroomOverrides
+                ?.historyStudentResultSummaryForStandardApp
+            : GoogleClassroomOverrides
+                ?.recentStudentResultSummaryForStandardApp;
+
+    try {
+      //Fetch locally saved students
+      List<StudentAssessmentInfo> studentInfo = await studentInfoDB.getData();
+
+      if (isScanMore) {
+        //Remove already saved/scanned student from the list
+        studentInfo.removeWhere((element) =>
+            element?.isScanMore == null || element?.isScanMore == false);
+
+        //event.studentClassObj = Google classroom Course Object come from import roster
+        if ((localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                .courseWorkId?.isEmpty ??
+            true)) {
+          // courseWorkId is null or empty, and isHistorySanMore is either null or false
+          LocalDatabase<ClassroomCourse> _googleClassRoomLocalDb =
+              LocalDatabase(OcrOverrides.gradedPlusStandardClassroomDB);
+          List<ClassroomCourse> _googleClassRoomLocalData =
+              await _googleClassRoomLocalDb.getData();
+
+          //Update the student class object when the user tries to scan older records that are not available on Google Classroom
+          // checking the class name by title
+
+          if ((_googleClassRoomLocalData?.isNotEmpty ?? false)) {
+            if ((title?.isNotEmpty ?? false) && (title.contains('_'))) {
+              for (ClassroomCourse classroom in _googleClassRoomLocalData) {
+                // always check last "_" contains in title and get the subject
+                if ((title.split("_").last == classroom.name)) {
+                  // print("insdie if loopppp");
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                      .name = classroom.name;
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                      .id = classroom.id;
+                  localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                      .students = classroom.students;
+
+                  if (isFromHistoryAssignment == true) {
+                    GoogleClassroomOverrides
+                            .historyStudentResultSummaryForStandardApp =
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp;
+                  } else {
+                    GoogleClassroomOverrides
+                            .recentStudentResultSummaryForStandardApp =
+                        localStudentAssessmentAndClassroomAssignmentObjForStandardApp;
+                  }
+
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      //Return list of news scanned student list
+      return localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                  ?.students ==
+              null
+          ? []
+          : studentInfo.where((student) {
+              return localStudentAssessmentAndClassroomAssignmentObjForStandardApp
+                  .students!
+                  .every((ClassroomStudents courseStudent) {
+                return courseStudent.profile!.emailAddress !=
+                    student.studentEmail;
+              });
+            }).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+/*------------------------------------------------------------------------------------------------*/
+/*-----------------------------------showProgressLoadingDialog------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+  static Future<void> clearOlderAssignmentDetails() async {
     //Clean older ids related to presentaion and spreadsheets sheet
     Globals.googleExcelSheetId = '';
     Globals.googleSlidePresentationId = '';
     Globals.googleSlidePresentationLink = '';
 
+//clean older scaned stduent records DB
     LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
         LocalDatabase(Strings.studentInfoDbName);
-
     await _studentAssessmentInfoDb.clear();
+
+// clean older classroom related ids
+    GoogleClassroomOverrides.recentStudentResultSummaryForStandardApp =
+        ClassroomCourse(id: '');
   }
 
+/*------------------------------------------------------------------------------------------------*/
+/*-----------------------------------showProgressLoadingDialog------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
   static void showProgressLoadingDialog({
     BuildContext? context,
     required Function(StateSetter) state,
     required List<String> processList,
-    required ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus,
+    required ValueNotifier<LoadingStatusModel> assessmentExportAndSaveStatus,
   }) async {
     return showDialog<void>(
       useRootNavigator: false,
@@ -465,7 +479,7 @@ class OcrUtility {
                                                 .colorScheme
                                                 .secondary),
                                   ),
-                                  progressWidget(
+                                  progressStatusWidget(
                                       value: item,
                                       assessmentExportAndSaveStatus:
                                           assessmentExportAndSaveStatus)
@@ -479,19 +493,22 @@ class OcrUtility {
     );
   }
 
-  static Widget progressWidget(
+/*------------------------------------------------------------------------------------------------*/
+/*------------------------------------progressStatusWidget----------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+  static Widget progressStatusWidget(
       {required String value,
-      required ValueNotifier<AssessmentStatusModel>
+      required ValueNotifier<LoadingStatusModel>
           assessmentExportAndSaveStatus}) {
     if ((value == 'Google Sheet' &&
-            assessmentExportAndSaveStatus.value.excelSheetPrepared) ||
+            assessmentExportAndSaveStatus.value.excelSheetPrepared!) ||
         (value == 'Google Slides' &&
-            assessmentExportAndSaveStatus.value.slidePrepared) ||
+            assessmentExportAndSaveStatus.value.slidePrepared!) ||
         (value == 'Google Classroom' &&
-            assessmentExportAndSaveStatus.value.saveGoogleClassroom) ||
+            assessmentExportAndSaveStatus.value.googleClassroomPrepared) ||
         (value == '${Globals.schoolDbnC} Dashboard' &&
             assessmentExportAndSaveStatus
-                .value.saveAssessmentResultToDashboard)) {
+                .value.saveAssessmentResultToDashboard!)) {
       return Icon(
         IconData(0xe877,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
@@ -503,6 +520,10 @@ class OcrUtility {
       );
     }
   }
+
+/*------------------------------------------------------------------------------------------------*/
+/*------------------------------------showSuccessDialog-------------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
 
   static void showSuccessDialog({
     BuildContext? context,
@@ -618,3 +639,113 @@ class OcrUtility {
     );
   }
 }
+
+
+
+/*------------------------------------------------------------------------------------------------*/
+/*----------------------------getResultSummaryCardDetailsAndBarSize-------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+
+
+//   static Future<List<ResultSummeryDetailModel>>
+//       getResultSummaryCardDetailsAndBarSize(
+//           {required double width,
+//           required bool isMcqSheet,
+//           required bool assessmentDetailPage,
+//           List<StudentAssessmentInfo>? assessmentList}) async {
+//     List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
+//         ? assessmentList
+//         : await OcrUtility.getSortedStudentInfoList(
+//             tableName: assessmentDetailPage == true
+//                 ? 'history_student_info'
+//                 : 'student_info');
+
+//     //List to be return
+//     List<ResultSummeryDetailModel> summaryCardDetailsList = [];
+//     List<String> studentEarnedPoint = [];
+
+//     //Comparing Rubric with students earned point
+//     for (var i = 0; i < studentAssessmentList.length; i++) {
+//       //Check if earned point matches with correct response key /rubric
+//       if (studentEarnedPoint.contains(isMcqSheet == true
+//           ? studentAssessmentList[i].studentResponseKey
+//           : studentAssessmentList[i].studentGrade)) {
+//         for (var j = 0; j < summaryCardDetailsList.length; j++) {
+//           if (summaryCardDetailsList[j].value ==
+//               (isMcqSheet == true
+//                   ? studentAssessmentList[i].studentResponseKey
+//                   : studentAssessmentList[i].studentGrade)) {
+//             //Increasing count of number of student exist with same score or selected key
+//             summaryCardDetailsList[j].count =
+//                 summaryCardDetailsList[j].count! + 1;
+//           }
+//         }
+//       } else {
+//         //Updating list to compare next values of studentAssessmentList
+//         studentEarnedPoint.add(isMcqSheet == true
+//             ? studentAssessmentList[i].studentResponseKey!
+//             : studentAssessmentList[i].studentGrade!);
+//         summaryCardDetailsList.add(ResultSummeryDetailModel(
+//             value: isMcqSheet == true
+//                 ? studentAssessmentList[i].studentResponseKey
+//                 : studentAssessmentList[i].studentGrade,
+//             count: 1,
+//             pointPossible: isMcqSheet == true
+//                 ? studentAssessmentList[i].answerKey
+//                 : studentAssessmentList[i].pointPossible));
+//       }
+//     }
+
+//     //Returning width for each result for summary card with their value
+//     for (var i = 0; i < summaryCardDetailsList.length; i++) {
+//       //Formula :::::::Totalwidth /AssessmentListLength/ StudentEarnedPointCount
+// //-------------------------------------------------------------------
+//       summaryCardDetailsList[i].width = (width /
+//           (studentAssessmentList.length / summaryCardDetailsList[i].count!));
+// //-------------------------------------------------------------------
+//       Color color = AppTheme.kPrimaryColor;
+//       if (isMcqSheet == true) {
+//         color = studentAssessmentList[i].answerKey ==
+//                 summaryCardDetailsList[i].value
+//             ? Color(0xAA7ac36a)
+//             : Color(0xAAe57373);
+//       } else {
+//         switch (summaryCardDetailsList[i].value) {
+//           case '0':
+//             {
+//               color = Color(0xAAe57373);
+//               break;
+//             }
+//           case '1':
+//             {
+//               color = summaryCardDetailsList[i].pointPossible == '4'
+//                   ? Color(0xAAe57373)
+//                   : Color(0xAAffd54f);
+//               break;
+//             }
+//           case '2':
+//             {
+//               color = summaryCardDetailsList[i].pointPossible == '2'
+//                   ? Color(0xAA7ac36a)
+//                   : Color(0xAAffd54f);
+//               break;
+//             }
+//           case '3':
+//             {
+//               color = summaryCardDetailsList[i].pointPossible == '3'
+//                   ? Color(0xAA7ac36a)
+//                   : Color(0xAAffd54f);
+//               break;
+//             }
+//           case '4':
+//             {
+//               color = Color(0xAA7ac36a);
+//               break;
+//             }
+//         }
+//       }
+//       summaryCardDetailsList[i].color = color;
+//     }
+//     summaryCardDetailsList.sort((a, b) => a.value!.compareTo(b.value!));
+//     return summaryCardDetailsList;
+//   }

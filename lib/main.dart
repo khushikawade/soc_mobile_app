@@ -18,10 +18,9 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
@@ -45,7 +44,7 @@ import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
-import 'src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
