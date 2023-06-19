@@ -219,36 +219,4 @@ class CreateAssessmentScreenMethod {
       });
     }
   }
-
-/*------------------------------------------------------------------------------------------------*/
-/*---------------------------------------updateGradeList------------------------------------------*/
-/*------------------------------------------------------------------------------------------------*/
-  static updateGradeList(
-      {context,
-      required String sectionName,
-      required customGrades,
-      required selectedGrade,
-      required scaffoldKey,
-      required void setState}) async {
-    LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
-
-    if (!customGrades.contains(sectionName)) {
-      customGrades.removeLast();
-      customGrades.add(sectionName);
-      customGrades.add('+');
-      //-----------------------------
-      setState;
-      //-----------------------------
-
-      selectedGrade.value = customGrades[customGrades.length - 2];
-    } else {
-      Utility.showSnackBar(
-          scaffoldKey, "Subject \'$sectionName\' Already Exist", context, null);
-    }
-
-    await _localDb.clear();
-    customGrades.forEach((String e) {
-      _localDb.addData(e);
-    });
-  }
 }
