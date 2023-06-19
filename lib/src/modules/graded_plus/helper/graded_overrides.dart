@@ -20,6 +20,8 @@ class OcrOverrides {
   static final ValueNotifier<bool> gradedPlusNavBarIsHide =
       ValueNotifier<bool>(false);
 
+  static final String gradedPlusStandardClassroomDB =
+      'GradedPlus_student_course_details';
   static String? gradedPlusHistoryAssignmentGooglePresentationId;
 
   static String? gradedPlusHistoryAssignmentGooglePresentationLink;

@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_custom_nav_bar_widget.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 
 import 'package:flutter/material.dart';
@@ -19,11 +20,16 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
   PersistentTabController? gradedPlusPersistentTabController;
   final ValueNotifier<int> indexNotifier =
       ValueNotifier<int>(Overrides.STANDALONE_GRADED_APP ? 1 : 2);
+
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+
   @override
   void initState() {
     super.initState();
     gradedPlusPersistentTabController = PersistentTabController(
         initialIndex: Overrides.STANDALONE_GRADED_APP ? 1 : 2);
+
+    pbisPlusClassroomBloc.add(PBISPlusImportRoster(isGradedPlus: true));
   }
 
   @override

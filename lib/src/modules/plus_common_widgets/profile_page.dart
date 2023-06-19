@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
@@ -241,19 +243,34 @@ class _ProfilePageState extends State<ProfilePage> {
                         radius: 50.0,
                         child: Container(
                           alignment: Alignment.center,
-                          height: Globals.deviceType == "phone" ? 28 : 32,
-                          width: Globals.deviceType == "phone" ? 28 : 32,
-                          color: Color.fromARGB(255, 29, 146, 242),
-                          child: Text(widget.profile.userName != null &&
-                                  widget.profile.userName != ''
-                              ? widget.profile.userName!.split(' ').length > 1
-                                  ? widget.profile.userName!.substring(0, 1) +
-                                      widget.profile.userName!.substring(1, 2)
-                                  : widget.profile.userName!.split(' ').length >
-                                          0
-                                      ? widget.profile.userName!.substring(0, 1)
-                                      : 'Unknown'
-                              : 'Unknown'),
+                          child: Text(
+                            widget.profile.userName != null &&
+                                    widget.profile.userName != ''
+                                ? widget.profile.userName!.split(' ').length > 1
+                                    ? widget.profile.userName!
+                                            .split(' ')[0]
+                                            .substring(0, 1) +
+                                        widget.profile.userName!
+                                            .split(' ')[1]
+                                            .substring(0, 1)
+                                    : widget.profile.userName!
+                                                .split(' ')
+                                                .length >
+                                            0
+                                        ? widget.profile.userName!
+                                            .substring(0, 1)
+                                        : 'Unknown'
+                                : 'Unknown',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Colors.black
+                                        : Colors.white),
+                          ),
                         ),
                       ),
                 SizedBox(

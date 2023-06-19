@@ -444,7 +444,7 @@
 //                                                     LocalDatabase(
 //                                                         'student_info'),
 //                                                 studentClassObj:
-//                                                     GoogleClassroomGlobals
+//                                                     GoogleClassroomOverrides
 //                                                         .studentAssessmentAndClassroomObj,
 //                                                 title: Globals.assessmentName!,
 //                                                 pointPossible:
@@ -615,12 +615,12 @@
 
 //                                 //Mark student that are already saved to google classroom
 //                                 state.obj.forEach((e) async {
-//                                   if ((GoogleClassroomGlobals
+//                                   if ((GoogleClassroomOverrides
 //                                               .studentAssessmentAndClassroomObj
 //                                               ?.courseId
 //                                               ?.isNotEmpty ??
 //                                           false) &&
-//                                       (GoogleClassroomGlobals
+//                                       (GoogleClassroomOverrides
 //                                               .studentAssessmentAndClassroomObj
 //                                               ?.courseWorkId
 //                                               ?.isNotEmpty ??
@@ -679,7 +679,7 @@
 //                               //Get Course URL on detail page load
 //                               _googleClassroomBloc.add(
 //                                   GetClassroomCourseWorkURL(
-//                                       obj: GoogleClassroomGlobals
+//                                       obj: GoogleClassroomOverrides
 //                                           .studentAssessmentAndClassroomObj));
 //                             } else if (state is ErrorState) {
 //                               if (state.errorMsg ==
@@ -775,11 +775,11 @@
 //                                     in _googleClassroomCourseslocalData) {
 //                                   if (element.courseId ==
 //                                       state.assessmentObj!.courseId) {
-//                                     //update the classroom course work id in GoogleClassroomGlobals obj
+//                                     //update the classroom course work id in GoogleClassroomOverrides obj
 //                                     element.courseWorkId =
 //                                         state.assessmentObj!.courseWorkId!;
 
-//                                     GoogleClassroomGlobals
+//                                     GoogleClassroomOverrides
 //                                             .studentAssessmentAndClassroomObj =
 //                                         element;
 
@@ -789,7 +789,7 @@
 //                               }
 
 //                               savedRecordCount = state.resultRecordCount;
-//                               GoogleClassroomGlobals
+//                               GoogleClassroomOverrides
 //                                       .studentAssessmentAndClassroomObj
 //                                       .assessmentCId =
 //                                   historyAssessmentId =
@@ -828,7 +828,7 @@
 //                     _googleClassroomBloc.add(CreateClassRoomCourseWork(
 //                         isEditStudentInfo: true,
 //                         studentAssessmentInfoDb: LocalDatabase('student_info'),
-//                         studentClassObj: GoogleClassroomGlobals
+//                         studentClassObj: GoogleClassroomOverrides
 //                             .studentAssessmentAndClassroomObj,
 //                         title: Globals.assessmentName!,
 //                         pointPossible: Globals.pointPossible ?? "0"));
@@ -847,7 +847,7 @@
 //                         null);
 //                   }
 
-//                   GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+//                   GoogleClassroomOverrides.studentAssessmentAndClassroomObj
 //                       .courseWorkURL = state.classroomCouseWorkURL ?? '';
 //                   classroomUrlStatus.value = true;
 //                 }
@@ -2350,7 +2350,7 @@
 
 //   Future<void> _initState() async {
 //     if (widget.assessmentDetailPage!) {
-//       // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
+//       // GoogleClassroomOverrides.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
 //       await _historystudentAssessmentInfoDb.clear();
 //       if (widget.historySecondTime == true) {
 //         widget.assessmentName = Globals.historyAssessmentName;
@@ -2368,7 +2368,7 @@
 //       _ocrBloc.add(GetDashBoardStatus(
 //           fileId: widget.fileId,
 //           assessmentObj:
-//               GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+//               GoogleClassroomOverrides.studentAssessmentAndClassroomObj));
 //       _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
 //     } else {
 //       updateAssessmentToDb();
@@ -2401,7 +2401,7 @@
 //       'Slides': Globals.googleSlidePresentationLink,
 //       'Sheet': widget.shareLink,
 //       'Class':
-//           GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseWorkURL,
+//           GoogleClassroomOverrides.studentAssessmentAndClassroomObj.courseWorkURL,
 //     };
 
 //     return map[title] ?? '';

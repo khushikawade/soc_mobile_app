@@ -187,10 +187,10 @@ class FetchStudentDetails extends OcrEvent {
   //String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
 
-class GetDashBoardStatus extends OcrEvent {
+class GetAssessmentAndSavedStudentResultSummaryForStandaloneApp extends OcrEvent {
   final String? fileId;
-  GoogleClassroomCourses? assessmentObj;
-  GetDashBoardStatus({required this.fileId, required this.assessmentObj});
+  final GoogleClassroomCourses? assessmentObj;
+  GetAssessmentAndSavedStudentResultSummaryForStandaloneApp({required this.fileId, required this.assessmentObj});
 
   @override
   List<Object> get props => [fileId!, assessmentObj!];
@@ -296,6 +296,20 @@ class GradedPlusSaveResultToDashboard extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetAssessmentAndSavedStudentResultSummaryForStandardApp extends OcrEvent {
+  final String? fileId;
+  final ClassroomCourse? assessmentObj;
+  GetAssessmentAndSavedStudentResultSummaryForStandardApp(
+      {required this.fileId, required this.assessmentObj});
+
+  @override
+  List<Object> get props => [fileId!, assessmentObj!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $fileId}';
+}
+
 
 class FetchGradedApprovedDomains extends OcrEvent {
   FetchGradedApprovedDomains();

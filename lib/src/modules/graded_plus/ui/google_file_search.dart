@@ -22,7 +22,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share/share.dart';
 import '../../../services/utility.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/model/recent_google_file.dart';
 
@@ -355,10 +355,10 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
               List<dynamic> reversedRecentDetailDbList =
                   new List.from(recentDetailDbList.reversed);
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses();
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses(
                       assessmentCId:
                           reversedRecentDetailDbList[index].assessmentId,
@@ -583,11 +583,11 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                       }
                                       // }
 
-                                      GoogleClassroomGlobals
+                                      GoogleClassroomOverrides
                                               .studentAssessmentAndClassroomObj =
                                           GoogleClassroomCourses();
 
-                                      GoogleClassroomGlobals
+                                      GoogleClassroomOverrides
                                               .studentAssessmentAndClassroomObj =
                                           GoogleClassroomCourses(
                                               assessmentCId: data.assessmentId,

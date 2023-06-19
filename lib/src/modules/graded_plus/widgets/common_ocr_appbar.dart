@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
@@ -11,6 +12,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -246,15 +248,22 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(
                                             animating: true, radius: 10))
-                                : Container(
-                                    alignment: Alignment.center,
-                                    height:
-                                        Globals.deviceType == "phone" ? 28 : 32,
-                                    width:
-                                        Globals.deviceType == "phone" ? 28 : 32,
-                                    color: Color.fromARGB(255, 29, 146, 242),
-                                    child: Text(snapshot.data!.userName!
-                                        .substring(0, 1)),
+                                : CircleAvatar(
+                                    // alignment: Alignment.center,
+                                    // height:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // width:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // color: Color.fromARGB(255, 29, 146, 242),
+                                    child: Text(
+                                      snapshot.data!.userName!.substring(0, 1),
+                                      style: TextStyle(
+                                          color: Color(0xff000000) ==
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
                                   ),
                           ),
                           onPressed: () async {
@@ -286,11 +295,39 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return CommonPopupWidget(
-                  isLogout: true,
-                  orientation: orientation,
-                  context: context,
-                  message: message,
-                  title: title!);
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message: message,
+                title: title!,
+                confirmationOnPress: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "logout");
+                  await UserGoogleProfile.clearUserProfile();
+                  await GoogleClassroom.clearClassroomCourses();
+                  Authentication.signOut(context: context);
+                  Utility.clearStudentInfo(tableName: 'student_info');
+                  Utility.clearStudentInfo(tableName: 'history_student_info');
+
+                  Utility.updateLogs(
+                      activityType: 'GRADED+',
+                      activityId: '3',
+                      description: 'User profile logout',
+                      operationResult: 'Success');
+                  // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                  if (Overrides.STANDALONE_GRADED_APP) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => GradedLandingPage(
+                                  isFromLogoutPage: true,
+                                )),
+                        (_) => false);
+                  } else {
+                    // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                },
+              );
             }));
   }
 
