@@ -9,7 +9,8 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/scan_result/scan_result_method.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -248,7 +249,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                     backgroundColor: AppTheme.kButtonColor,
                     onPressed: () {
                       //  Condition to check id is validate or not
-                      if (validateStudentId(value: idController.text)) {
+                      if (ScanResultMethods.validateStudentId(
+                          value: idController.text, regex: regex)) {
                         onPressAction();
                       } else {
                         Utility.updateLogs(
@@ -265,7 +267,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       child: Row(
                         children: [
                           Utility.textWidget(
-                              text: validateStudentId(value: idController.text)
+                              text: ScanResultMethods.validateStudentId(
+                                      value: idController.text, regex: regex)
                                   ? "Next"
                                   : 'Retry',
                               context: context,
@@ -278,7 +281,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                         ],
                       ),
                     ),
-                    icon: validateStudentId(value: idController.text)
+                    icon: ScanResultMethods.validateStudentId(
+                            value: idController.text, regex: regex)
                         ? Icon(
                             IconData(0xe877,
                                 fontFamily: Overrides.kFontFam,
@@ -1393,8 +1397,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                             )),
                       )),
                   //Compare Correct Answer Key
-                  if (index == widget.selectedAnswer )
-                    Expanded(child: animatedArrowWidget())
+                  if (index == widget.selectedAnswer)
+                    Expanded(
+                        child: ScanResultMethods.animatedArrowWidget(
+                            context: context, animation: _animation))
                 ],
               );
             },
@@ -1522,19 +1528,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         onPressed: onPressed);
   }
 
-  String getIdFromEmail(studentEmailDetails) {
-    try {
-      for (int i = 0; i < standardStudentDetails.length; i++) {
-        if (standardStudentDetails[i].email == studentEmailDetails) {
-          return standardStudentDetails[i].studentId ?? studentEmailDetails;
-        }
-      }
-      return studentEmailDetails;
-    } catch (e) {
-      return studentEmailDetails;
-    }
-  }
-
   void updateDetails(
       {bool? isUpdateData,
       required bool? isFromHistoryAssessmentScanMore}) async {
@@ -1547,10 +1540,14 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         studentEmail = idController.text;
       }
 
-      updatedStudentId = getIdFromEmail(idController.text);
+      updatedStudentId = ScanResultMethods.getIdFromEmail(
+          studentEmailDetails: idController.text,
+          standardStudentDetails: standardStudentDetails);
     } else {
       if (Overrides.STANDALONE_GRADED_APP == false) {
-        studentEmail = getEmailFromId(idController.text);
+        studentEmail = ScanResultMethods.getEmailFromId(
+            studentIdDetails: idController.text,
+            standardStudentDetails: standardStudentDetails);
       }
 
       updatedStudentId = idController.text;
@@ -2116,53 +2113,5 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     }
 
     onChange = true;
-  }
-
-  Widget animatedArrowWidget() {
-    // print(_animation);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          transform: Matrix4.translationValues(0, _animation.value * 5, 0),
-          child: SvgPicture.asset(
-            Strings.keyArrowSvgIconPath,
-            fit: BoxFit.contain,
-            width: Globals.deviceType == "phone" ? 28 : 50,
-            height: Globals.deviceType == "phone" ? 28 : 50,
-          ),
-        ),
-        Utility.textWidget(
-            textAlign: TextAlign.center,
-            text: "Key",
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w400,
-                color: Theme.of(context).colorScheme.primaryVariant)),
-      ],
-    );
-  }
-
-  // Function to validate student id field to show retry and next button
-  bool validateStudentId({required String value}) {
-    return (value.isNotEmpty && Overrides.STANDALONE_GRADED_APP == true
-        ? (regex.hasMatch(value))
-        : (Utility.checkForInt(value)
-            ? (value.length == 9 && ((value[0] == '2' || value[0] == '1')))
-            : (regex.hasMatch(value))));
-  }
-
-  String getEmailFromId(String studentIdDetails) {
-    try {
-      for (int i = 0; i < standardStudentDetails.length; i++) {
-        if (standardStudentDetails[i].studentId == studentIdDetails) {
-          return standardStudentDetails[i].email ?? studentIdDetails;
-        }
-      }
-      return studentIdDetails;
-    } catch (e) {
-      return studentIdDetails;
-    }
   }
 }

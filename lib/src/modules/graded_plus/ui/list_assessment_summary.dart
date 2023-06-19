@@ -477,10 +477,10 @@
 //               createdAsPremium = true;
 //             }
 //             //     Globals.historyAssessmentId = list[index].assessmentId!;
-//             GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//             GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //                 GoogleClassroomCourses();
 
-//             GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//             GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //                 GoogleClassroomCourses(
 //                     assessmentCId: list[index].assessmentId,
 //                     courseId: list[index].classroomCourseId,

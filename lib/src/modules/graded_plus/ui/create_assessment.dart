@@ -78,7 +78,7 @@
 //   final addController = TextEditingController();
 //   @override
 //   void initState() {
-//     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//     GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //         GoogleClassroomCourses();
 
 //     //Managing suggestion chips // course name // class name
@@ -680,7 +680,7 @@
 
 //                 // Check if using standalone graded app and if student not belongs to selected classroom
 //                 if (Overrides.STANDALONE_GRADED_APP &&
-//                     (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+//                     (GoogleClassroomOverrides.studentAssessmentAndClassroomObj
 //                             ?.courseId?.isEmpty ??
 //                         true)) {
 //                   Utility.currentScreenSnackBar(
@@ -728,7 +728,7 @@
 //               //         assessmentNameError.value.length >= 2 &&
 //               //         classError.value.isNotEmpty) {
 //               //       if (Overrides.STANDALONE_GRADED_APP &&
-//               //           (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+//               //           (GoogleClassroomOverrides.studentAssessmentAndClassroomObj
 //               //                   ?.courseId?.isEmpty ??
 //               //               true)) {
 //               //         Utility.currentScreenSnackBar(
@@ -1025,7 +1025,7 @@
 //   }
 
 //   updateClassName() async {
-//     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//     GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //         GoogleClassroomCourses(courseId: '');
 
 //     LocalDatabase<GoogleClassroomCourses> _localDb =
@@ -1062,7 +1062,7 @@
 //               print(classroom.name);
 //               classError.value = classroom.name!;
 //               if (Overrides.STANDALONE_GRADED_APP) {
-//                 GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//                 GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //                     classroom;
 //               }
 //               if (classController.text?.isEmpty != false) {
@@ -1075,8 +1075,8 @@
 //       }
 //     }
 //     // print(_localData);
-//     // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
-//     // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
+//     // print(GoogleClassroomOverrides.studentAssessmentAndClassroomObj.name);
+//     // print(GoogleClassroomOverrides.studentAssessmentAndClassroomObj.courseId);
 //   }
 
 //   _checkFieldEditable({required String msg}) {
@@ -1150,7 +1150,7 @@
 //       _googleClassroomBloc.add(CreateClassRoomCourseWork(
 //           studentAssessmentInfoDb: _studentAssessmentInfoDb,
 //           studentClassObj:
-//               GoogleClassroomGlobals.studentAssessmentAndClassroomObj,
+//               GoogleClassroomOverrides.studentAssessmentAndClassroomObj,
 //           title: Globals.assessmentName ?? '',
 //           pointPossible: Globals.pointPossible ?? "0"));
 //     }

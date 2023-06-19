@@ -82,22 +82,6 @@ class _ChipsFilterState extends State<ChipsFilter> {
             widget.selectedValue(filter);
           }
         });
-
-        // if (widget.isSelectedChipWithColor) {
-        //   active = !active;
-        //   setState(() {
-        //     widget.selectedValue(selectedIndex == currentIndex
-        //         ? ''
-        //         : widget.filters![currentIndex!]);
-        //     selectedIndex == currentIndex ? null : selectedIndex = currentIndex;
-        //   });
-        // } else {
-        //   active = true;
-        //   setState(() {
-        //     widget.selectedValue(widget.filters![currentIndex!]);
-        //     selectedIndex = currentIndex;
-        //   });
-        // }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),

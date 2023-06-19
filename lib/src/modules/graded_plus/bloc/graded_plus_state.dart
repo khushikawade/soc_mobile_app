@@ -193,14 +193,14 @@ class AssessmentIdSuccess extends OcrState {
   List<Object> get props => [dashboardAssignmentsId!];
 }
 
-class AssessmentDashboardStatus extends OcrState {
+class AssessmentDashboardStatusForStandaloneApp extends OcrState {
   int? resultRecordCount;
   GoogleClassroomCourses? assessmentObj;
-  AssessmentDashboardStatus(
+  AssessmentDashboardStatusForStandaloneApp(
       {this.resultRecordCount, required this.assessmentObj});
-  AssessmentDashboardStatus copyWith(
+  AssessmentDashboardStatusForStandaloneApp copyWith(
       {final obj, final recordCount, final assessmentId}) {
-    return AssessmentDashboardStatus(
+    return AssessmentDashboardStatusForStandaloneApp(
         resultRecordCount: recordCount ?? this.resultRecordCount,
         assessmentObj: assessmentId ?? this.assessmentObj);
   }
@@ -214,9 +214,9 @@ class AssessmentDashboardStatusForStandardApp extends OcrState {
   ClassroomCourse? assessmentObj;
   AssessmentDashboardStatusForStandardApp(
       {this.resultRecordCount, required this.assessmentObj});
-  AssessmentDashboardStatus copyWith(
+  AssessmentDashboardStatusForStandardApp copyWith(
       {final obj, final recordCount, final assessmentId}) {
-    return AssessmentDashboardStatus(
+    return AssessmentDashboardStatusForStandardApp(
         resultRecordCount: recordCount ?? this.resultRecordCount,
         assessmentObj: assessmentId ?? this.assessmentObj);
   }

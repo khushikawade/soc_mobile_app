@@ -361,10 +361,10 @@
 //                         sessionId: Globals.sessionId,
 //                         teacherContactId: Globals.teacherId,
 //                         teacherEmail: Globals.teacherEmailId,
-//                         classroomCourseId: GoogleClassroomGlobals
+//                         classroomCourseId: GoogleClassroomOverrides
 //                                 ?.studentAssessmentAndClassroomObj?.courseId ??
 //                             '',
-//                         classroomCourseWorkId: GoogleClassroomGlobals
+//                         classroomCourseWorkId: GoogleClassroomOverrides
 //                                 ?.studentAssessmentAndClassroomObj
 //                                 ?.courseWorkId ??
 //                             ''));
@@ -395,7 +395,7 @@
 //                           studentAssessmentInfoDb:
 //                               LocalDatabase('student_info'),
 //                           pointPossible: Globals.pointPossible ?? '0',
-//                           studentClassObj: GoogleClassroomGlobals
+//                           studentClassObj: GoogleClassroomOverrides
 //                               .studentAssessmentAndClassroomObj!,
 //                           title: Globals.assessmentName ?? ''));
 //                     } else {
@@ -1418,7 +1418,7 @@
 //                                       listener: (context, state) async {
 //                                         if (state is AssessmentIdSuccess) {
 //                                           if (Overrides.STANDALONE_GRADED_APP &&
-//                                               (GoogleClassroomGlobals
+//                                               (GoogleClassroomOverrides
 //                                                       .studentAssessmentAndClassroomObj
 //                                                       ?.courseWorkId
 //                                                       ?.isEmpty ??
@@ -1436,7 +1436,7 @@
 //                                                         Globals.pointPossible ??
 //                                                             '0',
 //                                                     studentClassObj:
-//                                                         GoogleClassroomGlobals
+//                                                         GoogleClassroomOverrides
 //                                                             .studentAssessmentAndClassroomObj!,
 //                                                     title: Globals
 //                                                             .assessmentName ??

@@ -300,7 +300,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 context: context,
                 message: message,
                 title: title!,
-                confirmationOnPressed: () async {
+                confirmationOnPress: () async {
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
                   await UserGoogleProfile.clearUserProfile();
@@ -308,20 +308,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   Authentication.signOut(context: context);
                   Utility.clearStudentInfo(tableName: 'student_info');
                   Utility.clearStudentInfo(tableName: 'history_student_info');
-
-                  //Log Activity to database
-                  // _ocrBlocLogs.add(LogUserActivityEvent(
-                  //     activityType: 'GRADED+',
-                  //     sessionId: '',
-                  //     teacherId: Globals.teacherId,
-                  //     activityId: '2',
-                  //     accountId: Globals.appSetting.schoolNameC,
-                  //     accountType: Globals.isPremiumUser == true
-                  //         ? "Premium"
-                  //         : "Free",
-                  //     dateTime: currentDateTime.toString(),
-                  //     description: 'Logout',
-                  //     operationResult: 'Success'));
 
                   Utility.updateLogs(
                       activityType: 'GRADED+',
@@ -338,12 +324,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         (_) => false);
                   } else {
                     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                    // Navigator.of(context).pushAndRemoveUntil(
-                    //     MaterialPageRoute(
-                    //         builder: (context) => HomePage(
-                    //               isFromOcrSection: true,
-                    //             )),
-                    //     (_) => false);
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   }
                 },

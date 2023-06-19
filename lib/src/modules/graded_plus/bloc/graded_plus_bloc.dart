@@ -492,7 +492,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is GetDashBoardStatus) {
+    //Used in Standalone // This will be removed later on
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandaloneApp) {
       try {
         yield OcrLoading2();
 
@@ -500,53 +501,57 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           AssessmentDetails obj =
               await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
 
+          //Updating details to assessment object
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.courseId = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object
-                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                : await _getSavedStudentListFromDashboardByAssessmentId(
                     assessmentId: event.assessmentObj!.assessmentCId),
             assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
       }
     }
 
-    if (event is GetDashBoardStatusForStandardApp) {
+    //Used in Standard App
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandardApp) {
       try {
         yield OcrLoading2();
 
+        //Fetch Assessment Id by Google File Id
         if (event.assessmentObj?.assessmentCId?.isEmpty ?? true) {
           AssessmentDetails obj =
               await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
 
+          //Updating details to assessment object
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.id = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
-
+        //Fetch Saved Student List from Database/Dashboard
         yield AssessmentDashboardStatusForStandardApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object
-                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                : await _getSavedStudentListFromDashboardByAssessmentId(
                     assessmentId: event.assessmentObj!.assessmentCId),
             assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
-        yield AssessmentDashboardStatus(
-            resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
+        yield AssessmentDashboardStatusForStandardApp(
+            resultRecordCount: 0, assessmentObj: ClassroomCourse());
       }
     }
 
@@ -1608,7 +1613,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<int> _getSavedStudentListSavedInDashboardByAssessmentId(
+  Future<int> _getSavedStudentListFromDashboardByAssessmentId(
       {required String? assessmentId, int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
@@ -1619,7 +1624,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             ? response?.data["body"].length
             : 0;
       } else if (retry > 0) {
-        return _getSavedStudentListSavedInDashboardByAssessmentId(
+        return _getSavedStudentListFromDashboardByAssessmentId(
             assessmentId: assessmentId, retry: retry - 1);
       }
       return 0;

@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
@@ -453,30 +453,29 @@ class _GradedPlusAssessmentSummaryState
             }
             //     Globals.historyAssessmentId = list[index].assessmentId!;
             if (Overrides.STANDALONE_GRADED_APP) {
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                  GoogleClassroomCourses();
+              // GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+              //     GoogleClassroomCourses();
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                  GoogleClassroomCourses(
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+                  await GoogleClassroomCourses(
                       assessmentCId: list[index].assessmentId,
                       courseId: list[index].classroomCourseId,
                       courseWorkId: list[index].classroomCourseWorkId);
             } else {
-              GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
-                  ClassroomCourse();
+              // GoogleClassroomOverrides
+              //         .historyStudentResultSummaryForStandardApp =
+              //     ClassroomCourse();
 
-              GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
-                  ClassroomCourse(
+              GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp =
+                  await ClassroomCourse(
                       assessmentCId: list[index].assessmentId,
                       id: list[index].classroomCourseId,
                       courseWorkId: list[index].classroomCourseWorkId);
             }
 
-            print(GoogleClassroomGlobals
-                .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
-                .courseWorkId);
+            print(GoogleClassroomOverrides
+                .historyStudentResultSummaryForStandardApp.courseWorkId);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -669,7 +668,7 @@ class _GradedPlusAssessmentSummaryState
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',
                   'Sheets': assessment.webContentLink ?? '',
-                  'Class': GoogleClassroomGlobals
+                  'Class': GoogleClassroomOverrides
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
                 },

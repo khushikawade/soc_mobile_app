@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/services/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
@@ -70,27 +70,44 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
 
 class _GradedPlusSearchScreenPageState
     extends State<GradedPlusSearchScreenPage> {
+//------------------------------------------------------------------------------------------
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final searchController = TextEditingController();
+  // final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+
+//------------------------------------------------------------------------------------------
   final ValueNotifier<int> nycSubIndex1 =
       ValueNotifier<int>(5000); //To bypass the default selection
   final ValueNotifier<int> listLength =
       ValueNotifier<int>(5000); //To bypass the default selection
-
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   // Value Notifier to check which is update or not
-  ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus =
-      ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
+  ValueNotifier<LoadingStatusModel> assessmentExportAndSaveStatus =
+      ValueNotifier<LoadingStatusModel>(LoadingStatusModel(
           excelSheetPrepared: false,
           slidePrepared: false,
           saveAssessmentResultToDashboard: false,
-          googleClassRoomIsUpdated: false));
+          googleClassroomPrepared: false));
 
-   List<String> processList = ((GoogleClassroomGlobals
-                  .studentAssessmentAndClassroomAssignmentForStandardApp
-                  .id
-                  ?.isNotEmpty ??
-              false) &&
-          Overrides.STANDALONE_GRADED_APP != true)
+//------------------------------------------------------------------------------------------
+  GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();
+  GoogleDriveBloc googleBloc = GoogleDriveBloc();
+  GoogleDriveBloc googleSlideBloc = GoogleDriveBloc();
+  OcrBloc ocrAssessmentBloc = OcrBloc();
+  OcrBloc _ocrBloc = OcrBloc();
+  OcrBloc _ocrBloc2 = OcrBloc();
+
+//------------------------------------------------------------------------------------------
+  // final searchController = TextEditingController();
+  List<String> processList = ((GoogleClassroomOverrides
+              .recentStudentResultSummaryForStandardApp.id?.isNotEmpty ??
+          false)
+      // &&
+      // Overrides.STANDALONE_GRADED_APP != true
+      )
       ? [
           'Google Sheet',
           'Google Slides',
@@ -98,42 +115,21 @@ class _GradedPlusSearchScreenPageState
           '${Globals.schoolDbnC} Dashboard'
         ]
       : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
-
-  GoogleDriveBloc excelSheetBloc = GoogleDriveBloc();
-  GoogleDriveBloc googleBloc = GoogleDriveBloc();
-  GoogleDriveBloc googleSlideBloc = GoogleDriveBloc();
-  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
-  final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
-  String? learningStandard;
-  // final ValueNotifier<int> listLength =
-  //     ValueNotifier<int>(5000); //To bypass the default selection
-
-  // final ValueNotifier<int> nycSubIndex1 =
-  //     ValueNotifier<int>(5000); //To bypass the default selection
-
-  OcrBloc ocrAssessmentBloc = OcrBloc();
-  // final searchController = TextEditingController();
   List<SubjectDetailList> searchList = [];
+  LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
+      LocalDatabase('student_info');
   StateSetter? showDialogSetState;
+  String? learningStandard;
   String? standardDescription;
   String? standardId;
   int standardLearningLength = 0;
   String? subLearningStandard;
-
   static const double _KVertcalSpace = 60.0;
-
   final _debouncer = Debouncer(milliseconds: 10);
-  OcrBloc _ocrBloc = OcrBloc();
-  OcrBloc _ocrBloc2 = OcrBloc();
-  // final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final ScrollController _scrollController = ScrollController();
-  LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
-      LocalDatabase('student_info');
+  //------------------------------------------------------------------------------------------
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -668,53 +664,21 @@ class _GradedPlusSearchScreenPageState
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
-          showDialogSetState!(() {
+            showDialogSetState!(() {
               assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             });
             Globals.currentAssessmentId = '';
 
-            // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-            //     await OcrUtility.getSortedStudentInfoList(
-            //         tableName: 'student_info');
-            // Globals.currentAssessmentId = '';
-            // //Save Assessment To  Postgres Database
-            // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-            //     isMcqSheet: widget.isMcqSheet ?? false,
-            //     assessmentQueImage:
-            //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
-            //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
-            //     rubricScore: Globals.scoringRubric ?? '2',
-            //     subjectName: widget.selectedSubject ??
-            //         'NA', //Student Id will not be there in case of custom subject
-            //     domainName: learningStandard ?? '',
-            //     subDomainName: subLearningStandard ?? '',
-            //     grade: widget.grade ?? '',
-            //     schoolId: Globals.appSetting.schoolNameC ?? '',
-            //     standardId: standardId ?? '',
-            //     scaffoldKey: _scaffoldKey,
-            //     context: context,
-            //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-            //     sessionId: Globals.sessionId,
-            //     teacherContactId: Globals.teacherId,
-            //     teacherEmail: Globals.teacherEmailId,
-            //     classroomCourseId: GoogleClassroomGlobals
-            //             ?.studentAssessmentAndClassroomObj?.courseId ??
-            //         '',
-            //     classroomCourseWorkId: GoogleClassroomGlobals
-            //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-            //         ''));
-            //! navigateToResultSummery();
-
 //If classroom course id is empty or null thats mean user didnt select any classroom course
-            if ((GoogleClassroomGlobals
-                        .studentAssessmentAndClassroomAssignmentForStandardApp
+            if ((GoogleClassroomOverrides
+                        .recentStudentResultSummaryForStandardApp
                         .id
                         ?.isNotEmpty ??
                     false) &&
                 Overrides.STANDALONE_GRADED_APP != true) {
               createClassRoomCourseWorkForStandardApp();
             } else {
-               assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated =
+              assessmentExportAndSaveStatus.value.googleClassroomPrepared =
                   true;
               saveAssessmentToDashboardAndGetId();
             }
@@ -777,7 +741,7 @@ class _GradedPlusSearchScreenPageState
               assessmentExportAndSaveStatus.value.slidePrepared = true;
             });
 
-            navigateToResultSummery();
+            navigateToResultSummary();
           }
         });
   }
@@ -802,7 +766,7 @@ class _GradedPlusSearchScreenPageState
             assessmentExportAndSaveStatus
                 .value.saveAssessmentResultToDashboard = true;
           });
-          navigateToResultSummery();
+          navigateToResultSummary();
         }
       },
       child: Container(),
@@ -810,12 +774,21 @@ class _GradedPlusSearchScreenPageState
   }
 
   /* ----- Function will navigate to result summery when all process done ----- */
-  navigateToResultSummery() {
+  navigateToResultSummary() {
     // check all process is done or not
+
     if (assessmentExportAndSaveStatus.value.excelSheetPrepared == true &&
         assessmentExportAndSaveStatus.value.slidePrepared == true &&
         assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
             true) {
+      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+          "save_to_drive_from_subject_search");
+      Utility.updateLogs(
+          activityType: 'GRADED+',
+          activityId: '12',
+          description: 'Save to drive',
+          operationResult: 'Success');
+
       Navigator.pop(context);
       OcrUtility.showSuccessDialog(context: context);
       Timer(Duration(seconds: 2), () {
@@ -909,7 +882,7 @@ class _GradedPlusSearchScreenPageState
     }
 
     //google classroom with student details if not already updated
-    if (assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated == false) {
+    if (assessmentExportAndSaveStatus.value.googleClassroomPrepared == false) {
       createClassRoomCourseWorkForStandardApp();
     }
 
@@ -918,36 +891,6 @@ class _GradedPlusSearchScreenPageState
     if (assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
         false) {
       Globals.currentAssessmentId = '';
-
-      // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-      //     await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
-      // Globals.currentAssessmentId = '';
-      // //Save Assessment To  Postgres Database
-      // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-      //     isMcqSheet: widget.isMcqSheet ?? false,
-      //     assessmentQueImage:
-      //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? 'NA',
-      //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
-      //     rubricScore: Globals.scoringRubric ?? '2',
-      //     subjectName: widget.selectedSubject ??
-      //         '', //Student Id will not be there in case of custom subject
-      //     domainName: learningStandard ?? '',
-      //     subDomainName: subLearningStandard ?? '',
-      //     grade: widget.grade ?? '',
-      //     schoolId: Globals.appSetting.schoolNameC ?? '',
-      //     standardId: standardId ?? '',
-      //     scaffoldKey: _scaffoldKey,
-      //     context: context,
-      //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-      //     sessionId: Globals.sessionId,
-      //     teacherContactId: Globals.teacherId,
-      //     teacherEmail: Globals.teacherEmailId,
-      //     classroomCourseId: GoogleClassroomGlobals
-      //             ?.studentAssessmentAndClassroomObj?.courseId ??
-      //         '',
-      //     classroomCourseWorkId: GoogleClassroomGlobals
-      //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-      //         ''));
 
       saveAssessmentToDashboardAndGetId();
     }
@@ -965,7 +908,7 @@ class _GradedPlusSearchScreenPageState
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
-            _navigatetoResultSection();
+            navigateToResultSummary();
           }
           if (state is GoogleClassroomErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
@@ -978,8 +921,8 @@ class _GradedPlusSearchScreenPageState
               widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
                   studentAssessmentInfoDb: LocalDatabase('student_info'),
                   pointPossible: Globals.pointPossible ?? '0',
-                  studentClassObj:
-                      GoogleClassroomGlobals.studentAssessmentAndClassroomObj!,
+                  studentClassObj: GoogleClassroomOverrides
+                      .studentAssessmentAndClassroomObj!,
                   title: Globals.assessmentName!.split("_")[1] ?? ''));
             } else {
               Navigator.of(context).pop();
@@ -990,20 +933,20 @@ class _GradedPlusSearchScreenPageState
 
           if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
             showDialogSetState!(() {
-              assessmentExportAndSaveStatus.value.googleClassRoomIsUpdated =
+              assessmentExportAndSaveStatus.value.googleClassroomPrepared =
                   true;
             });
             saveAssessmentToDashboardAndGetId();
-            navigateToResultSummery();
+            navigateToResultSummary();
           }
         });
   }
 
   void createClassRoomCourseWorkForStandardApp() {
-    widget.googleClassroomBloc.add(CreateClassRoomCourseWorkForStandardApp(
+    widget.googleClassroomBloc.add(CreateClassroomCourseWorkForStandardApp(
         studentAssessmentInfoDb: _studentAssessmentInfoDb,
-        studentClassObj: GoogleClassroomGlobals
-            .studentAssessmentAndClassroomAssignmentForStandardApp,
+        studentClassObj:
+            GoogleClassroomOverrides.recentStudentResultSummaryForStandardApp,
         title: Globals.assessmentName ?? '',
         pointPossible: Globals.pointPossible ?? "0"));
   }
@@ -1034,27 +977,12 @@ class _GradedPlusSearchScreenPageState
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
         teacherEmail: Globals.teacherEmailId,
-        classroomCourseId: GoogleClassroomGlobals
+        classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
             '',
-        classroomCourseWorkId: GoogleClassroomGlobals
+        classroomCourseWorkId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseWorkId ??
             ''));
-  }
-
-  void _navigatetoResultSection() {
-    // Navigator.of(context).pop();
-
-    GradedGlobals.loadingMessage = null;
-    //widget.googleDriveBloc.close();
-
-    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        "save_to_drive_from_subject_search");
-    Utility.updateLogs(
-        activityType: 'GRADED+',
-        activityId: '12',
-        description: 'Save to drive',
-        operationResult: 'Success');
   }
 
   //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1152,6 +1080,7 @@ class _GradedPlusSearchScreenPageState
                   ),
                 ),
                 // SpacerWidget(10),
+                //FetchRecentSearch for nyc sub domain
                 BlocListener<OcrBloc, OcrState>(
                   bloc: _ocrBloc,
                   listener: (context, state) {
@@ -1180,6 +1109,8 @@ class _GradedPlusSearchScreenPageState
                   },
                   child: Container(),
                 ),
+
+                //FetchRecentSearch for nyc domain
                 BlocListener<OcrBloc, OcrState>(
                   bloc: _ocrBloc2,
                   listener: (context, state) {

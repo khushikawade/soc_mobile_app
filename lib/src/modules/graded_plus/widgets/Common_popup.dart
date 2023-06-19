@@ -28,7 +28,7 @@ class CommonPopupWidget extends StatefulWidget {
   final bool? clearButton;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final void Function()? confirmationOnPressed;
+  final void Function()? confirmationOnPress;
   final String? confirmationButtonTitle;
   final String? deniedButtonTitle;
   CommonPopupWidget({
@@ -43,7 +43,7 @@ class CommonPopupWidget extends StatefulWidget {
     this.clearButton,
     this.titleStyle,
     this.backgroundColor,
-    this.confirmationOnPressed,
+    this.confirmationOnPress,
     this.confirmationButtonTitle = 'Yes',
     this.deniedButtonTitle = 'No',
   }) : super(key: key);
@@ -139,7 +139,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                     [
                       textButtonWidget(
                         title: widget.confirmationButtonTitle ?? '',
-                        onPressed: widget.confirmationOnPressed,
+                        onPressed: widget.confirmationOnPress,
                         color: Colors.red,
 
                         //  () async {

@@ -20,7 +20,7 @@ import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
 import 'dart:convert';
 import 'dart:io';
-import '../google_classroom_globals.dart';
+import '../services/google_classroom_globals.dart';
 part 'google_classroom_event.dart';
 
 part 'google_classroom_state.dart';
@@ -248,10 +248,10 @@ class GoogleClassroomBloc
 
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj
                   .courseWorkId = obj.courseWorkId;
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj
                   .courseWorkURL = obj.courseWorkURL;
             }
 
@@ -338,7 +338,7 @@ class GoogleClassroomBloc
       }
     }
 
-    if (event is CreateClassRoomCourseWorkForStandardApp) {
+    if (event is CreateClassroomCourseWorkForStandardApp) {
       try {
         yield GoogleClassroomLoading();
 
@@ -355,7 +355,7 @@ class GoogleClassroomBloc
             (event.isFromHistoryAssessmentScanMore ?? false)) {
           // courseWorkId is null or empty, and isHistorySanMore is either null or false
           LocalDatabase<ClassroomCourse> _googleClassRoomLocalDb =
-              LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+              LocalDatabase(OcrOverrides.gradedPlusStandardClassroomDB);
           List<ClassroomCourse> _googleClassRoomLocalData =
               await _googleClassRoomLocalDb.getData();
 
@@ -483,20 +483,20 @@ class GoogleClassroomBloc
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
               if (event.isFromHistoryAssessmentScanMore == true) {
-                GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                GoogleClassroomOverrides
+                    .historyStudentResultSummaryForStandardApp
                     .courseWorkId = obj.courseWorkId;
 
-                GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                GoogleClassroomOverrides
+                    .historyStudentResultSummaryForStandardApp
                     .courseWorkURL = obj.courseWorkURL;
               } else {
-                GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp
                     .courseWorkId = obj.courseWorkId;
 
-                GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomAssignmentForStandardApp
+                GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp
                     .courseWorkURL = obj.courseWorkURL;
               }
             }
