@@ -19,6 +19,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -583,11 +584,12 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: _scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar(
@@ -687,11 +689,12 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: _scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
@@ -708,11 +711,12 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: _scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
@@ -912,11 +916,12 @@ class _GradedPlusSearchScreenPageState
           }
           if (state is GoogleClassroomErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: _scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
 
               widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
                   studentAssessmentInfoDb: LocalDatabase('student_info'),

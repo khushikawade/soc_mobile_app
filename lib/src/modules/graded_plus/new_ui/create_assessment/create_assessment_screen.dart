@@ -813,7 +813,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               customGrades: widget.customGrades,
               selectedGrade: selectedGrade,
               scaffoldKey: scaffoldKey,
-              setState: setState(() {}));
+              setState: null //setState(() {})
+              );
 
           // to updated selection to local db
           CreateAssessmentScreenMethod.updateSelectedGrade(

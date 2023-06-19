@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -285,12 +286,12 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                     if (state is GoogleClassroomErrorState) {
                       rosterImport.value = '';
                       if (state.errorMsg == 'ReAuthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: _scaffoldKey);
-
+                        // await Utility.refreshAuthenticationToken(
+                        //     isNavigator: false,
+                        //     errorMsg: state.errorMsg!,
+                        //     context: context,
+                        //     scaffoldKey: _scaffoldKey);
+                        await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
                         _googleClassroomBloc.add(GetClassroomCourses());
                       } else {
                         Navigator.of(context).pop();
