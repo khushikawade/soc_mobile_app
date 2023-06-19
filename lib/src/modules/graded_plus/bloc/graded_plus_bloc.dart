@@ -262,7 +262,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //  var data =
         yield AuthorizedUserLoading();
-        bool result = event.isAuthorized == true
+        bool result = event.isAuthorizedUser == true
             ? await authorizedUserWithDatabase(email: event.email)
             : await verifyUserWithDatabase(email: event.email.toString());
         if (result == true) {
