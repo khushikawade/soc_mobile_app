@@ -7,8 +7,10 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/overrides.dart';
@@ -31,15 +33,17 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusActionInteractionModalNew? item;
+  PBISPlusSkillsListModal? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
+  int? index = -1;
   PBISPlusEditSkillsBottomSheet(
       {Key? key,
       this.height = 100,
       required this.item,
       required this.containerIcons,
-      required BoxConstraints constraints});
+      required BoxConstraints constraints,
+      required int index});
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
       _PBISPlusBottomSheetState();
@@ -48,7 +52,9 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
 class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   late PageController _pageController;
   final _formKey = GlobalKey<FormState>();
-  final pointPossibleController = TextEditingController();
+  final editNameController = TextEditingController();
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+
   Future<void> initController() async {
     _pageController = PageController()
       ..addListener(() {
@@ -94,8 +100,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             pageSnapping: false,
             controller: _pageController,
             children: [
-              EditAndDeleteIcon(widget.item),
-              _buildEditNameWidget(widget.item?.title)
+              EditAndDeleteIcon(widget.item?.dataList[0]),
+              _buildEditNameWidget(widget.item?.dataList[0])
             ],
           )),
     );
@@ -117,7 +123,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         ));
   }
 
-  Widget EditAndDeleteIcon(PBISPlusActionInteractionModalNew? item) {
+  Widget EditAndDeleteIcon(PBISPlusSkills? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -142,7 +148,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     showPopup(
                         message: "Are you sure you want to delete this item",
                         title: "",
-                        item: item);
+                        item: dataList);
                   },
                   iconPath: "assets/Pbis_plus/delete.svg",
                   tittle: "Delete"),
@@ -205,9 +211,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   showPopup(
-      {required String message,
-      required String? title,
-      PBISPlusActionInteractionModalNew? item}) {
+      {required String message, required String? title, PBISPlusSkills? item}) {
     Navigator.of(context).pushReplacement(HeroDialogRoute(
         builder: (context) => PBISPlusCommonPopup(
               item: item!,
@@ -227,7 +231,35 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             )));
   }
 
-  Widget _buildEditNameWidget(iconName) {
+  Widget _buildNextbutton(PBISPlusSkills dataList) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+      child: FloatingActionButton.extended(
+          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+          onPressed: () async {
+            print(editNameController.text);
+            if (editNameController.text.isNotEmpty) {
+              pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
+                  item: dataList, newName: editNameController.text));
+            }
+          },
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Utility.textWidget(
+                  text: 'Next',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Theme.of(context).backgroundColor)),
+            ],
+          )),
+    );
+  }
+
+  Widget _buildEditNameWidget(PBISPlusSkills? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -249,7 +281,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           Center(
             child: Utility.textWidget(
                 context: context,
-                text: "${"Edit " + iconName}",
+                text: "${"Edit " + "${dataList!.name}"}",
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
@@ -262,31 +294,45 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 child: TextFieldWidget(
                     hintText: 'Edit Name',
                     msg: "Field is required",
-                    keyboardType: TextInputType.number,
-                    controller: pointPossibleController,
+                    keyboardType: TextInputType.text,
+                    controller: editNameController,
                     onSaved: (String value) {})),
           ),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-            child: FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                onPressed: () async {},
-                label: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Utility.textWidget(
-                        text: 'Next',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  ],
-                )),
-          ),
+          BlocConsumer(
+              bloc: pbisPlusClassroomBloc,
+              builder: (context, state) {
+                print(state);
+                if (state is PBISPlusSkillsUpdateLoading) {
+                  return Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor,
+                      ));
+                } else if (state is PBISPlusSkillsSucess) {
+                  if (state.skillsList.isNotEmpty ?? false) {
+                    return _buildNextbutton(dataList);
+                  } else {
+                    return _buildNextbutton(dataList);
+                  }
+                } else if (state is PBISErrorState)
+                  return _buildNextbutton(dataList);
+                return _buildNextbutton(dataList);
+              },
+              listener: (context, state) async {
+                if (state is PBISPlusSkillsSucess) {
+                  Utility.currentScreenSnackBar(
+                      "Successfully updated skills name", null);
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                } else if (state is PBISErrorState) {
+                  Utility.currentScreenSnackBar(
+                      "Please try again later. Unable to update the skills name.",
+                      null);
+                }
+              }
+              //_buildEditSkillCards()
+              ),
         ],
       ),
     );

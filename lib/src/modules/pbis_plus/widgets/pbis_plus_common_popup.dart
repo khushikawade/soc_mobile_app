@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class PBISPlusCommonPopup extends StatefulWidget {
@@ -15,7 +18,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final PBISPlusActionInteractionModalNew item;
+  final PBISPlusSkills item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
     Key? key,
@@ -38,6 +41,8 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   void dispose() {
     super.dispose();
   }
+
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -131,28 +136,35 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                         ),
                         SizedBox(
                             width: MediaQuery.of(context).size.height / 40),
-                        CircularCustomButton(
-                          borderColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          text: "Delete",
-                          textColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          onClick: () async {
-                            _handleDeleteItem();
-                          },
-                          backgroundColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                          isBusy: false,
-                          size: Size(MediaQuery.of(context).size.width * 0.29,
-                              MediaQuery.of(context).size.width / 10),
-                          buttonRadius: 64,
-                        )
+                        BlocConsumer(
+                            bloc: pbisPlusClassroomBloc,
+                            builder: (context, state) {
+                              print(state);
+                              if (state is PBISPlusSkillsDeleteLoading) {
+                                return _buildDeletebutton(true);
+                              } else if (state is PBISPlusSkillsSucess) {
+                                return _buildDeletebutton(false);
+                              } else if (state is PBISErrorState)
+                                return _buildDeletebutton(false);
+                              return _buildDeletebutton(false);
+                            },
+                            listener: (context, state) async {
+                              if (state is PBISPlusSkillsSucess) {
+                                Utility.currentScreenSnackBar(
+                                    "Successfully Deleted skills", null);
+                                Navigator.pop(context!);
+                                Navigator.pop(context);
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                              } else if (state is PBISPlusSkillsDeleteError) {
+                                Utility.currentScreenSnackBar(
+                                    "Please try again later. Unable to delete the skills.",
+                                    null);
+                                Navigator.pop(context!);
+                              }
+                            }
+                            //_buildEditSkillCards()
+                            ),
                       ])),
             ],
           ),
@@ -163,19 +175,42 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     );
   }
 
-  void _handleDeleteItem() async {
-    bool res = await replaceItems(widget.item.title);
-    if (res) {
-      Utility.currentScreenSnackBar("Skills deleted successfully.", null);
-      Navigator.pop(context);
-    } else {
-      Utility.currentScreenSnackBar(
-          "Failed to delete skills. Please try again.", null);
-      Navigator.pop(context);
-    }
+  Widget _buildDeletebutton(bool isBusy) {
+    return CircularCustomButton(
+      borderColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xff111C20)
+          : Color(0xffF7F8F9),
+      text: "Delete",
+      textColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xff111C20)
+          : Color(0xffF7F8F9),
+      onClick: () async {
+        _handleDeleteItem();
+      },
+      backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xffF7F8F9)
+          : Color(0xff111C20),
+      isBusy: isBusy,
+      size: Size(MediaQuery.of(context).size.width * 0.29,
+          MediaQuery.of(context).size.width / 10),
+      buttonRadius: 64,
+    );
   }
 
-  Widget _buildIconWidget(PBISPlusActionInteractionModalNew item) {
+  void _handleDeleteItem() async {
+    pbisPlusClassroomBloc.add(GetPBISSkillsDeleteItem(item: widget.item));
+    // bool res = await replaceItems(widget.item.title);
+    // if (res) {
+    //   Utility.currentScreenSnackBar("Skills deleted successfully.", null);
+    //   Navigator.pop(context);
+    // } else {
+    //   Utility.currentScreenSnackBar(
+    //       "Failed to delete skills. Please try again.", null);
+    //   Navigator.pop(context);
+    // }
+  }
+
+  Widget _buildIconWidget(PBISPlusSkills item) {
     return Container(
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -187,7 +222,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           radius: 42.0,
           backgroundColor: Colors.transparent,
           child: SvgPicture.asset(
-            item.imagePath,
+            item.iconUrlC!,
             // width: 108.0,
             // height: 108.0,
           ),

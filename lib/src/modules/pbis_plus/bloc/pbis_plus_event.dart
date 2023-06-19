@@ -102,3 +102,24 @@ class GetPBISSkills extends PBISPlusEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetPBISSkillsUpdateName extends PBISPlusEvent {
+  final PBISPlusSkills item;
+  final String newName;
+
+  GetPBISSkillsUpdateName({required this.item, required this.newName});
+
+  @override
+  List<Object> get props => [item, newName];
+}
+
+class GetPBISSkillsDeleteItem extends PBISPlusEvent {
+  final PBISPlusSkills item;
+
+  GetPBISSkillsDeleteItem({
+    required this.item,
+  });
+
+  @override
+  List<Object> get props => [item];
+}

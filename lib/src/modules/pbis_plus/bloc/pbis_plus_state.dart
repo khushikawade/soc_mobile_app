@@ -137,3 +137,27 @@ class PBISPlusSkillsError extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class PBISPlusSkillsUpdateLoading extends PBISPlusState {
+  PBISPlusSkillsUpdateLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusSkillsUpdateError extends PBISPlusState {
+  PBISPlusSkillsUpdateError();
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusSkillsDeleteLoading extends PBISPlusState {
+  PBISPlusSkillsDeleteLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusSkillsDeleteError extends PBISPlusState {
+  PBISPlusSkillsDeleteError();
+  @override
+  List<Object> get props => [];
+}

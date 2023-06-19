@@ -59,12 +59,18 @@ class CircularCustomButton extends StatelessWidget {
               enableFeedback: false,
               animationDuration: Duration.zero,
               fixedSize: const Size(0, 20)),
-          child: Text((text!),
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(color: textColor, fontSize: 12)),
+          child: isBusy!
+              ? Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator.adaptive(
+                    backgroundColor: AppTheme.kButtonColor,
+                  ))
+              : Text((text!),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: textColor, fontSize: 12)),
         ));
   }
 }
