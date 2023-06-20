@@ -12,7 +12,7 @@ import '../../startup.dart';
 import '../../widgets/google_auth_webview.dart';
 import '../google_classroom/modal/google_classroom_courses.dart';
 import '../google_drive/bloc/google_drive_bloc.dart';
-import '../google_drive/model/user_profile.dart';
+import '../../services/user_profile.dart';
 import '../graded_plus/bloc/graded_plus_bloc.dart';
 
 class GoogleLogin {
@@ -104,7 +104,7 @@ class GoogleLogin {
           teacherId: Globals.teacherId,
           activityId: '2',
           accountId: Globals.appSetting.schoolNameC,
-          accountType:"Premium",
+          accountType: "Premium",
           dateTime: currentDateTime.toString(),
           description: 'Google Authentication Success',
           operationResult: 'Success'));
@@ -170,7 +170,7 @@ class GoogleLogin {
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc
-        .add(VerifyUserWithDatabase(email: _userProfileLocalData[0].userEmail));
+        .add(AuthorizedUserWithDatabase(email: _userProfileLocalData[0].userEmail,isAuthorizedUser: false));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
     Globals.googleDriveFolderId = '';

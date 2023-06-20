@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,20 +28,25 @@ class CommonPopupWidget extends StatefulWidget {
   final bool? clearButton;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-
-  CommonPopupWidget(
-      {Key? key,
-      required this.orientation,
-      required this.context,
-      required this.message,
-      required this.title,
-      this.isLogout,
-      this.isAccessDenied,
-      this.actionWidget,
-      this.clearButton,
-      this.titleStyle,
-      this.backgroundColor})
-      : super(key: key);
+  final void Function()? confirmationOnPress;
+  final String? confirmationButtonTitle;
+  final String? deniedButtonTitle;
+  CommonPopupWidget({
+    Key? key,
+    required this.orientation,
+    required this.context,
+    required this.message,
+    required this.title,
+    this.isLogout,
+    this.isAccessDenied,
+    this.actionWidget,
+    this.clearButton,
+    this.titleStyle,
+    this.backgroundColor,
+    this.confirmationOnPress,
+    this.confirmationButtonTitle = 'Yes',
+    this.deniedButtonTitle = 'No',
+  }) : super(key: key);
 
   @override
   State<CommonPopupWidget> createState() => _CommonPopupWidgetState();
@@ -134,63 +138,68 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                 children: widget.actionWidget ??
                     [
                       textButtonWidget(
-                          title: 'Yes',
-                          onPressed: () async {
-                            await FirebaseAnalyticsService
-                                .addCustomAnalyticsEvent("logout");
-                            await UserGoogleProfile.clearUserProfile();
-                            await GoogleClassroom.clearClassroomCourses();
-                            Authentication.signOut(context: context);
-                            Utility.clearStudentInfo(tableName: 'student_info');
-                            Utility.clearStudentInfo(
-                                tableName: 'history_student_info');
+                        title: widget.confirmationButtonTitle ?? '',
+                        onPressed: widget.confirmationOnPress,
+                        color: Colors.red,
 
-                            //Log Activity to database
-                            // _ocrBlocLogs.add(LogUserActivityEvent(
-                            //     activityType: 'GRADED+',
-                            //     sessionId: '',
-                            //     teacherId: Globals.teacherId,
-                            //     activityId: '2',
-                            //     accountId: Globals.appSetting.schoolNameC,
-                            //     accountType: Globals.isPremiumUser == true
-                            //         ? "Premium"
-                            //         : "Free",
-                            //     dateTime: currentDateTime.toString(),
-                            //     description: 'Logout',
-                            //     operationResult: 'Success'));
+                        //  () async {
+                        //   await FirebaseAnalyticsService
+                        //       .addCustomAnalyticsEvent("logout");
+                        //   await UserGoogleProfile.clearUserProfile();
+                        //   await GoogleClassroom.clearClassroomCourses();
+                        //   Authentication.signOut(context: context);
+                        //   Utility.clearStudentInfo(tableName: 'student_info');
+                        //   Utility.clearStudentInfo(
+                        //       tableName: 'history_student_info');
 
-                            Utility.updateLogs(
-                                activityType: 'GRADED+',
-                                activityId: '3',
-                                description: 'User profile logout',
-                                operationResult: 'Success');
-                            // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                            if (Overrides.STANDALONE_GRADED_APP) {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => GradedLandingPage(
-                                            isFromLogoutPage: true,
-                                          )),
-                                  (_) => false);
-                            } else {
-                              // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                              // Navigator.of(context).pushAndRemoveUntil(
-                              //     MaterialPageRoute(
-                              //         builder: (context) => HomePage(
-                              //               isFromOcrSection: true,
-                              //             )),
-                              //     (_) => false);
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                            }
-                          }),
+                        //   //Log Activity to database
+                        //   // _ocrBlocLogs.add(LogUserActivityEvent(
+                        //   //     activityType: 'GRADED+',
+                        //   //     sessionId: '',
+                        //   //     teacherId: Globals.teacherId,
+                        //   //     activityId: '2',
+                        //   //     accountId: Globals.appSetting.schoolNameC,
+                        //   //     accountType: Globals.isPremiumUser == true
+                        //   //         ? "Premium"
+                        //   //         : "Free",
+                        //   //     dateTime: currentDateTime.toString(),
+                        //   //     description: 'Logout',
+                        //   //     operationResult: 'Success'));
+
+                        //   Utility.updateLogs(
+                        //       activityType: 'GRADED+',
+                        //       activityId: '3',
+                        //       description: 'User profile logout',
+                        //       operationResult: 'Success');
+                        //   // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                        //   if (Overrides.STANDALONE_GRADED_APP) {
+                        //     Navigator.of(context).pushAndRemoveUntil(
+                        //         MaterialPageRoute(
+                        //             builder: (context) => GradedLandingPage(
+                        //                   isFromLogoutPage: true,
+                        //                 )),
+                        //         (_) => false);
+                        //   } else {
+                        //     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                        //     // Navigator.of(context).pushAndRemoveUntil(
+                        //     //     MaterialPageRoute(
+                        //     //         builder: (context) => HomePage(
+                        //     //               isFromOcrSection: true,
+                        //     //             )),
+                        //     //     (_) => false);
+                        //     Navigator.of(context)
+                        //         .popUntil((route) => route.isFirst);
+                        //   }
+                        // }
+                      ),
                       Container(
                         height: 40,
                         width: 1,
                         color: Colors.grey.withOpacity(0.2),
                       ),
                       textButtonWidget(
-                          title: 'No',
+                          color: AppTheme.kButtonColor,
+                          title: widget.deniedButtonTitle ?? '',
                           onPressed: () {
                             Navigator.pop(context);
                           })
@@ -272,19 +281,21 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
   }
 
   Widget textButtonWidget(
-      {required String title, required void Function()? onPressed}) {
+      {required String title,
+      required void Function()? onPressed,
+      required Color color}) {
     return TextButton(
       child: TranslationWidget(
           message: title,
           fromLanguage: "en",
           toLanguage: Globals.selectedLanguage,
           builder: (translatedMessage) {
-            return Text(translatedMessage.toString(),
-                style: Theme.of(context).textTheme.headline1!.copyWith(
-                      color: title == 'Yes' && widget.isLogout == true
-                          ? Colors.red
-                          : AppTheme.kButtonColor,
-                    ));
+            return FittedBox(
+              child: Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: color,
+                      )),
+            );
           }),
       onPressed: onPressed,
     );

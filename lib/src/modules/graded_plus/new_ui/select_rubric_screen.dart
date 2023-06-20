@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -248,7 +249,8 @@ class _GradedPlusConstructedResponseState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context: context, isOCR: true);
+                Utility.showLoadingDialog(
+                    context: context, isOCR: true, msg: 'Please Wait');
               }
               if (state is GoogleSuccess) {
                 if (Globals.googleDriveFolderId != null &&
@@ -260,10 +262,14 @@ class _GradedPlusConstructedResponseState
               if (state is ErrorState) {
                 Navigator.of(context).pop();
                 if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
+                  // await Utility.refreshAuthenticationToken(
+                  //     isNavigator: true,
+                  //     errorMsg: state.errorMsg!,
+                  //     context: context,
+                  //     scaffoldKey: _scaffoldKey);
+                  await Authentication.reAuthenticationRequired(
                       context: context,
+                      errorMessage: state.errorMsg!,
                       scaffoldKey: _scaffoldKey);
 
                   _triggerDriveFolderEvent(false);
@@ -302,7 +308,8 @@ class _GradedPlusConstructedResponseState
           //clears scan more list
           Globals.scanMoreStudentInfoLength = null;
 
-          if (Globals.googleDriveFolderId!.isNotEmpty) {
+          if (Globals.googleDriveFolderId != null &&
+              Globals.googleDriveFolderId!.isNotEmpty) {
             _beforenavigateOnCameraSection();
           } else {
             _triggerDriveFolderEvent(false);
@@ -579,7 +586,8 @@ class _GradedPlusConstructedResponseState
               imageURL: customScoreObj.imgUrl!));
     } else if (customScoreObj.imgBase64 != null &&
         customScoreObj.imgBase64!.isNotEmpty) {
-      Utility.showLoadingDialog(context: context, isOCR: true);
+      Utility.showLoadingDialog(
+          context: context, isOCR: true, msg: 'Please Wait');
       _googleDriveBloc.add(ImageToAwsBucket(
           customRubricModal: customScoreObj, getImageUrl: true));
     } else {
@@ -656,20 +664,20 @@ class _GradedPlusConstructedResponseState
     navigateToCamera();
   }
 
-  void _beforenavigateOnAssessmentSection() {
-    if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-    }
+  // void _beforenavigateOnAssessmentSection() {
+  //   if (Globals.sessionId == '') {
+  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+  //   }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GradedPlusAssessmentSummary(
-                selectedFilterValue: 'Constructed Response',
-                isFromHomeSection: true,
-              )),
-    );
-  }
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => GradedPlusAssessmentSummary(
+  //               selectedFilterValue: 'Constructed Response',
+  //               isFromHomeSection: true,
+  //             )),
+  //   );
+  // }
 
   void navigateToPdfViewer({required RubricPdfModal pdfObject}) {
     if (pdfObject.rubricPdfC == null ||

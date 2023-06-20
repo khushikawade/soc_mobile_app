@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -100,6 +100,11 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         //yield StudentPlusLoading();
         List<StudentPlusWorkModel> list =
             await getStudentWorkDetails(studentId: event.studentId ?? '');
+
+        list.asMap().forEach((i, element) {
+          print(i);
+          print(element.standardAndDescriptionC);
+        });
 
         await _localDb.clear();
         list.sort((a, b) => b.dateC!.compareTo(a.dateC!));

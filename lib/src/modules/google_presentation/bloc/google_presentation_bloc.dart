@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -61,8 +61,11 @@ class GoogleSlidesPresentationBloc
         }
         //Create presentation to google drive Student+ folder if not already exist
         else if (searchPresentationResult[0] && googlePresentationId == '') {
-          String fileName =
-              "${event.studentDetails.firstNameC}_${event.studentDetails.lastNameC}_${event.studentDetails.studentIdC}";
+          String fileName = (event.studentDetails.firstNameC ?? '') +
+              "_" +
+              (event.studentDetails.lastNameC ?? '') +
+              "_" +
+              (event.studentDetails.studentIdC ?? '');
 
           List GooglePresentationCreateResponse =
               await googleDriveBloc.createPresentationOnDrive(
@@ -197,9 +200,11 @@ class GoogleSlidesPresentationBloc
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
 
-      String fileName =
-          "${studentDetails.firstNameC}_${studentDetails.lastNameC}_${studentDetails.studentIdC}";
-
+      String fileName = (studentDetails.firstNameC ?? '') +
+          "_" +
+          (studentDetails.lastNameC ?? '') +
+          "_" +
+          (studentDetails.studentIdC ?? '');
       // String query =
       //     'name%3D%22$fileName%22+and+mimeType%3D%22application%2Fvnd.google-apps.presentation%22+and+trashed%3Dfalse';
       String query =

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -11,7 +13,6 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
@@ -40,13 +41,19 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*----------------------------------------------------------------------------------------------*/
     print("PBISPlusBloc bloc event recived ---------------->> $event");
     if (event is PBISPlusImportRoster) {
+      String plusClassroomDBTableName = event.isGradedPlus == true
+          ? OcrOverrides.gradedPlusStandardClassroomDB
+          : PBISPlusOverrides.pbisPlusClassroomDB;
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
+        // LocalDatabase<ClassroomCourse> _localDb =
+        //     LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+            LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
         //Clear Roster local data to manage loading issue
@@ -64,7 +71,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (_localData.isEmpty) {
           //Managing dummy response for shimmer loading
           var list = await _getShimmerData();
-          print(list);
           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
@@ -88,9 +94,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 googleClassroomCourseList: responseList[0]);
           }
 
-          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
-              await getPBISTotalInteractionByTeacher(
-                  teacherEmail: userProfileLocalData[0].userEmail!);
+          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
+          //Get PBISTotal interaction only if Section is PBIS+
+          if (event.isGradedPlus == false) {
+            pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+                teacherEmail: userProfileLocalData[0].userEmail!);
+          }
 
           // Merge Student Interaction with Google Classroom Rosters
           List<ClassroomCourse> classroomStudentProfile =
@@ -122,7 +131,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         print(e);
 
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+            LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
         sort(obj: _localData);
         // _localDb.close();
@@ -210,6 +219,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               userProfileLocalData[0].userName!.replaceAll('%20', ' '),
           "Status": "active"
         });
+
+        /*-------------------------User Activity Track START----------------------------*/
+        Utility.updateLogs(
+            activityType: 'PBIS+',
+            activityId: '38',
+            description:
+                'User Interaction PBIS+ for student ${event.studentId}',
+            operationResult: 'Success');
+        /*-------------------------User Activity Track END----------------------------*/
 
         yield AddPBISInteractionSuccess(
           obj: data,
@@ -432,8 +450,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await googleClassroomBloc
-            .toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken ?? '');
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =

@@ -1,9 +1,10 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -91,18 +92,17 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     teacherId: Globals.teacherId,
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
-                    accountType:
-                        "Premium",
+                    accountType: "Premium",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
                 if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
-
+                  // await Utility.refreshAuthenticationToken(
+                  //     isNavigator: true,
+                  //     errorMsg: state.errorMsg!,
+                  //     context: context,
+                  //     scaffoldKey: _scaffoldKey);
+ await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
                   _triggerDriveFolderEvent(state.isAssessmentSection);
                 } else {
                   Navigator.of(context).pop();
@@ -279,7 +279,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType:"Premium",
+        accountType: "Premium",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));

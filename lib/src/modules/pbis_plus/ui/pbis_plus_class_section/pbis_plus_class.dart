@@ -3,9 +3,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
@@ -30,13 +30,13 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class PBISPlusClass extends StatefulWidget {
   final IconData titleIconData;
   final VoidCallback backOnTap;
-  final bool? isGradedPlus;
+  final bool isGradedPlus;
 
   PBISPlusClass(
       {Key? key,
       required this.titleIconData,
       required this.backOnTap,
-      this.isGradedPlus = false})
+      required this.isGradedPlus})
       : super(key: key);
 
   @override
@@ -66,7 +66,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   @override
   void initState() {
     super.initState();
-    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+    pbisPlusClassroomBloc
+        .add(PBISPlusImportRoster(isGradedPlus: widget.isGradedPlus));
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -287,7 +288,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           context: context,
                           scaffoldKey: _scaffoldKey);
 
-                      pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+                      pbisPlusClassroomBloc.add(PBISPlusImportRoster(
+                          isGradedPlus: widget.isGradedPlus));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -809,7 +811,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+    pbisPlusClassroomBloc
+        .add(PBISPlusImportRoster(isGradedPlus: widget.isGradedPlus));
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'Sync Google Classroom Course List PBIS+'

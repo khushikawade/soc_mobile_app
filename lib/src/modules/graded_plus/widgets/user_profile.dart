@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../../globals.dart';
 import '../../../styles/theme.dart';
 import '../../google_classroom/modal/google_classroom_list.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../home/ui/home.dart';
 import '../modal/student_assessment_info_modal.dart';
 
@@ -204,17 +204,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                                 (_) => false);
                           } else {
                             // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(
-                            //         builder: (context) => HomePage(
-                            //               isFromOcrSection: true,
-                            //             )),
-                            //     (_) => false);
                             Navigator.of(context)
                                 .popUntil((route) => route.isFirst);
                           }
-
-                          //Globals.isCameraPopup = false;
                         },
                       ),
                     ),

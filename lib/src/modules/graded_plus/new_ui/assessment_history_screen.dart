@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_action_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -22,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
@@ -451,16 +452,30 @@ class _GradedPlusAssessmentSummaryState
               createdAsPremium = true;
             }
             //     Globals.historyAssessmentId = list[index].assessmentId!;
-            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                GoogleClassroomCourses();
+            if (Overrides.STANDALONE_GRADED_APP) {
+              // GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+              //     GoogleClassroomCourses();
 
-            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                GoogleClassroomCourses(
-                    assessmentCId: list[index].assessmentId,
-                    courseId: list[index].classroomCourseId,
-                    courseWorkId: list[index].classroomCourseWorkId);
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+                  await GoogleClassroomCourses(
+                      assessmentCId: list[index].assessmentId,
+                      courseId: list[index].classroomCourseId,
+                      courseWorkId: list[index].classroomCourseWorkId);
+            } else {
+              // GoogleClassroomOverrides
+              //         .historyStudentResultSummaryForStandardApp =
+              //     ClassroomCourse();
 
-            // await _historyStudentInfoDb.clear();
+              GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp =
+                  await ClassroomCourse(
+                      assessmentCId: list[index].assessmentId,
+                      id: list[index].classroomCourseId,
+                      courseWorkId: list[index].classroomCourseWorkId);
+            }
+
+            print(GoogleClassroomOverrides
+                .historyStudentResultSummaryForStandardApp.courseWorkId);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -590,6 +605,7 @@ class _GradedPlusAssessmentSummaryState
 
   filterBottomSheet() {
     showModalBottomSheet(
+        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
@@ -622,6 +638,7 @@ class _GradedPlusAssessmentSummaryState
 
   _saveAndShareBottomSheetMenu({required HistoryAssessment assessment}) {
     showModalBottomSheet(
+
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -651,7 +668,7 @@ class _GradedPlusAssessmentSummaryState
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',
                   'Sheets': assessment.webContentLink ?? '',
-                  'Class': GoogleClassroomGlobals
+                  'Class': GoogleClassroomOverrides
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
                 },

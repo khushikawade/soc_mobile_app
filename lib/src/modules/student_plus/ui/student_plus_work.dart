@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -538,11 +539,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           if (state is GoogleSlidesPresentationErrorState) {
             Navigator.pop(context, false);
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: false,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: scaffoldKey);
+               await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
                   state.errorMsg == 'NO_CONNECTION'
@@ -576,11 +578,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           if (state is ErrorState) {
             Navigator.of(context).pop();
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: scaffoldKey);
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: false,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: scaffoldKey);
+               await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
                   "Something Went Wrong. Please Try Again.", null);
