@@ -47,20 +47,24 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
-  static final addSkill = PBISPlusActionInteractionModalNew(
-    imagePath: "assets/Pbis_plus/add_icon.svg",
-    title: 'Add Skill',
-    color: Colors.red,
+  static final addSkill = PBISPlusSkills(
+    id: "5",
+    activeStatusC: "Show",
+    iconUrlC: "assets/Pbis_plus/add_icon.svg",
+    name: 'Add Skill',
+    sortOrderC: "5",
+    counter: "0",
   );
-  // ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
-  //     ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
-  //   PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
-  //   PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
-  //   addSkill,
-  //   addSkill,
-  //   addSkill,
-  //   addSkill
-  // ]);
+
+  ValueNotifier<List<PBISPlusSkills>> containerIcons =
+      ValueNotifier<List<PBISPlusSkills>>([
+    PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[0],
+    PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[1],
+    addSkill,
+    addSkill,
+    addSkill,
+    addSkill
+  ]);
   int nonAddSkillCount = -1;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -147,28 +151,29 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             ),
           ),
           SpacerWidget(18),
-          BlocConsumer(
-              bloc: pbisPlusClassroomBloc,
-              builder: (context, state) {
-                print(state);
-                if (state is PBISPlusSkillsLoading) {
-                  return Container(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator.adaptive(
-                        backgroundColor: AppTheme.kButtonColor,
-                      ));
-                } else if (state is PBISPlusSkillsSucess) {
-                  if (state.skillsList.isNotEmpty) {
-                    return _buildEditItemList(state.skillsList);
-                  } else {
-                    return _noDataFoundWidget();
-                  }
-                } else if (state is PBISErrorState) return _noDataFoundWidget();
-                return _noDataFoundWidget();
-              },
-              listener: (context, state) async {}
-              //_buildEditSkillCards()
-              ),
+          // BlocConsumer(
+          //     bloc: pbisPlusClassroomBloc,
+          //     builder: (context, state) {
+          //       print(state);
+          //       if (state is PBISPlusSkillsLoading) {
+          //         return Container(
+          //             alignment: Alignment.center,
+          //             child: CircularProgressIndicator.adaptive(
+          //               backgroundColor: AppTheme.kButtonColor,
+          //             ));
+          //       } else if (state is PBISPlusSkillsSucess) {
+          //         if (state.skillsList.isNotEmpty) {
+          //           return _buildEditItemList(state.skillsList);
+          //         } else {
+          //           return _noDataFoundWidget();
+          //         }
+          //       } else if (state is PBISErrorState) return _noDataFoundWidget();
+          //       return _noDataFoundWidget();
+          //     },
+          //     listener: (context, state) async {}
+          //     //_buildEditSkillCards()
+          //     ),
+          _buildEditItemList(containerIcons)
         ],
       ),
     );
@@ -201,8 +206,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           itemCount: 6,
           //  skillsList.length,
           itemBuilder: (BuildContext context, int index) {
-            // final item = containerIcons.value[index];
-            final item = skillsList[index];
+            final item = containerIcons.value[index];
+            // final item = skillsList[index];
             return DragTarget<PBISPlusSkills>(
                 onWillAccept: (draggedData) {
                   hoveredIconIndex.value =
@@ -222,15 +227,15 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     if (count < 6) {
                       if (hoveredIconIndex.value < count) {
                         // containerIcons.value[hoveredIconIndex.value] = draggedData;
-                        skillsList[hoveredIconIndex.value] = draggedData;
+                        // skillsList[hoveredIconIndex.value] = draggedData;
                       } else {
-                        // containerIcons.value[count] = draggedData;
-                        skillsList[count] = draggedData;
+                        containerIcons.value[count] = draggedData;
+                        // skillsList[count] = draggedData;
                       }
                     } else {
-                      // containerIcons.value[hoveredIconIndex.value] =
-                      //     draggedData; // Change the hovered icon
-                      skillsList[hoveredIconIndex.value] = draggedData;
+                      containerIcons.value[hoveredIconIndex.value] =
+                          draggedData; // Change the hovered icon
+                      // skillsList[hoveredIconIndex.value] = draggedData;
                     }
 
                     hoveredIconIndex.value = -1;
@@ -241,7 +246,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 builder: (context, candidateData, rejectedData) {
                   return GestureDetector(
                       onTap: () {
-                        print(skillsList[index].dataList[0].name);
+                        // print(skillsList[index].dataList[0].name);
                         // if (containerIcons.value[index].title != "Add Skill") {
                         //   isEditMode.value = true;
                         //   changedIndex.value = index;
@@ -268,7 +273,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                               height: 40,
                                               width: 40,
                                               child: SvgPicture.asset(
-                                                item.dataList[0].iconUrlC!,
+                                                item.iconUrlC!,
+                                                // item.dataList[0].iconUrlC!,
                                                 fit: BoxFit.contain,
                                               ),
                                             ),
@@ -276,7 +282,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                               height: 40,
                                               width: 40,
                                               child: SvgPicture.asset(
-                                                item.dataList[0].iconUrlC!,
+                                                item.iconUrlC!,
+                                                // item.dataList[0].iconUrlC!,
                                                 fit: BoxFit.contain,
                                               ),
                                             ),
@@ -284,7 +291,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                               height: 40,
                                               width: 40,
                                               child: SvgPicture.asset(
-                                                item.dataList[0].iconUrlC!,
+                                                item.iconUrlC!,
+                                                // item.dataList[0].iconUrlC!,
                                                 fit: BoxFit.contain,
                                               ),
                                             ),
@@ -297,7 +305,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                                         top: 10, left: 10)
                                                     : EdgeInsets.zero,
                                             child: Utility.textWidget(
-                                                text: item.dataList[0].name!,
+                                                text: item.name!,
+                                                // item.dataList[0].name!,
                                                 context: context,
                                                 textTheme: Theme.of(context)
                                                     .textTheme
@@ -341,11 +350,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditWidget(PBISPlusSkillsListModal item, int index) {
+  Widget _buildEditWidget(PBISPlusSkills item, int index) {
     return GestureDetector(
       onTap: () async {
-        await _modalBottomSheetMenu(item, index);
-        changedIndex.value = -1;
+        // await _modalBottomSheetMenu(item, index);
+        // changedIndex.value = -1;
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
