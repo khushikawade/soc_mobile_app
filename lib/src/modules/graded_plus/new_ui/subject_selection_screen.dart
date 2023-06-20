@@ -878,6 +878,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                               // Condition to check selected subject from local or not
                               if ((list[index].id == null)) {
                                 isSubmitButton.value = true;
+                                isSkipButton.value = false;
                               } else {
                                 isSkipButton.value = true;
                                 isSubmitButton.value = false;
@@ -1372,7 +1373,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             Globals.googleSlidePresentationLink;
         await _studentAssessmentInfoDb.putAt(0, element);
 
-        GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
+        // GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
 
         // Utility.showLoadingDialog(
         //     context: context,
@@ -1435,7 +1436,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _navigateToResultSection() {
-    GradedGlobals.loadingMessage = null;
+    // GradedGlobals.loadingMessage = null;
     Navigator.of(context).pop();
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
