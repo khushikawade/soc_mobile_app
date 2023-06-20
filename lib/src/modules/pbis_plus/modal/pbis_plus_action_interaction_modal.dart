@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
@@ -172,8 +173,8 @@ class PBISPlusSkillsModalLocal {
     required this.counter,
   });
 
-  static List<PBISPlusSkillsModalLocal> PBISPlusSkillLocalModallist = [
-    PBISPlusSkillsModalLocal(
+  static List<PBISPlusSkills> PBISPlusSkillLocalModallist = [
+    PBISPlusSkills(
       id: "0",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/Engaged.svg",
@@ -181,7 +182,7 @@ class PBISPlusSkillsModalLocal {
       sortOrderC: "0",
       counter: "0",
     ),
-    PBISPlusSkillsModalLocal(
+    PBISPlusSkills(
       id: "1",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/Helpful.svg",
@@ -190,7 +191,7 @@ class PBISPlusSkillsModalLocal {
       counter: "0",
     ),
 
-    PBISPlusSkillsModalLocal(
+    PBISPlusSkills(
       id: "2",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/add_icon.svg",
@@ -198,7 +199,7 @@ class PBISPlusSkillsModalLocal {
       sortOrderC: "2",
       counter: "0",
     ),
-    PBISPlusSkillsModalLocal(
+    PBISPlusSkills(
       id: "3",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/add_icon.svg",
@@ -206,7 +207,7 @@ class PBISPlusSkillsModalLocal {
       sortOrderC: "3",
       counter: "0",
     ),
-    PBISPlusSkillsModalLocal(
+    PBISPlusSkills(
       id: "4",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/add_icon.svg",
@@ -214,7 +215,7 @@ class PBISPlusSkillsModalLocal {
       sortOrderC: "4",
       counter: "0",
     ),
-    PBISPlusSkillsModalLocal(
+    PBISPlusSkills(
       id: "5",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/add_icon.svg",

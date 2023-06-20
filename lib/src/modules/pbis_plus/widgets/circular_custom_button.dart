@@ -60,11 +60,16 @@ class CircularCustomButton extends StatelessWidget {
               animationDuration: Duration.zero,
               fixedSize: const Size(0, 20)),
           child: isBusy!
-              ? Container(
-                  alignment: Alignment.center,
-                  child: CircularProgressIndicator.adaptive(
-                    backgroundColor: AppTheme.kButtonColor,
-                  ))
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      height: 14,
+                      width: 14,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor,
+                      )),
+                )
               : Text((text!),
                   textAlign: TextAlign.center,
                   style: Theme.of(context)

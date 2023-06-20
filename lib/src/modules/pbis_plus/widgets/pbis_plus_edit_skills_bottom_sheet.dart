@@ -41,7 +41,7 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
       {Key? key,
       this.height = 100,
       required this.item,
-      required this.containerIcons,
+      this.containerIcons,
       required BoxConstraints constraints,
       required int index});
   @override

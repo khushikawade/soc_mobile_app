@@ -52,15 +52,15 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     title: 'Add Skill',
     color: Colors.red,
   );
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
-      ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
-    addSkill,
-    addSkill,
-    addSkill,
-    addSkill
-  ]);
+  // ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
+  //     ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
+  //   PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
+  //   PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
+  //   addSkill,
+  //   addSkill,
+  //   addSkill,
+  //   addSkill
+  // ]);
   int nonAddSkillCount = -1;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -74,17 +74,17 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   }
 
   getcount() {
-    nonAddSkillCount =
-        containerIcons.value.where((item) => item.title != "Add Skill").length;
+    nonAddSkillCount = 0;
+    // containerIcons.value.where((item) => item.title != "Add Skill").length;
     return nonAddSkillCount;
   }
 
   bool isItemExist(data) {
-    if (containerIcons.value.isNotEmpty) {
-      final result =
-          containerIcons.value.where((item) => item.title == data.title);
-      return result.isNotEmpty;
-    }
+    // if (containerIcons.value.isNotEmpty) {
+    //   final result =
+    //       containerIcons.value.where((item) => item.title == data.title);
+    //   return result.isNotEmpty;
+    // }
     return false;
   }
 
@@ -158,7 +158,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         backgroundColor: AppTheme.kButtonColor,
                       ));
                 } else if (state is PBISPlusSkillsSucess) {
-                  if (state.skillsList.isNotEmpty ?? false) {
+                  if (state.skillsList.isNotEmpty) {
                     return _buildEditItemList(state.skillsList);
                   } else {
                     return _noDataFoundWidget();
@@ -184,8 +184,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditItemList(List<PBISPlusSkillsListModal> skillsList) {
-    return DragTarget<PBISPlusActionInteractionModalNew>(
+  Widget _buildEditItemList(skillsList) {
+    return DragTarget<PBISPlusSkills>(
         builder: (context, candidateData, rejectedData) {
       return GridView.builder(
           shrinkWrap: true,
@@ -198,57 +198,66 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             mainAxisSpacing: 4.0,
           ),
           // itemCount: 6,
-          itemCount: skillsList.length,
+          itemCount: 6,
+          //  skillsList.length,
           itemBuilder: (BuildContext context, int index) {
             // final item = containerIcons.value[index];
             final item = skillsList[index];
-            return DragTarget<PBISPlusSkillsListModal>(
+            return DragTarget<PBISPlusSkills>(
                 onWillAccept: (draggedData) {
-              hoveredIconIndex.value = index; // Update the hovered icon index
-              print(hoveredIconIndex);
-              return true;
-            }, onAccept: (draggedData) {
-              print(isItemExist(draggedData));
-              if (isItemExist(draggedData) == false) {
-                int count;
-                count = getcount();
-                if (count < 6) {
-                  if (hoveredIconIndex.value < count) {
-                    // containerIcons.value[hoveredIconIndex.value] = draggedData;
-                    skillsList[hoveredIconIndex.value] = draggedData;
-                  } else {
-                    // containerIcons.value[count] = draggedData;
-                    skillsList[count] = draggedData;
-                  }
-                } else {
-                  // containerIcons.value[hoveredIconIndex.value] =
-                  //     draggedData; // Change the hovered icon
-                  skillsList[hoveredIconIndex.value] = draggedData;
-                }
-
-                hoveredIconIndex.value = -1;
-                changedIndex.value = -1;
-              }
-              setState(() {});
-            }, builder: (context, candidateData, rejectedData) {
-              return GestureDetector(
-                  onTap: () {
-                    print(skillsList[index].dataList[0].name);
-                    // if (containerIcons.value[index].title != "Add Skill") {
-                    //   isEditMode.value = true;
-                    //   changedIndex.value = index;
-                    // }
-                    if (skillsList[index].dataList[0].name != "Add Skill") {
-                      isEditMode.value = true;
-                      changedIndex.value = index;
+                  hoveredIconIndex.value =
+                      index; // Update the hovered icon index
+                  print(hoveredIconIndex);
+                  return true;
+                },
+                onLeave: ((data) => print(
+                    "-----------------INSIDE ON LEAVE---------------------------")),
+                onAccept: (draggedData) {
+                  print(
+                      "-----------------INSIDE ON onAccept---------------------------");
+                  print(isItemExist(draggedData));
+                  if (isItemExist(draggedData) == false) {
+                    int count;
+                    count = getcount();
+                    if (count < 6) {
+                      if (hoveredIconIndex.value < count) {
+                        // containerIcons.value[hoveredIconIndex.value] = draggedData;
+                        skillsList[hoveredIconIndex.value] = draggedData;
+                      } else {
+                        // containerIcons.value[count] = draggedData;
+                        skillsList[count] = draggedData;
+                      }
+                    } else {
+                      // containerIcons.value[hoveredIconIndex.value] =
+                      //     draggedData; // Change the hovered icon
+                      skillsList[hoveredIconIndex.value] = draggedData;
                     }
-                  },
-                  child: ValueListenableBuilder(
-                      valueListenable: changedIndex,
-                      builder: (context, value, _) => ValueListenableBuilder(
-                            valueListenable: isEditMode,
-                            builder: (context, value, _) =>
-                                index == changedIndex.value
+
+                    hoveredIconIndex.value = -1;
+                    changedIndex.value = -1;
+                  }
+                  setState(() {});
+                },
+                builder: (context, candidateData, rejectedData) {
+                  return GestureDetector(
+                      onTap: () {
+                        print(skillsList[index].dataList[0].name);
+                        // if (containerIcons.value[index].title != "Add Skill") {
+                        //   isEditMode.value = true;
+                        //   changedIndex.value = index;
+                        // }
+                        if (skillsList[index].dataList[0].name != "Add Skill") {
+                          isEditMode.value = true;
+                          changedIndex.value = index;
+                        }
+                      },
+                      child: ValueListenableBuilder(
+                          valueListenable: changedIndex,
+                          builder: (context, value, _) =>
+                              ValueListenableBuilder(
+                                valueListenable: isEditMode,
+                                builder: (context, value, _) => index ==
+                                        changedIndex.value
                                     ? _buildEditWidget(item, index)
                                     : Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -297,8 +306,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                           )
                                         ],
                                       ),
-                          )));
-            });
+                              )));
+                });
           });
     });
   }
@@ -390,46 +399,76 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               ),
             ),
             SpacerWidget(16),
-            Expanded(
-              child: ValueListenableBuilder(
-                  valueListenable: containerIcons,
-                  builder: (context, value, _) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: BouncingScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            childAspectRatio:
-                                0.9, // Adjust this value to change item aspect ratio
-                            crossAxisSpacing:
-                                0.0, // Adjust the spacing between items horizontally
-                            mainAxisSpacing:
-                                4.0, // Adjust the spacing between items vertically
-                          ),
-                          itemCount: 3 *
-                              PBISPlusAdditionalBehaviourModal
-                                  .PBISPlusAdditionalBehaviourModalIcons.length
-                                  .ceil(),
-                          itemBuilder: (BuildContext context, int index) {
-                            final item = PBISPlusActionInteractionModalNew
-                                .PBISPlusActionInteractionIconsNew[index % 9];
-                            final isIconDisabled =
-                                containerIcons.value.contains(item);
-                            return isIconDisabled
-                                ? _buildNonDraggbleIcon(item, isIconDisabled)
-                                : _buildEditSkillIcon(item, isIconDisabled);
-                          },
-                        ),
-                      )),
-            ),
+            BlocConsumer(
+                bloc: pbisPlusClassroomBloc,
+                builder: (context, state) {
+                  print(state);
+                  if (state is PBISPlusSkillsLoading) {
+                    return Center(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator.adaptive(
+                            backgroundColor: AppTheme.kButtonColor,
+                          )),
+                    );
+                  } else if (state is PBISPlusSkillsSucess) {
+                    if (state.skillsList.isNotEmpty) {
+                      return _buildBehaviourList(state.skillsList);
+                    } else {
+                      return _noDataFoundWidget();
+                    }
+                  } else if (state is PBISErrorState)
+                    return _noDataFoundWidget();
+                  return _noDataFoundWidget();
+                },
+                listener: (context, state) async {}
+                //_buildEditSkillCards()
+                ),
             SpacerWidget(18),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildBehaviourList(List<PBISPlusSkillsListModal> skillsList) {
+    return Expanded(
+        child:
+            //  ValueListenableBuilder(
+            //     valueListenable: containerIcons,
+            //     builder: (context, value, _) =>
+
+            Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: GridView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: BouncingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          childAspectRatio:
+              0.9, // Adjust this value to change item aspect ratio
+          crossAxisSpacing:
+              0.0, // Adjust the spacing between items horizontally
+          mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
+        ),
+        itemCount: 3 *
+            PBISPlusAdditionalBehaviourModal
+                .PBISPlusAdditionalBehaviourModalIcons.length
+                .ceil(),
+        itemBuilder: (BuildContext context, int index) {
+          final item = PBISPlusActionInteractionModalNew
+              .PBISPlusActionInteractionIconsNew[index % 9];
+          final isIconDisabled = false;
+          // containerIcons.value.contains(item);
+          return isIconDisabled
+              ? _buildNonDraggbleIcon(item, isIconDisabled)
+              : _buildEditSkillIcon(item, isIconDisabled);
+        },
+      ),
+    )
+        // ),
+        );
   }
 
   Widget _buildNonDraggbleIcon(item, isIconDisabled) {
@@ -526,7 +565,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               return PBISPlusEditSkillsBottomSheet(
                 index: index,
                 constraints: constraints,
-                containerIcons: containerIcons,
+                // containerIcons: containerIcons,
                 item: item,
                 height:
                     // constraints.maxHeight < 750 && Globals.deviceType == "phone"
