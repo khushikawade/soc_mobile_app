@@ -1523,7 +1523,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                   true;
             });
 
-            _navigateToResultSection();
+            //  _navigateToResultSection();
             saveAssessmentToDashboardAndGetId();
           }
 
@@ -1534,7 +1534,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: _scaffoldKey);
-              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: _scaffoldKey);
               _googleClassroomBloc.add(CreateClassRoomCourseWork(
                   studentAssessmentInfoDb: LocalDatabase('student_info'),
                   pointPossible: Globals.pointPossible ?? '0',
@@ -1591,7 +1594,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: _scaffoldKey);
-              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar(
@@ -1729,7 +1735,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: _scaffoldKey);
-              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
@@ -1751,7 +1760,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: _scaffoldKey);
-              await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar('Something went wrong' ?? "", null);

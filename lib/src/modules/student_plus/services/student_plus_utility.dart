@@ -153,7 +153,9 @@ class StudentPlusUtility {
       {required List<StudentPlusWorkModel> list}) {
     List<String> subjectList = [];
     for (var i = 0; i < list.length; i++) {
-      if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
+      if (!subjectList.contains(list[i].subjectC) &&
+          list[i].subjectC != null &&
+          list[i].subjectC != "") {
         subjectList.add(list[i].subjectC ?? '');
       }
     }
@@ -169,7 +171,7 @@ class StudentPlusUtility {
               "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
           list[i].subjectC != null &&
           (list[i].firstName != " " && list[i].lastName != " ") &&
-          (list[i].firstName != null && list[i].lastName != null)) {
+          (list[i].firstName != null || list[i].lastName != null)) {
         teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
       }
     }
