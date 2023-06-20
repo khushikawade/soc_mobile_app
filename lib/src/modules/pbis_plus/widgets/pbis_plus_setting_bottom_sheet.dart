@@ -280,12 +280,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   operationResult: 'Success');
               //-------------------------------------------------------------
               sectionName = 'All Courses & Students';
-<<<<<<< HEAD
 
               _pageController.animateToPage(4,
-=======
-              _pageController.animateToPage(3,
->>>>>>> dev_quarter2_2k23
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
@@ -739,7 +735,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             bloc: googleDriveBloc,
             child: EmptyContainer(),
             listener: (context, state) async {
-              print("UI STATE------------GOOGLE STATE $State");
+              print("UI STATE------------GOOGLE STATE $state");
 
               if (state is GoogleSuccess) {
                 //In case of Folder Id received
@@ -764,7 +760,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   //     errorMsg: state.errorMsg!,
                   //     context: context,
                   //     scaffoldKey: widget.scaffoldKey);
- await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                  await Authentication.reAuthenticationRequired(
+                      context: context,
+                      errorMessage: state.errorMsg!,
+                      scaffoldKey: widget.scaffoldKey);
                   // Navigator.of(context).pop();
                   Utility.currentScreenSnackBar('Please try again', null);
                 } else {
@@ -782,7 +781,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             bloc: pbisBloc,
             child: EmptyContainer(),
             listener: (context, state) async {
-              print("UI STATE------------pbisBloc STATE $State");
+              print("UI STATE------------pbisBloc STATE $state");
               if (state is PBISErrorState) {
                 Navigator.of(context).pop();
                 Utility.currentScreenSnackBar(
