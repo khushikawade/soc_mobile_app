@@ -229,6 +229,10 @@ class _StaffPageState extends State<StaffPage> {
               }
               if (state is AuthorizedUserError) {
                 Navigator.pop(context, false);
+                if (Globals.appSetting.enableGoogleSSO == "true") {
+                  Authentication.signOut(context: context);
+                  UserGoogleProfile.clearUserProfile();
+                }
                 Utility.currentScreenSnackBar(
                     'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
                     null);
