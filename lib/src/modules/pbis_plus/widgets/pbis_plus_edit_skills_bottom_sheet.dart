@@ -33,7 +33,7 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusSkillsListModal? item;
+  PBISPlusSkills? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
@@ -100,8 +100,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             pageSnapping: false,
             controller: _pageController,
             children: [
-              EditAndDeleteIcon(widget.item?.dataList[0]),
-              _buildEditNameWidget(widget.item?.dataList[0])
+              EditAndDeleteIcon(widget.item),
+              _buildEditNameWidget(widget.item)
             ],
           )),
     );

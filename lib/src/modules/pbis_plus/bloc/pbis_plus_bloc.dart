@@ -52,40 +52,35 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
-        LocalDatabase<PBISPlusSkillsListModal> _pbisPlusSkilllocalsDB =
+        LocalDatabase<PBISPlusSkills> _pbisPlusSkilllocalsDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkillsListModal>? _pbisPlusSkillsLocalData =
+        List<PBISPlusSkills>? _pbisPlusSkillsLocalData =
             await _pbisPlusSkilllocalsDB.getData();
         _pbisPlusSkillsLocalData.clear();
         var list;
         if (_pbisPlusSkillsLocalData.isEmpty) {
           list = PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist.map(
-            (item) => PBISPlusSkillsListModal(
-              dataList: [
-                PBISPlusSkills(
-                  id: item.id,
-                  activeStatusC: item.activeStatusC,
-                  iconUrlC: item.iconUrlC,
-                  name: item.name,
-                  sortOrderC: item.sortOrderC,
-                  counter: item.counter,
-                )
-              ],
-            ),
-          ).toList();
+              (item) => PBISPlusSkills(
+                    id: item.id,
+                    activeStatusC: item.activeStatusC,
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: item.counter,
+                  )).toList();
         }
-        // print(list.runtimeType);
+        // // print(list.runtimeType);
 
-        if (_pbisPlusSkillsLocalData.isEmpty) {
-          list.forEach((element) async {
-            await _pbisPlusSkilllocalsDB
-                .addData(element); // Pass 'element' instead of 'list'
-          });
-        }
+        // if (_pbisPlusSkillsLocalData.isEmpty) {
+        //   list.forEach((element) async {
+        //     await _pbisPlusSkilllocalsDB
+        //         .addData(element); // Pass 'element' instead of 'list'
+        //   });
+        // }
 
         final check = await _pbisPlusSkilllocalsDB.getData();
         for (var item in check) {
-          for (var data in item.dataList) {
+          for (var data in check) {
             print('----------------------------');
             print('ID: ${data.id}');
             print('Active Status: ${data.activeStatusC}');
@@ -184,32 +179,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       try {
         yield PBISPlusSkillsLoading();
 
-        LocalDatabase<PBISPlusSkillsListModal> _pbisPlusSkillsDB =
+        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkillsListModal>? _pbisPlusSkillsData =
+        List<PBISPlusSkills>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
         // _pbisPlusSkillsDB.clear();
 
         var list;
         if (_pbisPlusSkillsData.isEmpty) {
           list = PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist.map(
-            (item) => PBISPlusSkillsListModal(
-              dataList: [
-                PBISPlusSkills(
-                  id: item.id,
-                  activeStatusC: item.activeStatusC,
-                  iconUrlC: item.iconUrlC,
-                  name: item.name,
-                  sortOrderC: item.sortOrderC,
-                  counter: item.counter,
-                )
-              ],
-            ),
-          ).toList();
+              (item) => PBISPlusSkills(
+                    id: item.id,
+                    activeStatusC: item.activeStatusC,
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: item.counter,
+                  )).toList();
         }
 
-        // LocalDatabase<PBISPlusHistoryModal> _localDb =
-        //     LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+        LocalDatabase<PBISPlusHistoryModal> _localDb =
+            LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
         print(list.runtimeType);
         if (_pbisPlusSkillsData.isEmpty) {
           list.forEach((element) async {
@@ -219,18 +209,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
         _pbisPlusSkillsData = await _pbisPlusSkillsDB.getData();
         final check = await _pbisPlusSkillsDB.getData();
-        for (var item in check) {
-          for (var data in item.dataList) {
-            print('----------------------------');
-            print('ID: ${data.id}');
-            print('Active Status: ${data.activeStatusC}');
-            print('Icon URL: ${data.iconUrlC}');
-            print('Name: ${data.name}');
-            print('Sort Order: ${data.sortOrderC}');
-            print('Counter: ${data.counter}');
-            print('----------------------------');
-          }
+        // for (var item in check) {
+        for (var data in check) {
+          print('----------------------------');
+          print('ID: ${data.id}');
+          print('Active Status: ${data.activeStatusC}');
+          print('Icon URL: ${data.iconUrlC}');
+          print('Name: ${data.name}');
+          print('Sort Order: ${data.sortOrderC}');
+          print('Counter: ${data.counter}');
+          print('----------------------------');
         }
+        // }
         if (check.isNotEmpty) {
           yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
         } else {
@@ -244,22 +234,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     if (event is GetPBISSkillsUpdateName) {
       try {
         yield PBISPlusSkillsUpdateLoading();
-        LocalDatabase<PBISPlusSkillsListModal> _pbisPlusSkillsDB =
+        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkillsListModal>? _pbisPlusSkillsData =
+        List<PBISPlusSkills>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
 
         if (event.item.id!.isNotEmpty &&
             event.newName.isNotEmpty &&
             _pbisPlusSkillsData.isNotEmpty) {
           final int index = _pbisPlusSkillsData
-              .indexWhere((item) => item.dataList[0].id == event.item.id);
+              .indexWhere((item) => item.id == event.item.id);
           final itemToUpdate = _pbisPlusSkillsData.firstWhere(
-            (item) => item.dataList[0].id == event.item.id,
+            (item) => item.id == event.item.id,
           );
-          if (itemToUpdate.dataList.isNotEmpty && index != null) {
+          if (index != null) {
             // Update the name of the item
-            itemToUpdate.dataList[0].name = event.newName;
+            itemToUpdate.name = event.newName;
             // Save the updated data back to the database
             await _pbisPlusSkillsDB.putAt(index, _pbisPlusSkillsData[index]);
             yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
@@ -272,27 +262,80 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
+    if (event is GetPBISSkillsUpdateList) {
+      try {
+        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
+        List<PBISPlusSkills>? _pbisPlusSkillsData =
+            await _pbisPlusSkillsDB.getData();
+        yield PBISPlusSkillsUpdateLoading();
+        // print(_pbisPlusSkillsData.length);
+        // // yield PBISPlusSkillsUpdateLoading();
+        // await Future.delayed(Duration(seconds: 2));
+        if (event.item.id!.isNotEmpty &&
+            event.index != null &&
+            _pbisPlusSkillsData != null &&
+            _pbisPlusSkillsData.isNotEmpty &&
+            event.index < _pbisPlusSkillsData.length) {
+          final result =
+              _pbisPlusSkillsData.where((item) => item.name == event.item.name);
+
+          if (true) {
+            int count = _pbisPlusSkillsData
+                .where((item) => item.name != "Add Skill")
+                .length;
+            if (count < 6) {
+              if (event.index < count) {
+                _pbisPlusSkillsData.removeAt(event.index);
+                _pbisPlusSkillsData.insert(event.index, event.item);
+                _pbisPlusSkillsData.removeLast();
+              } else {
+                _pbisPlusSkillsData.removeAt(count);
+                _pbisPlusSkillsData.insert(count, event.item);
+                _pbisPlusSkillsData.removeLast();
+              }
+            } else {
+              _pbisPlusSkillsData.removeAt(event.index);
+              _pbisPlusSkillsData.insert(event.index, event.item);
+              _pbisPlusSkillsData.removeLast();
+            }
+            await _pbisPlusSkillsDB.clear();
+            _pbisPlusSkillsData.forEach((element) async {
+              await _pbisPlusSkillsDB
+                  .addData(element); // Pass 'element' instead of 'list'
+            });
+            yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+          }
+        } else {
+          yield PBISPlusSkillsListUpdateError();
+        }
+        // }
+      } catch (e) {
+        print(e);
+        yield PBISPlusSkillsListUpdateError();
+      }
+    }
+
     if (event is GetPBISSkillsDeleteItem) {
       try {
         yield PBISPlusSkillsDeleteLoading();
-        LocalDatabase<PBISPlusSkillsListModal> _pbisPlusSkillsDB =
+        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkillsListModal>? _pbisPlusSkillsData =
+        List<PBISPlusSkills>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
         if (event.item.id!.isNotEmpty && _pbisPlusSkillsData.isNotEmpty) {
           final int index = _pbisPlusSkillsData
-              .indexWhere((item) => item.dataList[0].id == event.item.id);
+              .indexWhere((item) => item.id == event.item.id);
           final itemToUpdate = _pbisPlusSkillsData.firstWhere(
-            (item) => item.dataList[0].id == event.item.id,
+            (item) => item.id == event.item.id,
           );
-          if (itemToUpdate.dataList.isNotEmpty && index != -1) {
+          if (index != -1) {
             // Update the name of the item
             _pbisPlusSkillsData.removeAt(index);
             // Shift the remaining items
             for (int i = index + 1; i < _pbisPlusSkillsData.length; i++) {
-              _pbisPlusSkillsData[i].dataList[0].sortOrderC =
-                  (int.parse(_pbisPlusSkillsData[i].dataList[0].sortOrderC!) -
-                          1)
+              _pbisPlusSkillsData[i].sortOrderC =
+                  (int.parse(_pbisPlusSkillsData[i].sortOrderC!) - 1)
                       .toString();
             }
             PBISPlusSkills newItem = PBISPlusSkills(
@@ -303,14 +346,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               sortOrderC: _pbisPlusSkillsData.length.toString(),
               counter: "0",
             );
-            PBISPlusSkillsListModal newListEntry =
-                PBISPlusSkillsListModal(dataList: [newItem]);
             // Add the new item at the end of the list
-            _pbisPlusSkillsData.add(newListEntry);
+            _pbisPlusSkillsData.add(newItem);
 
             final check = await _pbisPlusSkillsDB.getData();
 
-            await _pbisPlusSkillsDB.clear();
+            // await _pbisPlusSkillsDB.clear();
             _pbisPlusSkillsData.forEach((element) async {
               await _pbisPlusSkillsDB
                   .addData(element); // Pass 'element' instead of 'list'

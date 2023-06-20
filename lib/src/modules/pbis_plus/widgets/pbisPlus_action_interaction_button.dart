@@ -2,12 +2,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/schedule/modal/contweek.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:like_button/like_button.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 // ignore: must_be_immutable
 class PBISPlusActionInteractionButton extends StatefulWidget {
@@ -47,6 +50,7 @@ class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
   final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
+  AudioPlayer? soundEffectPlayer;
   // void updateState(bool isLiked) {
   //   if (_isOffline) {
   //     Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -317,6 +321,9 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
+    await AudioPlayer().play(AssetSource('pbis_sound/magic_tap.mp3'));
+    // Utility.playSound(Strings.soundPath[0]);
+
     if (_isOffline) {
       Utility.currentScreenSnackBar("No Internet Connection", null);
       return isLiked;

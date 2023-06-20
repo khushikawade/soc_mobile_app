@@ -2,31 +2,18 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/common_cached_network_image.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
   PBISPlusEditSkills({
@@ -74,23 +61,22 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     super.initState();
     // pbisPlusClassroomBloc.add(GetPBISPlusBehaviour());
     pbisPlusClassroomBloc.add(GetPBISSkills());
-    // widget.studentValueNotifier.value = widget.student!;
   }
 
-  getcount() {
-    nonAddSkillCount = 0;
-    // containerIcons.value.where((item) => item.title != "Add Skill").length;
-    return nonAddSkillCount;
-  }
+  // getcount() {
+  //   nonAddSkillCount = 0;
+  //   containerIcons.value.where((item) => item.name != "Add Skill").length;
+  //   return nonAddSkillCount;
+  // }
 
-  bool isItemExist(data) {
-    // if (containerIcons.value.isNotEmpty) {
-    //   final result =
-    //       containerIcons.value.where((item) => item.title == data.title);
-    //   return result.isNotEmpty;
-    // }
-    return false;
-  }
+  // bool isItemExist(data) {
+  //   if (containerIcons.value.isNotEmpty) {
+  //     final result =
+  //         containerIcons.value.where((item) => item.name == data.name);
+  //     return result.isNotEmpty;
+  //   }
+  //   return false;
+  // }
 
   Widget body(BuildContext context) {
     return Column(
@@ -151,29 +137,31 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             ),
           ),
           SpacerWidget(18),
-          // BlocConsumer(
-          //     bloc: pbisPlusClassroomBloc,
-          //     builder: (context, state) {
-          //       print(state);
-          //       if (state is PBISPlusSkillsLoading) {
-          //         return Container(
-          //             alignment: Alignment.center,
-          //             child: CircularProgressIndicator.adaptive(
-          //               backgroundColor: AppTheme.kButtonColor,
-          //             ));
-          //       } else if (state is PBISPlusSkillsSucess) {
-          //         if (state.skillsList.isNotEmpty) {
-          //           return _buildEditItemList(state.skillsList);
-          //         } else {
-          //           return _noDataFoundWidget();
-          //         }
-          //       } else if (state is PBISErrorState) return _noDataFoundWidget();
-          //       return _noDataFoundWidget();
-          //     },
-          //     listener: (context, state) async {}
-          //     //_buildEditSkillCards()
-          //     ),
-          _buildEditItemList(containerIcons)
+          BlocConsumer(
+              bloc: pbisPlusClassroomBloc,
+              builder: (context, state) {
+                print(state);
+                if (state is PBISPlusSkillsLoading ||
+                    state is PBISPlusSkillsUpdateLoading) {
+                  return Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor,
+                      ));
+                } else if (state is PBISPlusSkillsSucess) {
+                  print(state.skillsList);
+                  if (state.skillsList.isNotEmpty) {
+                    return _buildEditItemList(state.skillsList);
+                  } else {
+                    return _noDataFoundWidget();
+                  }
+                } else if (state is PBISErrorState) return _noDataFoundWidget();
+                return _noDataFoundWidget();
+              },
+              listener: (context, state) async {}
+              //_buildEditSkillCards()
+              ),
+          // _buildEditItemList(containerIcons),
         ],
       ),
     );
@@ -206,10 +194,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           itemCount: 6,
           //  skillsList.length,
           itemBuilder: (BuildContext context, int index) {
-            final item = containerIcons.value[index];
-            // final item = skillsList[index];
+            // final item = containerIcons.value[index];
+            final item = skillsList[index];
             return DragTarget<PBISPlusSkills>(
                 onWillAccept: (draggedData) {
+                  print(
+                      "-----------------INSIDE ON  onWillAccep---------------------------");
                   hoveredIconIndex.value =
                       index; // Update the hovered icon index
                   print(hoveredIconIndex);
@@ -220,27 +210,35 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 onAccept: (draggedData) {
                   print(
                       "-----------------INSIDE ON onAccept---------------------------");
-                  print(isItemExist(draggedData));
-                  if (isItemExist(draggedData) == false) {
-                    int count;
-                    count = getcount();
-                    if (count < 6) {
-                      if (hoveredIconIndex.value < count) {
-                        // containerIcons.value[hoveredIconIndex.value] = draggedData;
-                        // skillsList[hoveredIconIndex.value] = draggedData;
-                      } else {
-                        containerIcons.value[count] = draggedData;
-                        // skillsList[count] = draggedData;
-                      }
-                    } else {
-                      containerIcons.value[hoveredIconIndex.value] =
-                          draggedData; // Change the hovered icon
-                      // skillsList[hoveredIconIndex.value] = draggedData;
-                    }
+                  pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
+                      index: hoveredIconIndex.value, item: draggedData));
+                  // print(isItemExist(draggedData));
+                  // if (isItemExist(draggedData) == false) {
+                  //   int count;
+                  //   count = getcount();
+                  //   if (count < 6) {
+                  //     if (hoveredIconIndex.value < count) {
+                  //       pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
+                  //           index: hoveredIconIndex.value, item: draggedData));
+                  //       // containerIcons.value[hoveredIconIndex.value] = draggedData;
+                  //       // skillsList[hoveredIconIndex.value] = draggedData;
+                  //     } else {
+                  //       pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
+                  //           index: count, item: draggedData));
+                  //       // containerIcons.value[count] = draggedData;
+                  //       // skillsList[count] = draggedData;
+                  //     }
+                  //   } else {
+                  //     pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
+                  //         index: count, item: draggedData));
+                  //     // containerIcons.value[hoveredIconIndex.value] =
+                  //     //     draggedData; // Change the hovered icon
+                  //     // skillsList[hoveredIconIndex.value] = draggedData;
+                  //   }
 
-                    hoveredIconIndex.value = -1;
-                    changedIndex.value = -1;
-                  }
+                  hoveredIconIndex.value = -1;
+                  changedIndex.value = -1;
+                  // }
                   setState(() {});
                 },
                 builder: (context, candidateData, rejectedData) {
@@ -251,10 +249,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         //   isEditMode.value = true;
                         //   changedIndex.value = index;
                         // }
-                        if (skillsList[index].dataList[0].name != "Add Skill") {
-                          isEditMode.value = true;
-                          changedIndex.value = index;
-                        }
+                        // if (skillsList[index].dataList[0].name != "Add Skill") {
+                        //   isEditMode.value = true;
+                        //   changedIndex.value = index;
+                        // }
                       },
                       child: ValueListenableBuilder(
                           valueListenable: changedIndex,
@@ -353,6 +351,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   Widget _buildEditWidget(PBISPlusSkills item, int index) {
     return GestureDetector(
       onTap: () async {
+        print(item.runtimeType);
         // await _modalBottomSheetMenu(item, index);
         // changedIndex.value = -1;
       },
@@ -440,7 +439,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildBehaviourList(List<PBISPlusSkillsListModal> skillsList) {
+  Widget _buildBehaviourList(List<PBISPlusSkills> skillsList) {
     return Expanded(
         child:
             //  ValueListenableBuilder(
@@ -462,12 +461,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
         ),
         itemCount: 3 *
-            PBISPlusAdditionalBehaviourModal
-                .PBISPlusAdditionalBehaviourModalIcons.length
+            PBISPlusSkillsModalLocal.PBISPlusSkillLocalBehaviourlist.length
                 .ceil(),
         itemBuilder: (BuildContext context, int index) {
-          final item = PBISPlusActionInteractionModalNew
-              .PBISPlusActionInteractionIconsNew[index % 9];
+          final item = PBISPlusSkillsModalLocal
+              .PBISPlusSkillLocalBehaviourlist[index % 6];
           final isIconDisabled = false;
           // containerIcons.value.contains(item);
           return isIconDisabled
@@ -480,7 +478,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         );
   }
 
-  Widget _buildNonDraggbleIcon(item, isIconDisabled) {
+  Widget _buildNonDraggbleIcon(PBISPlusSkills item, isIconDisabled) {
     return Container(
       width: 40,
       height: 40,
@@ -504,63 +502,67 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             child: Opacity(
                 opacity: 0.2,
                 child: SvgPicture.asset(
-                  item.imagePath,
+                  item.iconUrlC!,
                 ))),
       ),
     );
   }
 
-  Widget _buildEditSkillIcon(item, isIconDisabled) {
-    return Draggable(
-      data: item,
-      ignoringFeedbackPointer: !isIconDisabled,
-      child: Container(
-        width: 40,
-        height: 40,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 0,
-              blurRadius: 1,
-              offset: Offset(0, 0),
+  Widget _buildEditSkillIcon(PBISPlusSkills item, isIconDisabled) {
+    return GestureDetector(
+      onTap: () {
+        print(item.runtimeType);
+      },
+      child: Draggable(
+        data: item,
+        ignoringFeedbackPointer: !isIconDisabled,
+        child: Container(
+          width: 40,
+          height: 40,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 0,
+                blurRadius: 1,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: isIconDisabled
+                  ? Opacity(
+                      opacity: 0.2,
+                      child: SvgPicture.asset(
+                        item.iconUrlC!,
+                      ))
+                  : SvgPicture.asset(
+                      item.iconUrlC!,
+                    ),
             ),
-          ],
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: isIconDisabled
-                ? Opacity(
-                    opacity: 0.2,
-                    child: SvgPicture.asset(
-                      item.imagePath,
-                    ))
-                : SvgPicture.asset(
-                    item.imagePath,
-                  ),
           ),
         ),
+        feedback: isIconDisabled
+            ? SizedBox.shrink()
+            : SvgPicture.asset(
+                item.iconUrlC!,
+              ),
+        childWhenDragging: isIconDisabled
+            ? SizedBox.shrink()
+            : SvgPicture.asset(
+                item.iconUrlC!,
+              ),
       ),
-      feedback: isIconDisabled
-          ? SizedBox.shrink()
-          : SvgPicture.asset(
-              item.imagePath,
-            ),
-      childWhenDragging: isIconDisabled
-          ? SizedBox.shrink()
-          : SvgPicture.asset(
-              item.imagePath,
-            ),
     );
   }
 
-  _modalBottomSheetMenu(PBISPlusSkillsListModal item, int index) =>
-      showModalBottomSheet(
+  _modalBottomSheetMenu(PBISPlusSkills item, int index) => showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,

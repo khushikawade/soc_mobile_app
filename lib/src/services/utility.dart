@@ -28,8 +28,10 @@ import '../modules/google_drive/model/user_profile.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Utility {
+  final player = AudioCache();
   static bool? isOldUser = false;
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
@@ -80,6 +82,14 @@ class Utility {
       return date;
     } catch (e) {
       return null;
+    }
+  }
+
+  static playSound(String audioPath) {
+    try {
+      AudioPlayer().play(AssetSource("assets/pbis_sound/sound1.wav"));
+    } catch (e) {
+      print(e);
     }
   }
 

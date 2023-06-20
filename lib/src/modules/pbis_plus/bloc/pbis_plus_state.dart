@@ -109,7 +109,7 @@ class PBISPlusBehaviourSucess extends PBISPlusState {
 }
 
 class PBISPlusSkillsSucess extends PBISPlusState {
-  final List<PBISPlusSkillsListModal> skillsList;
+  final List<PBISPlusSkills> skillsList;
 
   PBISPlusSkillsSucess({required this.skillsList});
   PBISPlusSkillsSucess copyWith({final skillsList}) {
@@ -158,6 +158,12 @@ class PBISPlusSkillsDeleteLoading extends PBISPlusState {
 
 class PBISPlusSkillsDeleteError extends PBISPlusState {
   PBISPlusSkillsDeleteError();
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusSkillsListUpdateError extends PBISPlusState {
+  PBISPlusSkillsListUpdateError();
   @override
   List<Object> get props => [];
 }

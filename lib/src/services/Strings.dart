@@ -58,4 +58,13 @@ class Strings {
       "last_news_id"; // to maintain news id for showing red indicator
   static final String studentInfoDbName = "student_info";
   static final String historyStudentInfoDbName = "history_student_info";
+  static final List<String> soundPath = [
+    "assets/pbis_sound/sound_1.wav",
+    "assets/pbis_sound/sound_2.wav",
+    "assets/pbis_sound/sound_3.wav",
+    "assets/pbis_sound/sound_4.wav",
+    "assets/pbis_sound/sound_5.wav",
+    "assets/pbis_sound/sound_6.wav",
+    "assets/pbis_sound/sound_7.wav"
+  ];
 }

@@ -6,41 +6,6 @@ part of 'pbis_plus_skill_list_modal.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PBISPlusSkillsListModalAdapter
-    extends TypeAdapter<PBISPlusSkillsListModal> {
-  @override
-  final int typeId = 43;
-
-  @override
-  PBISPlusSkillsListModal read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return PBISPlusSkillsListModal(
-      dataList: (fields[0] as List).cast<PBISPlusSkills>(),
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, PBISPlusSkillsListModal obj) {
-    writer
-      ..writeByte(1)
-      ..writeByte(0)
-      ..write(obj.dataList);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PBISPlusSkillsListModalAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
   @override
   final int typeId = 44;
