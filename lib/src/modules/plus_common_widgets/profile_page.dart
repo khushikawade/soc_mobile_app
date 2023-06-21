@@ -153,6 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       '');
                               PlusUtility.updateLogs(
                                   activityType: widget.plusAppName,
+                                  userType: 'Teacher',
                                   activityId: '47',
                                   sessionId: Globals.sessionId,
                                   description: settingsSectionLogMsg,

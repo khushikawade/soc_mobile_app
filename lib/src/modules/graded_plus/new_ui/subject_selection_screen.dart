@@ -1181,6 +1181,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                               //!UNCOMMENT
                               PlusUtility.updateLogs(
                                   activityType: 'GRADED+',
+                                  userType: 'Teacher',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1424,16 +1425,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
-// //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//   googleSlidesPreparation() {
-//     if (Globals.googleSlidePresentationId!.isNotEmpty &&
-//         (Globals.googleSlidePresentationLink == null ||
-//             Globals.googleSlidePresentationLink!.isEmpty)) {
-//       _googleDriveBloc.add(GetShareLink(
-//           fileId: Globals.googleSlidePresentationId, slideLink: true));
-//     }
-//   }
-
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _navigateToResultSection() {
     GradedGlobals.loadingMessage = null;
@@ -1442,6 +1433,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         "save_to_drive_from_subject_selection");
     PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
@@ -1484,24 +1476,24 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  void _navigateToResultSectionOnSkipButton() {
-    Navigator.of(context).pop();
+  // void _navigateToResultSectionOnSkipButton() {
+  //   Navigator.of(context).pop();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
-                fileId: Globals.googleExcelSheetId,
-                subjectId: subjectId ?? '',
-                standardId: standardId ?? '',
-                assessmentName: Globals.assessmentName,
-                shareLink: '',
-                assessmentDetailPage: false,
-              )),
-    );
-  }
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => GradedPlusResultsSummary(
+  //               isMcqSheet: widget.isMcqSheet,
+  //               selectedAnswer: widget.selectedAnswer,
+  //               fileId: Globals.googleExcelSheetId,
+  //               subjectId: subjectId ?? '',
+  //               standardId: standardId ?? '',
+  //               assessmentName: Globals.assessmentName,
+  //               shareLink: '',
+  //               assessmentDetailPage: false,
+  //             )),
+  //   );
+  // }
 
   Widget classRoomBlocListener() {
     return BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
@@ -1515,6 +1507,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               state is CreateClassroomCourseWorkSuccessForStandardApp) {
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
@@ -1619,6 +1612,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             // }
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -1667,6 +1661,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
@@ -1764,6 +1759,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');

@@ -101,6 +101,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 
                     PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '39',
                         description: 'Filter History PBIS+',
                         operationResult: 'Success');

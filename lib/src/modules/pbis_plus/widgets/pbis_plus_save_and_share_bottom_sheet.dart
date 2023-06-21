@@ -184,6 +184,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   onTap: () async {
                     PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '35',
                         description: 'G-Classroom Action Button',
                         operationResult: 'Success');
@@ -202,6 +203,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   onTap: () {
                     PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '32',
                         description: 'G-Excel Action Button',
                         operationResult: 'Success');
@@ -227,6 +229,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   await shareScreenDetails();
                   PlusUtility.updateLogs(
                       activityType: 'PBIS+',
+                      userType: 'Teacher',
                       activityId: '13',
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
@@ -710,6 +713,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             if (state is CreateClassroomCourseWorkSuccess) {
               PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '34',
                   description: 'G-Classroom Created',
                   operationResult: 'Success');

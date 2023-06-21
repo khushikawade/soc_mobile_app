@@ -192,6 +192,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                           GoogleClassroom.clearClassroomCourses();
                           PlusUtility.updateLogs(
                               activityType: widget.activityType,
+                              userType: 'Teacher',
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');

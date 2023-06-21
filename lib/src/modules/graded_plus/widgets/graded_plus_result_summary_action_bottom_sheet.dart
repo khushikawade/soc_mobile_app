@@ -142,6 +142,7 @@ class _GradedPlusResultOptionBottomSheetState
             shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         PlusUtility.updateLogs(
             activityType: 'GRADED+',
+            userType: 'Teacher',
             activityId: '13',
             sessionId: Globals.sessionId,
             // widget.assessmentDetailPage == true
@@ -162,6 +163,7 @@ class _GradedPlusResultOptionBottomSheetState
         Fluttertoast.cancel();
         PlusUtility.updateLogs(
             activityType: 'GRADED+',
+            userType: 'Teacher',
             activityId: '14',
             sessionId: Globals.sessionId,
             // widget.assessmentDetailPage == true
@@ -182,6 +184,7 @@ class _GradedPlusResultOptionBottomSheetState
 
         PlusUtility.updateLogs(
             activityType: 'GRADED+',
+            userType: 'Teacher',
             activityId: '31',
             sessionId: Globals.sessionId,
             //  widget.assessmentDetailPage == true
@@ -203,6 +206,7 @@ class _GradedPlusResultOptionBottomSheetState
               sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
           PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '32',
               sessionId: Globals.sessionId,
               //  widget.assessmentDetailPage == true
@@ -223,6 +227,7 @@ class _GradedPlusResultOptionBottomSheetState
               classroomLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
           PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '35',
               sessionId: Globals.sessionId,
               //  widget.assessmentDetailPage == true

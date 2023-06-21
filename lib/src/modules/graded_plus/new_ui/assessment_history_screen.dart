@@ -62,8 +62,8 @@ class _GradedPlusAssessmentSummaryState
 
   final ValueNotifier<bool> isSearch = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isCallPaginationApi = ValueNotifier<bool>(false);
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-      LocalDatabase('history_student_info');
+  // LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+  //     LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 //  late ScrollController _controller;
@@ -78,6 +78,7 @@ class _GradedPlusAssessmentSummaryState
 
     PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '4',
         description: 'Moved to history screen Graded+',
         operationResult: 'Success');

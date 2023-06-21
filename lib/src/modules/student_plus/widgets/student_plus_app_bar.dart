@@ -161,6 +161,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
           PlusUtility.updateLogs(
               activityType: 'STUDENT+',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -199,6 +200,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
       onPressed: () async {
         PlusUtility.updateLogs(
             activityType: 'STUDENT+',
+            userType: 'Teacher',
             activityId: '61',
             description: 'Accessibility',
             operationResult: 'Success');

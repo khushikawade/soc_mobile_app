@@ -103,7 +103,7 @@ class CreateAssessmentScreenMethod {
     });
 
     PlusUtility.updateLogs(
-        activityType: 'GRADED+',
+        activityType: 'GRADED+', userType: 'Teacher',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');

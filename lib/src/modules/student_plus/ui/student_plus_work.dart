@@ -72,6 +72,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
     PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '52',
         description: 'Student+ Work Screen',
         operationResult: 'Success');
@@ -165,6 +166,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             /*-------------------------User Activity Track START----------------------------*/
             PlusUtility.updateLogs(
                 activityType: 'STUDENT+',
+                userType: 'Teacher',
                 activityId: '39',
                 description: 'Filter Record STUDENT+',
                 operationResult: 'Success');
@@ -306,6 +308,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         /*-------------------------User Activity Track START----------------------------*/
         PlusUtility.updateLogs(
             activityType: 'STUDENT+',
+            userType: 'Teacher',
             activityId: '42',
             description: 'View Student Work STUDENT+',
             operationResult: 'Success');

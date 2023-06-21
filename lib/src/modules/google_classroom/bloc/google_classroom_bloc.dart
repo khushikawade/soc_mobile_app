@@ -74,6 +74,7 @@ class GoogleClassroomBloc
           });
           PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully',
               operationResult: 'Success');
@@ -596,6 +597,7 @@ class GoogleClassroomBloc
     } catch (e) {
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure',
           operationResult: 'failure');

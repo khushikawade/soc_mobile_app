@@ -472,16 +472,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         var body = {
           "Activity_Type": event.activityType,
-          "Session_Id": "${event.sessionId ?? ''}",
-          "Teacher_Id": "${event.teacherId ?? ''}",
-          "Activity_Id": "${event.activityId ?? ''}",
-          "Account_Id": "${event.accountId ?? ''}",
-          "Account_Type": "${event.accountType ?? ''}",
-          "Date_Time": "${event.dateTime ?? ''}",
-          "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}",
+          "Session_Id": event.sessionId ?? '',
+          "Teacher_Id": event.teacherId ?? '',
+          "Activity_Id": event.activityId ?? '',
+          "Account_Id": event.accountId ?? '',
+          "Account_Type": event.accountType ?? '',
+          "Date_Time": event.dateTime ?? '',
+          "Description": event.description ?? '',
+          "Operation_Result": event.operationResult ?? '',
           "App_Type__c":
-              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard",
+          "User_Type": event.userType ?? ''
         };
         await activityLog(body: body);
       } catch (e, s) {

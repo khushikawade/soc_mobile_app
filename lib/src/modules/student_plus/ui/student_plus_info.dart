@@ -46,6 +46,7 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
 
     PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '49',
         description: 'Student+ Info Screen',
         operationResult: 'Success');

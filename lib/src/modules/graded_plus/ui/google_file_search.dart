@@ -327,6 +327,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
               onTap: () {
                 PlusUtility.updateLogs(
                     activityType: 'GRADED+',
+                    userType: 'Teacher',
                     activityId: '13',
                     sessionId: items[index].sessionId != ''
                         ? items[index].sessionId
@@ -884,6 +885,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
             onTap: () {
               PlusUtility.updateLogs(
                   activityType: 'GRADED+',
+                  userType: 'Teacher',
                   activityId: '31',
                   sessionId: element.sessionId != null ? element.sessionId : '',
                   description: 'Slide Icon Pressed - Google Search List',
@@ -903,6 +905,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
         onTap: () {
           PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '13',
               sessionId: element.sessionId != null ? element.sessionId : '',
               description: 'Teacher tap on Share Button - Google Search List',

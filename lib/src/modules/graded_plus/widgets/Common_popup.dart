@@ -194,6 +194,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                           GoogleClassroom.clearClassroomCourses();
                           PlusUtility.updateLogs(
                               activityType: 'GRADED+',
+                              userType: 'Teacher',
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');

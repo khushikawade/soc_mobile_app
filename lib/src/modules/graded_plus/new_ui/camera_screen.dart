@@ -490,6 +490,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
                     PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '19',
                         description: 'Assessment scan finished',
                         operationResult: 'Success');

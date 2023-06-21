@@ -88,6 +88,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
                 PlusUtility.updateLogs(
                     activityType: 'GRADED+',
+                    userType: 'Teacher',
                     activityId: '1',
                     description: 'Start Scanning Failed',
                     operationResult: 'Failure');
@@ -221,6 +222,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                 "answer_key_selected_${value.title}");
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '29',
                 description: 'MCQ Selection Answer key selected ${value.title}',
                 operationResult: 'Success');
@@ -273,6 +275,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
     PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '1',
         description: 'Start Scanning',
         operationResult: 'Success');

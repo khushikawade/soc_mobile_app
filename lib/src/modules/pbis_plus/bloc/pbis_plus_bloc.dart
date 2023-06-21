@@ -114,6 +114,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
           PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
               operationResult: 'Success');
@@ -223,6 +224,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         /*-------------------------User Activity Track START----------------------------*/
         PlusUtility.updateLogs(
             activityType: 'PBIS+',
+            userType: 'Teacher',
             activityId: '38',
             description:
                 'User Interaction PBIS+ for student ${event.studentId}',
@@ -472,6 +474,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     } catch (e) {
       PlusUtility.updateLogs(
           activityType: 'PBIS+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',
           operationResult: 'failure');

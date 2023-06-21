@@ -265,6 +265,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             case 'All Courses & Students':
               PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '58',
                   description:
                       'PBIS+ Save & Reset Points: All Courses & Students',
@@ -278,6 +279,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             case 'Select Students':
               PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '60',
                   description: 'Save & Reset Points: Select Students',
                   operationResult: 'Success');
@@ -291,6 +293,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             case 'Select Courses':
               PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '59',
                   description: 'PBIS+ Save & Reset Points: Select Courses',
                   operationResult: 'Success');
@@ -807,6 +810,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               if (state is PBISPlusResetSuccess) {
                 PlusUtility.updateLogs(
                     activityType: 'PBIS+',
+                    userType: 'Teacher',
                     activityId: '40',
                     description: 'Save and Rest $sectionName',
                     operationResult: 'Success');

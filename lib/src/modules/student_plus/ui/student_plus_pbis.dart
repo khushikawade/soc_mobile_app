@@ -65,6 +65,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
 
     PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '54',
         description: 'Student+ PBIS Screen',
         operationResult: 'Success');

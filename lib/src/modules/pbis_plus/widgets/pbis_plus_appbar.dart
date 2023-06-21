@@ -157,6 +157,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
 
           PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -185,6 +186,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       onPressed: () async {
         PlusUtility.updateLogs(
             activityType: 'PBIS+',
+            userType: 'Teacher',
             activityId: '61',
             description: 'Accessibility',
             operationResult: 'Success');

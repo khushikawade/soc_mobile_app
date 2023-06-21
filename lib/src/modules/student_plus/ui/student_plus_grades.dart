@@ -49,6 +49,7 @@ class individual extends State<StudentPlusGradesPage> {
 
     PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '53',
         description: 'Student+ Grades Screen',
         operationResult: 'Success');

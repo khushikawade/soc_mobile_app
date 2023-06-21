@@ -358,6 +358,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                         PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '2',
                             description:
                                 'Graded+ Accessed(Login)/Google Authentication Success/Login Id: ',
@@ -377,6 +378,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                       PlusUtility.updateLogs(
                           activityType: 'GRADED+',
+                          userType: 'Teacher',
                           activityId: '2',
                           description:
                               'Graded+ Accessed(Login)/Already Logged In/Login Id: ',

@@ -120,14 +120,14 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                 print(i);
                 if (i == 0) {
                   PlusUtility.updateLogs(
-                      activityType: 'STUDENT+',
+                      activityType: 'STUDENT+', userType: 'Teacher',
                       activityId: '50',
                       description: 'Student+ MATH Screen',
                       operationResult: 'Success');
                 }
                 if (i == 1) {
                   PlusUtility.updateLogs(
-                      activityType: 'STUDENT+',
+                      activityType: 'STUDENT+', userType: 'Teacher',
                       activityId: '51',
                       description: 'Student+ ELA Screen',
                       operationResult: 'Success');

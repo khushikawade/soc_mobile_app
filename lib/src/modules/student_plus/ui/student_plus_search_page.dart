@@ -87,6 +87,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
     /*-------------------------User Activity Track START----------------------------*/
     PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '41',
         description: 'Search STUDENT+',
         operationResult: 'Success');
@@ -205,6 +206,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         } else if (state is StudentPlusInfoSuccess) {
           PlusUtility.updateLogs(
               activityType: 'STUDENT+',
+              userType: 'Teacher',
               activityId: '48',
               description: 'Student Search Success',
               operationResult: 'Success');

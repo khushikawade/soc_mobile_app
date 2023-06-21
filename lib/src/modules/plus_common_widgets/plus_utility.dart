@@ -8,13 +8,12 @@ class PlusUtility {
 /*------------------------------------------------------------------------------------------------*/
 
   static updateUserLogsSessionId() async {
-    int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
     //----------------------------------------------------
     Uuid uuid = Uuid();
-    String generatedUuid = uuid.v5(Uuid.NAMESPACE_URL,
-        "${Globals.teacherEmailId}_${myTimeStamp.toString()}");
+    String generatedUuid = uuid.v5(Uuid.NAMESPACE_URL, Globals.teacherEmailId);
     //----------------------------------------------------
     Globals.sessionId = generatedUuid;
+    print(generatedUuid);
   }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -25,7 +24,8 @@ class PlusUtility {
       required String description,
       required String operationResult,
       String? sessionId,
-      required String? activityType}) {
+      required String? activityType,
+      required String? userType}) {
     DateTime currentDateTime = DateTime.now(); //DateTime
 
     // instance for maintaining logs
@@ -33,14 +33,14 @@ class PlusUtility {
 
     _ocrBlocLogs.add(LogUserActivityEvent(
         activityType: activityType,
+        userType: userType,
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,
-        teacherId: Globals.teacherId,
+        teacherId: Globals.teacherId, //contact Id
         activityId: activityId,
         accountId: Globals.appSetting.schoolNameC,
-        accountType: 'Premium',
-        //Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: 'Free',
         dateTime: currentDateTime.toString(),
         description: description,
         operationResult: operationResult));

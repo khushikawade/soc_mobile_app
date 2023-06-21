@@ -59,6 +59,7 @@ class GoogleLogin {
 
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '2',
           description: 'Authentication Failure',
           operationResult: 'Failure');
@@ -81,6 +82,7 @@ class GoogleLogin {
 
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '2',
           description: 'Google Authentication Success/Login Id:',
           operationResult: 'Success');

@@ -251,6 +251,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                 '');
                         PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '19',
                             description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
@@ -826,6 +827,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     dashboardState.value = 'Success';
                     PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '14',
                         description: 'Save to dashboard success',
                         operationResult: 'Success');
@@ -1343,6 +1345,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           editingLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '17',
           description: editingLogMsg,
           operationResult: 'Success');
@@ -1630,6 +1633,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                           PlusUtility.updateLogs(
                               activityType: 'GRADED+',
+                              userType: 'Teacher',
                               activityId: '17',
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
@@ -1852,44 +1856,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  // Widget _slidableDecorationWidget(
-  //     {required String label, required IconData icon}) {
-  //   final children = <Widget>[];
-
-  //   children.add(
-  //     Icon(icon),
-  //   );
-
-  //   children.add(
-  //     SizedBox(height: 4),
-  //   );
-
-  //   children.add(
-  //     TranslationWidget(
-  //         message: label,
-  //         fromLanguage: "en",
-  //         toLanguage: Globals.selectedLanguage,
-  //         builder: (translatedMessage) {
-  //           return Text(
-  //             translatedMessage,
-  //             overflow: TextOverflow.ellipsis,
-  //           );
-  //         }),
-  //   );
-
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       ...children.map(
-  //         (child) => Flexible(
-  //           child: child,
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
     Utility.updateAssessmentToDb(
       studentInfoList: await OcrUtility.getSortedStudentInfoList(
@@ -1911,6 +1877,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '22',
         sessionId:
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',

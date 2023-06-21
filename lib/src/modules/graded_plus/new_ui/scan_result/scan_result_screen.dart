@@ -257,6 +257,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                       } else {
                         PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '9',
                             description: 'Scan Failure and teacher retry scan',
                             operationResult: 'Failure');
@@ -326,6 +327,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             _performAnimation();
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '23',
                 description: 'Scan Assessment sheet successfully',
                 operationResult: 'Success');
@@ -417,6 +419,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '23',
                 description: state.grade == '' && state.studentId == ''
                     ? (Overrides.STANDALONE_GRADED_APP == true
@@ -569,6 +572,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
               widget.isFromHistoryAssessmentScanMore);
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '10',
           description: 'Next Scan',
           operationResult: 'Success');
@@ -1255,6 +1259,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                         // updateDetails(isUpdateData: true);
                         PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '8',
                             description:
                                 'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
@@ -1264,6 +1269,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                           if (widget.isMcqSheet == true) {
                             PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
+                                userType: 'Teacher',
                                 activityId: '8',
                                 description:
                                     'Answer Key changed from ${pointScored.value} to ${index.toString()}',
@@ -1923,6 +1929,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       //Every time when student id detection fails, user manually enter the student id
       PlusUtility.updateLogs(
           activityType: 'Graded+',
+          userType: 'Teacher',
           activityId: '55',
           sessionId: Globals.sessionId,
           description: 'Student Id/Email Change',

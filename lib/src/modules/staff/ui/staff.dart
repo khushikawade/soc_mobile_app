@@ -335,6 +335,7 @@ class _StaffPageState extends State<StaffPage> {
         //Graded+ login activity
         PlusUtility.updateLogs(
             activityType: 'GRADED+',
+            userType: 'Teacher',
             activityId: '2',
             description: 'Graded+ Accessed(Login)/Login Id:',
             operationResult: 'Success');
@@ -350,6 +351,7 @@ class _StaffPageState extends State<StaffPage> {
       } else if (actionName == 'PBIS+') {
         PlusUtility.updateLogs(
             activityType: 'PBIS+',
+            userType: 'Teacher',
             activityId: '2',
             description: 'PBIS+ Accessed(Login)/Login Id: ',
             operationResult: 'Success');
@@ -362,6 +364,7 @@ class _StaffPageState extends State<StaffPage> {
       } else if (actionName == 'STUDENT+') {
         PlusUtility.updateLogs(
             activityType: 'STUDENT+',
+            userType: 'Teacher',
             activityId: '2',
             description: 'STUDENT+ Accessed(Login)/Login Id: ',
             operationResult: 'Success');

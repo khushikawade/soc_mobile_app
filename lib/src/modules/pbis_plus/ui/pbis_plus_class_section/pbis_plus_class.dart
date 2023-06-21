@@ -272,7 +272,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           .addAll(state.googleClassroomCourseList);
 
                       /*----------------------END--------------------------*/
-
                     }
                     if (widget.isGradedPlus == true &&
                         _animationController!.isAnimating == true) {
@@ -683,6 +682,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           /*-------------------------User Activity Track START----------------------------*/
           PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '36',
               description: 'Save and Share button open from All Courses',
               operationResult: 'Success');
@@ -702,6 +702,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       List<ClassroomCourse> allClassroomCourses) async {
     PlusUtility.updateLogs(
         activityType: 'PBIS+',
+        userType: 'Teacher',
         activityId: '36',
         description: 'Save and Share',
         operationResult: 'Success');

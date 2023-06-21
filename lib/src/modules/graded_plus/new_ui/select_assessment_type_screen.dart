@@ -123,6 +123,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '28',
                       description: 'MCQ Type Selection',
                       operationResult: 'Success');
@@ -134,6 +135,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                 } else {
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '27',
                       description: 'Constructive Type Selection',
                       operationResult: 'Success');

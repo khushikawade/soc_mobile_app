@@ -236,6 +236,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () async {
           PlusUtility.updateLogs(
               activityType: 'Standard',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -270,6 +271,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       onPressed: () async {
         PlusUtility.updateLogs(
             activityType: 'Standard',
+            userType: 'Teacher',
             activityId: '61',
             description: 'Accessibility',
             operationResult: 'Success');

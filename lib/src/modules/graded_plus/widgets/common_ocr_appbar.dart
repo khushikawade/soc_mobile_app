@@ -183,6 +183,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
                             PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
+                                userType: 'Teacher',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -313,6 +314,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '3',
                       description: 'User profile logout',
                       operationResult: 'Success');
@@ -511,6 +513,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
           PlusUtility.updateLogs(
               activityType: widget.plusAppName ?? '',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -545,6 +548,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
         PlusUtility.updateLogs(
             activityType: widget.plusAppName ?? '',
+            userType: 'Teacher',
             activityId: '61',
             description: 'Accessibility',
             operationResult: 'Success');

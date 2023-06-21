@@ -648,6 +648,7 @@ class _GradedPlusConstructedResponseState
 
     PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '1',
         description: 'Start Scanning',
         operationResult: 'Success');
