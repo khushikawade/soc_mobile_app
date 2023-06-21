@@ -95,7 +95,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 token: userProfileLocalInfo.authorizationToken,
                 folderName: event.folderName);
 
-          
             if (isFolderCreated[0] == true) {
               // //FOR GRADED+
               if (event.folderName == "SOLVED GRADED+") {
