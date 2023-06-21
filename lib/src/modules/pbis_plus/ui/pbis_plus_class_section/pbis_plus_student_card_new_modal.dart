@@ -113,52 +113,71 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
               }));
         });
 
-    final AddNotes = Form(
-        key: _noteFormKey,
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextFormField(
-              // decoration: AppConstants.inputDecoration.copyWith(
-              //   labelText: "Event Title",
-              // ),
-              style: TextStyle(
-                // color: AppColors.black,
-                fontSize: 17.0,
-              ),
-              // onSaved: (value)(){},
-              validator: (value) {
-                if (value == null || value == "")
-                  return "Please enter event title.";
+    final AddNotes = Expanded(
+      child: Form(
+          key: _noteFormKey,
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Username',
+                  contentPadding:
+                      const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(25.7),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(25.7),
+                  ),
+                ),
 
-                return null;
-              },
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
+                // decoration: AppConstants.inputDecoration.copyWith(
+                //   labelText: "Event Title",
+                // ),
+                style: TextStyle(
+                  // color: AppColors.black,
+                  fontSize: 17.0,
+                ),
+                // onSaved: (value)(){},
+                validator: (value) {
+                  if (value == null || value == "")
+                    return "Please enter event title.";
+
+                  return null;
+                },
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularCustomButton(
-              size: Size(MediaQuery.of(context).size.width * 0.29,
-                  MediaQuery.of(context).size.width / 10),
-              borderColor:
-                  Color(0xff000000) != Theme.of(context).backgroundColor
-                      ? Color(0xff111C20)
-                      : Color(0xffF7F8F9),
-              textColor: Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xff111C20)
-                  : Color(0xffF7F8F9),
-              text: "Done",
-              onClick: () {
-                Navigator.pop(context);
-              },
-              backgroundColor: AppTheme.kButtonColor,
-              isBusy: false,
-              buttonRadius: 64,
-            ),
-          )
-        ]));
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularCustomButton(
+                size: Size(MediaQuery.of(context).size.width * 0.29,
+                    MediaQuery.of(context).size.width / 10),
+                borderColor:
+                    Color(0xff000000) != Theme.of(context).backgroundColor
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+                textColor:
+                    Color(0xff000000) != Theme.of(context).backgroundColor
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+                text: "Done",
+                onClick: () {
+                  Navigator.pop(context);
+                },
+                backgroundColor: AppTheme.kButtonColor,
+                isBusy: false,
+                buttonRadius: 64,
+              ),
+            )
+          ])),
+    );
 
     final ActionInteractionButtonsRowWise = GridView.builder(
       shrinkWrap: true,
@@ -211,81 +230,81 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            color: AppTheme.kButtonColor,
-            child: Column(
-              children: [
-                SpacerWidget((widget.isFromStudentPlus == true &&
-                        widget.constraint <= 553)
-                    ? MediaQuery.of(context).size.width * 0.11
-                    : (widget.constraint <= 115)
-                        ? widget.isFromDashboardPage!
-                            ? MediaQuery.of(context).size.width * 0.18
-                            : MediaQuery.of(context).size.width * 0.17
-                        : widget.isFromDashboardPage!
-                            ? MediaQuery.of(context).size.width * 0.13
-                            : MediaQuery.of(context).size.width * 0.16),
-                Text(
-                  widget.studentValueNotifier.value.profile!.name!.fullName!,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                widget.isFromDashboardPage!
-                    ? SizedBox.shrink()
-                    : SpacerWidget(14)
-              ],
-            ),
-          ),
+          // Container(
+          //   width: MediaQuery.of(context).size.width,
+          //   color: AppTheme.kButtonColor,
+          //   child: Column(
+          //     children: [
+          //       SpacerWidget((widget.isFromStudentPlus == true &&
+          //               widget.constraint <= 553)
+          //           ? MediaQuery.of(context).size.width * 0.11
+          //           : (widget.constraint <= 115)
+          //               ? widget.isFromDashboardPage!
+          //                   ? MediaQuery.of(context).size.width * 0.18
+          //                   : MediaQuery.of(context).size.width * 0.17
+          //               : widget.isFromDashboardPage!
+          //                   ? MediaQuery.of(context).size.width * 0.13
+          //                   : MediaQuery.of(context).size.width * 0.16),
+          //       Text(
+          //         widget.studentValueNotifier.value.profile!.name!.fullName!,
+          //         style: Theme.of(context)
+          //             .textTheme
+          //             .bodyText1!
+          //             .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+          //       ),
+          //       widget.isFromDashboardPage!
+          //           ? SizedBox.shrink()
+          //           : SpacerWidget(14)
+          //     ],
+          //   ),
+          // ),
 
-          // SpacerWidget(48),
-          // Row
-          SpacerWidget(
-              (widget.isFromStudentPlus == true && widget.constraint <= 553)
-                  ? MediaQuery.of(context).size.width * 0.9
-                  : (widget.constraint <= 115)
-                      ? widget.isFromDashboardPage!
-                          ? MediaQuery.of(context).size.width * 0.06
-                          : MediaQuery.of(context).size.width * 0.11
-                      : widget.isFromDashboardPage!
-                          ? MediaQuery.of(context).size.width * 0.08
-                          : MediaQuery.of(context).size.width * 0.05),
-
-          //col
+          // // SpacerWidget(48),
+          // // Row
           // SpacerWidget(
           //     (widget.isFromStudentPlus == true && widget.constraint <= 553)
           //         ? MediaQuery.of(context).size.width * 0.9
           //         : (widget.constraint <= 115)
           //             ? widget.isFromDashboardPage!
           //                 ? MediaQuery.of(context).size.width * 0.06
-          //                 : MediaQuery.of(context).size.width * 0.08
+          //                 : MediaQuery.of(context).size.width * 0.11
           //             : widget.isFromDashboardPage!
           //                 ? MediaQuery.of(context).size.width * 0.08
-          //                 : MediaQuery.of(context).size.width * 0.08),
+          //                 : MediaQuery.of(context).size.width * 0.05),
 
-          Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(
-                left: 10,
-                right: 10,
+          // //col
+          // // SpacerWidget(
+          // //     (widget.isFromStudentPlus == true && widget.constraint <= 553)
+          // //         ? MediaQuery.of(context).size.width * 0.9
+          // //         : (widget.constraint <= 115)
+          // //             ? widget.isFromDashboardPage!
+          // //                 ? MediaQuery.of(context).size.width * 0.06
+          // //                 : MediaQuery.of(context).size.width * 0.08
+          // //             : widget.isFromDashboardPage!
+          // //                 ? MediaQuery.of(context).size.width * 0.08
+          // //                 : MediaQuery.of(context).size.width * 0.08),
 
-                // top: (widget.isFromStudentPlus == true &&
-                //         widget.constraint <= 552)
-                //     ? 0
-                //     : widget.constraint > 115
-                //         ? 15
-                //         : 0.0
-              ),
-              width: MediaQuery.of(context).size.width * 1,
-              child: ActionInteractionButtonsRowWise),
-          // SpacerWidget(
-          //     (widget.isFromStudentPlus == true && widget.constraint <= 552)
-          //         ? 0
-          //         : widget.constraint > 115
-          //             ? 15
-          //             : 0.0),
+          // Container(
+          //     alignment: Alignment.center,
+          //     padding: EdgeInsets.only(
+          //       left: 10,
+          //       right: 10,
+
+          //       // top: (widget.isFromStudentPlus == true &&
+          //       //         widget.constraint <= 552)
+          //       //     ? 0
+          //       //     : widget.constraint > 115
+          //       //         ? 15
+          //       //         : 0.0
+          //     ),
+          //     width: MediaQuery.of(context).size.width * 1,
+          //     child: ActionInteractionButtonsRowWise),
+          // // SpacerWidget(
+          // //     (widget.isFromStudentPlus == true && widget.constraint <= 552)
+          // //         ? 0
+          // //         : widget.constraint > 115
+          // //             ? 15
+          // //             : 0.0),
         ],
       ),
     );
@@ -356,7 +375,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                 ),
                 child: Column(
                   children: [
-                    FittedBox(child: pbisStudentDetailWidget),
+                    AddNotes,
+                    // FittedBox(child: pbisStudentDetailWidget),
                   ],
                 )),
             Positioned(
