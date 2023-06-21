@@ -148,41 +148,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
-    /*-----No need ot use this event as this is already manage together with Import Roster event----*/
-    /*----------------------------------------------------------------------------------------------*/
-
-    // if (event is GetPBISTotalInteractionsByTeacher) {
-    //   List<UserInformation> userProfileLocalData =
-    //       await UserGoogleProfile.getUserProfile();
-
-    //   LocalDatabase<PBISPlusTotalInteractionByTeacherModal> _localDb =
-    //       LocalDatabase(PBISPlusOverrides.PBISPlusTotalInteractionByTeacherDB);
-    //   List<PBISPlusTotalInteractionByTeacherModal>? _localData =
-    //       await _localDb.getData();
-
-    //   if (_localData?.isNotEmpty ?? false) {
-    //     yield PBISPlusTotalInteractionByTeacherSuccess(
-    //         pbisTotalInteractionList: _localData);
-    //   } else {
-    //     yield PBISPlusLoading();
-    //   }
-
-    //   List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList =
-    //       await getPBISTotalInteractionByTeacher(
-    //           teacherEmail: userProfileLocalData[0].userEmail!);
-
-    //   await _localDb.clear();
-    //   pbisTotalInteractionList.forEach((element) async {
-    //     await _localDb.addData(element);
-    //   });
-
-    //   yield PBISPlusLoading();
-    //   yield PBISPlusTotalInteractionByTeacherSuccess(
-    //       pbisTotalInteractionList: pbisTotalInteractionList);
-    // }
-
-    /*----------------------------------------------------------------------------------------------*/
-    /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
 
     if (event is AddPBISInteraction) {
@@ -793,14 +758,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Reset_Date": currentDate,
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
-      //if user reset Course
-      if (type == "All Courses & Students" || type == "Courses") {
+      //if user reset Course //All Courses & Students||Select Students
+      if (type == PBISPlusOverrides.kresetOptionOnetitle ||
+          type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
-      } else if //if user reset student
-          (type == "Students") {
+      }
+      //Select Courses
+      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -808,12 +775,45 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
-            .join(
-                "', '"); // Surround the string with double quotes and  (parentheses)
+            .join("', '");
+        // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
-      print(body);
+      // Select Students by Course
+      else if (type == PBISPlusOverrides.kresetOptionFourtitle) {
+        List<Map<String, dynamic>> courseIdsAndStudentIds = [];
+        for (ClassroomCourse course in selectedCourses) {
+          // Create a map to store Classroom_Course_Id and Student_Id
+          Map<String, dynamic> classroomCourse = {
+            "Classroom_Course_Id": course.id,
+            "Student_Id": <String>[],
+          };
+          // Create a list to store student IDs //For every course index
+          List<String> studentIds = [];
+          // Iterate over each ClassroomStudents in course.students (handling null case with ?? [])
+          for (ClassroomStudents student in course.students ?? []) {
+            // Check if student.profile and student.profile.id are not null
+            if (student.profile?.id != null &&
+                student.profile!.id!.isNotEmpty) {
+              // Add student ID to the list only if id was not null and empty
+              studentIds.add(student.profile!.id!);
+            } else if (student.profile?.emailAddress != null &&
+                student.profile!.emailAddress!.isNotEmpty) {
+              //  Add student email to the list only if id was null or empty
+              studentIds.add(student.profile!.emailAddress!);
+            }
+          }
+          // Assign the list of student IDs to the "Student_Id" key in the classroomCourse map
+          classroomCourse["Student_Id"] = studentIds;
+          // Add the classroomCourse map to the list of courseIdsAndStudentIds
+
+          courseIdsAndStudentIds.add(classroomCourse);
+        }
+// Add the courseIdsAndStudentIds to the "Student_Details" key in the api body
+        body.addAll({"Student_Details": courseIdsAndStudentIds});
+      }
+
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
