@@ -1102,7 +1102,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     selectedRecords = widget.googleClassroomCourseworkList;
                   } else {
                     //this is for selected students
-                    selectedRecords = prepareClasscourseListToRest(
+                    selectedRecords = prepareStudentListByCourseToReset(
                       selectedStudentList: selectedStudentList,
                       classroomCourses: widget.googleClassroomCourseworkList,
                     );
@@ -1253,8 +1253,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     }
   }
 
-  //Add all Selected student to a new list type classcourse
-  List<ClassroomCourse> prepareClasscourseListToRest(
+  //Add all Selected student to a new list type class course
+  List<ClassroomCourse> prepareStudentListByCourseToReset(
       {required List<ClassroomStudents> selectedStudentList,
       required List<ClassroomCourse> classroomCourses}) {
     try {
