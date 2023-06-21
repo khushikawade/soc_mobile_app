@@ -804,23 +804,39 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 "', '"); // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
-      } else if (type == 'Students by Course') {
-        // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
-        String studentIds = selectedCourses
-            .expand((course) => course.students ?? [])
-            .map((student) => student.profile?.id)
-            .where((id) => id != null && id.isNotEmpty)
-            .toSet() // Convert to Set to remove duplicates
-            .map((id) => "$id")
-            .join(
-                "', '"); // Surround the string with double quotes and  (parentheses)
+      } else if (type ==
+          'Students by Course') // if the user rest stduents by course
+      {
+        List<Map<String, dynamic>> courseIdsAndStudentIds = [];
+        for (ClassroomCourse course in selectedCourses) {
+          // Create a map to store Classroom_Course_Id and Student_Id
+          Map<String, dynamic> classroomCourse = {
+            "Classroom_Course_Id": course.id,
+            "Student_Id": <String>[],
+          };
+          // Create a list to store student IDs
+          List<String> studentIds = [];
+          // Iterate over each ClassroomStudents in course.students (handling null case with ?? [])
+          for (ClassroomStudents student in course.students ?? []) {
+            // Check if student.profile and student.profile.id are not null
+            if (student.profile?.id != null &&
+                student.profile!.id!.isNotEmpty) {
+              // Add student ID to the list only if id was not null and empty
+              studentIds.add(student.profile!.id!);
+            } else if (student.profile?.emailAddress != null &&
+                student.profile!.emailAddress!.isNotEmpty) {
+              //  Add student email to the list only if id was null or empty
+              studentIds.add(student.profile!.emailAddress!);
+            }
+          }
+          // Assign the list of student IDs to the "Student_Id" key in the classroomCourse map
+          classroomCourse["Student_Id"] = studentIds;
+          // Add the classroomCourse map to the list of courseIdsAndStudentIds
 
-        // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
-        String classroomCourseIds =
-            selectedCourses.map((course) => course.id).join("','");
-
-        body.addAll({"Student_Id": "('$studentIds')"});
-        body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
+          courseIdsAndStudentIds.add(classroomCourse);
+        }
+// Add the courseIdsAndStudentIds to the "Student_Details" key in the api body
+        body.addAll({"Student_Details": courseIdsAndStudentIds});
       }
 
       print(body);
@@ -871,3 +887,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 }
+
+// List courses = [
+//   {
+//     "coureName": "math",
+//     "courseid": "1",
+//     "students": [
+//       {"stduentname": "student1", "studentid": "s1"},
+//       {"stduentname": "student2", "studentid": "s2"}
+//     ]
+//   },
+//   {
+//     "coureName": "dart",
+//     "courseid": "2",
+//     "students": [
+//       {"stduentname": "student4", "studentid": "m1"},
+//       {"stduentname": "student5", "studentid": "m2"}
+//     ]
+//   }
+// ];

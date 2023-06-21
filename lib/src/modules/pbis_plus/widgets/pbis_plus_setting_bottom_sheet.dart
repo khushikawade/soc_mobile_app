@@ -98,43 +98,49 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async => false,
-        child: SingleChildScrollView(
-          padding: MediaQuery.of(context).viewInsets / 1.5,
-          controller: ModalScrollController.of(context),
-          child: Container(
-              height: heightMap.containsKey(pageValue)
-                  ? heightMap[pageValue]
-                  : widget.height,
-              decoration: BoxDecoration(
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: PageView(
-                physics: NeverScrollableScrollPhysics(),
-                onPageChanged: ((value) {
-                  pageValue = value;
-                }),
-                allowImplicitScrolling: false,
-                pageSnapping: false,
-                controller: _pageController,
-                children: [
-                  settingWidget(
-                      context), //-----------------setting widget design------------//
-                  buildGoogleClassroomCourseWidget(
-                      context), //----------select ClassroomCourse view-----------------//
-                  buildSelectStudentBottomsheetWidget(
-                      context), //----------------------select student view---------------//
-                  buildSelectStudentByCourseBottomsheetWidget(context),
+    return Wrap(
+      children: [
+        WillPopScope(
+            onWillPop: () async => false,
+            child: SingleChildScrollView(
+              padding: MediaQuery.of(context).viewInsets / 1.5,
+              controller: ModalScrollController.of(context),
+              child: Container(
+                  height: heightMap.containsKey(pageValue)
+                      ? heightMap[pageValue]
+                      : widget.height,
+                  decoration: BoxDecoration(
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    onPageChanged: ((value) {
+                      pageValue = value;
+                    }),
+                    allowImplicitScrolling: false,
+                    pageSnapping: false,
+                    controller: _pageController,
+                    children: [
+                      settingWidget(
+                          context), //-----------------setting widget design------------//
+                      buildGoogleClassroomCourseWidget(
+                          context), //----------select ClassroomCourse view-----------------//
+                      buildSelectStudentBottomsheetWidget(
+                          context), //----------------------select student view---------------//
+                      buildSelectStudentByCourseBottomsheetWidget(context),
 
-                  warningWidget(),
-                  commonLoaderWidget(),
-                ],
-              )),
-        ));
+                      warningWidget(),
+                      commonLoaderWidget(),
+                    ],
+                  )),
+            )),
+        blocListener()
+      ],
+    );
   }
 
 //-------------------------------Setting widget design------------------------------------------//
@@ -243,8 +249,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget('Select Students by Course', Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
         textWidget('Coming September 2023', AppTheme.kSecondaryColor),
-
-        blocListener()
       ],
     );
   }
@@ -726,14 +730,20 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
   Container blocListener() {
+    print("UI STATE------------BlocConsumer ");
     return Container(
       height: 0,
       width: 0,
       child: Column(
         children: [
-          BlocListener<GoogleDriveBloc, GoogleDriveState>(
+          BlocConsumer<GoogleDriveBloc, GoogleDriveState>(
             bloc: googleDriveBloc,
-            child: EmptyContainer(),
+            builder: (context, state) {
+              print("UI STATE------------GOOGLE STATE $state");
+              return Container(
+                height: 0,
+              );
+            },
             listener: (context, state) async {
               print("UI STATE------------GOOGLE STATE $state");
 

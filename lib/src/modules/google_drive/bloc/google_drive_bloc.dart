@@ -104,7 +104,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             // Globals.googleDriveFolderId = folderObject['id'];
             // Globals.googleDriveFolderPath = folderObject['webViewLink'];
-
+            print("FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
             //FOR GRADED+
             if (event.folderName == "SOLVED GRADED+") {
               Globals.googleDriveFolderId = folderObject['id'];
