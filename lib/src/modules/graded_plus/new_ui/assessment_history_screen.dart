@@ -107,6 +107,7 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {
                   Utility.scrollToTop(scrollController: _scrollController);

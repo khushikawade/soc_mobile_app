@@ -211,6 +211,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
                 Utility.scrollToTop(scrollController: _scrollController);

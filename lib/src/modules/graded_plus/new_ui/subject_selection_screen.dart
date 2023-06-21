@@ -261,6 +261,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  plusAppName: 'GRADED+',
                   fromGradedPlus: true,
                   hideStateSelection: true,
                   onTap: () {

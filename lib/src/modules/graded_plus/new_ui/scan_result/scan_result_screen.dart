@@ -188,6 +188,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isBackButton: false,
       isSuccessState: isSuccessResult,

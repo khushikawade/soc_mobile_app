@@ -609,7 +609,7 @@ class _GradedPlusSearchScreenPageState
 
           if (state is GoogleSlideCreated) {
             Globals.googleSlidePresentationId = state.slideFiledId;
-            
+
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             //    }
@@ -1018,6 +1018,7 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {
               Utility.scrollToTop(scrollController: _scrollController);

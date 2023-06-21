@@ -37,7 +37,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int counter = 0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   @override
@@ -58,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),
             isBackOnSuccess: isBackFromCamera,

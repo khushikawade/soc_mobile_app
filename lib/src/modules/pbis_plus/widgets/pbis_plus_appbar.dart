@@ -183,6 +183,15 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);

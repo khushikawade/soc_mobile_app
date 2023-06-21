@@ -110,6 +110,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
   PreferredSizeWidget? appBar() {
     return widget.isFromHelp == true
         ? CustomOcrAppBarWidget(
+            plusAppName: 'GRADED+',
             fromGradedPlus: true,
             //Show home button in standard app and hide in standalone
             assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,

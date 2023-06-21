@@ -113,6 +113,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
       isBackOnSuccess: ValueNotifier<bool>(false),

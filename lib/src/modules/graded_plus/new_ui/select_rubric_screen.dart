@@ -113,6 +113,7 @@ class _GradedPlusConstructedResponseState
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+        plusAppName: 'GRADED+',
         fromGradedPlus: true,
         //Show home button in standard app and hide in standalone
         assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
