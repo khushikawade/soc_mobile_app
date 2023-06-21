@@ -778,7 +778,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   //     errorMsg: state.errorMsg!,
                   //     context: context,
                   //     scaffoldKey: widget.scaffoldKey);
- await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                  await Authentication.reAuthenticationRequired(
+                      context: context,
+                      errorMessage: state.errorMsg!,
+                      scaffoldKey: widget.scaffoldKey);
                   // Navigator.of(context).pop();
                   Utility.currentScreenSnackBar('Please try again', null);
                 } else {
@@ -836,12 +839,14 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         refreshToken: userProfile.refreshToken));
   }
 
-  void _exportDataToSpreadSheet() {
+  Future<void> _exportDataToSpreadSheet() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
     //CREATE SPREADSHEET ON DRIVE
     googleDriveBloc.add(CreateExcelSheetToDrive(
         name:
             "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
+        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolerId ?? ''));
   }
 
 //----------------------call method for reset data----------------//
@@ -1021,8 +1026,19 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     );
   }
 
-  void exportData() {
-    if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
+  Future<void> exportData() async {
+    // if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
+    //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+    //   _exportDataToSpreadSheet();
+    // } else {
+    //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+    //   _checkDriveFolderExistsOrNot();
+    // }
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolerId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolerId != "") {
       //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
       _exportDataToSpreadSheet();
     } else {

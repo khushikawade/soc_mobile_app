@@ -74,13 +74,33 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
               if (state is GoogleDriveLoading) {
                 Utility.showLoadingDialog(context: context, isOCR: true);
               }
+              // if (state is GoogleSuccess) {
+              //   Navigator.of(context).pop();
+
+              //   Globals.googleDriveFolderId?.isNotEmpty ?? false
+              //       ? _beforeNavigateOnCameraSection()
+              //       : Utility.currentScreenSnackBar(
+              //           "Something Went Wrong. Please Try Again.", null);
+              // }
               if (state is GoogleSuccess) {
                 Navigator.of(context).pop();
-                Globals.googleDriveFolderId?.isNotEmpty ?? false
-                    ? _beforeNavigateOnCameraSection()
-                    : Utility.currentScreenSnackBar(
-                        "Something Went Wrong. Please Try Again.", null);
+
+                List<UserInformation> userProfileInfoData =
+                    await UserGoogleProfile.getUserProfile();
+
+                Fluttertoast.cancel();
+                if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId !=
+                        null &&
+                    userProfileInfoData[0]
+                        .gradedPlusGoogleDriveFolerId!
+                        .isNotEmpty) {
+                  _beforeNavigateOnCameraSection();
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
               }
+
               if (state is ErrorState) {
                 if (Globals.sessionId == '') {
                   Globals.sessionId =
@@ -102,7 +122,10 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                   //     errorMsg: state.errorMsg!,
                   //     context: context,
                   //     scaffoldKey: _scaffoldKey);
- await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                  await Authentication.reAuthenticationRequired(
+                      context: context,
+                      errorMessage: state.errorMsg!,
+                      scaffoldKey: _scaffoldKey);
                   _triggerDriveFolderEvent(state.isAssessmentSection);
                 } else {
                   Navigator.of(context).pop();
@@ -163,11 +186,27 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                   if (selectedAnswerKey.value.isEmpty) {
                     Utility.currentScreenSnackBar(
                         "Select the Answer Key", null);
-                  } else {
+                  }
+                  //  else {
+                  //   Fluttertoast.cancel();
+                  //   Globals.googleDriveFolderId?.isEmpty ?? true
+                  //       ? _triggerDriveFolderEvent(false)
+                  //       : _beforeNavigateOnCameraSection();
+                  // }
+                  else {
+                    List<UserInformation> userProfileInfoData =
+                        await UserGoogleProfile.getUserProfile();
+
                     Fluttertoast.cancel();
-                    Globals.googleDriveFolderId?.isEmpty ?? true
-                        ? _triggerDriveFolderEvent(false)
-                        : _beforeNavigateOnCameraSection();
+                    if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId !=
+                            null &&
+                        userProfileInfoData[0]
+                            .gradedPlusGoogleDriveFolerId!
+                            .isNotEmpty) {
+                      _beforeNavigateOnCameraSection();
+                    } else {
+                      _triggerDriveFolderEvent(false);
+                    }
                   }
                 },
               );

@@ -97,8 +97,8 @@ class Globals {
 
   static List gradeList = [];
   static bool isCameraPopup = true;
-  static String? googleDriveFolderId = '';
-  static String? googleDriveFolderPath;
+  // static String? googleDriveFolderId = '';
+  // static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
   static String? shareableLink;
   static String? pointPossible = '2';
@@ -127,5 +127,4 @@ class Globals {
       ''; //Used to manage the count increment only in case of id change
 
 //  static EventController scheduleController = EventController();
-
 }

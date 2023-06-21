@@ -22,13 +22,17 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       profilePicture: fields[2] as String?,
       authorizationToken: fields[3] as String?,
       refreshToken: fields[4] as String?,
-    );
+      idToken: fields[5] as String?,
+      gradedPlusGoogleDriveFolerId: fields[6] as String?,
+      pbisPlusGoogleDriveFolerId: fields[7] as String?,
+      studentPlusGoogleDriveFolerId: fields[8] as String?,
+    )..gradedPlusGoogleDriveFolerPathUrl = fields[9] as String?;
   }
 
   @override
   void write(BinaryWriter writer, UserInformation obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.userName)
       ..writeByte(1)
@@ -38,7 +42,17 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       ..writeByte(3)
       ..write(obj.authorizationToken)
       ..writeByte(4)
-      ..write(obj.refreshToken);
+      ..write(obj.refreshToken)
+      ..writeByte(5)
+      ..write(obj.idToken)
+      ..writeByte(6)
+      ..write(obj.gradedPlusGoogleDriveFolerId)
+      ..writeByte(7)
+      ..write(obj.pbisPlusGoogleDriveFolerId)
+      ..writeByte(8)
+      ..write(obj.studentPlusGoogleDriveFolerId)
+      ..writeByte(9)
+      ..write(obj.gradedPlusGoogleDriveFolerPathUrl);
   }
 
   @override

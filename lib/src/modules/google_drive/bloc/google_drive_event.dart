@@ -7,7 +7,7 @@ abstract class GoogleDriveEvent extends Equatable {
 class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? filterType;
-  final String? folderName;
+  late String? folderName;
   final bool? fetchHistory;
   final String? refreshToken;
   final bool? isReturnState;
@@ -272,5 +272,3 @@ class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
-
-

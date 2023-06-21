@@ -568,9 +568,23 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   }
                   //Create Google Spreadsheet for Selected Courses if classroomLoader = false
                   else {
-                    if (PBISPlusOverrides
-                            .pbisPlusGoogleDriveFolderId.isNotEmpty ==
-                        true) {
+                    // if (PBISPlusOverrides
+                    //         .pbisPlusGoogleDriveFolderId.isNotEmpty ==
+                    //     true) {
+                    //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+                    //   _createSpreadSheet();
+                    // } else {
+                    //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+                    //   _checkDriveFolderExistsOrNot();
+                    // }
+
+                    List<UserInformation> userProfileInfoData =
+                        await UserGoogleProfile.getUserProfile();
+
+                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolerId !=
+                            null &&
+                        userProfileInfoData[0].pbisPlusGoogleDriveFolerId !=
+                            "") {
                       //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
                       _createSpreadSheet();
                     } else {
@@ -726,7 +740,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 //     errorMsg: state.errorMsg!,
                 //     context: context,
                 //     scaffoldKey: widget.scaffoldKey);
-                await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
+                    context: context,
+                    errorMessage: state.errorMsg!,
+                    scaffoldKey: widget.scaffoldKey);
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
@@ -779,7 +796,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 //     errorMsg: state.errorMsg!,
                 //     context: context,
                 //     scaffoldKey: widget.scaffoldKey);
-await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
+                    context: context,
+                    errorMessage: state.errorMsg!,
+                    scaffoldKey: widget.scaffoldKey);
                 // Navigator.of(context).pop();
                 Utility.currentScreenSnackBar('Please try again', null);
               } else {
@@ -810,11 +830,13 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
         refreshToken: userProfile.refreshToken));
   }
 
-  void _createSpreadSheet() {
+  void _createSpreadSheet() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
     //CREATE SPREADSHEET ON DRIVE
     googleDriveBloc.add(CreateExcelSheetToDrive(
         name:
             "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
+        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolerId ?? ''));
   }
 }

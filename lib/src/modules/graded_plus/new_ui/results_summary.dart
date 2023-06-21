@@ -318,7 +318,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     //     errorMsg: state.errorMsg!,
                     //     context: context,
                     //     scaffoldKey: scaffoldKey);
-  await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
+                    await Authentication.reAuthenticationRequired(
+                        context: context,
+                        errorMessage: state.errorMsg!,
+                        scaffoldKey: scaffoldKey);
                     _googleClassroomBloc.add(CreateClassRoomCourseWork(
                         isEditStudentInfo: true,
                         studentAssessmentInfoDb: LocalDatabase('student_info'),
@@ -799,7 +802,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         //     errorMsg: state.errorMsg!,
                         //     context: context,
                         //     scaffoldKey: scaffoldKey);
- await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
+                        await Authentication.reAuthenticationRequired(
+                            context: context,
+                            errorMessage: state.errorMsg!,
+                            scaffoldKey: scaffoldKey);
                         _driveBloc.add(GetAssessmentDetail(
                             fileId: widget.fileId, nextPageUrl: ''));
                       } else {
@@ -1855,7 +1861,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             //     errorMsg: state.errorMsg!,
             //     context: context,
             //     scaffoldKey: scaffoldKey);
-             await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
+            await Authentication.reAuthenticationRequired(
+                context: context,
+                errorMessage: state.errorMsg!,
+                scaffoldKey: scaffoldKey);
 
             // _driveBloc
             //     .add(GetShareLink(fileId: widget.fileId, slideLink: false));
@@ -2328,7 +2337,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Share': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Drive': Globals.googleDriveFolderPath ?? '',
+                  // 'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': Globals.appSetting.dashboardUrlC == null
                       ? 'https://www.${Globals.schoolDbnC}.com/'

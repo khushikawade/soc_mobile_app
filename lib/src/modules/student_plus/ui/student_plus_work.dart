@@ -456,10 +456,29 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 if (filterNotifier.value == '' &&
                     state is StudentPlusWorkSuccess &&
                     state.obj.length > 0) {
-                  return PlusCustomFloatingActionButton(onPressed: () {
-                    if (StudentPlusOverrides
-                            ?.studentPlusGoogleDriveFolderId?.isEmpty ??
-                        true) {
+                  return PlusCustomFloatingActionButton(onPressed: ()
+
+                      //  {
+                      //   if (StudentPlusOverrides
+                      //           ?.studentPlusGoogleDriveFolderId?.isEmpty ??
+                      //       true) {
+                      //     _checkDriveFolderExistsOrNot();
+                      //   } else if (widget
+                      //           .studentDetails?.googlePresentationUrl?.isEmpty ??
+                      //       true) {
+                      //     getGooglePresentationUrl();
+                      //   } else {
+                      //     _shareBottomSheetMenu();
+                      //   }
+                      // }
+                      async {
+                    List<UserInformation> userProfileInfoData =
+                        await UserGoogleProfile.getUserProfile();
+
+                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolerId ==
+                            null ||
+                        userProfileInfoData[0].pbisPlusGoogleDriveFolerId ==
+                            "") {
                       _checkDriveFolderExistsOrNot();
                     } else if (widget
                             .studentDetails?.googlePresentationUrl?.isEmpty ??
@@ -514,13 +533,23 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
   }
 
-  void getGooglePresentationUrl() {
+  // void getGooglePresentationUrl() {
+  //   Utility.showLoadingDialog(
+  //       context: context, isOCR: true, msg: 'Please Wait...');
+  //   googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
+  //       studentDetails: widget.studentDetails,
+  //       studentPlusDriveFolderId:
+  //           StudentPlusOverrides.studentPlusGoogleDriveFolderId));
+  // }
+  Future<void> getGooglePresentationUrl() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
     Utility.showLoadingDialog(
         context: context, isOCR: true, msg: 'Please Wait...');
     googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
         studentDetails: widget.studentDetails,
         studentPlusDriveFolderId:
-            StudentPlusOverrides.studentPlusGoogleDriveFolderId));
+            userProfileInfoData[0].studentPlusGoogleDriveFolerId ?? ''));
   }
 
   BlocListener googleSlidesPresentationBlocListener() {
@@ -566,15 +595,30 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         child: Container(),
         listener: (context, state) async {
           print("On student work ------------$state---------");
+          // //Checking Google Folder State
+          // if (state is GoogleSuccess) {
+          //   Navigator.of(context).pop();
+          //   if (StudentPlusOverrides
+          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
+          //       false) {
+          //     getGooglePresentationUrl();
+          //   } else {
+          //     // Navigator.of(context).pop();
+          //     Utility.currentScreenSnackBar(
+          //         "Something Went Wrong. Please Try Again.", null);
+          //   }
+          // }
+
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
-            if (StudentPlusOverrides
-                    ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-                false) {
+
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
+            if (userProfileInfoData[0].studentPlusGoogleDriveFolerId != null &&
+                userProfileInfoData[0].studentPlusGoogleDriveFolerId != '') {
               getGooglePresentationUrl();
             } else {
-              // Navigator.of(context).pop();
               Utility.currentScreenSnackBar(
                   "Something Went Wrong. Please Try Again.", null);
             }

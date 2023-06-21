@@ -668,7 +668,7 @@ class _GradedPlusAssessmentSummaryState
                 // classroomUrlStatus: ValueNotifier<bool>(true),
                 allUrls: {
                   'Share': assessment.webContentLink ?? '',
-                  'Drive': Globals.googleDriveFolderPath ?? '',
+                //  'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',

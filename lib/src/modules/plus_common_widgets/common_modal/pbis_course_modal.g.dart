@@ -24,10 +24,10 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       enrollmentCode: fields[4] as String?,
       courseState: fields[5] as String?,
       students: (fields[6] as List?)?.cast<ClassroomStudents>(),
-    )
-      ..courseWorkId = fields[7] as String?
-      ..assessmentCId = fields[8] as String?
-      ..courseWorkURL = fields[9] as String?;
+      courseWorkId: fields[7] as String?,
+      assessmentCId: fields[8] as String?,
+      courseWorkURL: fields[9] as String?,
+    );
   }
 
   @override

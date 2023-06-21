@@ -252,11 +252,27 @@ class _GradedPlusConstructedResponseState
                 Utility.showLoadingDialog(
                     context: context, isOCR: true, msg: 'Please Wait');
               }
+              // if (state is GoogleSuccess) {
+              //   if (Globals.googleDriveFolderId != null &&
+              //       Globals.googleDriveFolderId!.isNotEmpty) {
+              //     Navigator.of(context).pop();
+              //     _beforenavigateOnCameraSection();
+              //   }
+              // }
               if (state is GoogleSuccess) {
-                if (Globals.googleDriveFolderId != null &&
-                    Globals.googleDriveFolderId!.isNotEmpty) {
+                List<UserInformation> userProfileInfoData =
+                    await UserGoogleProfile.getUserProfile();
+
+                if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId !=
+                        null &&
+                    userProfileInfoData[0]
+                        .gradedPlusGoogleDriveFolerId!
+                        .isNotEmpty) {
                   Navigator.of(context).pop();
                   _beforenavigateOnCameraSection();
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
                 }
               }
               if (state is ErrorState) {
@@ -308,8 +324,16 @@ class _GradedPlusConstructedResponseState
           //clears scan more list
           Globals.scanMoreStudentInfoLength = null;
 
-          if (Globals.googleDriveFolderId != null &&
-              Globals.googleDriveFolderId!.isNotEmpty) {
+          // if (Globals.googleDriveFolderId != null &&
+          //     Globals.googleDriveFolderId!.isNotEmpty) {
+          //   _beforenavigateOnCameraSection();
+          // } else {
+          //   _triggerDriveFolderEvent(false);
+          // }
+          List<UserInformation> userProfileInfoData =
+              await UserGoogleProfile.getUserProfile();
+          if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId != null &&
+              userProfileInfoData[0].gradedPlusGoogleDriveFolerId!.isNotEmpty) {
             _beforenavigateOnCameraSection();
           } else {
             _triggerDriveFolderEvent(false);

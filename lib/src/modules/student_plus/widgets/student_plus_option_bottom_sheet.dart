@@ -144,8 +144,17 @@ class _GradedPlusResultOptionBottomSheetState
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
         //check student+ folder available or not if not create one
-        if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-            false) {
+        // if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
+        //     false) {
+        //   print("Trigger to check the folder ");
+        //   studentPlusGooglePresentationIsAvailable();
+        // } else {
+        //   _checkDriveFolderExistsOrNot();
+        // }
+        List<UserInformation> userProfileInfoData =
+            await UserGoogleProfile.getUserProfile();
+        if (userProfileInfoData[0].studentPlusGoogleDriveFolerId != null &&
+            userProfileInfoData[0].studentPlusGoogleDriveFolerId != '') {
           print("Trigger to check the folder ");
           studentPlusGooglePresentationIsAvailable();
         } else {
@@ -240,10 +249,24 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleDriveBloc,
         child: Container(),
         listener: (context, state) async {
+          // if (state is GoogleSuccess) {
+
+          //   if (StudentPlusOverrides
+          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
+          //       false) {
+          //     studentPlusGooglePresentationIsAvailable();
+          //   } else {
+          //     Navigator.of(context).pop();
+          //     Utility.currentScreenSnackBar(
+          //         "Something Went Wrong. Please Try Again.", null);
+          //   }
+          // }
+
           if (state is GoogleSuccess) {
-            if (StudentPlusOverrides
-                    ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-                false) {
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
+            if (userProfileInfoData[0].studentPlusGoogleDriveFolerId != null &&
+                userProfileInfoData[0].studentPlusGoogleDriveFolerId != '') {
               studentPlusGooglePresentationIsAvailable();
             } else {
               Navigator.of(context).pop();
@@ -337,11 +360,13 @@ class _GradedPlusResultOptionBottomSheetState
         refreshToken: userProfile.refreshToken));
   }
 
-  void studentPlusGooglePresentationIsAvailable() {
-    print("check  Presentation event trigger");
+  Future<void> studentPlusGooglePresentationIsAvailable() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
     googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
       studentPlusDriveFolderId:
-          StudentPlusOverrides.studentPlusGoogleDriveFolderId,
+          userProfileInfoData[0].studentPlusGoogleDriveFolerId ?? '',
       studentDetails: widget.studentDetails,
     ));
   }
