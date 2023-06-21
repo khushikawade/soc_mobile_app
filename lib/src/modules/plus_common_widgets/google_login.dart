@@ -82,7 +82,7 @@ class GoogleLogin {
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
           activityId: '2',
-          description: 'Google Authentication Success',
+          description: 'Google Authentication Success/Login Id:',
           operationResult: 'Success');
 
       // Log Firebase Event

@@ -336,7 +336,7 @@ class _StaffPageState extends State<StaffPage> {
         PlusUtility.updateLogs(
             activityType: 'GRADED+',
             activityId: '2',
-            description: 'Graded+ Accessed(Login)',
+            description: 'Graded+ Accessed(Login)/Login Id:',
             operationResult: 'Success');
 
         pushNewScreen(
@@ -351,7 +351,7 @@ class _StaffPageState extends State<StaffPage> {
         PlusUtility.updateLogs(
             activityType: 'PBIS+',
             activityId: '2',
-            description: 'PBIS+ Accessed(Login)',
+            description: 'PBIS+ Accessed(Login)/Login Id: ',
             operationResult: 'Success');
 
         pushNewScreen(
@@ -363,7 +363,7 @@ class _StaffPageState extends State<StaffPage> {
         PlusUtility.updateLogs(
             activityType: 'STUDENT+',
             activityId: '2',
-            description: 'STUDENT+ Accessed(Login)',
+            description: 'STUDENT+ Accessed(Login)/Login Id: ',
             operationResult: 'Success');
 
         pushNewScreen(

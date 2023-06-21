@@ -489,19 +489,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return _userInformation[0];
   }
 
-  // void _showPopUp(UserInformation userInformation) {
-  //   showDialog(
-  //       barrierDismissible: true,
-  //       context: context,
-  //       builder: (context) {
-  //         return CustomDialogBox(
-  //           activityType: 'GRADED+',
-  //           profileData: userInformation,
-  //           isUserInfoPop: true,
-  //         );
-  //       });
-  // }
-
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return IconButton(
         // key: _bshowcase,

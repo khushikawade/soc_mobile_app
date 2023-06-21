@@ -360,7 +360,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             activityType: 'GRADED+',
                             activityId: '2',
                             description:
-                                'Graded+ Accessed(Login)/Google Authentication Success',
+                                'Graded+ Accessed(Login)/Google Authentication Success/Login Id: ',
                             operationResult: 'Success');
 
                         //  pushNewScreen(context, screen: GradedLandingPage());
@@ -379,7 +379,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                           activityType: 'GRADED+',
                           activityId: '2',
                           description:
-                              'Graded+ Accessed(Login)/Already Logged In',
+                              'Graded+ Accessed(Login)/Already Logged In/Login Id: ',
                           operationResult: 'Success');
 
                       Navigator.of(context).push(MaterialPageRoute(
