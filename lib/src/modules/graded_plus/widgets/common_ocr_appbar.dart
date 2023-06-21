@@ -311,7 +311,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   Authentication.signOut(context: context);
                   Utility.clearStudentInfo(tableName: 'student_info');
                   Utility.clearStudentInfo(tableName: 'history_student_info');
-
+                  Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
                       userType: 'Teacher',

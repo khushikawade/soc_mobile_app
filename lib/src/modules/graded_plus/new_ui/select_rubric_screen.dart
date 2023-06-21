@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
@@ -263,10 +264,14 @@ class _GradedPlusConstructedResponseState
               if (state is ErrorState) {
                 Navigator.of(context).pop();
                 if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
+                  // await Utility.refreshAuthenticationToken(
+                  //     isNavigator: true,
+                  //     errorMsg: state.errorMsg!,
+                  //     context: context,
+                  //     scaffoldKey: _scaffoldKey);
+                  await Authentication.reAuthenticationRequired(
                       context: context,
+                      errorMessage: state.errorMsg!,
                       scaffoldKey: _scaffoldKey);
 
                   _triggerDriveFolderEvent(false);
@@ -305,7 +310,8 @@ class _GradedPlusConstructedResponseState
           //clears scan more list
           Globals.scanMoreStudentInfoLength = null;
 
-          if (Globals.googleDriveFolderId!.isNotEmpty) {
+          if (Globals.googleDriveFolderId != null &&
+              Globals.googleDriveFolderId!.isNotEmpty) {
             _beforenavigateOnCameraSection();
           } else {
             _triggerDriveFolderEvent(false);

@@ -1,8 +1,14 @@
 import 'dart:io';
 
 import 'package:Soc/firebase_options.dart';
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +17,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class Authentication {
   static FirebaseAuth auth = FirebaseAuth.instance;
+
   static User? user;
   static const List<String> scopes = <String>[
     "profile",
@@ -22,7 +29,8 @@ class Authentication {
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/classroom.profile.emails",
-    "https://www.googleapis.com/auth/classroom.profile.photos"
+    "https://www.googleapis.com/auth/classroom.profile.photos",
+   
   ];
   /* -------------------------------------------------------------------------------------- */
   /* ------------------------------------initializeFirebase-------------------------------- */
@@ -247,5 +255,75 @@ class Authentication {
         style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
     );
+  }
+
+  static Future refreshAuthenticationToken({String? refreshToken}) async {
+    var result;
+    if (Globals.appSetting.enableGoogleSSO != "true") {
+      result = await _toRefreshAuthenticationToken(refreshToken ?? '');
+    } else {
+      result = await Authentication.refreshToken();
+    }
+    return result;
+  }
+
+  static Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
+    try {
+      final DbServices _dbServices = DbServices();
+      final body = {"refreshToken": refreshToken};
+      final ResponseModel response = await _dbServices.postApi(
+          "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        var newToken = response.data['body']; //["access_token"]
+        //!=null?response.data['body']["access_token"]:response.data['body']["error"];
+        if (newToken["access_token"] != null) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+
+          UserInformation updatedObj = UserInformation(
+              userName: _userProfileLocalData[0].userName,
+              userEmail: _userProfileLocalData[0].userEmail,
+              profilePicture: _userProfileLocalData[0].profilePicture,
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              authorizationToken: newToken["access_token"]);
+
+          // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+
+          await UserGoogleProfile.updateUserProfile(updatedObj);
+
+          //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
+
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+        //  throw ('something_went_wrong');
+      }
+    } catch (e) {
+      //print(" errrrror  ");
+      print(e);
+      throw (e);
+    }
+  }
+
+  static Future reAuthenticationRequired(
+      {required String errorMessage,
+      required BuildContext context,
+      required GlobalKey<State<StatefulWidget>>? scaffoldKey}) async {
+    if (Globals.appSetting.enableGoogleSSO != "true") {
+      await Utility.refreshAuthenticationToken(
+          isNavigator: false,
+          errorMsg: errorMessage,
+          context: context,
+          scaffoldKey: scaffoldKey);
+    } else {
+      await Authentication.refreshToken();
+    }
   }
 }

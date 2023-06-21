@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_pa
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -315,12 +316,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 }
                 if (state is GoogleClassroomErrorState) {
                   if (state.errorMsg == 'ReAuthentication is required') {
-                    await Utility.refreshAuthenticationToken(
-                        isNavigator: true,
-                        errorMsg: state.errorMsg!,
-                        context: context,
-                        scaffoldKey: scaffoldKey);
-
+                    // await Utility.refreshAuthenticationToken(
+                    //     isNavigator: true,
+                    //     errorMsg: state.errorMsg!,
+                    //     context: context,
+                    //     scaffoldKey: scaffoldKey);
+  await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
                     _googleClassroomBloc.add(CreateClassRoomCourseWork(
                         isEditStudentInfo: true,
                         studentAssessmentInfoDb: LocalDatabase('student_info'),
@@ -796,12 +797,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               .studentAssessmentAndClassroomObj));
                     } else if (state is ErrorState) {
                       if (state.errorMsg == 'ReAuthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: scaffoldKey);
-
+                        // await Utility.refreshAuthenticationToken(
+                        //     isNavigator: false,
+                        //     errorMsg: state.errorMsg!,
+                        //     context: context,
+                        //     scaffoldKey: scaffoldKey);
+ await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
                         _driveBloc.add(GetAssessmentDetail(
                             fileId: widget.fileId, nextPageUrl: ''));
                       } else {
@@ -1746,11 +1747,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       listener: (context, state) async {
         if (state is ErrorState) {
           if (state.errorMsg == 'ReAuthentication is required') {
-            await Utility.refreshAuthenticationToken(
-                isNavigator: false,
-                errorMsg: state.errorMsg!,
-                context: context,
-                scaffoldKey: scaffoldKey);
+            // await Utility.refreshAuthenticationToken(
+            //     isNavigator: false,
+            //     errorMsg: state.errorMsg!,
+            //     context: context,
+            //     scaffoldKey: scaffoldKey);
+             await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
 
             // _driveBloc
             //     .add(GetShareLink(fileId: widget.fileId, slideLink: false));

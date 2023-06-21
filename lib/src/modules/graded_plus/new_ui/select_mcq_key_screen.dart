@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
@@ -95,12 +96,12 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     operationResult: 'Failure');
 
                 if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
-
+                  // await Utility.refreshAuthenticationToken(
+                  //     isNavigator: true,
+                  //     errorMsg: state.errorMsg!,
+                  //     context: context,
+                  //     scaffoldKey: _scaffoldKey);
+ await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
                   _triggerDriveFolderEvent(state.isAssessmentSection);
                 } else {
                   Navigator.of(context).pop();

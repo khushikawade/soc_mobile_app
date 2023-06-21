@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -265,12 +266,16 @@ class _GradedPlusAssessmentSummaryState
                                 if (state is ErrorState) {
                                   if (state.errorMsg ==
                                       'ReAuthentication is required') {
-                                    await Utility.refreshAuthenticationToken(
-                                        isNavigator: false,
-                                        errorMsg: state.errorMsg!,
-                                        context: context,
-                                        scaffoldKey: _scaffoldKey);
-
+                                    // await Utility.refreshAuthenticationToken(
+                                    //     isNavigator: false,
+                                    //     errorMsg: state.errorMsg!,
+                                    //     context: context,
+                                    //     scaffoldKey: _scaffoldKey);
+                                    await Authentication
+                                        .reAuthenticationRequired(
+                                            context: context,
+                                            errorMessage: state.errorMsg!,
+                                            scaffoldKey: _scaffoldKey);
                                     _driveBloc.add(
                                         GetHistoryAssessmentFromDrive(
                                             isSearchPage: false,

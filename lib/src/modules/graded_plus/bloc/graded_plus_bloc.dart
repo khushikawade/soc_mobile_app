@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -257,14 +258,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is VerifyUserWithDatabase) {
+    if (event is AuthorizedUserWithDatabase) {
       try {
         //  var data =
-        bool result =
-            await verifyUserWithDatabase(email: event.email.toString());
-        if (!result) {
-          await verifyUserWithDatabase(email: event.email.toString());
+        yield AuthorizedUserLoading();
+        bool result = event.isAuthorizedUser == true
+            ? await authorizedUserWithDatabase(email: event.email)
+            : await verifyUserWithDatabase(email: event.email.toString());
+        if (result == true) {
+          yield AuthorizedUserSuccess();
+        } else {
+          yield AuthorizedUserError();
         }
+        // if (!result) {
+        //   await verifyUserWithDatabase(email: event.email.toString());
+        // }
       } on SocketException catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'VerifyUserWithDatabase SocketException');
@@ -272,6 +280,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
@@ -280,6 +289,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         throw (e);
       }
     }
@@ -1186,6 +1196,44 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       FirebaseCrashlytics.instance.log("saveStudentToSalesforce Method, $e");
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, 'saveStudentToSalesforce Method');
+      throw (e);
+    }
+  }
+
+  Future<bool> authorizedUserWithDatabase({required String? email}) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "email": email.toString(),
+        "DBN": Globals.schoolDbnC,
+        "Schoolid": Overrides.SCHOOL_ID,
+        "teacherid": Globals.teacherId
+      };
+      final ResponseModel response = await _dbServices.postApi(
+          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200) {
+        var res = response.data;
+        var data = res["body"];
+        if (data == true) {
+          return true;
+        } else {
+          return false;
+        }
+
+        // return data;
+      } else {
+        return false;
+      }
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'verifyUserWithDatabase Method');
       throw (e);
     }
   }

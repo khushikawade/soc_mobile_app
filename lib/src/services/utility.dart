@@ -624,7 +624,7 @@ class Utility {
                               child: FittedBox(
                                 child: Utility.textWidget(
                                     text: msg ??
-                                        GradedGlobals.loadingMessage ??
+                                        // GradedGlobals.loadingMessage ??
                                         'Please Wait...',
                                     context: context,
                                     textTheme: Theme.of(context)

@@ -10,9 +10,10 @@ abstract class OcrEvent extends Equatable {
 //   List<Object> get props => [];
 // }
 
-class VerifyUserWithDatabase extends OcrEvent {
+class AuthorizedUserWithDatabase extends OcrEvent {
   final String? email;
-  VerifyUserWithDatabase({required this.email});
+  final bool? isAuthorizedUser;
+  AuthorizedUserWithDatabase({required this.email,required this.isAuthorizedUser});
 
   @override
   List<Object> get props => [email!];
@@ -319,6 +320,14 @@ class GetAssessmentAndSavedStudentResultSummaryForStandardApp extends OcrEvent {
 
 class FetchGradedApprovedDomains extends OcrEvent {
   FetchGradedApprovedDomains();
+  @override
+  List<Object> get props => [];
+}
+
+// ignore: must_be_immutable
+class AuthenticateEmail extends OcrEvent {
+  String email;
+  AuthenticateEmail({required this.email});
   @override
   List<Object> get props => [];
 }

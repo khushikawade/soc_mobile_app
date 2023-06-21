@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -725,11 +726,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
             if (state is GoogleClassroomErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
-                await Utility.refreshAuthenticationToken(
-                    isNavigator: true,
-                    errorMsg: state.errorMsg!,
-                    context: context,
-                    scaffoldKey: widget.scaffoldKey);
+                // await Utility.refreshAuthenticationToken(
+                //     isNavigator: true,
+                //     errorMsg: state.errorMsg!,
+                //     context: context,
+                //     scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
@@ -777,12 +779,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             }
             if (state is ErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
-                await Utility.refreshAuthenticationToken(
-                    isNavigator: true,
-                    errorMsg: state.errorMsg!,
-                    context: context,
-                    scaffoldKey: widget.scaffoldKey);
-
+                // await Utility.refreshAuthenticationToken(
+                //     isNavigator: true,
+                //     errorMsg: state.errorMsg!,
+                //     context: context,
+                //     scaffoldKey: widget.scaffoldKey);
+await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
                 // Navigator.of(context).pop();
                 Utility.currentScreenSnackBar('Please try again', null);
               } else {
