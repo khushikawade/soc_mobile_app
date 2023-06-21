@@ -16,6 +16,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -253,7 +254,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                           value: idController.text, regex: regex)) {
                         onPressAction();
                       } else {
-                        Utility.updateLogs(
+                        PlusUtility.updateLogs(
                             activityType: 'GRADED+',
                             activityId: '9',
                             description: 'Scan Failure and teacher retry scan',
@@ -322,7 +323,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
             updateStudentDetails();
             scanFailure.value = 'Success';
             _performAnimation();
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '23',
                 description: 'Scan Assessment sheet successfully',
@@ -413,7 +414,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                   null);
             }
 
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '23',
                 description: state.grade == '' && state.studentId == ''
@@ -565,7 +566,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       updateDetails(
           isFromHistoryAssessmentScanMore:
               widget.isFromHistoryAssessmentScanMore);
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
           activityId: '10',
           description: 'Next Scan',
@@ -1251,7 +1252,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                   InkWell(
                       onTap: () {
                         // updateDetails(isUpdateData: true);
-                        Utility.updateLogs(
+                        PlusUtility.updateLogs(
                             activityType: 'GRADED+',
                             activityId: '8',
                             description:
@@ -1260,7 +1261,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                         if (pointScored.value != index.toString()) {
                           isRubricChanged = true;
                           if (widget.isMcqSheet == true) {
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
                                 activityId: '8',
                                 description:
@@ -1919,7 +1920,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       detectStudentIdChange = value;
 
       //Every time when student id detection fails, user manually enter the student id
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'Graded+',
           activityId: '55',
           sessionId: Globals.sessionId,

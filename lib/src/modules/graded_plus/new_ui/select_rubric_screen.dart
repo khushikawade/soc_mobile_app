@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
@@ -248,7 +249,8 @@ class _GradedPlusConstructedResponseState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context: context, isOCR: true, msg: 'Please Wait');
+                Utility.showLoadingDialog(
+                    context: context, isOCR: true, msg: 'Please Wait');
               }
               if (state is GoogleSuccess) {
                 if (Globals.googleDriveFolderId != null &&
@@ -579,7 +581,8 @@ class _GradedPlusConstructedResponseState
               imageURL: customScoreObj.imgUrl!));
     } else if (customScoreObj.imgBase64 != null &&
         customScoreObj.imgBase64!.isNotEmpty) {
-      Utility.showLoadingDialog(context: context, isOCR: true, msg: 'Please Wait');
+      Utility.showLoadingDialog(
+          context: context, isOCR: true, msg: 'Please Wait');
       _googleDriveBloc.add(ImageToAwsBucket(
           customRubricModal: customScoreObj, getImageUrl: true));
     } else {
@@ -639,37 +642,17 @@ class _GradedPlusConstructedResponseState
     updateLocalDb();
 
     if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      PlusUtility.updateUserLogsSessionId();
     }
 
-    _ocrBlocLogs.add(LogUserActivityEvent(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
         activityId: '1',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
-        operationResult: 'Success'));
+        operationResult: 'Success');
 
     navigateToCamera();
   }
-
-  // void _beforenavigateOnAssessmentSection() {
-  //   if (Globals.sessionId == '') {
-  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //   }
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => GradedPlusAssessmentSummary(
-  //               selectedFilterValue: 'Constructed Response',
-  //               isFromHomeSection: true,
-  //             )),
-  //   );
-  // }
 
   void navigateToPdfViewer({required RubricPdfModal pdfObject}) {
     if (pdfObject.rubricPdfC == null ||

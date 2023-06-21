@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -317,11 +318,9 @@ class _StaffPageState extends State<StaffPage> {
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
-      Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      // DateTime currentDateTime = DateTime.now();
+      //Creating fresh sessionID
+      PlusUtility.updateUserLogsSessionId();
 
-      //    await _getLocalDb();
       navigatorToScreen(actionName: actionName);
     }
   }
@@ -334,16 +333,11 @@ class _StaffPageState extends State<StaffPage> {
     } else {
       if (actionName == 'GRADED+') {
         //Graded+ login activity
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'GRADED+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
             description: 'Graded+ Accessed(Login)',
-            operationResult: 'Success'));
+            operationResult: 'Success');
 
         pushNewScreen(
           context,
@@ -354,16 +348,11 @@ class _StaffPageState extends State<StaffPage> {
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'PBIS+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
             description: 'PBIS+ Accessed(Login)',
-            operationResult: 'Success'));
+            operationResult: 'Success');
 
         pushNewScreen(
           context,
@@ -371,16 +360,11 @@ class _StaffPageState extends State<StaffPage> {
           withNavBar: false,
         );
       } else if (actionName == 'STUDENT+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'STUDENT+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
             description: 'STUDENT+ Accessed(Login)',
-            operationResult: 'Success'));
+            operationResult: 'Success');
 
         pushNewScreen(
           context,

@@ -114,7 +114,7 @@
 //                 if (selectedAnswerKey.value.isEmpty) {
 //                   Utility.currentScreenSnackBar("Select the Answer Key", null);
 //                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
-//                   Utility.updateLogs(
+//                   PlusUtility.updateLogs(
 //                       activityType: 'GRADED+',
 //                       activityId: '28',
 //                       description: 'MCQ Type Selection',
@@ -125,7 +125,7 @@
 //                   Navigator.of(context).push(MaterialPageRoute(
 //                       builder: (context) => MultipleChoiceSection()));
 //                 } else {
-//                   Utility.updateLogs(
+//                   PlusUtility.updateLogs(
 //                       activityType: 'GRADED+',
 //                       activityId: '27',
 //                       description: 'Constructive Type Selection',

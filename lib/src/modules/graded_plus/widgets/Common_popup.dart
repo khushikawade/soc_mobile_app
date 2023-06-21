@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -141,56 +142,6 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                         title: widget.confirmationButtonTitle ?? '',
                         onPressed: widget.confirmationOnPress,
                         color: Colors.red,
-
-                        //  () async {
-                        //   await FirebaseAnalyticsService
-                        //       .addCustomAnalyticsEvent("logout");
-                        //   await UserGoogleProfile.clearUserProfile();
-                        //   await GoogleClassroom.clearClassroomCourses();
-                        //   Authentication.signOut(context: context);
-                        //   Utility.clearStudentInfo(tableName: 'student_info');
-                        //   Utility.clearStudentInfo(
-                        //       tableName: 'history_student_info');
-
-                        //   //Log Activity to database
-                        //   // _ocrBlocLogs.add(LogUserActivityEvent(
-                        //   //     activityType: 'GRADED+',
-                        //   //     sessionId: '',
-                        //   //     teacherId: Globals.teacherId,
-                        //   //     activityId: '2',
-                        //   //     accountId: Globals.appSetting.schoolNameC,
-                        //   //     accountType: Globals.isPremiumUser == true
-                        //   //         ? "Premium"
-                        //   //         : "Free",
-                        //   //     dateTime: currentDateTime.toString(),
-                        //   //     description: 'Logout',
-                        //   //     operationResult: 'Success'));
-
-                        //   Utility.updateLogs(
-                        //       activityType: 'GRADED+',
-                        //       activityId: '3',
-                        //       description: 'User profile logout',
-                        //       operationResult: 'Success');
-                        //   // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                        //   if (Overrides.STANDALONE_GRADED_APP) {
-                        //     Navigator.of(context).pushAndRemoveUntil(
-                        //         MaterialPageRoute(
-                        //             builder: (context) => GradedLandingPage(
-                        //                   isFromLogoutPage: true,
-                        //                 )),
-                        //         (_) => false);
-                        //   } else {
-                        //     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                        //     // Navigator.of(context).pushAndRemoveUntil(
-                        //     //     MaterialPageRoute(
-                        //     //         builder: (context) => HomePage(
-                        //     //               isFromOcrSection: true,
-                        //     //             )),
-                        //     //     (_) => false);
-                        //     Navigator.of(context)
-                        //         .popUntil((route) => route.isFirst);
-                        //   }
-                        // }
                       ),
                       Container(
                         height: 40,
@@ -241,7 +192,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                         } else if (widget.isLogout == true) {
                           UserGoogleProfile.clearUserProfile();
                           GoogleClassroom.clearClassroomCourses();
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
                               activityType: 'GRADED+',
                               activityId: '3',
                               description: 'User profile logout',

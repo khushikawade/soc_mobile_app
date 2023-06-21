@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -46,7 +47,7 @@ class individual extends State<StudentPlusGradesPage> {
         screenTitle: 'student_plus_grades_screen',
         screenClass: 'StudentPlusGradesPage');
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'STUDENT+',
         activityId: '53',
         description: 'Student+ Grades Screen',

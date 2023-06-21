@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/select_mcq_key_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -119,7 +120,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                 if (selectedAnswerKey.value.isEmpty) {
                   Utility.currentScreenSnackBar("Select the Answer Key", null);
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
                       activityId: '28',
                       description: 'MCQ Type Selection',
@@ -130,7 +131,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => GradedPlusMultipleChoice()));
                 } else {
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
                       activityId: '27',
                       description: 'Constructive Type Selection',

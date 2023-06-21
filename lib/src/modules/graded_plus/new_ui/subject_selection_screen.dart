@@ -18,6 +18,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -1177,7 +1178,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                               //     context: context,
                               //     state: (p0) => {showDialogSetState = p0});
                               //!UNCOMMENT
-                              Utility.updateLogs(
+                              PlusUtility.updateLogs(
                                   activityType: 'GRADED+',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
@@ -1438,7 +1439,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     Navigator.of(context).pop();
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
         activityId: '12',
         description: 'Save to drive',
@@ -1511,7 +1512,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           //Standalone State //Standard State
           if (state is CreateClassroomCourseWorkSuccess ||
               state is CreateClassroomCourseWorkSuccessForStandardApp) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '34',
                 description: 'G-Classroom Created',
@@ -1548,7 +1549,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
           //Standard State
           //   if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
-          //     Utility.updateLogs(
+          //     PlusUtility.updateLogs(
           //         activityType: 'GRADED+',
           //         activityId: '34',
           //         description: 'G-Classroom Created',
@@ -1615,7 +1616,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             // }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '33',
                 description: 'G-Slide Created',
@@ -1663,7 +1664,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             });
 
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '45',
                 description: 'G-Excel File Updated',
@@ -1760,7 +1761,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 studentAssessmentInfoDB: _studentAssessmentInfoDb));
           }
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '44',
                 description: 'G-Slide Updated',

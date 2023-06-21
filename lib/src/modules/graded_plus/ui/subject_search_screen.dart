@@ -337,7 +337,7 @@
 //               //       slidePresentationId: Globals.googleSlidePresentationId));
 //               // }
 //               if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-//                 Utility.updateLogs(
+//                 PlusUtility.updateLogs(
 //                     activityType: 'GRADED+',
 //                     activityId: '44',
 //                     description: 'G-Slide Updated',
@@ -388,7 +388,7 @@
 //             child: Container(),
 //             listener: (context, state) async {
 //               if (state is CreateClassroomCourseWorkSuccess) {
-//                 Utility.updateLogs(
+//                 PlusUtility.updateLogs(
 //                     activityType: 'GRADED+',
 //                     activityId: '34',
 //                     description: 'G-Classroom Created',
@@ -816,7 +816,7 @@
 
 //     FirebaseAnalyticsService.addCustomAnalyticsEvent(
 //         "save_to_drive_from_subject_search");
-//     Utility.updateLogs(
+//     PlusUtility.updateLogs(
 //         activityType: 'GRADED+',
 //         activityId: '12',
 //         description: 'Save to drive',

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
@@ -69,7 +70,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         screenTitle: 'student_plus_work_screen',
         screenClass: 'StudentPlusWorkScreen');
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'STUDENT+',
         activityId: '52',
         description: 'Student+ Work Screen',
@@ -162,7 +163,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         GestureDetector(
           onTap: () {
             /*-------------------------User Activity Track START----------------------------*/
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'STUDENT+',
                 activityId: '39',
                 description: 'Filter Record STUDENT+',
@@ -303,7 +304,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     return InkWell(
       onTap: () {
         /*-------------------------User Activity Track START----------------------------*/
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'STUDENT+',
             activityId: '42',
             description: 'View Student Work STUDENT+',

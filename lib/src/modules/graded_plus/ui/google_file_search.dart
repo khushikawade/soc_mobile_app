@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -324,7 +325,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                     : ""),
             trailing: GestureDetector(
               onTap: () {
-                Utility.updateLogs(
+                PlusUtility.updateLogs(
                     activityType: 'GRADED+',
                     activityId: '13',
                     sessionId: items[index].sessionId != ''
@@ -509,7 +510,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
 
                                     //  GestureDetector(
                                     //   onTap: () {
-                                    //     Utility.updateLogs(
+                                    //     PlusUtility.updateLogs(
                                     //         activityId: '13',
                                     //         sessionId: data.sessionId != ''
                                     //             ? data.sessionId
@@ -881,7 +882,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
           element.presentationLink!.isNotEmpty)
         GestureDetector(
             onTap: () {
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'GRADED+',
                   activityId: '31',
                   sessionId: element.sessionId != null ? element.sessionId : '',
@@ -900,7 +901,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
             )),
       GestureDetector(
         onTap: () {
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
               activityId: '13',
               sessionId: element.sessionId != null ? element.sessionId : '',

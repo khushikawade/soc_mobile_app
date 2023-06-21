@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -149,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .toLowerCase()
                                           .replaceAll(" ", "_") ??
                                       '');
-                              Utility.updateLogs(
+                              PlusUtility.updateLogs(
                                   activityType: widget.plusAppName,
                                   activityId: '47',
                                   sessionId: Globals.sessionId,

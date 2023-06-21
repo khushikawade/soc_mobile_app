@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
@@ -154,7 +155,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
               activityId: '43',
               description: 'Google Translation',

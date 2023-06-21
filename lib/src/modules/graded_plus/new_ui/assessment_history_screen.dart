@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_a
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -75,7 +76,7 @@ class _GradedPlusAssessmentSummaryState
       refreshPage(isFromPullToRefresh: false, delayInSeconds: 0);
     });
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
         activityId: '4',
         description: 'Moved to history screen Graded+',

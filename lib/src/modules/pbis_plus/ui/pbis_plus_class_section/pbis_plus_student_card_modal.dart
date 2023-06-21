@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -255,7 +256,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
         screenTitle: 'pbis_plus_student_card_modal_screen',
         screenClass: 'PBISPlusStudentCardModal');
     /*-------------------------------------------------------------------------------------*/
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
         activityId: '37',
         description:

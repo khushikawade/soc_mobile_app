@@ -14,6 +14,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_botto
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -680,7 +681,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       PlusCustomFloatingActionButton(
         onPressed: () {
           /*-------------------------User Activity Track START----------------------------*/
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
               activityId: '36',
               description: 'Save and Share button open from All Courses',
@@ -699,7 +700,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Future<void> _saveAndShareBottomSheetMenu(
       List<ClassroomCourse> allClassroomCourses) async {
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'PBIS+',
         activityId: '36',
         description: 'Save and Share',

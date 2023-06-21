@@ -682,7 +682,7 @@
 //   //         element.presentationLink!.isNotEmpty)
 //   //       GestureDetector(
 //   //           onTap: () {
-//   //             Utility.updateLogs(
+//   //             PlusUtility.updateLogs(
 //   //                 activityType: 'GRADED+',
 //   //                 activityId: '31',
 //   //                 sessionId: element.sessionId ?? '',
@@ -701,7 +701,7 @@
 //   //           )),
 //   //     GestureDetector(
 //   //       onTap: () {
-//   //         Utility.updateLogs(
+//   //         PlusUtility.updateLogs(
 //   //             activityType: 'GRADED+',
 //   //             activityId: '13',
 //   //             sessionId: element.sessionId != null ? element.sessionId : '',

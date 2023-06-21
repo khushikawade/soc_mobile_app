@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dar
 import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -39,7 +40,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
 
   @override
   void initState() {
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
         activityId: '46',
         description: 'Moved to help screen Graded+',

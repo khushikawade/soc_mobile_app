@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -98,7 +99,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                             .toLowerCase()
                             .replaceAll(" ", "_"));
 
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
                         activityId: '39',
                         description: 'Filter History PBIS+',

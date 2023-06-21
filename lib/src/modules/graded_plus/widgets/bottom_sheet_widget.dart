@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -271,7 +272,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       if (_formKey.currentState!.validate()) {
                         if (widget.isSubjectScreen!) {
                           widget.valueChanged!(studentNameController);
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
                               activityType: 'GRADED+',
                               activityId: '21',
                               description: 'Teacher added custom subject ',
@@ -302,7 +303,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 getImageUrl: false));
                           } else {
                             //print("save score and name on local db");
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
                                 activityId: '21',
                                 description: 'Teacher added custom rubric ',

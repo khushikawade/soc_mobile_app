@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
@@ -111,7 +112,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _localDb.addData(e);
           });
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
@@ -220,7 +221,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         });
 
         /*-------------------------User Activity Track START----------------------------*/
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'PBIS+',
             activityId: '38',
             description:
@@ -469,7 +470,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'PBIS+',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -139,7 +140,7 @@ class _GradedPlusResultOptionBottomSheetState
             'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'GRADED+',
             activityId: '13',
             sessionId: Globals.sessionId,
@@ -159,7 +160,7 @@ class _GradedPlusResultOptionBottomSheetState
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             dashboardLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'GRADED+',
             activityId: '14',
             sessionId: Globals.sessionId,
@@ -179,7 +180,7 @@ class _GradedPlusResultOptionBottomSheetState
             slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
 
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'GRADED+',
             activityId: '31',
             sessionId: Globals.sessionId,
@@ -200,7 +201,7 @@ class _GradedPlusResultOptionBottomSheetState
               "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
               activityId: '32',
               sessionId: Globals.sessionId,
@@ -220,7 +221,7 @@ class _GradedPlusResultOptionBottomSheetState
               "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               classroomLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
               activityId: '35',
               sessionId: Globals.sessionId,

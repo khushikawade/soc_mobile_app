@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -262,7 +263,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
           switch (text) {
             case 'All Courses & Students':
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '58',
                   description:
@@ -275,7 +276,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
             case 'Select Students':
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '60',
                   description: 'Save & Reset Points: Select Students',
@@ -288,7 +289,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
               break;
             case 'Select Courses':
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '59',
                   description: 'PBIS+ Save & Reset Points: Select Courses',
@@ -804,7 +805,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     null);
               }
               if (state is PBISPlusResetSuccess) {
-                Utility.updateLogs(
+                PlusUtility.updateLogs(
                     activityType: 'PBIS+',
                     activityId: '40',
                     description: 'Save and Rest $sectionName',

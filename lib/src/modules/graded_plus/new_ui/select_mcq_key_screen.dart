@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
@@ -82,19 +83,15 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
               }
               if (state is ErrorState) {
                 if (Globals.sessionId == '') {
-                  Globals.sessionId =
-                      "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                  PlusUtility.updateUserLogsSessionId();
                 }
-                _ocrBlocLogs.add(LogUserActivityEvent(
+
+                PlusUtility.updateLogs(
                     activityType: 'GRADED+',
-                    sessionId: Globals.sessionId,
-                    teacherId: Globals.teacherId,
                     activityId: '1',
-                    accountId: Globals.appSetting.schoolNameC,
-                    accountType: "Premium",
-                    dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
-                    operationResult: 'Failed'));
+                    operationResult: 'Failure');
+
                 if (state.errorMsg == 'ReAuthentication is required') {
                   await Utility.refreshAuthenticationToken(
                       isNavigator: true,
@@ -221,7 +218,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
             selectedAnswerKey.value = value.title!;
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "answer_key_selected_${value.title}");
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '29',
                 description: 'MCQ Selection Answer key selected ${value.title}',
@@ -270,18 +267,14 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   void _beforeNavigateOnCameraSection() {
     if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      PlusUtility.updateUserLogsSessionId();
     }
-    _ocrBlocLogs.add(LogUserActivityEvent(
+
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
         activityId: '1',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
-        operationResult: 'Success'));
+        operationResult: 'Success');
 
     navigateToCamera();
   }

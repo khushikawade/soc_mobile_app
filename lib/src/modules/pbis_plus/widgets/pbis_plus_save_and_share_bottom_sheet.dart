@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -181,7 +182,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Classroom',
                   onTap: () async {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
                         activityId: '35',
                         description: 'G-Classroom Action Button',
@@ -199,7 +200,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Spreadsheet',
                   onTap: () {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
                         activityId: '32',
                         description: 'G-Excel Action Button',
@@ -224,7 +225,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 title: 'Share',
                 onTap: (() async {
                   await shareScreenDetails();
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'PBIS+',
                       activityId: '13',
                       description: 'Share copy of screen as PDF',
@@ -707,7 +708,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           bloc: classroomBloc,
           listener: (context, state) async {
             if (state is CreateClassroomCourseWorkSuccess) {
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '34',
                   description: 'G-Classroom Created',

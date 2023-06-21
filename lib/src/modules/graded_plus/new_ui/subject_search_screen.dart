@@ -17,6 +17,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -608,13 +609,11 @@ class _GradedPlusSearchScreenPageState
 
           if (state is GoogleSlideCreated) {
             Globals.googleSlidePresentationId = state.slideFiledId;
-            // if (Globals.googleSlidePresentationId!.isNotEmpty &&
-            //     (Globals.googleSlidePresentationLink == null ||
-            //         Globals.googleSlidePresentationLink!.isEmpty)) {
+            
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             //    }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '33',
                 description: 'G-Slide Created',
@@ -659,7 +658,7 @@ class _GradedPlusSearchScreenPageState
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '45',
                 description: 'G-Excel File Updated',
@@ -729,7 +728,7 @@ class _GradedPlusSearchScreenPageState
           }
 
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '44',
                 description: 'G-Slide Updated',
@@ -783,7 +782,7 @@ class _GradedPlusSearchScreenPageState
             true) {
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           "save_to_drive_from_subject_search");
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
           activityId: '12',
           description: 'Save to drive',
@@ -903,7 +902,7 @@ class _GradedPlusSearchScreenPageState
         listener: (context, state) async {
           print("state is $state");
           if (state is CreateClassroomCourseWorkSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 activityId: '34',
                 description: 'G-Classroom Created',

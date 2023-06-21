@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help.dart'
@@ -179,7 +180,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
@@ -309,7 +310,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   Utility.clearStudentInfo(tableName: 'student_info');
                   Utility.clearStudentInfo(tableName: 'history_student_info');
 
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
                       activityId: '3',
                       description: 'User profile logout',
@@ -518,7 +519,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
               activityId: '43',
               description: 'Google Translation',
