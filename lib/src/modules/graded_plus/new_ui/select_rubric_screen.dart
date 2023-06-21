@@ -643,7 +643,7 @@ class _GradedPlusConstructedResponseState
     updateLocalDb();
 
     if (Globals.sessionId == '') {
-      PlusUtility.updateUserLogsSessionId();
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
     }
 
     PlusUtility.updateLogs(

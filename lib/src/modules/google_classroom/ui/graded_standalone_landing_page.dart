@@ -57,28 +57,32 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
   // @override
   void initState() {
+    initMethod();
+    super.initState();
+  }
+
+  void initMethod() async {
     Utility.setLocked();
     _checkNewVersion();
     fetchLocalRoster();
     fetchProfileData();
 
     //Recreating sessionId by checking if required details
-    if (Globals.sessionId != '' || Globals.teacherEmailId != '') {
-      PlusUtility.updateUserLogsSessionId();
-    }
+    // if (Globals.sessionId != '' || Globals.teacherEmailId != '') {
+    Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+    // }
     if (widget.isFromLogoutPage == true) {
       userName.value = '';
     }
-    super.initState();
   }
 
-  String? _versionNumber;
+  // String? _versionNumber;
 
   void _checkNewVersion() async {
     try {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String _packageName = packageInfo.packageName;
-      _versionNumber = packageInfo.version;
+      // _versionNumber = packageInfo.version;
       final newVersion = NewVersion(
         iOSId: _packageName,
         androidId: _packageName,
@@ -354,7 +358,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                         Globals.teacherEmailId =
                             _profileData[0].userEmail!.split('@')[0];
 
-                        PlusUtility.updateUserLogsSessionId();
+                        Globals.sessionId =
+                            await PlusUtility.updateUserLogsSessionId();
 
                         PlusUtility.updateLogs(
                             activityType: 'GRADED+',

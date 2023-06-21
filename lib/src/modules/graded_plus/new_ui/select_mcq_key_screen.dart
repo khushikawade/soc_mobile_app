@@ -83,7 +83,8 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
               }
               if (state is ErrorState) {
                 if (Globals.sessionId == '') {
-                  PlusUtility.updateUserLogsSessionId();
+                  Globals.sessionId =
+                      await PlusUtility.updateUserLogsSessionId();
                 }
 
                 PlusUtility.updateLogs(
@@ -268,9 +269,9 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         refreshToken: _profileData[0].refreshToken));
   }
 
-  void _beforeNavigateOnCameraSection() {
+  void _beforeNavigateOnCameraSection() async {
     if (Globals.sessionId == '') {
-      PlusUtility.updateUserLogsSessionId();
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
     }
 
     PlusUtility.updateLogs(

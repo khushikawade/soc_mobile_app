@@ -319,7 +319,7 @@ class _StaffPageState extends State<StaffPage> {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
       //Creating fresh sessionID
-      PlusUtility.updateUserLogsSessionId();
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
       navigatorToScreen(actionName: actionName);
     }

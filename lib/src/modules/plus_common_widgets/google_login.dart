@@ -55,7 +55,7 @@ class GoogleLogin {
     );
 
     if (value.toString().contains('authenticationfailure')) {
-      PlusUtility.updateUserLogsSessionId();
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
       PlusUtility.updateLogs(
           activityType: 'GRADED+',
@@ -78,7 +78,7 @@ class GoogleLogin {
 
       GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData);
 
-      PlusUtility.updateUserLogsSessionId();
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
       PlusUtility.updateLogs(
           activityType: 'GRADED+',

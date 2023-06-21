@@ -10,10 +10,11 @@ class PlusUtility {
   static updateUserLogsSessionId() async {
     //----------------------------------------------------
     Uuid uuid = Uuid();
-    String generatedUuid = uuid.v5(Uuid.NAMESPACE_URL, Globals.teacherEmailId);
+    String generatedUuid =
+        await uuid.v5(Uuid.NAMESPACE_URL, Globals.teacherEmailId);
     //----------------------------------------------------
-    Globals.sessionId = generatedUuid;
-    print(generatedUuid);
+    print('generatedUuid::::: $generatedUuid');
+    return generatedUuid;
   }
 
 /*------------------------------------------------------------------------------------------------*/
