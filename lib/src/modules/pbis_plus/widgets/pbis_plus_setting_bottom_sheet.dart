@@ -1283,6 +1283,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     }
   }
 
+// this will remove the "select" word from msg to show on UI text and SnackBar text
   String msgForUi(String inputString) {
     try {
       if (inputString != null && inputString.isNotEmpty) {
