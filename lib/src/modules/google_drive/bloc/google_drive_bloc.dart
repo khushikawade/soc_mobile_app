@@ -2663,7 +2663,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       Map map = {
         0: assignmentName ?? 'NA',
         1: studentAssessmentInfoObj.subject ?? 'NA',
-        2: Globals.teacherEmailId ?? 'NA',
+        2: Globals.userEmailId ?? 'NA',
         3: studentAssessmentInfoObj.grade ?? 'NA',
         4: studentAssessmentInfoObj.className ?? "NA",
         5: Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")
@@ -3059,22 +3059,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       }
 
-      // if ((newSlideIndex + 1) == counts) {
-      //   newSlideIndex = newSlideIndex + 2;
-      // } else {
-      //   newSlideIndex = newSlideIndex + 1;
-      // }
-      // if (newSlideIndex != null) {
-      //   print("slide obj id  ${studentAssessmentInfo.slideObjectId}");
-      //   Map updateSlideWithNewPostion = {
-      //     "updateSlidesPosition": {
-      //       "insertionIndex": newSlideIndex,
-      //       "slideObjectIds": [studentAssessmentInfo.slideObjectId]
-      //     }
-      //   };
-      //   slideObjects.add(updateSlideWithNewPostion);
-      // }
-
       return slideObjects;
     } catch (e) {
       print(e);
@@ -3085,7 +3069,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*----------------------------------------------------------------------------------------------*/
   /*----------------------Add Blank Tabs to Spreadsheet and Preparing API Body--------------------*/
   /*------------------------------------------PART A----------------------------------------------*/
-
+  //Used in PBIS App Section
   Future<dynamic> addTabsOnSpreadSheet(
       {required Map<String, dynamic> spreadSheetFileObj,
       required UserInformation userProfile,

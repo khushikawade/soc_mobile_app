@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
@@ -72,8 +73,9 @@ class GoogleClassroomBloc
           coursesList.forEach((GoogleClassroomCourses e) {
             _localDb.addData(e);
           });
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully',
               operationResult: 'Success');
@@ -595,8 +597,9 @@ class GoogleClassroomBloc
         return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure',
           operationResult: 'failure');

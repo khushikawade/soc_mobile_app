@@ -257,7 +257,7 @@
 //                   // }
 
 //                   if (state is GoogleSuccess) {
-//                     Utility.updateLogs(
+//                     PlusUtility.updateLogs(
 //                         activityType: 'GRADED+',
 //                         activityId: '45',
 //                         description: 'G-Excel File Updated',
@@ -319,7 +319,7 @@
 //                   }
 
 //                   if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-//                     Utility.updateLogs(
+//                     PlusUtility.updateLogs(
 //                         activityType: 'GRADED+',
 //                         activityId: '44',
 //                         description: 'G-Slide Updated',
@@ -360,7 +360,7 @@
 //                             Globals.googleExcelSheetId ?? 'Excel Id not found',
 //                         sessionId: Globals.sessionId,
 //                         teacherContactId: Globals.teacherId,
-//                         teacherEmail: Globals.teacherEmailId,
+//                         teacherEmail: Globals.userEmailId,
 //                         classroomCourseId: GoogleClassroomOverrides
 //                                 ?.studentAssessmentAndClassroomObj?.courseId ??
 //                             '',
@@ -375,7 +375,7 @@
 //                 child: Container(),
 //                 listener: (context, state) async {
 //                   if (state is CreateClassroomCourseWorkSuccess) {
-//                     Utility.updateLogs(
+//                     PlusUtility.updateLogs(
 //                         activityType: 'GRADED+',
 //                         activityId: '34',
 //                         description: 'G-Classroom Created',
@@ -1334,7 +1334,7 @@
 //                             backgroundColor:
 //                                 AppTheme.kButtonColor.withOpacity(1.0),
 //                             onPressed: () async {
-//                               Utility.updateLogs(
+//                               PlusUtility.updateLogs(
 //                                   activityType: 'GRADED+',
 //                                   activityId: '18',
 //                                   description: 'Skip subject selection process',
@@ -1678,7 +1678,7 @@
 //     Navigator.of(context).pop();
 //     FirebaseAnalyticsService.addCustomAnalyticsEvent(
 //         "save_to_drive_from_subject_selection");
-//     Utility.updateLogs(
+//     PlusUtility.updateLogs(
 //         activityType: 'GRADED+',
 //         activityId: '12',
 //         description: 'Save to drive',

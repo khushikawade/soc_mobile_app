@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -182,8 +183,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Classroom',
                   onTap: () async {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '35',
                         description: 'G-Classroom Action Button',
                         operationResult: 'Success');
@@ -200,8 +202,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Spreadsheet',
                   onTap: () {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '32',
                         description: 'G-Excel Action Button',
                         operationResult: 'Success');
@@ -225,8 +228,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 title: 'Share',
                 onTap: (() async {
                   await shareScreenDetails();
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'PBIS+',
+                      userType: 'Teacher',
                       activityId: '13',
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
@@ -708,8 +712,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           bloc: classroomBloc,
           listener: (context, state) async {
             if (state is CreateClassroomCourseWorkSuccess) {
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '34',
                   description: 'G-Classroom Created',
                   operationResult: 'Success');

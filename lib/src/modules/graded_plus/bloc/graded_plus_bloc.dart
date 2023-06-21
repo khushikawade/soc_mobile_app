@@ -482,16 +482,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         var body = {
           "Activity_Type": event.activityType,
-          "Session_Id": "${event.sessionId ?? ''}",
-          "Teacher_Id": "${event.teacherId ?? ''}",
-          "Activity_Id": "${event.activityId ?? ''}",
-          "Account_Id": "${event.accountId ?? ''}",
-          "Account_Type": "${event.accountType ?? ''}",
-          "Date_Time": "${event.dateTime ?? ''}",
-          "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}",
+          "Session_Id": event.sessionId ?? '',
+          "Teacher_Id": event.teacherId ?? '',
+          "Activity_Id": event.activityId ?? '',
+          "Account_Id": event.accountId ?? '',
+          "Account_Type": event.accountType ?? '',
+          "Date_Time": event.dateTime ?? '',
+          "Description": event.description ?? '',
+          "Operation_Result": event.operationResult ?? '',
           "App_Type__c":
-              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard",
+          "User_Type": event.userType ?? '',
+          "Email": event.email
         };
         await activityLog(body: body);
       } catch (e, s) {
@@ -710,24 +712,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield StateListFetchSuccessfully(stateList: stateList);
       }
     }
-
-    // if (event is FetchGradedApprovedDomains) {
-    //   try {
-    //     LocalDatabase<StateListObject> _localDb =
-    //         LocalDatabase(Strings.gradedApprovedDomains);
-    //     List<StateListObject>? _localData = await _localDb.getData();
-    //   } catch (e, s) {
-    //     FirebaseAnalyticsService.firebaseCrashlytics(
-    //         e, s, 'FetchGradedApprovedDomains Event');
-    //     // In case of error or no internet Showing data from Local DB
-    //     // To get local data if exist
-    //     LocalDatabase<StateListObject> _localDb =
-    //         LocalDatabase(Strings.stateObjectName);
-    //     List<StateListObject>? _localData = await _localDb.getData();
-
-    //     yield GradedApprovedDomainsSuccess();
-    //   }
-    // }
   }
 
   // ---------- Function to update stateList according to to user location and last selection ---------
@@ -2028,29 +2012,4 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return [];
     }
   }
-
-  // Future<List<GradedPlusApprovedDomainsModal>>
-  //     fetchGradedPlusApprovedDomains() async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getApi(
-  //       Uri.encodeFull(
-  //           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Graded_Approved_Email_Domain__c"),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       List<GradedPlusApprovedDomainsModal> gradedApprovedDomainsList =
-  //           response.data['body']
-  //               .map<GradedPlusApprovedDomainsModal>(
-  //                   (i) => GradedPlusApprovedDomainsModal.fromJson(i))
-  //               .toList();
-
-  //       return gradedApprovedDomainsList;
-  //     }
-  //     return [];
-  //   } catch (e, s) {
-  //     FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
-
-  //     throw Exception("Something went wrong");
-  //   }
-  // }
 }

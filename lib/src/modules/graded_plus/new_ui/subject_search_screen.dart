@@ -17,6 +17,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -610,14 +611,13 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
 
           if (state is GoogleSlideCreated) {
             Globals.googleSlidePresentationId = state.slideFiledId;
-            // if (Globals.googleSlidePresentationId!.isNotEmpty &&
-            //     (Globals.googleSlidePresentationLink == null ||
-            //         Globals.googleSlidePresentationLink!.isEmpty)) {
+
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             //    }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -661,8 +661,9 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
@@ -733,8 +734,9 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
           }
 
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');
@@ -787,8 +789,9 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
             true) {
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           "save_to_drive_from_subject_search");
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '12',
           description: 'Save to drive',
           operationResult: 'Success');
@@ -907,8 +910,9 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
         listener: (context, state) async {
           print("state is $state");
           if (state is CreateClassroomCourseWorkSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
@@ -981,7 +985,7 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
+        teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
             '',
@@ -1024,6 +1028,7 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {
               Utility.scrollToTop(scrollController: _scrollController);

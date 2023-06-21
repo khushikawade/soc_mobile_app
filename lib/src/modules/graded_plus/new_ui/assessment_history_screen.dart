@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_a
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -62,8 +63,8 @@ class _GradedPlusAssessmentSummaryState
 
   final ValueNotifier<bool> isSearch = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isCallPaginationApi = ValueNotifier<bool>(false);
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-      LocalDatabase('history_student_info');
+  // LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+  //     LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 //  late ScrollController _controller;
@@ -76,8 +77,9 @@ class _GradedPlusAssessmentSummaryState
       refreshPage(isFromPullToRefresh: false, delayInSeconds: 0);
     });
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '4',
         description: 'Moved to history screen Graded+',
         operationResult: 'Success');
@@ -107,6 +109,7 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {
                   Utility.scrollToTop(scrollController: _scrollController);

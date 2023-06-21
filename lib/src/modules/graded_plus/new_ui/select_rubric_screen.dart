@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
@@ -113,6 +114,7 @@ class _GradedPlusConstructedResponseState
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+        plusAppName: 'GRADED+',
         fromGradedPlus: true,
         //Show home button in standard app and hide in standalone
         assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
@@ -647,37 +649,18 @@ class _GradedPlusConstructedResponseState
     updateLocalDb();
 
     if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
     }
 
-    _ocrBlocLogs.add(LogUserActivityEvent(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
+        userType: 'Teacher',
         activityId: '1',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
-        operationResult: 'Success'));
+        operationResult: 'Success');
 
     navigateToCamera();
   }
-
-  // void _beforenavigateOnAssessmentSection() {
-  //   if (Globals.sessionId == '') {
-  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //   }
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => GradedPlusAssessmentSummary(
-  //               selectedFilterValue: 'Constructed Response',
-  //               isFromHomeSection: true,
-  //             )),
-  //   );
-  // }
 
   void navigateToPdfViewer({required RubricPdfModal pdfObject}) {
     if (pdfObject.rubricPdfC == null ||

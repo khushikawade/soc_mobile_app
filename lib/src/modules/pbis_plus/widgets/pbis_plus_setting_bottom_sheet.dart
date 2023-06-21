@@ -2,7 +2,9 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -276,8 +278,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
           switch (text) {
             case PBISPlusOverrides.kresetOptionOnetitle:
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '58',
                   description:
                       'PBIS+ Save & Reset Points: All Courses & Students',
@@ -289,8 +292,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
             case PBISPlusOverrides.kresetOptionTwotitle:
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '60',
                   description: 'Save & Reset Points: Select Students',
                   operationResult: 'Success');
@@ -302,8 +306,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
               break;
             case PBISPlusOverrides.kresetOptionThreetitle:
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '59',
                   description: 'PBIS+ Save & Reset Points: Select Courses',
                   operationResult: 'Success');
@@ -800,8 +805,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     null);
               }
               if (state is PBISPlusResetSuccess) {
-                Utility.updateLogs(
+                PlusUtility.updateLogs(
                     activityType: 'PBIS+',
+                    userType: 'Teacher',
                     activityId: '40',
                     description: 'Save and Rest $sectionName',
                     operationResult: 'Success');

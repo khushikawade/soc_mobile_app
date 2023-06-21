@@ -18,6 +18,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -261,6 +262,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  plusAppName: 'GRADED+',
                   fromGradedPlus: true,
                   hideStateSelection: true,
                   onTap: () {
@@ -1179,8 +1181,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                               //     context: context,
                               //     state: (p0) => {showDialogSetState = p0});
                               //!UNCOMMENT
-                              Utility.updateLogs(
+                              PlusUtility.updateLogs(
                                   activityType: 'GRADED+',
+                                  userType: 'Teacher',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1424,24 +1427,15 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
-// //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//   googleSlidesPreparation() {
-//     if (Globals.googleSlidePresentationId!.isNotEmpty &&
-//         (Globals.googleSlidePresentationLink == null ||
-//             Globals.googleSlidePresentationLink!.isEmpty)) {
-//       _googleDriveBloc.add(GetShareLink(
-//           fileId: Globals.googleSlidePresentationId, slideLink: true));
-//     }
-//   }
-
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _navigateToResultSection() {
     // GradedGlobals.loadingMessage = null;
     Navigator.of(context).pop();
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
@@ -1484,24 +1478,24 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  void _navigateToResultSectionOnSkipButton() {
-    Navigator.of(context).pop();
+  // void _navigateToResultSectionOnSkipButton() {
+  //   Navigator.of(context).pop();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
-                fileId: Globals.googleExcelSheetId,
-                subjectId: subjectId ?? '',
-                standardId: standardId ?? '',
-                assessmentName: Globals.assessmentName,
-                shareLink: '',
-                assessmentDetailPage: false,
-              )),
-    );
-  }
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => GradedPlusResultsSummary(
+  //               isMcqSheet: widget.isMcqSheet,
+  //               selectedAnswer: widget.selectedAnswer,
+  //               fileId: Globals.googleExcelSheetId,
+  //               subjectId: subjectId ?? '',
+  //               standardId: standardId ?? '',
+  //               assessmentName: Globals.assessmentName,
+  //               shareLink: '',
+  //               assessmentDetailPage: false,
+  //             )),
+  //   );
+  // }
 
   Widget classRoomBlocListener() {
     return BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
@@ -1513,8 +1507,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           //Standalone State //Standard State
           if (state is CreateClassroomCourseWorkSuccess ||
               state is CreateClassroomCourseWorkSuccessForStandardApp) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
@@ -1554,7 +1549,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
           //Standard State
           //   if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
-          //     Utility.updateLogs(
+          //     PlusUtility.updateLogs(
           //         activityType: 'GRADED+',
           //         activityId: '34',
           //         description: 'G-Classroom Created',
@@ -1625,8 +1620,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             // }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -1673,8 +1669,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             });
 
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
@@ -1704,7 +1701,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
             //     sessionId: Globals.sessionId,
             //     teacherContactId: Globals.teacherId,
-            //     teacherEmail: Globals.teacherEmailId,
+            //     teacherEmail: Globals.userEmailId,
             //     classroomCourseId: GoogleClassroomOverrides
             //             ?.studentAssessmentAndClassroomObj?.courseId ??
             //         '',
@@ -1778,8 +1775,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 studentAssessmentInfoDB: _studentAssessmentInfoDb));
           }
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');
@@ -2002,7 +2000,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
+        teacherEmail: Globals.userEmailId,
         classroomCourseId: Overrides.STANDALONE_GRADED_APP
             ? GoogleClassroomOverrides
                     ?.studentAssessmentAndClassroomObj?.courseId ??

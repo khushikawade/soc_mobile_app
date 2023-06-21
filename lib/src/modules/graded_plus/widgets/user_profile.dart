@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_pa
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/warning_popup_model.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -189,8 +190,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                           WarningPopupModel();
                           UserGoogleProfile.clearUserProfile();
                           GoogleClassroom.clearClassroomCourses();
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
                               activityType: widget.activityType,
+                              userType: 'Teacher',
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');
