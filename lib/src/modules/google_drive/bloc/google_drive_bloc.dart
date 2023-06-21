@@ -56,6 +56,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
       try {
+        print("folder name ${event.folderName}");
         var folderObject;
 
         //isReturnState is used to check if the we are waiting for state on UI or not to move further
@@ -103,7 +104,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             // Globals.googleDriveFolderId = folderObject['id'];
             // Globals.googleDriveFolderPath = folderObject['webViewLink'];
-
+            print("FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
             //FOR GRADED+
             if (event.folderName == "SOLVED GRADED+") {
               Globals.googleDriveFolderId = folderObject['id'];

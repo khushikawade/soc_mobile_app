@@ -272,7 +272,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           .addAll(state.googleClassroomCourseList);
 
                       /*----------------------END--------------------------*/
-
                     }
                     if (widget.isGradedPlus == true &&
                         _animationController!.isAnimating == true) {

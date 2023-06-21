@@ -726,7 +726,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 //     errorMsg: state.errorMsg!,
                 //     context: context,
                 //     scaffoldKey: widget.scaffoldKey);
-                await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
+                    context: context,
+                    errorMessage: state.errorMsg!,
+                    scaffoldKey: widget.scaffoldKey);
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
@@ -779,7 +782,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 //     errorMsg: state.errorMsg!,
                 //     context: context,
                 //     scaffoldKey: widget.scaffoldKey);
-await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
+                    context: context,
+                    errorMessage: state.errorMsg!,
+                    scaffoldKey: widget.scaffoldKey);
                 // Navigator.of(context).pop();
                 Utility.currentScreenSnackBar('Please try again', null);
               } else {
