@@ -60,7 +60,7 @@ class Authentication {
         scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signInSilently();
+        await googleSignIn.signInSilently(reAuthenticate: true);
 
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;

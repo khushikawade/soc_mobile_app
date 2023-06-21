@@ -68,7 +68,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     fetchProfileData();
 
     //Recreating sessionId by checking if required details
-    // if (Globals.sessionId != '' || Globals.teacherEmailId != '') {
+    // if (Globals.sessionId != '' || Globals.userEmailId != '') {
     Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
     // }
     if (widget.isFromLogoutPage == true) {
@@ -310,7 +310,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     List<UserInformation> _userInformation = await _localDb.getData();
 
     if (_userInformation.isNotEmpty) {
-      Globals.teacherEmailId = _userInformation[0].userEmail!;
+      Globals.userEmailId = _userInformation[0].userEmail!;
     }
 
     return _userInformation[0];
@@ -355,7 +355,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                         List<UserInformation> _profileData =
                             await UserGoogleProfile.getUserProfile();
-                        Globals.teacherEmailId =
+                        Globals.userEmailId =
                             _profileData[0].userEmail!.split('@')[0];
 
                         Globals.sessionId =
@@ -378,7 +378,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
                           _userProfileLocalData);
-                      Globals.teacherEmailId =
+                      Globals.userEmailId =
                           _userProfileLocalData[0].userEmail!.split('@')[0];
 
                       PlusUtility.updateLogs(

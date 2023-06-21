@@ -614,7 +614,8 @@ class _GradedPlusSearchScreenPageState
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             //    }
             PlusUtility.updateLogs(
-                activityType: 'GRADED+', userType: 'Teacher',
+                activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -659,7 +660,8 @@ class _GradedPlusSearchScreenPageState
           print("state is $state");
           if (state is GoogleSuccess) {
             PlusUtility.updateLogs(
-                activityType: 'GRADED+', userType: 'Teacher',
+                activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
@@ -729,7 +731,8 @@ class _GradedPlusSearchScreenPageState
 
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
             PlusUtility.updateLogs(
-                activityType: 'GRADED+', userType: 'Teacher',
+                activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');
@@ -783,7 +786,8 @@ class _GradedPlusSearchScreenPageState
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           "save_to_drive_from_subject_search");
       PlusUtility.updateLogs(
-          activityType: 'GRADED+', userType: 'Teacher',
+          activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '12',
           description: 'Save to drive',
           operationResult: 'Success');
@@ -903,7 +907,8 @@ class _GradedPlusSearchScreenPageState
           print("state is $state");
           if (state is CreateClassroomCourseWorkSuccess) {
             PlusUtility.updateLogs(
-                activityType: 'GRADED+', userType: 'Teacher',
+                activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
@@ -975,7 +980,7 @@ class _GradedPlusSearchScreenPageState
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
+        teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
             '',

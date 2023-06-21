@@ -227,6 +227,8 @@ class LogUserActivityEvent extends OcrEvent {
   final String? operationResult;
   final String? activityType;
   final String? userType;
+  final String? email;
+
   // final String? type;
 
   LogUserActivityEvent(
@@ -239,7 +241,8 @@ class LogUserActivityEvent extends OcrEvent {
       required this.description,
       required this.operationResult,
       required this.activityType,
-      required this.userType});
+      required this.userType,
+      required this.email});
 
   @override
   List<Object> get props => [];

@@ -2647,7 +2647,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       Map map = {
         0: assignmentName ?? 'NA',
         1: studentAssessmentInfoObj.subject ?? 'NA',
-        2: Globals.teacherEmailId ?? 'NA',
+        2: Globals.userEmailId ?? 'NA',
         3: studentAssessmentInfoObj.grade ?? 'NA',
         4: studentAssessmentInfoObj.className ?? "NA",
         5: Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")

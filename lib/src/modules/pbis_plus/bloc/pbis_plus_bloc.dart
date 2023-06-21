@@ -81,7 +81,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
-            refreshToken: userProfileLocalData[0].refreshToken);
+            refreshToken: userProfileLocalData[0].refreshToken,
+            isGradedPlus: event.isGradedPlus);
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
@@ -113,7 +114,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           });
 
           PlusUtility.updateLogs(
-              activityType: 'PBIS+',
+              activityType: event.isGradedPlus == true ? 'GRADED+' : 'PBIS+',
               userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
@@ -433,7 +434,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*----------------------------------------------------------------------------------------------*/
 
   Future<List> importPBISClassroomRoster(
-      {required String? accessToken, required String? refreshToken}) async {
+      {required String? accessToken,
+      required String? refreshToken,
+      required bool? isGradedPlus}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
@@ -461,7 +464,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
           List responseList = await importPBISClassroomRoster(
               accessToken: _userProfileLocalData[0].authorizationToken,
-              refreshToken: _userProfileLocalData[0].refreshToken);
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              isGradedPlus: isGradedPlus);
           return responseList;
         } else {
           List<ClassroomCourse> data = [];
@@ -473,7 +477,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     } catch (e) {
       PlusUtility.updateLogs(
-          activityType: 'PBIS+',
+          activityType: isGradedPlus == true ? 'GRADED+' : 'PBIS+',
           userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',

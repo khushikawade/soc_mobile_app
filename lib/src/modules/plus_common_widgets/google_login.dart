@@ -88,10 +88,10 @@ class GoogleLogin {
           operationResult: 'Success');
 
       // Log Firebase Event
-      FirebaseAnalyticsService.setUserId(id: Globals.teacherEmailId);
+      FirebaseAnalyticsService.setUserId(id: Globals.userEmailId);
       FirebaseAnalyticsService.logLogin(method: 'Google');
       FirebaseAnalyticsService.setUserProperty(
-          key: 'email', value: Globals.teacherEmailId);
+          key: 'email', value: Globals.userEmailId);
       // Log End
 
       // Push to the grading system

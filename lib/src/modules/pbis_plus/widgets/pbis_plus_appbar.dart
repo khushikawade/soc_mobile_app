@@ -132,7 +132,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    Globals.userEmailId = _userInformation[0].userEmail!;
     //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }

@@ -1691,7 +1691,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
             //     sessionId: Globals.sessionId,
             //     teacherContactId: Globals.teacherId,
-            //     teacherEmail: Globals.teacherEmailId,
+            //     teacherEmail: Globals.userEmailId,
             //     classroomCourseId: GoogleClassroomOverrides
             //             ?.studentAssessmentAndClassroomObj?.courseId ??
             //         '',
@@ -1982,7 +1982,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
+        teacherEmail: Globals.userEmailId,
         classroomCourseId: Overrides.STANDALONE_GRADED_APP
             ? GoogleClassroomOverrides
                     ?.studentAssessmentAndClassroomObj?.courseId ??

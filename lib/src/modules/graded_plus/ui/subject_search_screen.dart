@@ -280,7 +280,7 @@
 //                 //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
 //                 //     sessionId: Globals.sessionId,
 //                 //     teacherContactId: Globals.teacherId,
-//                 //     teacherEmail: Globals.teacherEmailId));
+//                 //     teacherEmail: Globals.userEmailId));
 //               }
 //               if (state is ErrorState) {
 //                 if (state.errorMsg == 'ReAuthentication is required') {
@@ -373,7 +373,7 @@
 //                     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
 //                     sessionId: Globals.sessionId,
 //                     teacherContactId: Globals.teacherId,
-//                     teacherEmail: Globals.teacherEmailId,
+//                     teacherEmail: Globals.userEmailId,
 //                     classroomCourseId: GoogleClassroomOverrides
 //                             ?.studentAssessmentAndClassroomObj?.courseId ??
 //                         '',

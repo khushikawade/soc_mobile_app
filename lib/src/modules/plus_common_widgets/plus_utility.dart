@@ -11,7 +11,7 @@ class PlusUtility {
     //----------------------------------------------------
     Uuid uuid = Uuid();
     String generatedUuid =
-        await uuid.v5(Uuid.NAMESPACE_URL, Globals.teacherEmailId);
+        await uuid.v5(Uuid.NAMESPACE_URL, Globals.userEmailId);
     //----------------------------------------------------
     print('generatedUuid::::: $generatedUuid');
     return generatedUuid;
@@ -35,6 +35,7 @@ class PlusUtility {
     _ocrBlocLogs.add(LogUserActivityEvent(
         activityType: activityType,
         userType: userType,
+        email: Globals.userEmailId,
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,
