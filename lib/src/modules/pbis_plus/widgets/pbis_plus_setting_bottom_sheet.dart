@@ -1279,7 +1279,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       return newClassroomCourseList ?? [];
     } catch (e) {
       print(e);
-      return classroomCourses;
+      return [];
     }
   }
 }

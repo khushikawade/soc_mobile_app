@@ -839,8 +839,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         body.addAll({"Student_Details": courseIdsAndStudentIds});
       }
 
-      print(body);
-
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
