@@ -786,13 +786,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
       //if user reset Course
-      if (type == "All Courses & Students" || type == "Courses") {
+      if (type == PBISPlusOverrides.kresetOptionOnetitle ||
+          type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
       } else if //if user reset student
-          (type == "Students") {
+          (type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -805,7 +806,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         body.addAll({"Student_Id": "('$studentIds')"});
       } else if (type ==
-          'Students by Course') // if the user rest stduents by course
+          PBISPlusOverrides
+              .kresetOptionFourtitle) // if the user rest stduents by course
       {
         List<Map<String, dynamic>> courseIdsAndStudentIds = [];
         for (ClassroomCourse course in selectedCourses) {

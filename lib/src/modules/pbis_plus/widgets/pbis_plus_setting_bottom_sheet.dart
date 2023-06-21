@@ -240,13 +240,13 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         //------------------------remaining row-------------------------//
 
         textWidget('Save & Reset Points', AppTheme.kButtonColor),
-        textWidget('All Courses & Students', Color(0xff111C20)),
+        textWidget(PBISPlusOverrides.kresetOptionOnetitle, Color(0xff111C20)),
         divider(context),
-        textWidget('Select Students', Color(0xff111C20)),
+        textWidget(PBISPlusOverrides.kresetOptionTwotitle, Color(0xff111C20)),
         divider(context),
-        textWidget('Select Courses', Color(0xff111C20)),
+        textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
-        textWidget('Select Students by Course', Color(0xff111C20)),
+        textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
         textWidget('Coming September 2023', AppTheme.kSecondaryColor),
       ],
@@ -270,12 +270,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         onTap: () {
           // This code handles different text values to perform different actions.
           //sectionName-To identify the selected section from the save and reset menu
-          sectionName = '';
+          sectionName = text ?? '';
           selectedRecords.clear();
           selectedStudentList.clear();
 
           switch (text) {
-            case 'All Courses & Students':
+            case PBISPlusOverrides.kresetOptionOnetitle:
               Utility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '58',
@@ -283,40 +283,38 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       'PBIS+ Save & Reset Points: All Courses & Students',
                   operationResult: 'Success');
               //-------------------------------------------------------------
-              sectionName = 'All Courses & Students';
 
               _pageController.animateToPage(4,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
-            case 'Select Students':
+            case PBISPlusOverrides.kresetOptionTwotitle:
               Utility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '60',
                   description: 'Save & Reset Points: Select Students',
                   operationResult: 'Success');
               //-------------------------------------------------------------
-              sectionName = 'Students';
+
               _pageController.animateToPage(2,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
 
               break;
-            case 'Select Courses':
+            case PBISPlusOverrides.kresetOptionThreetitle:
               Utility.updateLogs(
                   activityType: 'PBIS+',
                   activityId: '59',
                   description: 'PBIS+ Save & Reset Points: Select Courses',
                   operationResult: 'Success');
               //-------------------------------------------------------------
-              sectionName = 'Courses';
+
               _pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
 
-            case 'Select Students by Course':
-              sectionName = 'Students by Course';
+            case PBISPlusOverrides.kresetOptionFourtitle:
               _pageController.animateToPage(3,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
@@ -722,7 +720,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         Utility.textWidget(
             context: context,
             textAlign: TextAlign.center,
-            text: 'Exporting to Spreadsheet and resetting \'$sectionName\'',
+            text:
+                'Exporting to Spreadsheet and resetting \'${msgForUi(sectionName)}\'',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
       ],
@@ -809,7 +808,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
                 Navigator.pop(context, sectionName);
                 Utility.currentScreenSnackBar(
-                    "\'$sectionName\' have been reset successfully.", null);
+                    "\'${msgForUi(sectionName)}\' have been reset successfully.",
+                    null);
               }
             },
           ),
@@ -1280,6 +1280,17 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  String msgForUi(String inputString) {
+    try {
+      if (inputString != null && inputString.isNotEmpty) {
+        return inputString.replaceAll("select", "replace");
+      }
+      return '';
+    } catch (e) {
+      return '';
     }
   }
 }
