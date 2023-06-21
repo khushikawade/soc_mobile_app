@@ -22,7 +22,7 @@ class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
       iconUrlC: fields[2] as String?,
       name: fields[3] as String?,
       sortOrderC: fields[4] as String?,
-      counter: fields[5] as String?,
+      counter: fields[5] as int?,
     );
   }
 

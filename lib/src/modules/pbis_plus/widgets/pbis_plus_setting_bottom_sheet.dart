@@ -242,7 +242,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         divider(context),
         textWidget('Select Courses', Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
-        textWidget('Edit Skills', Color(0xff111C20)),
+        textWidget('Edit Behaviour', Color(0xff111C20)),
       ],
     );
   }
@@ -291,7 +291,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
 
-            case 'Edit Skills':
+            case 'Edit Behaviour':
               sectionName = 'Skills';
 
               Navigator.pop(context);
@@ -1067,16 +1067,23 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             for (ClassroomStudents studentInCourse in course.students!) {
               if (studentInCourse.profile?.id == student.profile?.id) {
                 ClassroomStudents newStudent = ClassroomStudents(
+                  //TODOPBIS:  excel sheet
                   profile: ClassroomProfile(
                     courseName: course.name,
                     emailAddress: studentInCourse.profile?.emailAddress,
-                    engaged: studentInCourse.profile?.engaged,
-                    helpful: studentInCourse.profile?.helpful,
                     id: studentInCourse.profile?.id,
                     name: studentInCourse.profile?.name,
-                    niceWork: studentInCourse.profile?.niceWork,
                     permissions: studentInCourse.profile?.permissions,
                     photoUrl: studentInCourse.profile?.photoUrl,
+                    engaged: studentInCourse.profile?.engaged,
+                    helpful: studentInCourse.profile?.helpful,
+                    niceWork: studentInCourse.profile?.niceWork,
+                    // behaviour1: studentInCourse.profile?.behaviour1,
+                    // behaviour2: studentInCourse.profile?.behaviour2,
+                    // behaviour3: studentInCourse.profile?.behaviour3,
+                    // behaviour4: studentInCourse.profile?.behaviour4,
+                    // behaviour5: studentInCourse.profile?.behaviour5,
+                    // behaviour6: studentInCourse.profile?.behaviour6,
                   ),
                 );
 

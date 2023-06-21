@@ -5,9 +5,11 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/modules/schedule/ui/week_view.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -52,6 +54,7 @@ class PBISPlusStudentCardNewModal extends StatefulWidget {
 
 class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
+  final _noteFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -109,6 +112,53 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                 );
               }));
         });
+
+    final AddNotes = Form(
+        key: _noteFormKey,
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              // decoration: AppConstants.inputDecoration.copyWith(
+              //   labelText: "Event Title",
+              // ),
+              style: TextStyle(
+                // color: AppColors.black,
+                fontSize: 17.0,
+              ),
+              // onSaved: (value)(){},
+              validator: (value) {
+                if (value == null || value == "")
+                  return "Please enter event title.";
+
+                return null;
+              },
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircularCustomButton(
+              size: Size(MediaQuery.of(context).size.width * 0.29,
+                  MediaQuery.of(context).size.width / 10),
+              borderColor:
+                  Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color(0xff111C20)
+                      : Color(0xffF7F8F9),
+              textColor: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xff111C20)
+                  : Color(0xffF7F8F9),
+              text: "Done",
+              onClick: () {
+                Navigator.pop(context);
+              },
+              backgroundColor: AppTheme.kButtonColor,
+              isBusy: false,
+              buttonRadius: 64,
+            ),
+          )
+        ]));
 
     final ActionInteractionButtonsRowWise = GridView.builder(
       shrinkWrap: true,

@@ -45,7 +45,7 @@ class PBISPlusSkills extends HiveObject {
   @HiveField(4)
   String? sortOrderC;
   @HiveField(5)
-  String? counter;
+  int? counter;
 
   PBISPlusSkills({
     required this.id,
@@ -66,7 +66,7 @@ class PBISPlusSkills extends HiveObject {
     //     'https://source.unsplash.com/random/200x200?sig=${generateRandomUniqueNumber().toString()}';
     name = json['name'] ?? '';
     sortOrderC = json['sortOrderC'] ?? '';
-    counter = json['counter'] ?? '0';
+    counter = json['counter'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

@@ -321,8 +321,7 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
-    await AudioPlayer().play(AssetSource('pbis_sound/magic_tap.mp3'));
-    // Utility.playSound(Strings.soundPath[0]);
+    Utility.playSound(Strings.soundPath[0]);
 
     if (_isOffline) {
       Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -346,20 +345,21 @@ class PBISPlusActionInteractionButtonState
     });
 
     if (widget.iconData.title == 'Engaged') {
-      widget.studentValueNotifier.value.profile!.engaged =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.engaged
-              : widget.studentValueNotifier.value.profile!.engaged! + 1;
-    } else if (widget.iconData.title == 'Nice Work') {
-      widget.studentValueNotifier.value.profile!.niceWork =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.niceWork
-              : widget.studentValueNotifier.value.profile!.niceWork! + 1;
-    } else {
-      widget.studentValueNotifier.value.profile!.helpful =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.helpful
-              : widget.studentValueNotifier.value.profile!.helpful! + 1;
+      // TODOPBIS:
+      //   widget.studentValueNotifier.value.profile!.behaviour1?.counter =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.engaged
+      //           : widget.studentValueNotifier.value.profile!.engaged! + 1;
+      // } else if (widget.iconData.title == 'Nice Work') {
+      //   widget.studentValueNotifier.value.profile!.niceWork =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.niceWork
+      //           : widget.studentValueNotifier.value.profile!.niceWork! + 1;
+      // } else {
+      //   widget.studentValueNotifier.value.profile!.helpful =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.helpful
+      //           : widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
 
     onTapDetect.value =
@@ -392,12 +392,14 @@ class PBISPlusActionInteractionButtonState
   _getCounts() {
     String title = widget.iconData.title;
     var map = {
+      //TODOPBIS:
       'Engaged': widget.studentValueNotifier.value.profile!.engaged,
       'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
       'Participation': ++participation.value,
       'Collaboration': ++collaboration.value,
       'Listening': ++listening.value,
+
       // widget.studentValueNotifier.value.profile!.niceWork,
       // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };

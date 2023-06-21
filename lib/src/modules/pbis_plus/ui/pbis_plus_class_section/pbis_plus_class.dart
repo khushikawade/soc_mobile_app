@@ -558,7 +558,14 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   builder: (BuildContext context, ClassroomStudents value,
                       Widget? child) {
                     return Text(
+                      //TODOPBIS:
                       PBISPlusUtility.numberAbbreviationFormat(
+                          // studentValueNotifier
+                          //         .value.profile!.behaviour1!.counter! +
+                          //     studentValueNotifier
+                          //         .value.profile!.behaviour2!.counter! +
+                          //     studentValueNotifier
+                          //         .value.profile!.behaviour2!.counter!
                           studentValueNotifier.value!.profile!.engaged! +
                               studentValueNotifier.value!.profile!.niceWork! +
                               studentValueNotifier.value!.profile!.helpful!),

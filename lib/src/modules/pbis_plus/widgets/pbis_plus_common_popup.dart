@@ -19,6 +19,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final TextStyle? titleStyle;
   final Color? backgroundColor;
   final PBISPlusSkills item;
+  PBISPlusBloc? pbisPlusClassroomBloc;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
     Key? key,
@@ -30,6 +31,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
     required this.backgroundColor,
     required this.item,
     required this.containerIcons,
+    required this.pbisPlusClassroomBloc,
   }) : super(key: key);
 
   @override
@@ -52,7 +54,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
-      child: contentBox(context),
+      child: contentBox(),
     );
   }
 
@@ -73,7 +75,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     }
   }
 
-  contentBox(context) {
+  Widget contentBox() {
     return Stack(
       children: <Widget>[
         Container(
@@ -152,15 +154,14 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                               if (state is PBISPlusSkillsSucess) {
                                 Utility.currentScreenSnackBar(
                                     "Successfully Deleted skills", null);
-                                Navigator.pop(context!);
-                                Navigator.pop(context);
+                                Navigator.pop(context, true);
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
                               } else if (state is PBISPlusSkillsDeleteError) {
                                 Utility.currentScreenSnackBar(
                                     "Please try again later. Unable to delete the skills.",
                                     null);
-                                Navigator.pop(context!);
+                                Navigator.pop(context, true);
                               }
                             }
                             //_buildEditSkillCards()

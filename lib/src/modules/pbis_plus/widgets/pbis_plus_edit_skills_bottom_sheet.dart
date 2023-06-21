@@ -37,12 +37,14 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
+  PBISPlusBloc? pbisPlusClassroomBloc;
   PBISPlusEditSkillsBottomSheet(
       {Key? key,
       this.height = 100,
       required this.item,
       this.containerIcons,
       required BoxConstraints constraints,
+      required pbisPlusClassroomBloc,
       required int index});
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
@@ -211,9 +213,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   showPopup(
-      {required String message, required String? title, PBISPlusSkills? item}) {
-    Navigator.of(context).pushReplacement(HeroDialogRoute(
+      {required String message,
+      required String? title,
+      PBISPlusSkills? item,
+      PBISPlusBloc? pbisPlusClassroomBloc}) async {
+    final res = await Navigator.of(context).push(HeroDialogRoute(
         builder: (context) => PBISPlusCommonPopup(
+              pbisPlusClassroomBloc: pbisPlusClassroomBloc,
               item: item!,
               containerIcons: widget.containerIcons,
               backgroundColor:
@@ -229,6 +235,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   .headline1!
                   .copyWith(fontWeight: FontWeight.bold),
             )));
+    if (res) {
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildNextbutton(PBISPlusSkills dataList) {
@@ -248,7 +257,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Utility.textWidget(
-                  text: 'Next',
+                  text: 'Update',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme

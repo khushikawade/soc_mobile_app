@@ -56,7 +56,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
         List<PBISPlusSkills>? _pbisPlusSkillsLocalData =
             await _pbisPlusSkilllocalsDB.getData();
-        _pbisPlusSkillsLocalData.clear();
+        // await _pbisPlusSkilllocalsDB.clear();
         var list;
         if (_pbisPlusSkillsLocalData.isEmpty) {
           list = PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist.map(
@@ -183,7 +183,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
         List<PBISPlusSkills>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
-        // _pbisPlusSkillsDB.clear();
+        // await _pbisPlusSkillsDB.clear();
 
         var list;
         if (_pbisPlusSkillsData.isEmpty) {
@@ -200,7 +200,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<PBISPlusHistoryModal> _localDb =
             LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
-        print(list.runtimeType);
         if (_pbisPlusSkillsData.isEmpty) {
           list.forEach((element) async {
             await _pbisPlusSkillsDB
@@ -269,18 +268,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISPlusSkills>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
         yield PBISPlusSkillsUpdateLoading();
-        // print(_pbisPlusSkillsData.length);
-        // // yield PBISPlusSkillsUpdateLoading();
-        // await Future.delayed(Duration(seconds: 2));
         if (event.item.id!.isNotEmpty &&
             event.index != null &&
             _pbisPlusSkillsData != null &&
             _pbisPlusSkillsData.isNotEmpty &&
             event.index < _pbisPlusSkillsData.length) {
-          final result =
-              _pbisPlusSkillsData.where((item) => item.name == event.item.name);
+          //Check the Item already exits
+          bool itemExists =
+              _pbisPlusSkillsData.any((item) => item.name == event.item.name);
 
-          if (true) {
+          if (!itemExists) {
             int count = _pbisPlusSkillsData
                 .where((item) => item.name != "Add Skill")
                 .length;
@@ -288,23 +285,21 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               if (event.index < count) {
                 _pbisPlusSkillsData.removeAt(event.index);
                 _pbisPlusSkillsData.insert(event.index, event.item);
-                _pbisPlusSkillsData.removeLast();
               } else {
                 _pbisPlusSkillsData.removeAt(count);
                 _pbisPlusSkillsData.insert(count, event.item);
-                _pbisPlusSkillsData.removeLast();
               }
             } else {
               _pbisPlusSkillsData.removeAt(event.index);
               _pbisPlusSkillsData.insert(event.index, event.item);
-              _pbisPlusSkillsData.removeLast();
             }
             await _pbisPlusSkillsDB.clear();
             _pbisPlusSkillsData.forEach((element) async {
-              await _pbisPlusSkillsDB
-                  .addData(element); // Pass 'element' instead of 'list'
+              await _pbisPlusSkillsDB.addData(element);
             });
             yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+          } else {
+            yield PBISPlusSkillsListUpdateError();
           }
         } else {
           yield PBISPlusSkillsListUpdateError();
@@ -339,19 +334,19 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                       .toString();
             }
             PBISPlusSkills newItem = PBISPlusSkills(
-              id: "after delete ke baad",
+              id: "5",
               activeStatusC: "Show",
               iconUrlC: "assets/Pbis_plus/add_icon.svg",
               name: 'Add Skill',
               sortOrderC: _pbisPlusSkillsData.length.toString(),
-              counter: "0",
+              counter: 0,
             );
             // Add the new item at the end of the list
             _pbisPlusSkillsData.add(newItem);
 
             final check = await _pbisPlusSkillsDB.getData();
 
-            // await _pbisPlusSkillsDB.clear();
+            await _pbisPlusSkillsDB.clear();
             _pbisPlusSkillsData.forEach((element) async {
               await _pbisPlusSkillsDB
                   .addData(element); // Pass 'element' instead of 'list'
@@ -823,7 +818,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                     pbisTotalInteractionList[k].classroomCourseId &&
                 classroomCourseList[i].students![j].profile!.id ==
                     pbisTotalInteractionList[k].studentId) {
-              //TODO:
+              //TODOPBIS:
+              // classroomCourse.students![j].profile!.behaviour1!.counter =
+              //     pbisTotalInteractionList[k].engaged;
+              // classroomCourse.students![j].profile!.behaviour2!.counter =
+              //     pbisTotalInteractionList[k].niceWork;
+              // classroomCourse.students![j].profile!.behaviour3!.counter =
+              //     pbisTotalInteractionList[k].helpful;
               classroomCourse.students![j].profile!.engaged =
                   pbisTotalInteractionList[k].engaged;
               classroomCourse.students![j].profile!.niceWork =
@@ -841,7 +842,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (!interactionCountsFound) {
           // If no interaction counts were found, set all counts to 0
           for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
-            //niceWork  TODO:
+            //TODOPBIS::
+            // classroomCourse.students![j].profile!.behaviour1?.counter = 0;
+            // classroomCourse.students![j].profile!.behaviour2?.counter = 0;
+            // classroomCourse.students![j].profile!.behaviour3?.counter = 0;
             classroomCourse.students![j].profile!.engaged = 0;
             classroomCourse.students![j].profile!.niceWork = 0;
             classroomCourse.students![j].profile!.helpful = 0;
