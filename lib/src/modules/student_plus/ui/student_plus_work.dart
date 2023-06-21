@@ -178,6 +178,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             List<String> teacherList =
                 StudentPlusUtility.getTeacherList(list: list);
             showModalBottomSheet(
+              useRootNavigator: true,
               backgroundColor: Colors.transparent,
               context: context,
               isScrollControlled: true,
@@ -544,7 +545,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: scaffoldKey);
-               await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
                   state.errorMsg == 'NO_CONNECTION'
@@ -583,7 +587,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               //     errorMsg: state.errorMsg!,
               //     context: context,
               //     scaffoldKey: scaffoldKey);
-               await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: scaffoldKey);
+              await Authentication.reAuthenticationRequired(
+                  context: context,
+                  errorMessage: state.errorMsg!,
+                  scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
                   "Something Went Wrong. Please Try Again.", null);

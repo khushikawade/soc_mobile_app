@@ -212,29 +212,31 @@ class _StaffPageState extends State<StaffPage> {
               },
               child: EmptyContainer()),
         ),
-        Container(
-          height: 0,
-          width: 0,
-          child: BlocListener<OcrBloc, OcrState>(
-            child: Container(),
-            bloc: _ocrBloc,
-            listener: (context, state) {
-              if (state is AuthorizedUserSuccess) {
-                Navigator.pop(context, false);
-                navigatorToScreen(actionName: actionName ?? '');
+        //Authorizing user email address with database
+        BlocListener<OcrBloc, OcrState>(
+          child: Container(),
+          bloc: _ocrBloc,
+          listener: (context, state) {
+            if (state is AuthorizedUserSuccess) {
+              Navigator.pop(context, false);
+              navigatorToScreen(actionName: actionName ?? '');
+            }
+            if (state is AuthorizedUserLoading) {
+              Utility.showLoadingDialog(
+                  context: context, isOCR: true, msg: "Please Wait");
+            }
+
+            if (state is AuthorizedUserError) {
+              Navigator.pop(context, false);
+              if (Globals.appSetting.enableGoogleSSO == "true") {
+                Authentication.signOut(context: context);
+                UserGoogleProfile.clearUserProfile();
               }
-              if (state is AuthorizedUserLoading) {
-                Utility.showLoadingDialog(
-                    context: context, isOCR: true, msg: "Please Wait");
-              }
-              if (state is AuthorizedUserError) {
-                Navigator.pop(context, false);
-                Utility.currentScreenSnackBar(
-                    'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-                    null);
-              }
-            },
-          ),
+              Utility.currentScreenSnackBar(
+                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                  null);
+            }
+          },
         )
         // Globals.appSetting.enableGraded == 'false'
         //     ? Container()

@@ -998,11 +998,11 @@ await Authentication.reAuthenticationRequired(context: context,errorMessage: sta
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    if (showDialogSetState != null) {
-      showDialogSetState!(() {
-        GradedGlobals.loadingMessage = 'Result Detail is Updating';
-      });
-    }
+    // if (showDialogSetState != null) {
+    //   showDialogSetState!(() {
+    //     GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    //   });
+    // }
 
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,

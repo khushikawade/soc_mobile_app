@@ -17,6 +17,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dar
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -282,12 +283,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                   if (state is PBISErrorState) {
                     if (state.error == 'ReAuthentication is required') {
-                      await Utility.refreshAuthenticationToken(
-                          isNavigator: true,
-                          errorMsg: state.error!,
-                          context: context,
-                          scaffoldKey: _scaffoldKey);
-
+                      // await Utility.refreshAuthenticationToken(
+                      //     isNavigator: true,
+                      //     errorMsg: state.error!,
+                      //     context: context,
+                      //     scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(context: context,errorMessage: state.error,scaffoldKey: _scaffoldKey);
                       pbisPlusClassroomBloc.add(PBISPlusImportRoster(
                           isGradedPlus: widget.isGradedPlus));
                     } else {
