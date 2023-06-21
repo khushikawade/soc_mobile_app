@@ -39,7 +39,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------------PBISPlusImportRoster--------------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
-    print("PBISPlusBloc bloc event recived ---------------->> $event");
+
     if (event is PBISPlusImportRoster) {
       String plusClassroomDBTableName = event.isGradedPlus == true
           ? OcrOverrides.gradedPlusStandardClassroomDB
@@ -142,41 +142,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             googleClassroomCourseList: _localData);
       }
     }
-
-    /*----------------------------------------------------------------------------------------------*/
-    /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
-    /*-----No need ot use this event as this is already manage together with Import Roster event----*/
-    /*----------------------------------------------------------------------------------------------*/
-
-    // if (event is GetPBISTotalInteractionsByTeacher) {
-    //   List<UserInformation> userProfileLocalData =
-    //       await UserGoogleProfile.getUserProfile();
-
-    //   LocalDatabase<PBISPlusTotalInteractionByTeacherModal> _localDb =
-    //       LocalDatabase(PBISPlusOverrides.PBISPlusTotalInteractionByTeacherDB);
-    //   List<PBISPlusTotalInteractionByTeacherModal>? _localData =
-    //       await _localDb.getData();
-
-    //   if (_localData?.isNotEmpty ?? false) {
-    //     yield PBISPlusTotalInteractionByTeacherSuccess(
-    //         pbisTotalInteractionList: _localData);
-    //   } else {
-    //     yield PBISPlusLoading();
-    //   }
-
-    //   List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList =
-    //       await getPBISTotalInteractionByTeacher(
-    //           teacherEmail: userProfileLocalData[0].userEmail!);
-
-    //   await _localDb.clear();
-    //   pbisTotalInteractionList.forEach((element) async {
-    //     await _localDb.addData(element);
-    //   });
-
-    //   yield PBISPlusLoading();
-    //   yield PBISPlusTotalInteractionByTeacherSuccess(
-    //       pbisTotalInteractionList: pbisTotalInteractionList);
-    // }
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
@@ -785,15 +750,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Reset_Date": currentDate,
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
-      //if user reset Course
+      //if user reset Course //All Courses & Students||Select Students
       if (type == PBISPlusOverrides.kresetOptionOnetitle ||
           type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
-      } else if //if user reset student
-          (type == PBISPlusOverrides.kresetOptionThreetitle) {
+      }
+      //Select Courses
+      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -801,14 +767,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
-            .join(
-                "', '"); // Surround the string with double quotes and  (parentheses)
+            .join("', '");
+        // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
-      } else if (type ==
-          PBISPlusOverrides
-              .kresetOptionFourtitle) // if the user rest stduents by course
-      {
+      }
+      // Select Students by Course
+      else if (type == PBISPlusOverrides.kresetOptionFourtitle) {
         List<Map<String, dynamic>> courseIdsAndStudentIds = [];
         for (ClassroomCourse course in selectedCourses) {
           // Create a map to store Classroom_Course_Id and Student_Id
@@ -816,7 +781,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             "Classroom_Course_Id": course.id,
             "Student_Id": <String>[],
           };
-          // Create a list to store student IDs
+          // Create a list to store student IDs //For every course index
           List<String> studentIds = [];
           // Iterate over each ClassroomStudents in course.students (handling null case with ?? [])
           for (ClassroomStudents student in course.students ?? []) {
@@ -887,22 +852,3 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 }
-
-// List courses = [
-//   {
-//     "coureName": "math",
-//     "courseid": "1",
-//     "students": [
-//       {"stduentname": "student1", "studentid": "s1"},
-//       {"stduentname": "student2", "studentid": "s2"}
-//     ]
-//   },
-//   {
-//     "coureName": "dart",
-//     "courseid": "2",
-//     "students": [
-//       {"stduentname": "student4", "studentid": "m1"},
-//       {"stduentname": "student5", "studentid": "m2"}
-//     ]
-//   }
-// ];
