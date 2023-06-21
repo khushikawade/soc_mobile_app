@@ -57,6 +57,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetDriveFolderIdEvent) {
       try {
         var folderObject;
+
         print(event.folderName);
         //isReturnState is used to check if the we are waiting for state on UI or not to move further
 
@@ -90,29 +91,32 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject.length == 0) {
             print("${event.folderName} is not available on drive Create one ");
             //Create the folder now
-            String? folderId = await _createFolderOnDrive(
+            List isFolderCreated = await _createFolderOnDrive(
                 token: userProfileLocalInfo.authorizationToken,
                 folderName: event.folderName);
 
-            if (event.isReturnState! && (folderId != '')) {
+          
+            if (isFolderCreated[0] == true) {
               // //FOR GRADED+
               if (event.folderName == "SOLVED GRADED+") {
-                userProfileLocalInfo.gradedPlusGoogleDriveFolerId = folderId;
+                userProfileLocalInfo.gradedPlusGoogleDriveFolerId =
+                    isFolderCreated[1]['id'];
                 userProfileLocalInfo.gradedPlusGoogleDriveFolerPathUrl =
-                    folderObject['webViewLink'];
+                    isFolderCreated[1]['alternateLink'];
               }
               //   //FOR PBIS PLUS
               else if (event.folderName == "SOLVED PBIS+") {
-                userProfileLocalInfo.pbisPlusGoogleDriveFolerId = folderId;
-              } //FOR PBIS PLUS
+                userProfileLocalInfo.pbisPlusGoogleDriveFolerId =
+                    isFolderCreated[1]['id'];
+              } //FOR STUDENT PLUS
               else if (event.folderName == "SOLVED STUDENT+") {
-                userProfileLocalInfo.studentPlusGoogleDriveFolerId = folderId;
+                userProfileLocalInfo.studentPlusGoogleDriveFolerId =
+                    isFolderCreated[1]['id'];
               }
 
 // now update the local db with updaetd drive foler id
               UserGoogleProfile.updateUserProfile(userProfileLocalInfo);
 
-              //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
               yield GoogleSuccess(
                   fromGradedPlusAssessmentSection:
                       event.fromGradedPlusAssessmentSection);
@@ -1268,7 +1272,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<dynamic> _createFolderOnDrive(
+  Future<List> _createFolderOnDrive(
       {required String? token, required String? folderName}) async {
     try {
       final body = {
@@ -1315,10 +1319,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //   //FOR STUDENT PLUS
         //   StudentPlusOverrides.studentPlusGoogleDriveFolderId = folderId;
         // }
-
-        return response.data['body'];
+        print(response.data['body']);
+        return [true, response.data['body']];
       }
-      return "";
+      return [false, response.data['statusCode']];
+      ;
     } catch (e) {
       throw (e);
     }
