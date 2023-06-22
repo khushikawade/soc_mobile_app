@@ -1806,7 +1806,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             query = "'$folderId'+in+parents";
         }
       }
-
       final ResponseModel response = await _dbServices.getApiNew(
           isPagination == true
               ? "$nextPageUrl"
@@ -1814,7 +1813,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   ? "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" //List Call
                   : filterType == 'Multiple Choice' &&
                           (searchKey == "" || searchKey == null)
-                      ? 'https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=(mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27%20or%20mimeType%3D%27application%2Fvnd.google-apps.presentation%27)%20and%20%271wmJajuIgOriR8l1DEttYooYeqQDK9REr%27%20in%20parents%20and%20not%20fullText%20contains%20%27Graded%2B%27&supportsAllDrives=true&supportsTeamDrives=true'
+                      ? 'https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=(mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27%20or%20mimeType%3D%27application%2Fvnd.google-apps.presentation%27)%20and%20%27$folderId%27%20in%20parents%20and%20not%20fullText%20contains%20%27Graded%2B%27&supportsAllDrives=true&supportsTeamDrives=true' // THIS GOOGLE SEARCH QUERY IS NOT WORKING WITH GOOGLE BRIDGE API
+
+                      // ? 'https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=(mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27%20or%20mimeType%3D%27application%2Fvnd.google-apps.presentation%27)%20and%20%271wmJajuIgOriR8l1DEttYooYeqQDK9REr%27%20in%20parents%20and%20not%20fullText%20contains%20%27Graded%2B%27&supportsAllDrives=true&supportsTeamDrives=true'
                       // : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=" +
                       //     //     // https://www.googleapis.com/drive/v2/files?q=" +
                       //     Uri.encodeFull(query), //Search call
@@ -1822,7 +1823,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                           Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
-
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
@@ -1870,7 +1870,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           _list.removeWhere(
               (element) => element.description == 'Multiple Choice Sheet');
         }
-
+        print(_list.length);
         return _list == null ? [] : [_list, updatedNextUrlLink];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
