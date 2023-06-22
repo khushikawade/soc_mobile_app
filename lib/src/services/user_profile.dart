@@ -21,9 +21,9 @@ class UserGoogleProfile {
   static Future<void> clearUserProfile() async {
     try {
       await _localDb.clear();
-      print("user profile is successfully cleared");
+      print("user profile is successfully clean");
     } catch (e) {
-      print("user profile is FAILED cleared");
+      print("user profile is FAILED clean");
       throw (e);
     }
   }
@@ -39,7 +39,7 @@ class UserGoogleProfile {
       print("user profile is successfully UDAPTED");
     } catch (e) {
       print(e);
-      print("user profile is UDAPTED FAILED");
+      print("user profile is UDAPTE FAILED");
       throw (e);
     }
   }
