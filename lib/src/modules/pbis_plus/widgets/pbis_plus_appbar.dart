@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
@@ -131,7 +132,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    Globals.userEmailId = _userInformation[0].userEmail!;
     //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
@@ -154,8 +155,9 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -182,6 +184,16 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);

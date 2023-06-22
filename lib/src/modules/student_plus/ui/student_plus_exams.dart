@@ -3,6 +3,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
@@ -118,15 +119,15 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               onTap: (i) {
                 print(i);
                 if (i == 0) {
-                  Utility.updateLogs(
-                      activityType: 'STUDENT+',
+                  PlusUtility.updateLogs(
+                      activityType: 'STUDENT+', userType: 'Teacher',
                       activityId: '50',
                       description: 'Student+ MATH Screen',
                       operationResult: 'Success');
                 }
                 if (i == 1) {
-                  Utility.updateLogs(
-                      activityType: 'STUDENT+',
+                  PlusUtility.updateLogs(
+                      activityType: 'STUDENT+', userType: 'Teacher',
                       activityId: '51',
                       description: 'Student+ ELA Screen',
                       operationResult: 'Success');

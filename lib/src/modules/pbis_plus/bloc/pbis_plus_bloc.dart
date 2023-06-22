@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -81,7 +82,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
-            refreshToken: userProfileLocalData[0].refreshToken);
+            refreshToken: userProfileLocalData[0].refreshToken,
+            isGradedPlus: event.isGradedPlus);
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
@@ -112,8 +114,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _localDb.addData(e);
           });
 
-          Utility.updateLogs(
-              activityType: 'PBIS+',
+          PlusUtility.updateLogs(
+              activityType: event.isGradedPlus == true ? 'GRADED+' : 'PBIS+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
               operationResult: 'Success');
@@ -142,41 +145,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             googleClassroomCourseList: _localData);
       }
     }
-
-    /*----------------------------------------------------------------------------------------------*/
-    /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
-    /*-----No need ot use this event as this is already manage together with Import Roster event----*/
-    /*----------------------------------------------------------------------------------------------*/
-
-    // if (event is GetPBISTotalInteractionsByTeacher) {
-    //   List<UserInformation> userProfileLocalData =
-    //       await UserGoogleProfile.getUserProfile();
-
-    //   LocalDatabase<PBISPlusTotalInteractionByTeacherModal> _localDb =
-    //       LocalDatabase(PBISPlusOverrides.PBISPlusTotalInteractionByTeacherDB);
-    //   List<PBISPlusTotalInteractionByTeacherModal>? _localData =
-    //       await _localDb.getData();
-
-    //   if (_localData?.isNotEmpty ?? false) {
-    //     yield PBISPlusTotalInteractionByTeacherSuccess(
-    //         pbisTotalInteractionList: _localData);
-    //   } else {
-    //     yield PBISPlusLoading();
-    //   }
-
-    //   List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList =
-    //       await getPBISTotalInteractionByTeacher(
-    //           teacherEmail: userProfileLocalData[0].userEmail!);
-
-    //   await _localDb.clear();
-    //   pbisTotalInteractionList.forEach((element) async {
-    //     await _localDb.addData(element);
-    //   });
-
-    //   yield PBISPlusLoading();
-    //   yield PBISPlusTotalInteractionByTeacherSuccess(
-    //       pbisTotalInteractionList: pbisTotalInteractionList);
-    // }
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
@@ -221,8 +189,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         });
 
         /*-------------------------User Activity Track START----------------------------*/
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'PBIS+',
+            userType: 'Teacher',
             activityId: '38',
             description:
                 'User Interaction PBIS+ for student ${event.studentId}',
@@ -431,7 +400,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*----------------------------------------------------------------------------------------------*/
 
   Future<List> importPBISClassroomRoster(
-      {required String? accessToken, required String? refreshToken}) async {
+      {required String? accessToken,
+      required String? refreshToken,
+      required bool? isGradedPlus}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
@@ -459,7 +430,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
           List responseList = await importPBISClassroomRoster(
               accessToken: _userProfileLocalData[0].authorizationToken,
-              refreshToken: _userProfileLocalData[0].refreshToken);
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              isGradedPlus: isGradedPlus);
           return responseList;
         } else {
           List<ClassroomCourse> data = [];
@@ -470,8 +442,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLogs(
-          activityType: 'PBIS+',
+      PlusUtility.updateLogs(
+          activityType: isGradedPlus == true ? 'GRADED+' : 'PBIS+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',
           operationResult: 'failure');
@@ -785,14 +758,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Reset_Date": currentDate,
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
-      //if user reset Course
-      if (type == "All Courses & Students" || type == "Courses") {
+      //if user reset Course //All Courses & Students||Select Students
+      if (type == PBISPlusOverrides.kresetOptionOnetitle ||
+          type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
-      } else if //if user reset student
-          (type == "Students") {
+      }
+      //Select Courses
+      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -800,12 +775,45 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
-            .join(
-                "', '"); // Surround the string with double quotes and  (parentheses)
+            .join("', '");
+        // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
-      print(body);
+      // Select Students by Course
+      else if (type == PBISPlusOverrides.kresetOptionFourtitle) {
+        List<Map<String, dynamic>> courseIdsAndStudentIds = [];
+        for (ClassroomCourse course in selectedCourses) {
+          // Create a map to store Classroom_Course_Id and Student_Id
+          Map<String, dynamic> classroomCourse = {
+            "Classroom_Course_Id": course.id,
+            "Student_Id": <String>[],
+          };
+          // Create a list to store student IDs //For every course index
+          List<String> studentIds = [];
+          // Iterate over each ClassroomStudents in course.students (handling null case with ?? [])
+          for (ClassroomStudents student in course.students ?? []) {
+            // Check if student.profile and student.profile.id are not null
+            if (student.profile?.id != null &&
+                student.profile!.id!.isNotEmpty) {
+              // Add student ID to the list only if id was not null and empty
+              studentIds.add(student.profile!.id!);
+            } else if (student.profile?.emailAddress != null &&
+                student.profile!.emailAddress!.isNotEmpty) {
+              //  Add student email to the list only if id was null or empty
+              studentIds.add(student.profile!.emailAddress!);
+            }
+          }
+          // Assign the list of student IDs to the "Student_Id" key in the classroomCourse map
+          classroomCourse["Student_Id"] = studentIds;
+          // Add the classroomCourse map to the list of courseIdsAndStudentIds
+
+          courseIdsAndStudentIds.add(classroomCourse);
+        }
+// Add the courseIdsAndStudentIds to the "Student_Details" key in the api body
+        body.addAll({"Student_Details": courseIdsAndStudentIds});
+      }
+
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {

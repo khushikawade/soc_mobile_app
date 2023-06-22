@@ -14,6 +14,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/scan_result/scan_result_scree
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -489,8 +490,9 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       await controller!.value.setFlashMode(FlashMode.off);
                     } catch (e) {}
 
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '19',
                         description: 'Assessment scan finished',
                         operationResult: 'Success');

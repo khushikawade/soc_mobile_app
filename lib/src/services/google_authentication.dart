@@ -30,7 +30,6 @@ class Authentication {
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/classroom.profile.emails",
     "https://www.googleapis.com/auth/classroom.profile.photos",
-   
   ];
   /* -------------------------------------------------------------------------------------- */
   /* ------------------------------------initializeFirebase-------------------------------- */
@@ -68,8 +67,13 @@ class Authentication {
         scopes: scopes);
 
     final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signInSilently();
+        await googleSignIn.signInSilently(reAuthenticate: true);
 
+    if (googleSignInAccount == null) {
+      await signInWithGoogle();
+      List<UserInformation> userInfo = await UserGoogleProfile.getUserProfile();
+      return userInfo.length < 1 ? '' : userInfo[0].authorizationToken ?? '';
+    }
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;
 
@@ -94,7 +98,7 @@ class Authentication {
       }
 
       //-------------------------------Updating user info locally--------------------------------------------
-      saveUserProfile(user!, googleSignInAuthentication);
+      await saveUserProfile(user!, googleSignInAuthentication);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // Handle the case where the user already exists with a different credential
@@ -180,7 +184,7 @@ class Authentication {
 
           //-------------------------------Updating user info locally--------------------------------------------
 
-          saveUserProfile(user!, googleSignInAuthentication);
+          await saveUserProfile(user!, googleSignInAuthentication);
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             // Handle the case where the user already exists with a different credential
@@ -229,7 +233,9 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<void> saveUserProfile(
       User user, GoogleSignInAuthentication googleSignInAuthentication) async {
-    // List<String> profile = profileData.split('+');
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    //clear the existing data
+
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
         userEmail: user.email,
@@ -239,8 +245,7 @@ class Authentication {
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
+    await UserGoogleProfile.updateUserProfile(_userInformation);
     // await _localDb.close();
   }
   /* -------------------------------------------------------------------------------------- */

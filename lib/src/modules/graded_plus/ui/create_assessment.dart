@@ -816,7 +816,7 @@
 //                           Globals.googleSlidePresentationId =
 //                               state.slideFiledId;
 
-//                           Utility.updateLogs(
+//                           PlusUtility.updateLogs(
 //                               activityType: 'GRADED+',
 //                               activityId: '33',
 //                               description: 'G-Slide Created',
@@ -915,7 +915,7 @@
 //       _localDb.addData(e);
 //     });
 
-//     Utility.updateLogs(
+//     PlusUtility.updateLogs(
 //         activityType: 'GRADED+',
 //         activityId: '11',
 //         description: 'Created G-Excel file',

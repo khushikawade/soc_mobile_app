@@ -203,7 +203,7 @@
 //                   updateStudentDetails();
 //                   scanFailure.value = 'Success';
 //                   _performAnimation();
-//                   Utility.updateLogs(
+//                   PlusUtility.updateLogs(
 //                       activityType: 'GRADED+',
 //                       activityId: '23',
 //                       description: 'Scan Assessment sheet successfully',
@@ -299,7 +299,7 @@
 //                         null);
 //                   }
 
-//                   Utility.updateLogs(
+//                   PlusUtility.updateLogs(
 //                       activityType: 'GRADED+',
 //                       activityId: '23',
 //                       description: state.grade == '' && state.studentId == ''
@@ -395,7 +395,7 @@
 //                         alignment: Alignment.bottomCenter,
 //                         child: retryButton(
 //                           onPressed: () {
-//                             Utility.updateLogs(
+//                             PlusUtility.updateLogs(
 //                                 activityType: 'GRADED+',
 //                                 activityId: '9',
 //                                 description:
@@ -518,7 +518,7 @@
 //       updateDetails(
 //           isFromHistoryAssessmentScanMore:
 //               widget.isFromHistoryAssessmentScanMore);
-//       Utility.updateLogs(
+//       PlusUtility.updateLogs(
 //           activityType: 'GRADED+',
 //           activityId: '10',
 //           description: 'Next Scan',
@@ -1271,7 +1271,7 @@
 //                   InkWell(
 //                       onTap: () {
 //                         // updateDetails(isUpdateData: true);
-//                         Utility.updateLogs(
+//                         PlusUtility.updateLogs(
 //                             activityType: 'GRADED+',
 //                             activityId: '8',
 //                             description:
@@ -1280,7 +1280,7 @@
 //                         if (pointScored.value != index.toString()) {
 //                           isRubricChanged = true;
 //                           if (widget.isMcqSheet == true) {
-//                             Utility.updateLogs(
+//                             PlusUtility.updateLogs(
 //                                 activityType: 'GRADED+',
 //                                 activityId: '30',
 //                                 description:

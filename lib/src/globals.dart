@@ -82,7 +82,7 @@ class Globals {
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
   static int lastIndex = 0;
-  static String teacherEmailId = '';
+  static String userEmailId = '';
   static String teacherId = '';
   static String sessionId = '';
   // static bool isPremiumUser = false;
