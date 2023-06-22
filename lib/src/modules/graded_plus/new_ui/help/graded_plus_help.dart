@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/graded_plus/new_ui/help.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
@@ -24,8 +24,8 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
   List<String> introList = ['Constructed Response', 'Multiple Choice'];
   final ValueNotifier<String> selectedIntroType = ValueNotifier<String>('');
 
-  String aboutInfo =
-      "GRADED+ is a smart student work scanner for teachers. The camera app auto finds your hand-written teacher’s score (circled) and students’ unique Google Classroom email when you snap a photo.";
+  // String aboutInfo =
+  //     "GRADED+ is a smart student work scanner for teachers. The camera app auto finds your hand-written teacher’s score (circled) and students’ unique Google Classroom email when you snap a photo.";
 
 //Used to avoid the blink effect on navigating back to Staff screen //Standard App
   @override
@@ -66,7 +66,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
           PlusScreenTitleWidget(
               kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'Graded+ Help'),
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.5),
           // Padding(
           //   padding: const EdgeInsets.symmetric(
           //       horizontal: StudentPlusOverrides.kLabelSpacing / 2),
@@ -77,15 +77,13 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
           //       textTheme: Theme.of(context).textTheme.headline2),
           // ),
           // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.1),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Utility.textWidget(
-                  textAlign: TextAlign.left,
-                  text: 'Select GRADED+ Tutorial Type',
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline5),
-            ],
+          Container(
+            alignment: Alignment.center,
+            child: Utility.textWidget(
+                textAlign: TextAlign.center,
+                text: 'Select GRADED+ Tutorial Type',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline5),
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.8),
           Expanded(

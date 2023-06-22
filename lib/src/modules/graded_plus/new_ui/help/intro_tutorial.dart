@@ -13,8 +13,8 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../../services/local_database/hive_db_services.dart';
-import '../../../translator/translation_widget.dart';
+import '../../../../services/local_database/hive_db_services.dart';
+import '../../../../translator/translation_widget.dart';
 
 class CustomIntroWidget extends StatefulWidget {
   final bool? isMcqSheet;
@@ -133,6 +133,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
 
   Column body() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         if (widget.isFromHelp == true)
           PlusScreenTitleWidget(

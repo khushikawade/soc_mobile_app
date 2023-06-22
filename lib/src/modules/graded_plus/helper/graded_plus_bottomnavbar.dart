@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_help.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/graded_plus_help.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_staff.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/help.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
