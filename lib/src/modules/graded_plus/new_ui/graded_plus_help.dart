@@ -66,17 +66,17 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
           PlusScreenTitleWidget(
               kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'Graded+ Help'),
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: StudentPlusOverrides.kLabelSpacing / 2),
-            child: Utility.textWidget(
-                textAlign: TextAlign.left,
-                text: aboutInfo,
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2),
-          ),
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.1),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(
+          //       horizontal: StudentPlusOverrides.kLabelSpacing / 2),
+          //   child: Utility.textWidget(
+          //       textAlign: TextAlign.left,
+          //       text: aboutInfo,
+          //       context: context,
+          //       textTheme: Theme.of(context).textTheme.headline2),
+          // ),
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.1),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
