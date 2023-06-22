@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/help.dart'
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart'
     as customIntroLayout;
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
@@ -192,10 +192,27 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     ? 'Drive Button pressed from Assessment History Detail Page'
                                     : 'Drive Button pressed from Result Summary',
                                 operationResult: 'Success');
-                            Globals.googleDriveFolderPath != null
-                                ? Utility.launchUrlOnExternalBrowser(
-                                    Globals.googleDriveFolderPath!)
-                                : getGoogleFolderPath();
+
+                            // Globals.googleDriveFolderPath != null
+                            //     ? Utility.launchUrlOnExternalBrowser(
+                            //         Globals.googleDriveFolderPath!)
+                            //     : getGoogleFolderPath();
+
+                            List<UserInformation> userProfileInfoData =
+                                await UserGoogleProfile.getUserProfile();
+                            if (userProfileInfoData[0]
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
+                                    null &&
+                                userProfileInfoData[0]
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
+                                    '') {
+                              Utility.launchUrlOnExternalBrowser(
+                                  userProfileInfoData[0]
+                                          .gradedPlusGoogleDriveFolderPathUrl ??
+                                      '');
+                            } else {
+                              getGoogleFolderPath();
+                            }
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -311,7 +328,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   Authentication.signOut(context: context);
                   Utility.clearStudentInfo(tableName: 'student_info');
                   Utility.clearStudentInfo(tableName: 'history_student_info');
-                  Globals.googleDriveFolderId = null;
+                  // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
                       userType: 'Teacher',

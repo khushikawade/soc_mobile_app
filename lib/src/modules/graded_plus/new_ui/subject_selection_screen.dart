@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
@@ -25,6 +26,7 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -1604,12 +1606,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             }
           }
           if (state is RecallTheEvent) {
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is GoogleSlideCreated) {
@@ -1639,12 +1645,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               studentObj.questionImgUrl = state.questionImageUrl;
               await _studentAssessmentInfoDb.putAt(0, studentObj);
             }
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -1894,11 +1904,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       // Check if question image exists
 
       if (widget.gradedPlusQueImage == null) {
+        List<UserInformation> userProfileInfoData =
+            await UserGoogleProfile.getUserProfile();
         googleBloc.add(CreateExcelSheetToDrive(
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: Globals.googleDriveFolderId!,
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? '',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(

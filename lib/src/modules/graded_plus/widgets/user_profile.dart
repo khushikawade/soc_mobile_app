@@ -183,32 +183,31 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                             ),
                             primary: AppTheme.kSelectedColor),
                         onPressed: () {
-                          if (widget.onSignOut != null) {
-                            widget.onSignOut!();
-                            return;
-                          }
-                          WarningPopupModel();
-                          UserGoogleProfile.clearUserProfile();
-                          GoogleClassroom.clearClassroomCourses();
-                          PlusUtility.updateLogs(
-                              activityType: widget.activityType,
-                              userType: 'Teacher',
-                              activityId: '3',
-                              description: 'User profile logout',
-                              operationResult: 'Success');
-                          // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                          if (Overrides.STANDALONE_GRADED_APP) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => GradedLandingPage(
-                                          isFromLogoutPage: true,
-                                        )),
-                                (_) => false);
-                          } else {
-                            // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                          }
+                          // if (widget.onSignOut != null) {
+                          //   widget.onSignOut!();
+                          //   return;
+                          // }
+                          // WarningPopupModel();
+                          // UserGoogleProfile.clearUserProfile();
+                          // GoogleClassroom.clearClassroomCourses();
+                          // Utility.updateLogs(
+                          //     activityType: widget.activityType,
+                          //     activityId: '3',
+                          //     description: 'User profile logout',
+                          //     operationResult: 'Success');
+                          // // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                          // if (Overrides.STANDALONE_GRADED_APP) {
+                          //   Navigator.of(context).pushAndRemoveUntil(
+                          //       MaterialPageRoute(
+                          //           builder: (context) => GradedLandingPage(
+                          //                 isFromLogoutPage: true,
+                          //               )),
+                          //       (_) => false);
+                          // } else {
+                          //   // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                          //   Navigator.of(context)
+                          //       .popUntil((route) => route.isFirst);
+                          // }
                         },
                       ),
                     ),

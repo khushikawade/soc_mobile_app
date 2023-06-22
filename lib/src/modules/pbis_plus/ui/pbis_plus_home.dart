@@ -114,8 +114,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
 //check drive folder exists or not if not exists create one
   void _checkDriveFolderExistsOrNot() async {
     //FOR PBIS PLUS
-    PBISPlusOverrides.pbisPlusGoogleDriveFolderId = '';
-    PBISPlusOverrides.pbisPlusGoogleDriveFolderPath = '';
+
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     final UserInformation userProfile = _profileData[0];
