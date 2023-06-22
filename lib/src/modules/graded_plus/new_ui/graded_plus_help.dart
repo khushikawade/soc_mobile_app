@@ -125,7 +125,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
           Bouncing(
             onPress: () async {
               selectedIntroType.value = introList[index];
-              await Future.delayed(Duration(milliseconds: 300));
+              await Future.delayed(Duration(milliseconds: 200));
               Navigator.push(
                 context,
                 MaterialPageRoute(
