@@ -7,7 +7,7 @@ abstract class GoogleDriveEvent extends Equatable {
 class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? filterType;
-  late String? folderName;
+  final String? folderName;
   final bool? fetchHistory;
   final String? refreshToken;
   final bool? isReturnState;
