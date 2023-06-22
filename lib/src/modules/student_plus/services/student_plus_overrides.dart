@@ -33,6 +33,6 @@ class StudentPlusOverrides {
 
   static const double kLabelSpacing = 20.0;
 
-  static String studentPlusGoogleDriveFolderId = '';
-  static String studentPlusGoogleDriveFolderPath = '';
+  // static String studentPlusGoogleDriveFolderId = '';
+  // static String studentPlusGoogleDriveFolderPath = '';
 }

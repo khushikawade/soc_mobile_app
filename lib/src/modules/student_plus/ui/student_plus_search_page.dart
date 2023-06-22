@@ -470,8 +470,6 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
 
   void _checkDriveFolderExistsOrNot() async {
     //FOR STUDENT PLUS
-    StudentPlusOverrides.studentPlusGoogleDriveFolderId = '';
-    StudentPlusOverrides.studentPlusGoogleDriveFolderPath = '';
 
     //this is get the user profile details
     final List<UserInformation> _profileData =

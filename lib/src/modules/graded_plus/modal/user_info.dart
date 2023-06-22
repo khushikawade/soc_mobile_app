@@ -15,6 +15,14 @@ class UserInformation {
   String? refreshToken;
   @HiveField(5)
   String? idToken; //google sso
+  @HiveField(6)
+  String? gradedPlusGoogleDriveFolderId;
+  @HiveField(7)
+  String? pbisPlusGoogleDriveFolderId;
+  @HiveField(8)
+  String? studentPlusGoogleDriveFolderId;
+  @HiveField(9)
+  String? gradedPlusGoogleDriveFolderPathUrl;
 
   UserInformation(
       {this.userName,
@@ -22,5 +30,8 @@ class UserInformation {
       this.profilePicture,
       this.authorizationToken,
       this.refreshToken,
-      this.idToken});
+      this.idToken,
+      this.gradedPlusGoogleDriveFolderId,
+      this.pbisPlusGoogleDriveFolderId,
+      this.studentPlusGoogleDriveFolderId});
 }
