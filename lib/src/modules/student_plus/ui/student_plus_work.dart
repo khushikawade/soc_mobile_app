@@ -475,9 +475,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
 
-                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolerId ==
+                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId ==
                             null ||
-                        userProfileInfoData[0].pbisPlusGoogleDriveFolerId ==
+                        userProfileInfoData[0].pbisPlusGoogleDriveFolderId ==
                             "") {
                       _checkDriveFolderExistsOrNot();
                     } else if (widget
@@ -549,7 +549,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
         studentDetails: widget.studentDetails,
         studentPlusDriveFolderId:
-            userProfileInfoData[0].studentPlusGoogleDriveFolerId ?? ''));
+            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
   }
 
   BlocListener googleSlidesPresentationBlocListener() {
@@ -615,8 +615,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
             List<UserInformation> userProfileInfoData =
                 await UserGoogleProfile.getUserProfile();
-            if (userProfileInfoData[0].studentPlusGoogleDriveFolerId != null &&
-                userProfileInfoData[0].studentPlusGoogleDriveFolerId != '') {
+            if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
+                userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
               getGooglePresentationUrl();
             } else {
               Utility.currentScreenSnackBar(

@@ -263,10 +263,10 @@ class _GradedPlusConstructedResponseState
                 List<UserInformation> userProfileInfoData =
                     await UserGoogleProfile.getUserProfile();
 
-                if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId !=
+                if (userProfileInfoData[0].gradedPlusGoogleDriveFolderId !=
                         null &&
                     userProfileInfoData[0]
-                        .gradedPlusGoogleDriveFolerId!
+                        .gradedPlusGoogleDriveFolderId!
                         .isNotEmpty) {
                   Navigator.of(context).pop();
                   _beforenavigateOnCameraSection();
@@ -332,8 +332,10 @@ class _GradedPlusConstructedResponseState
           // }
           List<UserInformation> userProfileInfoData =
               await UserGoogleProfile.getUserProfile();
-          if (userProfileInfoData[0].gradedPlusGoogleDriveFolerId != null &&
-              userProfileInfoData[0].gradedPlusGoogleDriveFolerId!.isNotEmpty) {
+          if (userProfileInfoData[0].gradedPlusGoogleDriveFolderId != null &&
+              userProfileInfoData[0]
+                  .gradedPlusGoogleDriveFolderId!
+                  .isNotEmpty) {
             _beforenavigateOnCameraSection();
           } else {
             _triggerDriveFolderEvent(false);

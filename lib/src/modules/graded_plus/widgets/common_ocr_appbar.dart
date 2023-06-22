@@ -198,14 +198,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             List<UserInformation> userProfileInfoData =
                                 await UserGoogleProfile.getUserProfile();
                             if (userProfileInfoData[0]
-                                        .gradedPlusGoogleDriveFolerPathUrl !=
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
                                     null &&
                                 userProfileInfoData[0]
-                                        .gradedPlusGoogleDriveFolerPathUrl !=
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
                                     '') {
                               Utility.launchUrlOnExternalBrowser(
                                   userProfileInfoData[0]
-                                          .gradedPlusGoogleDriveFolerPathUrl ??
+                                          .gradedPlusGoogleDriveFolderPathUrl ??
                                       '');
                             } else {
                               getGoogleFolderPath();

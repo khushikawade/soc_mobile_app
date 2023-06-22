@@ -614,7 +614,7 @@ class _GradedPlusSearchScreenPageState
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolerId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
           }
 
           if (state is GoogleSlideCreated) {
@@ -652,7 +652,7 @@ class _GradedPlusSearchScreenPageState
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolerId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -854,7 +854,7 @@ class _GradedPlusSearchScreenPageState
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolerId??'',
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId??'',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(

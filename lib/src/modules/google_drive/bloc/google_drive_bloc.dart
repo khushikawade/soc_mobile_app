@@ -98,18 +98,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             if (isFolderCreated[0] == true) {
               // //FOR GRADED+
               if (event.folderName == "SOLVED GRADED+") {
-                userProfileLocalInfo.gradedPlusGoogleDriveFolerId =
+                userProfileLocalInfo.gradedPlusGoogleDriveFolderId =
                     isFolderCreated[1]['id'];
-                userProfileLocalInfo.gradedPlusGoogleDriveFolerPathUrl =
+                userProfileLocalInfo.gradedPlusGoogleDriveFolderPathUrl =
                     isFolderCreated[1]['alternateLink'];
               }
               //   //FOR PBIS PLUS
               else if (event.folderName == "SOLVED PBIS+") {
-                userProfileLocalInfo.pbisPlusGoogleDriveFolerId =
+                userProfileLocalInfo.pbisPlusGoogleDriveFolderId =
                     isFolderCreated[1]['id'];
               } //FOR STUDENT PLUS
               else if (event.folderName == "SOLVED STUDENT+") {
-                userProfileLocalInfo.studentPlusGoogleDriveFolerId =
+                userProfileLocalInfo.studentPlusGoogleDriveFolderId =
                     isFolderCreated[1]['id'];
               }
 
@@ -147,18 +147,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             // //FOR GRADED+
             if (event.folderName == "SOLVED GRADED+") {
-              userProfileLocalInfo.gradedPlusGoogleDriveFolerId =
+              userProfileLocalInfo.gradedPlusGoogleDriveFolderId =
                   folderObject['id'];
-              userProfileLocalInfo.gradedPlusGoogleDriveFolerPathUrl =
+              userProfileLocalInfo.gradedPlusGoogleDriveFolderPathUrl =
                   folderObject['webViewLink'];
             }
             //   //FOR PBIS PLUS
             else if (event.folderName == "SOLVED PBIS+") {
-              userProfileLocalInfo.pbisPlusGoogleDriveFolerId =
+              userProfileLocalInfo.pbisPlusGoogleDriveFolderId =
                   folderObject['id'];
             } //FOR PBIS PLUS
             else if (event.folderName == "SOLVED STUDENT+") {
-              userProfileLocalInfo.studentPlusGoogleDriveFolerId =
+              userProfileLocalInfo.studentPlusGoogleDriveFolderId =
                   folderObject['id'];
             }
 
@@ -214,8 +214,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // }
 
         //Return the final state of Folder Created
-        if (userProfileLocalInfo.gradedPlusGoogleDriveFolerId != null &&
-            userProfileLocalInfo.gradedPlusGoogleDriveFolerId!.isNotEmpty) {
+        if (userProfileLocalInfo.gradedPlusGoogleDriveFolderId != null &&
+            userProfileLocalInfo.gradedPlusGoogleDriveFolderId!.isNotEmpty) {
           yield GoogleFolderCreated();
         }
       } on SocketException catch (e) {
@@ -354,7 +354,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             excelSheetId: Globals.googleExcelSheetId,
             name: event.assessmentName, //event.fileTitle!,
             folderId:
-                _userProfileLocalData[0].gradedPlusGoogleDriveFolerId ?? '',
+                _userProfileLocalData[0].gradedPlusGoogleDriveFolderId ?? '',
             accessToken: _userProfileLocalData[0].authorizationToken,
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
@@ -691,15 +691,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> spreadsheetList = [];
 
-        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolerId != null &&
-            _userProfileLocalData[0].gradedPlusGoogleDriveFolerId != "") {
+        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId != null &&
+            _userProfileLocalData[0].gradedPlusGoogleDriveFolderId != "") {
           List pair = await _fetchHistoryAssessment(
               refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: event.isSearchPage,
               filterType: event.filterType,
               token: _userProfileLocalData[0].authorizationToken,
               isPagination: false,
-              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolerId,
+              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
               searchKey: event.searchKeyword ?? "");
           List<HistoryAssessment>? mainListWithSlideAndSheet =
               pair != null && pair.length > 0 ? pair[0] : [];
@@ -786,13 +786,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> spreadsheetList = [];
 
-        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolerId != null) {
+        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId != null) {
           List pair = await _fetchHistoryAssessment(
               refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: false,
               filterType: event.filterType, //   "All",
               token: _userProfileLocalData[0].authorizationToken,
-              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolerId,
+              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
               isPagination: true,
               nextPageUrl: event.nextPageUrl,
               searchKey: "");
@@ -1055,7 +1055,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             name: event.fileTitle!,
-            folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolerId,
+            folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
             accessToken: _userProfileLocalData[0].authorizationToken,
             refreshToken: _userProfileLocalData[0].refreshToken,
             excelSheetId: event.excelSheetId
@@ -1893,7 +1893,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               filterType: filterType,
               token: _userProfileLocalData[0].authorizationToken,
               folderId:
-                  _userProfileLocalData[0].gradedPlusGoogleDriveFolerId ?? "",
+                  _userProfileLocalData[0].gradedPlusGoogleDriveFolderId ?? "",
               isPagination: isPagination,
               nextPageUrl: nextPageUrl,
               searchKey: searchKey ?? "");

@@ -846,7 +846,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     googleDriveBloc.add(CreateExcelSheetToDrive(
         name:
             "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolerId ?? ''));
+        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
   }
 
 //----------------------call method for reset data----------------//
@@ -1037,8 +1037,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    if (userProfileInfoData[0].pbisPlusGoogleDriveFolerId != null &&
-        userProfileInfoData[0].pbisPlusGoogleDriveFolerId != "") {
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
       //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
       _exportDataToSpreadSheet();
     } else {

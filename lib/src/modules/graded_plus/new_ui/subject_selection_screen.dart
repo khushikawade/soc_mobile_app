@@ -1619,7 +1619,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolerId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is GoogleSlideCreated) {
@@ -1656,7 +1657,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolerId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -1910,7 +1912,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolerId ?? '',
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? '',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(

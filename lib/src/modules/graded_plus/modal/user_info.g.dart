@@ -23,10 +23,10 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       authorizationToken: fields[3] as String?,
       refreshToken: fields[4] as String?,
       idToken: fields[5] as String?,
-      gradedPlusGoogleDriveFolerId: fields[6] as String?,
-      pbisPlusGoogleDriveFolerId: fields[7] as String?,
-      studentPlusGoogleDriveFolerId: fields[8] as String?,
-    )..gradedPlusGoogleDriveFolerPathUrl = fields[9] as String?;
+      gradedPlusGoogleDriveFolderId: fields[6] as String?,
+      pbisPlusGoogleDriveFolderId: fields[7] as String?,
+      studentPlusGoogleDriveFolderId: fields[8] as String?,
+    )..gradedPlusGoogleDriveFolderPathUrl = fields[9] as String?;
   }
 
   @override
@@ -46,13 +46,13 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       ..writeByte(5)
       ..write(obj.idToken)
       ..writeByte(6)
-      ..write(obj.gradedPlusGoogleDriveFolerId)
+      ..write(obj.gradedPlusGoogleDriveFolderId)
       ..writeByte(7)
-      ..write(obj.pbisPlusGoogleDriveFolerId)
+      ..write(obj.pbisPlusGoogleDriveFolderId)
       ..writeByte(8)
-      ..write(obj.studentPlusGoogleDriveFolerId)
+      ..write(obj.studentPlusGoogleDriveFolderId)
       ..writeByte(9)
-      ..write(obj.gradedPlusGoogleDriveFolerPathUrl);
+      ..write(obj.gradedPlusGoogleDriveFolderPathUrl);
   }
 
   @override
