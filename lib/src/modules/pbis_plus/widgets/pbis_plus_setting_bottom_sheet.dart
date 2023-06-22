@@ -441,7 +441,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 _pageController.animateToPage(5,
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.ease);
-                exportData();
+                _exportDataToSpreadSheet();
               },
               label: Utility.textWidget(
                   text: 'Submit',
@@ -634,7 +634,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   _pageController.animateToPage(5,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
-                  exportData();
+                  _exportDataToSpreadSheet();
                 },
                 label: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -839,13 +839,25 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
   Future<void> _exportDataToSpreadSheet() async {
+    // List<UserInformation> userProfileInfoData =
+    //     await UserGoogleProfile.getUserProfile();
+    //CREATE SPREADSHEET ON DRIVE
+
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
-    //CREATE SPREADSHEET ON DRIVE
-    googleDriveBloc.add(CreateExcelSheetToDrive(
-        name:
-            "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+
+      googleDriveBloc.add(CreateExcelSheetToDrive(
+          name:
+              "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
+          folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
   }
 
 //----------------------call method for reset data----------------//
@@ -949,7 +961,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   _pageController.animateToPage(4,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
-                  exportData();
+                  _exportDataToSpreadSheet();
                 },
                 label: Utility.textWidget(
                     text: 'Continue to Reset',
@@ -964,26 +976,26 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     );
   }
 
-  Future<void> exportData() async {
-    // if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
-    //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-    //   _exportDataToSpreadSheet();
-    // } else {
-    //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-    //   _checkDriveFolderExistsOrNot();
-    // }
-    List<UserInformation> userProfileInfoData =
-        await UserGoogleProfile.getUserProfile();
+  // Future<void> exportData() async {
+  //   // if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
+  //   //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+  //   //   _exportDataToSpreadSheet();
+  //   // } else {
+  //   //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+  //   //   _checkDriveFolderExistsOrNot();
+  //   // }
+  //   List<UserInformation> userProfileInfoData =
+  //       await UserGoogleProfile.getUserProfile();
 
-    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
-        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
-      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-      _exportDataToSpreadSheet();
-    } else {
-      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-      _checkDriveFolderExistsOrNot();
-    }
-  }
+  //   if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+  //       userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
+  //     //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+  //     _exportDataToSpreadSheet(userProfileInfoData[0]);
+  //   } else {
+  //     //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+  //     _checkDriveFolderExistsOrNot();
+  //   }
+  // }
 
 //Used to add all courses data of single student if exist in multiple classes
   List<ClassroomStudents> getAllStudentsForCourse(
@@ -1131,7 +1143,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   _pageController.animateToPage(5,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
-                  exportData();
+                  _exportDataToSpreadSheet();
                 },
                 label: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

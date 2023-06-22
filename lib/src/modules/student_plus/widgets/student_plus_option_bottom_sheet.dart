@@ -151,15 +151,7 @@ class _GradedPlusResultOptionBottomSheetState
         // } else {
         //   _checkDriveFolderExistsOrNot();
         // }
-        List<UserInformation> userProfileInfoData =
-            await UserGoogleProfile.getUserProfile();
-        if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-            userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-          print("Trigger to check the folder ");
-          studentPlusGooglePresentationIsAvailable();
-        } else {
-          _checkDriveFolderExistsOrNot();
-        }
+        studentPlusGooglePresentationIsAvailable(true);
 
         break;
       default:
@@ -263,16 +255,7 @@ class _GradedPlusResultOptionBottomSheetState
           // }
 
           if (state is GoogleSuccess) {
-            List<UserInformation> userProfileInfoData =
-                await UserGoogleProfile.getUserProfile();
-            if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-                userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-              studentPlusGooglePresentationIsAvailable();
-            } else {
-              Navigator.of(context).pop();
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
+            studentPlusGooglePresentationIsAvailable(false);
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
@@ -360,14 +343,29 @@ class _GradedPlusResultOptionBottomSheetState
         refreshToken: userProfile.refreshToken));
   }
 
-  Future<void> studentPlusGooglePresentationIsAvailable() async {
+  Future<void> studentPlusGooglePresentationIsAvailable(
+      bool? isSyncPresentation) async {
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
-      studentPlusDriveFolderId:
-          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-      studentDetails: widget.studentDetails,
-    ));
+    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
+      print("Trigger to check the folder ");
+      googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
+        studentPlusDriveFolderId:
+            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+        studentDetails: widget.studentDetails,
+      ));
+    }
+    //Sync Presentation
+    else if (isSyncPresentation == true) {
+      _checkDriveFolderExistsOrNot();
+    }
+    //Google Success Event
+    else {
+      Navigator.of(context).pop();
+      Utility.currentScreenSnackBar(
+          "Something Went Wrong. Please Try Again.", null);
+    }
   }
 }

@@ -548,12 +548,19 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   Future<void> getGooglePresentationUrl() async {
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: 'Please Wait...');
-    googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-        studentDetails: widget.studentDetails,
-        studentPlusDriveFolderId:
-            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
+
+    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
+      Utility.showLoadingDialog(
+          context: context, isOCR: true, msg: 'Please Wait...');
+      googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
+          studentDetails: widget.studentDetails,
+          studentPlusDriveFolderId:
+              userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
+    } else {
+      Utility.currentScreenSnackBar(
+          "Something Went Wrong. Please Try Again.", null);
+    }
   }
 
   BlocListener googleSlidesPresentationBlocListener() {
@@ -616,16 +623,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
-
-            List<UserInformation> userProfileInfoData =
-                await UserGoogleProfile.getUserProfile();
-            if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-                userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-              getGooglePresentationUrl();
-            } else {
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
+            getGooglePresentationUrl();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
@@ -656,8 +654,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     final UserInformation userProfile = _profileData[0];
-
-    print("callig the the event to check the folder available or not ");
 
     //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
     //is available or not if not this will create one or the available get the drive folder id

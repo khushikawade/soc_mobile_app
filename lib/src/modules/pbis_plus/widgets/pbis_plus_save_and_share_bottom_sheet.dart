@@ -582,19 +582,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     //   _checkDriveFolderExistsOrNot();
                     // }
 
-                    List<UserInformation> userProfileInfoData =
-                        await UserGoogleProfile.getUserProfile();
-
-                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId !=
-                            null &&
-                        userProfileInfoData[0].pbisPlusGoogleDriveFolderId !=
-                            "") {
-                      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-                      _createSpreadSheet();
-                    } else {
-                      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-                      _checkDriveFolderExistsOrNot();
-                    }
+                    _createSpreadSheet();
                   }
                 },
                 label: Row(
@@ -838,10 +826,18 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   void _createSpreadSheet() async {
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
-    //CREATE SPREADSHEET ON DRIVE
-    googleDriveBloc.add(CreateExcelSheetToDrive(
-        name:
-            "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+      //CREATE SPREADSHEET ON DRIVE
+      googleDriveBloc.add(CreateExcelSheetToDrive(
+          name:
+              "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
+          folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
   }
 }
