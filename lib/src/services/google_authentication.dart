@@ -69,6 +69,11 @@ class Authentication {
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signInSilently(reAuthenticate: true);
 
+    if (googleSignInAccount == null) {
+      await signInWithGoogle();
+      List<UserInformation> userInfo = await UserGoogleProfile.getUserProfile();
+      return userInfo.length < 1 ? '' : userInfo[0].authorizationToken ?? '';
+    }
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;
 
@@ -93,7 +98,7 @@ class Authentication {
       }
 
       //-------------------------------Updating user info locally--------------------------------------------
-      saveUserProfile(user!, googleSignInAuthentication);
+      await saveUserProfile(user!, googleSignInAuthentication);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // Handle the case where the user already exists with a different credential
@@ -179,7 +184,7 @@ class Authentication {
 
           //-------------------------------Updating user info locally--------------------------------------------
 
-          saveUserProfile(user!, googleSignInAuthentication);
+          await saveUserProfile(user!, googleSignInAuthentication);
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             // Handle the case where the user already exists with a different credential
@@ -230,7 +235,6 @@ class Authentication {
       User user, GoogleSignInAuthentication googleSignInAuthentication) async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
-    _localDb.clear();
 
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
@@ -241,7 +245,7 @@ class Authentication {
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally
-    await _localDb.addData(_userInformation);
+    await UserGoogleProfile.updateUserProfile(_userInformation);
     // await _localDb.close();
   }
   /* -------------------------------------------------------------------------------------- */
