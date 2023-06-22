@@ -24,7 +24,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
   List<String> introList = ['Constructed Response', 'Multiple Choice'];
   final ValueNotifier<String> selectedIntroType = ValueNotifier<String>('');
 
-  String headingString =
+  String aboutInfo =
       "GRADED+ is a smart student work scanner for teachers. The camera app auto finds your hand-written teacher’s score (circled) and students’ unique Google Classroom email when you snap a photo.";
 
 //Used to avoid the blink effect on navigating back to Staff screen //Standard App
@@ -72,7 +72,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
                 horizontal: StudentPlusOverrides.kLabelSpacing / 2),
             child: Utility.textWidget(
                 textAlign: TextAlign.left,
-                text: headingString,
+                text: aboutInfo,
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline2),
           ),
