@@ -175,53 +175,52 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                     ));
                           }),
                       onPressed: () async {
-                        if (widget.isAccessDenied == true) {
-                          //To pop 2 times to navigate back to the home screen in case of camera access denied
-                          int count = 0;
-                          Navigator.of(context).popUntil((_) {
-                            if (Platform.isAndroid) {
-                              return count++ >= 3;
-                            } else {
-                              return count++ >= 2;
-                            }
-                          });
+                        // if (widget.isAccessDenied == true) {
+                        //   //To pop 2 times to navigate back to the home screen in case of camera access denied
+                        //   int count = 0;
+                        //   Navigator.of(context).popUntil((_) {
+                        //     if (Platform.isAndroid) {
+                        //       return count++ >= 3;
+                        //     } else {
+                        //       return count++ >= 2;
+                        //     }
+                        //   });
 
-                          //To open the app setting for permission access
-                          OpenAppsSettings.openAppsSettings(
-                              settingsCode: SettingsCode.APP_SETTINGS);
-                        } else if (widget.isLogout == true) {
-                          UserGoogleProfile.clearUserProfile();
-                          GoogleClassroom.clearClassroomCourses();
-                          PlusUtility.updateLogs(
-                              activityType: 'GRADED+',
-                              userType: 'Teacher',
-                              activityId: '3',
-                              description: 'User profile logout',
-                              operationResult: 'Success');
-                          // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                          if (Overrides.STANDALONE_GRADED_APP) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => GradedLandingPage(
-                                          isFromLogoutPage: true,
-                                        )),
-                                (_) => false);
-                          } else {
-                            // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(
-                            //         builder: (context) => HomePage(
-                            //               isFromOcrSection: true,
-                            //             )),
-                            //     (_) => false);
+                        //   //To open the app setting for permission access
+                        //   OpenAppsSettings.openAppsSettings(
+                        //       settingsCode: SettingsCode.APP_SETTINGS);
+                        // } else if (widget.isLogout == true) {
+                        //   UserGoogleProfile.clearUserProfile();
+                        //   GoogleClassroom.clearClassroomCourses();
+                        //   Utility.updateLogs(
+                        //       activityType: 'GRADED+',
+                        //       activityId: '3',
+                        //       description: 'User profile logout',
+                        //       operationResult: 'Success');
+                        //   // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                        //   if (Overrides.STANDALONE_GRADED_APP) {
+                        //     Navigator.of(context).pushAndRemoveUntil(
+                        //         MaterialPageRoute(
+                        //             builder: (context) => GradedLandingPage(
+                        //                   isFromLogoutPage: true,
+                        //                 )),
+                        //         (_) => false);
+                        //   } else {
+                        //     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                        //     // Navigator.of(context).pushAndRemoveUntil(
+                        //     //     MaterialPageRoute(
+                        //     //         builder: (context) => HomePage(
+                        //     //               isFromOcrSection: true,
+                        //     //             )),
+                        //     //     (_) => false);
 
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                          }
-                        } else {
-                          //Globals.isCameraPopup = false;
-                          Navigator.pop(context, false);
-                        }
+                        //     Navigator.of(context)
+                        //         .popUntil((route) => route.isFirst);
+                        //   }
+                        // } else {
+                        //   //Globals.isCameraPopup = false;
+                        //   Navigator.pop(context, false);
+                        // }
                       },
                     ),
                   ),

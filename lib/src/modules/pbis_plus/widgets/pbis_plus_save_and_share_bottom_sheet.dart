@@ -572,15 +572,17 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   }
                   //Create Google Spreadsheet for Selected Courses if classroomLoader = false
                   else {
-                    if (PBISPlusOverrides
-                            .pbisPlusGoogleDriveFolderId.isNotEmpty ==
-                        true) {
-                      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-                      _createSpreadSheet();
-                    } else {
-                      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-                      _checkDriveFolderExistsOrNot();
-                    }
+                    // if (PBISPlusOverrides
+                    //         .pbisPlusGoogleDriveFolderId.isNotEmpty ==
+                    //     true) {
+                    //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+                    //   _createSpreadSheet();
+                    // } else {
+                    //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+                    //   _checkDriveFolderExistsOrNot();
+                    // }
+
+                    _createSpreadSheet();
                   }
                 },
                 label: Row(
@@ -821,11 +823,21 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
         refreshToken: userProfile.refreshToken));
   }
 
-  void _createSpreadSheet() {
-    //CREATE SPREADSHEET ON DRIVE
-    googleDriveBloc.add(CreateExcelSheetToDrive(
-        name:
-            "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
+  void _createSpreadSheet() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+      //CREATE SPREADSHEET ON DRIVE
+      googleDriveBloc.add(CreateExcelSheetToDrive(
+          name:
+              "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
+          folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
   }
 }

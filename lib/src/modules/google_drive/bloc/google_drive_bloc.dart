@@ -59,8 +59,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print("folder name ${event.folderName}");
         var folderObject;
 
+        print(event.folderName);
         //isReturnState is used to check if the we are waiting for state on UI or not to move further
-        print('event.isReturnState! ::::::: ${event.isReturnState!}');
+
         if (event.isReturnState!) {
           yield GoogleDriveLoading();
         }
@@ -72,15 +73,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  await Authentication.refreshToken();
         await Authentication.refreshAuthenticationToken(
             refreshToken: event.refreshToken ?? '');
+
+        //GET USER PROFILE LOCAL DB INFO
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-
-        print(
-            "user profile from bloc::::::::: ${_userProfileLocalData[0].authorizationToken}");
+        UserInformation userProfileLocalInfo = _userProfileLocalData[0];
 
         //Get Folder Id if folder already exist
         folderObject = await _getGoogleDriveFolderId(
-            token: _userProfileLocalData[0].authorizationToken, // event.token,
+            token: userProfileLocalInfo.authorizationToken, // event.token,
             folderName: event.folderName,
             refreshToken: event.refreshToken); // event.refreshToken);
 
@@ -91,12 +92,31 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject.length == 0) {
             print("${event.folderName} is not available on drive Create one ");
             //Create the folder now
-            String? folderId = await _createFolderOnDrive(
-                token: _userProfileLocalData[0].authorizationToken,
+            List isFolderCreated = await _createFolderOnDrive(
+                token: userProfileLocalInfo.authorizationToken,
                 folderName: event.folderName);
 
-            if (event.isReturnState! && (folderId?.isNotEmpty ?? false)) {
-              //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
+            if (isFolderCreated[0] == true) {
+              // //FOR GRADED+
+              if (event.folderName == "SOLVED GRADED+") {
+                userProfileLocalInfo.gradedPlusGoogleDriveFolderId =
+                    isFolderCreated[1]['id'];
+                userProfileLocalInfo.gradedPlusGoogleDriveFolderPathUrl =
+                    isFolderCreated[1]['alternateLink'];
+              }
+              //   //FOR PBIS PLUS
+              else if (event.folderName == "SOLVED PBIS+") {
+                userProfileLocalInfo.pbisPlusGoogleDriveFolderId =
+                    isFolderCreated[1]['id'];
+              } //FOR STUDENT PLUS
+              else if (event.folderName == "SOLVED STUDENT+") {
+                userProfileLocalInfo.studentPlusGoogleDriveFolderId =
+                    isFolderCreated[1]['id'];
+              }
+
+// now update the local db with updaetd drive foler id
+              UserGoogleProfile.updateUserProfile(userProfileLocalInfo);
+
               yield GoogleSuccess(
                   fromGradedPlusAssessmentSection:
                       event.fromGradedPlusAssessmentSection);
@@ -104,26 +124,47 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             // Globals.googleDriveFolderId = folderObject['id'];
             // Globals.googleDriveFolderPath = folderObject['webViewLink'];
+
+            // //FOR GRADED+
+            // if (event.folderName == "SOLVED GRADED+") {
+            //   Globals.googleDriveFolderId = folderObject['id'];
+            //   Globals.googleDriveFolderPath = folderObject['webViewLink'];
+            // } else if (event.folderName == "SOLVED PBIS+") {
+            //   //FOR PBIS PLUS
+            //   PBISPlusOverrides.pbisPlusGoogleDriveFolderId =
+            //       folderObject['id'];
+            //   PBISPlusOverrides.pbisPlusGoogleDriveFolderPath =
+            //       folderObject['webViewLink'];
+            // } else if (event.folderName == "SOLVED STUDENT+") {
+            //   print(
+            //       "FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
+            //   //FOR STUDENT PLUS
+            //   StudentPlusOverrides.studentPlusGoogleDriveFolderId =
+            //       folderObject['id'];
+            //   StudentPlusOverrides.studentPlusGoogleDriveFolderPath =
+            //       folderObject['webViewLink'];
+            // }
             print("FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
-            //FOR GRADED+
+
+            // //FOR GRADED+
             if (event.folderName == "SOLVED GRADED+") {
-              Globals.googleDriveFolderId = folderObject['id'];
-              Globals.googleDriveFolderPath = folderObject['webViewLink'];
-            } else if (event.folderName == "SOLVED PBIS+") {
-              //FOR PBIS PLUS
-              PBISPlusOverrides.pbisPlusGoogleDriveFolderId =
+              userProfileLocalInfo.gradedPlusGoogleDriveFolderId =
                   folderObject['id'];
-              PBISPlusOverrides.pbisPlusGoogleDriveFolderPath =
-                  folderObject['webViewLink'];
-            } else if (event.folderName == "SOLVED STUDENT+") {
-              print(
-                  "FOLDER IS ALREADY EXISTS SECTION NAME ${event.folderName} ");
-              //FOR STUDENT PLUS
-              StudentPlusOverrides.studentPlusGoogleDriveFolderId =
-                  folderObject['id'];
-              StudentPlusOverrides.studentPlusGoogleDriveFolderPath =
+              userProfileLocalInfo.gradedPlusGoogleDriveFolderPathUrl =
                   folderObject['webViewLink'];
             }
+            //   //FOR PBIS PLUS
+            else if (event.folderName == "SOLVED PBIS+") {
+              userProfileLocalInfo.pbisPlusGoogleDriveFolderId =
+                  folderObject['id'];
+            } //FOR PBIS PLUS
+            else if (event.folderName == "SOLVED STUDENT+") {
+              userProfileLocalInfo.studentPlusGoogleDriveFolderId =
+                  folderObject['id'];
+            }
+
+// now update the local db with updaetd drive foler id
+            UserGoogleProfile.updateUserProfile(userProfileLocalInfo);
 
             if (event.isReturnState! &&
                 (folderObject['id'].isNotEmpty == true)) {
@@ -169,7 +210,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         //Return the final state of Folder Created
-        if (Globals.googleDriveFolderId != "") {
+        // if (Globals.googleDriveFolderId != "") {
+        //   yield GoogleFolderCreated();
+        // }
+
+        //Return the final state of Folder Created
+        if (userProfileLocalInfo.gradedPlusGoogleDriveFolderId != null &&
+            userProfileLocalInfo.gradedPlusGoogleDriveFolderId!.isNotEmpty) {
           yield GoogleFolderCreated();
         }
       } on SocketException catch (e) {
@@ -307,7 +354,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isMcqSheet: event.isMcqSheet,
             excelSheetId: Globals.googleExcelSheetId,
             name: event.assessmentName, //event.fileTitle!,
-            folderId: Globals.googleDriveFolderId,
+            folderId:
+                _userProfileLocalData[0].gradedPlusGoogleDriveFolderId ?? '',
             accessToken: _userProfileLocalData[0].authorizationToken,
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
@@ -644,15 +692,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> spreadsheetList = [];
 
-        if (Globals.googleDriveFolderId != null &&
-            Globals.googleDriveFolderId != "") {
+        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId != null &&
+            _userProfileLocalData[0].gradedPlusGoogleDriveFolderId != "") {
           List pair = await _fetchHistoryAssessment(
               refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: event.isSearchPage,
               filterType: event.filterType,
               token: _userProfileLocalData[0].authorizationToken,
               isPagination: false,
-              folderId: Globals.googleDriveFolderId,
+              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
               searchKey: event.searchKeyword ?? "");
           List<HistoryAssessment>? mainListWithSlideAndSheet =
               pair != null && pair.length > 0 ? pair[0] : [];
@@ -739,13 +787,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> spreadsheetList = [];
 
-        if (Globals.googleDriveFolderId != null) {
+        if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId != null) {
           List pair = await _fetchHistoryAssessment(
               refreshToken: _userProfileLocalData[0].refreshToken,
               isSearchPage: false,
               filterType: event.filterType, //   "All",
               token: _userProfileLocalData[0].authorizationToken,
-              folderId: Globals.googleDriveFolderId,
+              folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
               isPagination: true,
               nextPageUrl: event.nextPageUrl,
               searchKey: "");
@@ -1008,7 +1056,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List result = await createPresentationOnDrive(
             isMcqSheet: event.isMcqSheet,
             name: event.fileTitle!,
-            folderId: Globals.googleDriveFolderId,
+            folderId: _userProfileLocalData[0].gradedPlusGoogleDriveFolderId,
             accessToken: _userProfileLocalData[0].authorizationToken,
             refreshToken: _userProfileLocalData[0].refreshToken,
             excelSheetId: event.excelSheetId
@@ -1224,7 +1272,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String?> _createFolderOnDrive(
+  Future<List> _createFolderOnDrive(
       {required String? token, required String? folderName}) async {
     try {
       final body = {
@@ -1256,25 +1304,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(
           " CREATE FOLDER  API RESPONSE IS RECIVED ${response.data['statusCode']}");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        //  String id = response.data['id'];
+        // //  String id = response.data['id'];
 
-        //   return Globals.googleDriveFolderId = response.data['body']['id'];
-        print("FOLDER IS CREATED ON DRIVE NAME $folderName");
-        String folderId = response.data['body']['id'];
-        //for GARDED+
-        if (folderName == "SOLVED GRADED+") {
-          Globals.googleDriveFolderId = folderId;
-        } else if (folderName == "SOLVED PBIS+") {
-          //FOR PBIS PLUS
-          PBISPlusOverrides.pbisPlusGoogleDriveFolderId = folderId;
-        } else if (folderName == "SOLVED STUDENT+") {
-          //FOR STUDENT PLUS
-          StudentPlusOverrides.studentPlusGoogleDriveFolderId = folderId;
-        }
-
-        return folderId;
+        // //   return Globals.googleDriveFolderId = response.data['body']['id'];
+        // print("FOLDER IS CREATED ON DRIVE NAME $folderName");
+        // String folderId = response.data['body']['id'];
+        // //for GARDED+
+        // if (folderName == "SOLVED GRADED+") {
+        //   Globals.googleDriveFolderId = folderId;
+        // } else if (folderName == "SOLVED PBIS+") {
+        //   //FOR PBIS PLUS
+        //   PBISPlusOverrides.pbisPlusGoogleDriveFolderId = folderId;
+        // } else if (folderName == "SOLVED STUDENT+") {
+        //   //FOR STUDENT PLUS
+        //   StudentPlusOverrides.studentPlusGoogleDriveFolderId = folderId;
+        // }
+        print(response.data['body']);
+        return [true, response.data['body']];
       }
-      return "";
+      return [false, response.data['statusCode']];
+      ;
     } catch (e) {
       throw (e);
     }
@@ -1844,7 +1893,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isSearchPage: isSearchPage,
               filterType: filterType,
               token: _userProfileLocalData[0].authorizationToken,
-              folderId: Globals.googleDriveFolderId,
+              folderId:
+                  _userProfileLocalData[0].gradedPlusGoogleDriveFolderId ?? "",
               isPagination: isPagination,
               nextPageUrl: nextPageUrl,
               searchKey: searchKey ?? "");
