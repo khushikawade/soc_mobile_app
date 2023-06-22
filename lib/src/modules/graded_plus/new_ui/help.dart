@@ -4,7 +4,9 @@ import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dar
 import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -17,8 +19,13 @@ import '../../../translator/translation_widget.dart';
 class CustomIntroWidget extends StatefulWidget {
   final bool? isMcqSheet;
   final bool? isFromHelp;
-  const CustomIntroWidget({Key? key, this.isMcqSheet, this.isFromHelp})
-      : super(key: key);
+  final String? SectionName;
+  const CustomIntroWidget({
+    Key? key,
+    this.isMcqSheet,
+    this.isFromHelp,
+    this.SectionName = '',
+  }) : super(key: key);
 
   @override
   State<CustomIntroWidget> createState() => _CustomIntroWidgetState();
@@ -124,73 +131,87 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
         : null;
   }
 
-  CarouselSlider body() {
-    return CarouselSlider(
-      carouselController: carouselController,
-      options: CarouselOptions(
-          viewportFraction: 1,
-          enableInfiniteScroll: false,
-          height: MediaQuery.of(context).size.height,
-          onPageChanged: (index, value) {
-            // setState(() {
-            //   _currentIndex = index;
-            // });
-            currentIndex.value = index;
-          }),
-      items: GradedIntroContentModal.onboardingPagesList.map((i) {
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(horizontal: 5.0),
-          color: Colors.transparent,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                i.imgURL!,
-                fit: BoxFit.contain,
-              ),
-              SpacerWidget(MediaQuery.of(context).size.height / 13),
-              Align(
-                  alignment: Alignment.center,
-                  child: TranslationWidget(
-                    message: i.title!,
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(translatedMessage,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(Globals.navigatorKey.currentContext!)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold, fontSize: 23)
-                        //defaultSkipButtonTextStyle,
-                        ),
-                  )),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 11,
-                    vertical: 20.0),
-                child: Align(
-                    alignment: Alignment.center,
-                    child: TranslationWidget(
-                      message: i.msgBody!,
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              fontSize: 15,
-                              letterSpacing: 0.7,
-                              height: 1.5,
+  Column body() {
+    return Column(
+      children: [
+        PlusScreenTitleWidget(
+            kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+            text: widget.SectionName ?? '',
+            backButton: true),
+        Expanded(
+          child: CarouselSlider(
+            carouselController: carouselController,
+            options: CarouselOptions(
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                height: MediaQuery.of(context).size.height,
+                onPageChanged: (index, value) {
+                  currentIndex.value = index;
+                }),
+            items: GradedIntroContentModal.onboardingPagesList.map((i) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                color: Colors.transparent,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      i.imgURL!,
+                      fit: BoxFit.contain,
+                    ),
+                    SpacerWidget(MediaQuery.of(context).size.height / 13),
+                    Align(
+                        alignment: Alignment.center,
+                        child: TranslationWidget(
+                          message: i.title!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage,
+                              textAlign: TextAlign.center,
+                              style:
+                                  Theme.of(Globals.navigatorKey.currentContext!)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 23)
+                              //defaultSkipButtonTextStyle,
+                              ),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width / 11,
+                          vertical: 20.0),
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: TranslationWidget(
+                            message: i.msgBody!,
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                    fontSize: 15,
+                                    letterSpacing: 0.7,
+                                    height: 1.5,
+                                  ),
+                              //defaultSkipButtonTextStyle,
                             ),
-                        //defaultSkipButtonTextStyle,
-                      ),
-                    )),
-              ),
-            ],
+                          )),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
-        );
-      }).toList(),
+        ),
+      ],
     );
   }
 
