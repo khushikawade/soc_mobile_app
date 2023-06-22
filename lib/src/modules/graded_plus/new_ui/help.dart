@@ -134,10 +134,11 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
   Column body() {
     return Column(
       children: [
-        PlusScreenTitleWidget(
-            kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-            text: widget.SectionName ?? '',
-            backButton: true),
+        if (widget.isFromHelp == true)
+          PlusScreenTitleWidget(
+              kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+              text: widget.SectionName ?? '',
+              backButton: true),
         Expanded(
           child: CarouselSlider(
             carouselController: carouselController,
