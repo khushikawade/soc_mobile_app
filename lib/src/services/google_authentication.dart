@@ -30,7 +30,6 @@ class Authentication {
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/classroom.profile.emails",
     "https://www.googleapis.com/auth/classroom.profile.photos",
-   
   ];
   /* -------------------------------------------------------------------------------------- */
   /* ------------------------------------initializeFirebase-------------------------------- */
@@ -229,7 +228,10 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<void> saveUserProfile(
       User user, GoogleSignInAuthentication googleSignInAuthentication) async {
-    // List<String> profile = profileData.split('+');
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    //clear the existing data
+    _localDb.clear();
+
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
         userEmail: user.email,
@@ -239,7 +241,6 @@ class Authentication {
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
     // await _localDb.close();
   }
