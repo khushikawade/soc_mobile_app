@@ -479,9 +479,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
 
-                    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId ==
+                    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             null ||
-                        userProfileInfoData[0].pbisPlusGoogleDriveFolderId ==
+                        userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             "") {
                       _checkDriveFolderExistsOrNot();
                     } else if (widget
