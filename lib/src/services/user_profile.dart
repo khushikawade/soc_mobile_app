@@ -9,7 +9,7 @@ class UserGoogleProfile {
     try {
       await _localDb.openBox('user_profile');
       List<UserInformation> _userInformation = await _localDb.getData();
-
+      print(" get user profile is successfully ");
       // await _localDb.close();
       return _userInformation;
     } catch (e) {
@@ -31,19 +31,11 @@ class UserGoogleProfile {
   static Future<void> updateUserProfile(
       UserInformation _userInformation) async {
     try {
-      // await clearUserProfile();
+      await clearUserProfile();
 
-      await _localDb.putAt(0, _userInformation);
+      await _localDb.addData(_userInformation);
       // await _localDb.close();
-      print(_userInformation.userEmail);
-      print(
-          " gradedPlusGoogleDriveFolerPathUrl ${_userInformation.gradedPlusGoogleDriveFolerPathUrl}");
-      print(
-          " gradedPlusGoogleDriveFolerId ${_userInformation.gradedPlusGoogleDriveFolerId}");
-      print(
-          " pbisPlusGoogleDriveFolerId ${_userInformation.pbisPlusGoogleDriveFolerId}");
-      print(
-          " studentPlusGoogleDriveFolerId ${_userInformation.studentPlusGoogleDriveFolerId}");
+
       print("user profile is successfully UDAPTED");
     } catch (e) {
       print(e);
