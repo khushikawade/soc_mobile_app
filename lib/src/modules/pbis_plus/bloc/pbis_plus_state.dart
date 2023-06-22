@@ -167,3 +167,34 @@ class PBISPlusSkillsListUpdateError extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class PBISPlusStudentNotesShimmer extends PBISPlusState {
+  PBISPlusStudentNotesShimmer();
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusStudentNotesSucess extends PBISPlusState {
+  final List<PBISPlusStudentNotes> studentNotes;
+
+  PBISPlusStudentNotesSucess({required this.studentNotes});
+  PBISPlusStudentNotesSucess copyWith({final studentNotes}) {
+    return PBISPlusStudentNotesSucess(
+        studentNotes: studentNotes ?? this.studentNotes);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusStudentNotesError extends PBISPlusState {
+  final error;
+
+  PBISPlusStudentNotesError({required this.error});
+  PBISPlusStudentNotesError copyWith({final error}) {
+    return PBISPlusStudentNotesError(error: error ?? this.error);
+  }
+
+  @override
+  List<Object> get props => [];
+}

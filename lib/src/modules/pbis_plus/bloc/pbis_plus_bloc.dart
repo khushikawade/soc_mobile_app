@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -361,6 +362,54 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
       } catch (e) {
         yield PBISPlusSkillsDeleteError();
+      }
+    }
+
+    if (event is GetPBISPlusStudentNotes) {
+      try {
+        yield PBISPlusStudentNotesShimmer();
+        LocalDatabase<PBISPlusStudentNotes> _pbisPlusStudentNotesDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusStudentNotesDB);
+        List<PBISPlusStudentNotes>? _pbisPlusStudentNoesDataList =
+            await _pbisPlusStudentNotesDB.getData();
+        // await _pbisPlusSkillsDB.clear();
+        var list;
+        if (_pbisPlusStudentNoesDataList.isEmpty) {
+          list = PBISPlusStudentNotesLocal.PBISPlusLocalStudentNoteslist.map(
+              (item) => PBISPlusStudentNotes(
+                    studentName: item.studentName,
+                    iconUrlC: item.iconUrlC,
+                    date: item.date,
+                    notesComments: item.notesComments,
+                  )).toList();
+        }
+
+        if (_pbisPlusStudentNoesDataList.isEmpty) {
+          list.forEach((element) async {
+            await _pbisPlusStudentNotesDB
+                .addData(element); // Pass 'element' instead of 'list'
+          });
+        }
+        _pbisPlusStudentNoesDataList = await _pbisPlusStudentNotesDB.getData();
+        final check = await _pbisPlusStudentNotesDB.getData();
+        // for (var item in check) {
+        for (var data in check) {
+          print('----------------------------');
+          print('StudentName: ${data.studentName}');
+          print('date: ${data.date}');
+          print('Icon URL: ${data.iconUrlC}');
+          print('Notes Comments: ${data.notesComments}');
+          print('----------------------------');
+        }
+        // }
+        if (check.isNotEmpty) {
+          yield PBISPlusStudentNotesSucess(
+              studentNotes: _pbisPlusStudentNoesDataList);
+        } else {
+          yield PBISPlusStudentNotesError(error: "No data found");
+        }
+      } catch (e) {
+        yield PBISPlusStudentNotesError(error: "No data found");
       }
     }
 

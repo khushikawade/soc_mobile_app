@@ -621,6 +621,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 // NEW FLOW
                 child: PBISPlusStudentCardNewModal(
               constraint: constraints.maxHeight,
+              isFromStudentPlus: false,
               isFromDashboardPage: false,
               onValueUpdate: (updatedStudentValueNotifier) {
                 studentValueNotifier = updatedStudentValueNotifier;

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
@@ -257,7 +258,6 @@ class PBISPlusSkillsModalLocal {
     //   counter: 0,
     // ),
   ];
-
   static List<PBISPlusSkills> PBISPlusSkillLocalBehaviourlist = [
     PBISPlusSkills(
       id: "0",
@@ -306,6 +306,123 @@ class PBISPlusSkillsModalLocal {
       name: 'Listening',
       sortOrderC: "5",
       counter: 0,
+    ),
+  ];
+}
+
+class PBISPlusStudentNotesLocal {
+  static List<PBISPlusStudentNotes> PBISPlusLocalStudentNoteslist = [
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Vicky Jackson",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Buttler Damian",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Jennie Taylor",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Lorel Damian",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emlie Thomas",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Vicky Jackson",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Buttler Damian",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Jennie Taylor",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emma Davis",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Lorel Damian",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+    ),
+    PBISPlusStudentNotes(
+      studentName: "Emlie Thomas",
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      date: "22/June/2023",
+      notesComments:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
     ),
   ];
 }

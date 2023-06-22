@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -14,21 +15,22 @@ class CircularCustomButton extends StatelessWidget {
   bool? isBusy;
   dynamic model;
   double? buttonRadius;
-
-  CircularCustomButton(
-      {Key? key,
-      Color? borderColor,
-      Color? textColor,
-      required String? text,
-      required Function? onClick,
-      Enum? buttonType,
-      Enum? buttonSize,
-      EdgeInsets? padding,
-      Size? size,
-      required Color? backgroundColor,
-      required bool? isBusy,
-      required double? buttonRadius})
-      : super(key: key) {
+  TextStyle? style;
+  CircularCustomButton({
+    Key? key,
+    Color? borderColor,
+    Color? textColor,
+    required String? text,
+    required Function? onClick,
+    Enum? buttonType,
+    Enum? buttonSize,
+    EdgeInsets? padding,
+    Size? size,
+    required Color? backgroundColor,
+    required bool? isBusy,
+    required double? buttonRadius,
+    TextStyle? style,
+  }) : super(key: key) {
     this.text = text ?? 'Press';
     this.backgroundColor = backgroundColor ?? AppTheme.kButtonColor;
     this.borderColor = borderColor ?? backgroundColor ?? AppTheme.kButtonColor;
@@ -38,6 +40,16 @@ class CircularCustomButton extends StatelessWidget {
     this.size = size ?? Size(140, 40);
     this.isBusy = isBusy ?? false;
     this.buttonRadius = buttonRadius ?? 64;
+    this.style = style ??
+        TextStyle(
+          fontSize: Globals.deviceType == "phone"
+              ? AppTheme.kBodyText1FontSize
+              : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+          color: Colors.white,
+          fontWeight: FontWeight.normal,
+          fontFamily: 'Roboto Regular',
+          height: 1.5,
+        );
   }
 
   @override
@@ -72,10 +84,11 @@ class CircularCustomButton extends StatelessWidget {
                 )
               : Text((text!),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: textColor, fontSize: 12)),
+                  style: style ??
+                      Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: textColor, fontSize: 12)),
         ));
   }
 }

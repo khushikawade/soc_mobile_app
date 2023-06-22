@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_history.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -26,7 +27,11 @@ class PBISBottomNavBar {
       ),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),
-      )
+      ),
+      PBISPlusNotes(
+        titleIconData: IconData(0xe824,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+      ),
     ];
   }
 
@@ -58,7 +63,12 @@ class PBISBottomNavBar {
         icon: pbisBottomNavBarIcons(getStaffIconCode(), 'Staff', context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-      )
+      ),
+      PersistentBottomNavBarItem(
+        icon: pbisBottomNavBarIcons(getStaffIconCode(), 'Notes', context),
+        activeColorPrimary: AppTheme.kButtonColor,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
     ];
   }
 

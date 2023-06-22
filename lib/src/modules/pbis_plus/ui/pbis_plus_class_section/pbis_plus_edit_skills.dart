@@ -223,7 +223,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: Container(
         margin: EdgeInsets.all(8),
         alignment: Alignment.center,
-        child: Text("No Skills Found"),
+        child: Text(
+          "No Skills Found",
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
+        ),
       ),
     );
   }

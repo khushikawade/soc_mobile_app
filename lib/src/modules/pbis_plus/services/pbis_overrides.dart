@@ -4,6 +4,7 @@ class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
   static final String pbisPlusSkillsDB = 'PBISPlus_skills';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
+  static final String pbisPlusStudentNotesDB = 'PBISPlus_student_notes';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
   static final String pbisStudentInteractionDB = 'pbis_student_interaction';
