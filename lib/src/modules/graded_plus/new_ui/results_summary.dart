@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -211,6 +212,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
                 Utility.scrollToTop(scrollController: _scrollController);
@@ -248,8 +250,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                     .toLowerCase()
                                     .replaceAll(" ", "_") ??
                                 '');
-                        Utility.updateLogs(
+                        PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '19',
                             description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
@@ -829,8 +832,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     disableSlidableAction.value = true;
 
                     dashboardState.value = 'Success';
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '14',
                         description: 'Save to dashboard success',
                         operationResult: 'Success');
@@ -1150,115 +1154,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-  // Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
-  //   return ValueListenableBuilder(
-  //     valueListenable: disableSlidableAction,
-  //     builder: (context, value, child) {
-  //       return FutureBuilder(
-  //         future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
-  //             isMcqSheet: widget.isMcqSheet ?? false,
-  //             assessmentDetailPage: widget.assessmentDetailPage ?? false,
-  //             width: MediaQuery.of(context).size.width * 0.9,
-  //             assessmentList: list),
-  //         builder: (context,
-  //             AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
-  //           if (snapshot.hasData) {
-  //             return Container(
-  //               width: MediaQuery.of(context).size.width * 0.9,
-  //               child: Row(
-  //                 children: snapshot.data!
-  //                     .map((item) => Container(
-  //                           width: item.width,
-  //                           child: Column(
-  //                             children: [
-  //                               Container(
-  //                                 decoration: BoxDecoration(
-  //                                     color: item.color,
-  //                                     border: Border.all(
-  //                                         color: Color(0xff000000) !=
-  //                                                 Theme.of(context)
-  //                                                     .backgroundColor
-  //                                             ? Color(0xffF7F8F9)
-  //                                             : Color(0xff111C20),
-  //                                         width: 2)),
-  //                                 width: item.width,
-  //                                 height: 25,
-  //                                 child: Center(
-  //                                   child: Utility.textWidget(
-  //                                       text: "${item.count}",
-  //                                       context: context,
-  //                                       textTheme: Theme.of(context)
-  //                                           .textTheme
-  //                                           .displaySmall!),
-  //                                 ),
-  //                               ),
-  //                               FittedBox(
-  //                                 child: Utility.textWidget(
-  //                                     text: widget.isMcqSheet == true
-  //                                         ? "${item.value}"
-  //                                         : "${item.value}/${item.pointPossible}",
-  //                                     context: context,
-  //                                     textTheme: Theme.of(context)
-  //                                         .textTheme
-  //                                         .displaySmall!
-  //                                         .copyWith(fontSize: 10)),
-  //                               )
-  //                             ],
-  //                           ),
-  //                         ))
-  //                     .toList(),
-  //               ),
-  //             );
-  //           }
-  //           return Container();
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Widget _scanFloatingWidget() {
-  //   return ValueListenableBuilder<bool>(
-  //       valueListenable: isScrolling,
-  //       child: Container(),
-  //       builder: (BuildContext context, bool value, Widget? child) {
-  //         return Container(
-  //           //margin: EdgeInsets.only(left: 15),
-  //           alignment: Alignment.center,
-  //           // width: isScrolling.value ? null : 130,
-  //           child: FloatingActionButton.extended(
-  //               isExtended: !isScrolling.value,
-  //               backgroundColor: AppTheme.kButtonColor,
-  //               onPressed: () async {
-  //                 if (Overrides.STANDALONE_GRADED_APP) {
-  //                   List<GoogleClassroomCourses> _localData =
-  //                       await _googleClassRoomlocalDb.getData();
-  //                   if (_localData.isEmpty) {
-  //                     Utility.currentScreenSnackBar(
-  //                         "You need to import roster first", null);
-  //                     return;
-  //                   }
-  //                 }
-  //                 // print('perform scan more');
-  //                 performScanMore();
-  //               },
-  //               icon: Icon(
-  //                   IconData(0xe875,
-  //                       fontFamily: Overrides.kFontFam,
-  //                       fontPackage: Overrides.kFontPkg),
-  //                   color: Theme.of(context).backgroundColor,
-  //                   size: 16),
-  //               label: Utility.textWidget(
-  //                   text: isScrolling.value ? '' : 'Scan More',
-  //                   context: context,
-  //                   textTheme: Theme.of(context)
-  //                       .textTheme
-  //                       .headline2!
-  //                       .copyWith(color: Theme.of(context).backgroundColor))),
-  //         );
-  //       });
-  // }
-
 //--------------------------------------------------------------------------------------------------------------------------
   _showDataSavedPopup(
       {required bool? historyAssessmentSection,
@@ -1455,8 +1350,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           editingLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '17',
           description: editingLogMsg,
           operationResult: 'Success');
@@ -1742,8 +1638,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                       .replaceAll(" ", "_") ??
                                   '');
 
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
                               activityType: 'GRADED+',
+                              userType: 'Teacher',
                               activityId: '17',
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
@@ -1879,181 +1776,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  // Widget detailPageActionButtons(iconName, index) {
-  //   return Container(
-  //     margin: EdgeInsets.only(bottom: 5.0),
-  //     //UNCOMMENT
-  //     //  color: Colors.black,
-  //     child: IconButton(
-  //         padding: EdgeInsets.zero,
-  //         icon: iconsName[index] == 'Share' &&
-  //                 !widget.assessmentDetailPage! &&
-  //                 widget.isScanMore == null
-  //             ? detailsPageActionWithDashboard(index)
-  //             : detailPageActionsWithoutDashboard(index: index),
-  //         onPressed: () async {
-  //           if (iconsName[index] == 'Share') {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '13',
-  //                 sessionId: widget.assessmentDetailPage == true
-  //                     ? widget.obj!.sessionId
-  //                     : '',
-  //                 description: widget.assessmentDetailPage == true
-  //                     ? 'Share Button pressed from Assessment History Detail Page'
-  //                     : 'Share Button pressed from Result Summary',
-  //                 operationResult: 'Success');
-
-  //             widget.shareLink != null && widget.shareLink!.isNotEmpty
-  //                 ? Share.share(widget.shareLink!)
-  //                 : print("no link ");
-  //           } else if (iconsName[index] == 'History') {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '15',
-  //                 description: 'History Assessment button pressed',
-  //                 operationResult: 'Success');
-
-  //             _showDataSavedPopup(
-  //                 historyAssessmentSection: true,
-  //                 title: 'Are you sure?',
-  //                 msg:
-  //                     'If you exit now, you will not be able to return to this page. Continue?',
-  //                 noActionText: 'No',
-  //                 yesActionText: 'Yes, Take Me There');
-  //           } else if ((iconName[index] == 'Sheet' ||
-  //                   iconName[index] == 'Dashboard') &&
-  //               dashboardState.value == '') {
-  //             if (Overrides.STANDALONE_GRADED_APP == true) {
-  //               if (widget.shareLink == null) {
-  //                 Utility.currentScreenSnackBar('Please Wait', null,
-  //                     marginFromBottom: 90);
-  //               } else {
-  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-  //               }
-
-  //               return;
-  //             }
-
-  //             if (widget.assessmentDetailPage == true &&
-  //                 widget.createdAsPremium == false) {
-  //               Utility.updateLogs(
-  //                   activityType: 'GRADED+',
-  //                   activityId: '14',
-  //                   description:
-  //                       'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-  //                   operationResult: 'Failed');
-  //               popupModal(
-  //                   title: 'Data Not Saved',
-  //                   message:
-  //                       'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-  //               Globals.scanMoreStudentInfoLength =
-  //                   await OcrUtility.getStudentInfoListLength(
-  //                           tableName: 'student_info') -
-  //                       1;
-  //             } else {
-  //               List list = await OcrUtility.getSortedStudentInfoList(
-  //                   tableName: 'student_info');
-
-  //               if (widget.isScanMore == true &&
-  //                   widget.assessmentListLength != null &&
-  //                   widget.assessmentListLength! < list.length) {
-  //                 Utility.updateLogs(
-  //                     activityType: 'GRADED+',
-  //                     activityId: '14',
-  //                     description:
-  //                         'Save to dashboard pressed in case for scan more',
-  //                     operationResult: 'Success');
-  //               } else {
-  //                 // Adding the non saved record of dashboard in the list
-  //                 List<StudentAssessmentInfo> _listRecord = [];
-
-  //                 if (widget.assessmentDetailPage! &&
-  //                     savedRecordCount != null &&
-  //                     historyRecordList.length != savedRecordCount!) {
-  //                   _listRecord = historyRecordList.sublist(
-  //                       savedRecordCount!, historyRecordList.length);
-  //                 } else {
-  //                   //
-  //                   _listRecord = historyRecordList;
-  //                 }
-  //               }
-  //             }
-
-  //             // }
-  //           } else if (dashboardState.value == 'Success') {
-  //             if (Overrides.STANDALONE_GRADED_APP == true) {
-  //               if (widget.shareLink == null) {
-  //                 Utility.currentScreenSnackBar('Please Wait', null,
-  //                     marginFromBottom: 90);
-  //               } else {
-  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-  //               }
-
-  //               return;
-  //             }
-  //             popupModal(
-  //                 title: 'Already Saved',
-  //                 message:
-  //                     'The data has already been saved to the data dashboard.');
-  //           }
-  //         }),
-  //   );
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
-  // Widget detailPageActionsWithoutDashboard({required int index}) {
-  //   if (Overrides.STANDALONE_GRADED_APP == true &&
-  //       iconsName[index] == 'Sheet') {
-  //     return Container(
-  //         height: 28,
-
-  //         // margin: EdgeInsets.only(right: 15, bottom: 1),
-  //         //padding: EdgeInsets.symmetric(vertical: 9),
-  //         child: SvgPicture.asset(Strings.googleSheetIcon));
-  //   } else {
-  //     return Icon(
-  //       IconData(
-  //           (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-  //                   dashboardState.value == 'Success'
-  //               ? 0xe877
-  //               : iconsList[index],
-  //           fontFamily: Overrides.kFontFam,
-  //           fontPackage: Overrides.kFontPkg),
-  //       size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-  //               dashboardState.value == ''
-  //           ? Globals.deviceType == 'phone'
-  //               ? 33
-  //               : 55
-  //           : Globals.deviceType == 'phone'
-  //               ? 33
-  //               : 48,
-  //       color: iconsName[index] == 'History'
-  //           ? AppTheme.kButtonbackColor
-  //           : iconsName[index] == 'Share'
-  //               ? AppTheme.kButtonColor
-  //               : (widget.assessmentDetailPage! &&
-  //                           index == 2 &&
-  //                           isAssessmentAlreadySaved == 'YES') ||
-  //                       (widget.assessmentDetailPage! &&
-  //                           index == 2 &&
-  //                           dashboardState.value == 'Success')
-  //                   ? Colors.green
-  //                   : index == 2 || (index == 3 && dashboardState.value == '')
-  //                       ? Theme.of(context).backgroundColor == Color(0xff000000)
-  //                           ? Colors.white
-  //                           : Colors.black
-  //                       : (widget.assessmentDetailPage!
-  //                                   ? index == 2
-  //                                   : index == 3) &&
-  //                               dashboardState.value == 'Success'
-  //                           ? Colors.green
-  //                           : AppTheme.kButtonColor,
-  //     );
-  //   }
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
   void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
     showDialog(
         barrierDismissible: true,
@@ -2145,44 +1867,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  // Widget _slidableDecorationWidget(
-  //     {required String label, required IconData icon}) {
-  //   final children = <Widget>[];
-
-  //   children.add(
-  //     Icon(icon),
-  //   );
-
-  //   children.add(
-  //     SizedBox(height: 4),
-  //   );
-
-  //   children.add(
-  //     TranslationWidget(
-  //         message: label,
-  //         fromLanguage: "en",
-  //         toLanguage: Globals.selectedLanguage,
-  //         builder: (translatedMessage) {
-  //           return Text(
-  //             translatedMessage,
-  //             overflow: TextOverflow.ellipsis,
-  //           );
-  //         }),
-  //   );
-
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       ...children.map(
-  //         (child) => Flexible(
-  //           child: child,
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
     Utility.updateAssessmentToDb(
       studentInfoList: await OcrUtility.getSortedStudentInfoList(
@@ -2202,8 +1886,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 //--------------------------------------------------------------------------
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '22',
         sessionId:
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',

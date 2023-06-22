@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -36,7 +37,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int counter = 0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   @override
@@ -57,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),
             isBackOnSuccess: isBackFromCamera,
@@ -149,8 +151,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .toLowerCase()
                                           .replaceAll(" ", "_") ??
                                       '');
-                              Utility.updateLogs(
+                              PlusUtility.updateLogs(
                                   activityType: widget.plusAppName,
+                                  userType: 'Teacher',
                                   activityId: '47',
                                   sessionId: Globals.sessionId,
                                   description: settingsSectionLogMsg,

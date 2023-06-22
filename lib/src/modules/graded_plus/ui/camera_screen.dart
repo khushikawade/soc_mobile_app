@@ -441,7 +441,7 @@
 //                             await controller!.value.setFlashMode(FlashMode.off);
 //                           } catch (e) {}
 
-//                           Utility.updateLogs(
+//                           PlusUtility.updateLogs(
 //                               activityType: 'GRADED+',
 //                               activityId: '19',
 //                               description: 'Assessment scan finished',

@@ -4,11 +4,11 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help.dart'
     as customIntroLayout;
-import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -32,6 +32,27 @@ import '../../../services/user_profile.dart';
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
+  ValueListenable<bool>? isSuccessState;
+  bool? isBackButton;
+  bool? isProfilePage;
+  bool? isTitle;
+  bool? isOcrHome;
+  bool? isResultScreen;
+  bool? isHomeButtonPopup;
+  bool? assessmentDetailPage;
+  bool? assessmentPage;
+  Widget? actionIcon;
+  Widget? customBackButton;
+  bool? hideStateSelection;
+  ValueListenable<bool>? isBackOnSuccess;
+  String? sessionId;
+  bool? isFromResultSection;
+  bool? navigateBack;
+  final VoidCallback? onTap;
+  bool? fromGradedPlus;
+  String? plusAppName;
+  final scaffoldKey;
+
   CustomOcrAppBarWidget(
       {required Key? key,
       this.hideStateSelection,
@@ -52,29 +73,10 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isFromResultSection,
       this.navigateBack,
       this.isProfilePage,
-      required this.fromGradedPlus})
+      required this.fromGradedPlus,
+      required this.plusAppName})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-  ValueListenable<bool>? isSuccessState;
-  bool? isBackButton;
-  bool? isProfilePage;
-  bool? isTitle;
-  bool? isOcrHome;
-  bool? isResultScreen;
-  bool? isHomeButtonPopup;
-  bool? assessmentDetailPage;
-  bool? assessmentPage;
-  Widget? actionIcon;
-  Widget? customBackButton;
-  bool? hideStateSelection;
-  ValueListenable<bool>? isBackOnSuccess;
-  String? sessionId;
-  bool? isFromResultSection;
-  bool? navigateBack;
-  final VoidCallback? onTap;
-  bool? fromGradedPlus;
-
-  final scaffoldKey;
 
   @override
   final Size preferredSize;
@@ -179,8 +181,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
+                                userType: 'Teacher',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -325,9 +328,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   Authentication.signOut(context: context);
                   Utility.clearStudentInfo(tableName: 'student_info');
                   Utility.clearStudentInfo(tableName: 'history_student_info');
-
-                  Utility.updateLogs(
+                  // Globals.googleDriveFolderId = null;
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '3',
                       description: 'User profile logout',
                       operationResult: 'Success');
@@ -499,22 +503,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    Globals.userEmailId = _userInformation[0].userEmail!;
     //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
-  }
-
-  void _showPopUp(UserInformation userInformation) {
-    showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (context) {
-          return CustomDialogBox(
-            activityType: 'GRADED+',
-            profileData: userInformation,
-            isUserInfoPop: true,
-          );
-        });
   }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
@@ -533,10 +524,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           });
           /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
+              'Google Translation ${widget.plusAppName ?? ''}'
+                  .toLowerCase()
+                  .replaceAll(" ", "_"));
 
-          Utility.updateLogs(
-              activityType: 'PBIS+',
+          PlusUtility.updateLogs(
+              activityType: widget.plusAppName ?? '',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -563,6 +557,20 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        //----------------------------------------------------------------------
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility ${widget.plusAppName ?? ''}'
+                .toLowerCase()
+                .replaceAll(" ", "_"));
+
+        PlusUtility.updateLogs(
+            activityType: widget.plusAppName ?? '',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+        //----------------------------------------------------------------------
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);

@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
@@ -101,8 +102,8 @@ class CreateAssessmentScreenMethod {
       localDb.addData(e);
     });
 
-    Utility.updateLogs(
-        activityType: 'GRADED+',
+    PlusUtility.updateLogs(
+        activityType: 'GRADED+', userType: 'Teacher',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');
