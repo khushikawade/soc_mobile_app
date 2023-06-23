@@ -487,61 +487,6 @@ class Utility {
     return true;
   }
 
-  //      {
-
-  //   //Use to show snackbar at any current screen
-  //   BuildContext? context = Globals.navigatorKey.currentContext;
-  //   ScaffoldMessenger.of(context!).removeCurrentSnackBar();
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     // margin: EdgeInsets.only(
-  //     //     bottom: marginFromBottom != null ? marginFromBottom : 0),
-  //     padding: EdgeInsets.only(
-  //       left: 16,
-  //     ),
-  //     margin: EdgeInsets.only(
-  //         left: 16,
-  //         right: 16,
-  //         bottom: marginFromBottom == null
-  //             ? MediaQuery.of(context).size.height * 0.08
-  //             : marginFromBottom),
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //     behavior: SnackBarBehavior.floating,
-  //     duration: Duration(seconds: 3),
-  //     backgroundColor:
-  //         Globals.themeType == 'Dark' ? Colors.white : Colors.black,
-  //     content: Container(
-  //       alignment: Alignment.centerLeft,
-  //       height: height ?? 40,
-  //       child: TranslationWidget(
-  //         message: msg,
-  //         fromLanguage: "en",
-  //         toLanguage: Globals.selectedLanguage,
-  //         builder: (translatedMessage) => Text(translatedMessage,
-  //             textAlign: TextAlign.left,
-  //             style: TextStyle(
-  //               color: Theme.of(context).colorScheme.background,
-  //               fontWeight: FontWeight.w600,
-  //             )),
-  //       ),
-  //     ),
-  //     //  TranslationWidget(
-  //     //     message: text,
-  //     //     fromLanguage: "en",
-  //     //     toLanguage: Globals.selectedLanguage,
-  //     //     builder: (translatedMessage) {
-  //     //       return Text(translatedMessage.toString(),
-  //     //           textAlign: TextAlign.left,
-  //     //           style: TextStyle(
-  //     //             color: Theme.of(context).colorScheme.background,
-  //     //             // Theme.of(context).colorScheme.background,
-  //     //             fontWeight: FontWeight.w600,
-  //     //           ));
-  //     //     })
-  //   ));
-  //   return true;
-  // }
-
   static Future<bool> checkUserConnection() async {
     try {
       final result = await InternetAddress.lookup(
@@ -758,7 +703,7 @@ class Utility {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-//verify the current user is last user 
+//verify the current user is last user
     if (_profileData[0].userEmail == _userInformation.userEmail) {
       //Save existing user profile locally to store latest details and refreshToken
       // await _localDb.clear();

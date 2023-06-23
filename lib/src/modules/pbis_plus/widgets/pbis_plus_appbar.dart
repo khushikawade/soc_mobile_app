@@ -131,9 +131,6 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    // List<UserInformation> _userInformation = await _localDb.getData();
-
     //GET CURRENT GOOGLE USER PROFILE
     List<UserInformation> _userInformation =
         await UserGoogleProfile.getUserProfile();

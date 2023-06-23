@@ -501,14 +501,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    // List<UserInformation> _userInformation = await _localDb.getData();
-
     //GET CURRENT GOOGLE USER PROFILE
     List<UserInformation> _userInformation =
         await UserGoogleProfile.getUserProfile();
     Globals.userEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 

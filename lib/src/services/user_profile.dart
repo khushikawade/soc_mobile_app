@@ -35,14 +35,14 @@ class UserGoogleProfile {
     try {
       await clearUserProfile();
 
-// If Salesforce Single Sign-On (SSO) is enabled, refreshToken is not required. However, the some node lambda API expects a refreshToken.
-// To accommodate this requirement, assign the same authorizationToken value to refreshToken.
+      // If Salesforce Single Sign-On (SSO) is enabled, refreshToken is not required. However, some API expects a refreshToken.
+      // To accommodate this requirement, assign the same authorizationToken value to refreshToken.
       if (Globals.appSetting.enableGoogleSSO == "true") {
         print(" ------------SSO IS ENABLED-----");
         _userInformation.refreshToken = _userInformation.authorizationToken;
       } else {
         print(" ------------SSO IS DISABLED-----");
-      }
+      } 
 
       await _localDb.addData(_userInformation);
       // await _localDb.close();
