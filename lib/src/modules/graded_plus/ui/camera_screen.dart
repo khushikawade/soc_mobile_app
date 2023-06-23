@@ -144,7 +144,7 @@
 //   ValueNotifier<bool>? removeLoading = ValueNotifier<bool>(false);
 //   @override
 //   void initState() {
-//     // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
+//     // print(GoogleClassroomOverrides.studentAssessmentAndClassroomObj);
 //     // widget.isFlashOn!.value = widget.isFlashOn;
 //     Wakelock.enable();
 
@@ -271,7 +271,7 @@
 //                               isFromHistoryAssessmentScanMore:
 //                                   widget.isFromHistoryAssessmentScanMore,
 //                               pointPossible: widget.pointPossible ?? '0',
-//                               studentClassObj: GoogleClassroomGlobals
+//                               studentClassObj: GoogleClassroomOverrides
 //                                   .studentAssessmentAndClassroomObj,
 //                               title: widget.isFromHistoryAssessmentScanMore
 //                                   ? Globals.historyAssessmentName ?? ''
@@ -399,7 +399,7 @@
 //                               isFromHistoryAssessmentScanMore:
 //                                   widget.isFromHistoryAssessmentScanMore,
 //                               pointPossible: widget.pointPossible ?? '0',
-//                               studentClassObj: GoogleClassroomGlobals
+//                               studentClassObj: GoogleClassroomOverrides
 //                                   .studentAssessmentAndClassroomObj,
 //                               title: widget.isFromHistoryAssessmentScanMore
 //                                   ? Globals.historyAssessmentName ?? ''
@@ -441,7 +441,7 @@
 //                             await controller!.value.setFlashMode(FlashMode.off);
 //                           } catch (e) {}
 
-//                           Utility.updateLogs(
+//                           PlusUtility.updateLogs(
 //                               activityType: 'GRADED+',
 //                               activityId: '19',
 //                               description: 'Assessment scan finished',

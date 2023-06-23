@@ -644,7 +644,7 @@
 //     updateLocalDb();
 
 //     if (Globals.sessionId == '') {
-//       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+//       Globals.sessionId = "${Globals.userEmailId}_${myTimeStamp.toString()}";
 //     }
 
 //     _ocrBlocLogs.add(LogUserActivityEvent(
@@ -663,7 +663,7 @@
 
 //   void _beforenavigateOnAssessmentSection() {
 //     if (Globals.sessionId == '') {
-//       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+//       Globals.sessionId = "${Globals.userEmailId}_${myTimeStamp.toString()}";
 //     }
 //     _ocrBlocLogs.add(LogUserActivityEvent(
 //         activityType: 'GRADED+',

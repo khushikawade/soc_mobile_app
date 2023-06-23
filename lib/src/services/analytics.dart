@@ -1,5 +1,4 @@
 import 'dart:isolate';
-
 import 'package:Soc/src/globals.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';

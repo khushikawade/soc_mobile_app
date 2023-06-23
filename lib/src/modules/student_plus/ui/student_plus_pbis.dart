@@ -1,7 +1,8 @@
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
@@ -61,6 +62,13 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'student_plus_pbis_screen',
         screenClass: 'StudentPlusPBISScreen');
+
+    PlusUtility.updateLogs(
+        activityType: 'STUDENT+',
+        userType: 'Teacher',
+        activityId: '54',
+        description: 'Student+ PBIS Screen',
+        operationResult: 'Success');
   }
 
   @override
