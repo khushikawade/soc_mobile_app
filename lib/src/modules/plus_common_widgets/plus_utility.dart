@@ -8,10 +8,11 @@ class PlusUtility {
 /*------------------------------------------------------------------------------------------------*/
 
   static updateUserLogsSessionId() async {
+    String timeStamp = DateTime.now().microsecondsSinceEpoch.toString();
     //----------------------------------------------------
     Uuid uuid = Uuid();
     String generatedUuid =
-        await uuid.v5(Uuid.NAMESPACE_URL, Globals.userEmailId);
+        await uuid.v5(Uuid.NAMESPACE_URL, Globals.userEmailId + timeStamp);
     //----------------------------------------------------
     print('generatedUuid::::: $generatedUuid');
     return generatedUuid;
