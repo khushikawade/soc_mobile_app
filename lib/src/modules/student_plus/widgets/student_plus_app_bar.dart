@@ -10,6 +10,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -260,10 +261,10 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation =
+        await UserGoogleProfile.getUserProfile();
     Globals.userEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 }
