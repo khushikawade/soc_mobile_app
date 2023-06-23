@@ -31,11 +31,13 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-              blurRadius: 10.0,
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.1),
+              blurRadius: 5.0,
+                offset: Offset(0, -10)
+
             ),
           ]),
-      height: 140.0,
+     // height: 140.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((item) {
