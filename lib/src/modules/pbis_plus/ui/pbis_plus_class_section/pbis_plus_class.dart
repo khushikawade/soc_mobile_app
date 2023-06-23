@@ -14,9 +14,11 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_botto
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -271,7 +273,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           .addAll(state.googleClassroomCourseList);
 
                       /*----------------------END--------------------------*/
-
                     }
                     if (widget.isGradedPlus == true &&
                         _animationController!.isAnimating == true) {
@@ -283,12 +284,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                   if (state is PBISErrorState) {
                     if (state.error == 'ReAuthentication is required') {
-                      await Utility.refreshAuthenticationToken(
-                          isNavigator: true,
-                          errorMsg: state.error!,
-                          context: context,
-                          scaffoldKey: _scaffoldKey);
-
+                      // await Utility.refreshAuthenticationToken(
+                      //     isNavigator: true,
+                      //     errorMsg: state.error!,
+                      //     context: context,
+                      //     scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(context: context,errorMessage: state.error,scaffoldKey: _scaffoldKey);
                       pbisPlusClassroomBloc.add(PBISPlusImportRoster(
                           isGradedPlus: widget.isGradedPlus));
                     } else {
@@ -680,8 +681,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       PlusCustomFloatingActionButton(
         onPressed: () {
           /*-------------------------User Activity Track START----------------------------*/
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '36',
               description: 'Save and Share button open from All Courses',
               operationResult: 'Success');
@@ -699,8 +701,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Future<void> _saveAndShareBottomSheetMenu(
       List<ClassroomCourse> allClassroomCourses) async {
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'PBIS+',
+        userType: 'Teacher',
         activityId: '36',
         description: 'Save and Share',
         operationResult: 'Success');

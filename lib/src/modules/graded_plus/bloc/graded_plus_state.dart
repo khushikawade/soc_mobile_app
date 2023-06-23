@@ -16,6 +16,12 @@ class SearchLoading extends OcrState {}
 
 class SaveSubjectListDetailsSuccess extends OcrState {}
 
+class AuthorizedUserLoading extends OcrState {}
+
+class AuthorizedUserSuccess extends OcrState {}
+
+class AuthorizedUserError extends OcrState {}
+
 class FetchTextFromImageSuccess extends OcrState {
   final String? studentId;
   final String? grade;

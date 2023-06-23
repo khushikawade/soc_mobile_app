@@ -14,9 +14,11 @@ import 'package:Soc/src/modules/graded_plus/new_ui/scan_result/scan_result_scree
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -317,12 +319,12 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   }
                   if (state is ErrorState) {
                     if (state.errorMsg == 'ReAuthentication is required') {
-                      await Utility.refreshAuthenticationToken(
-                          isNavigator: true,
-                          errorMsg: state.errorMsg!,
-                          context: context,
-                          scaffoldKey: _scaffoldKey);
-
+                      // await Utility.refreshAuthenticationToken(
+                      //     isNavigator: true,
+                      //     errorMsg: state.errorMsg!,
+                      //     context: context,
+                      //     scaffoldKey: _scaffoldKey);
+                       await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
                       _driveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
                           // questionImage: widget.questionImageLink ?? 'NA',
@@ -448,11 +450,12 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   }
                   if (state is GoogleClassroomErrorState) {
                     if (state.errorMsg == 'ReAuthentication is required') {
-                      await Utility.refreshAuthenticationToken(
-                          isNavigator: true,
-                          errorMsg: state.errorMsg!,
-                          context: context,
-                          scaffoldKey: _scaffoldKey);
+                      // await Utility.refreshAuthenticationToken(
+                      //     isNavigator: true,
+                      //     errorMsg: state.errorMsg!,
+                      //     context: context,
+                      //     scaffoldKey: _scaffoldKey);
+                        await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -487,8 +490,9 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       await controller!.value.setFlashMode(FlashMode.off);
                     } catch (e) {}
 
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '19',
                         description: 'Assessment scan finished',
                         operationResult: 'Success');

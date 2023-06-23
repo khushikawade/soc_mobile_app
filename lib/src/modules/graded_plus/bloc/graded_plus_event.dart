@@ -10,9 +10,10 @@ abstract class OcrEvent extends Equatable {
 //   List<Object> get props => [];
 // }
 
-class VerifyUserWithDatabase extends OcrEvent {
+class AuthorizedUserWithDatabase extends OcrEvent {
   final String? email;
-  VerifyUserWithDatabase({required this.email});
+  final bool? isAuthorizedUser;
+  AuthorizedUserWithDatabase({required this.email,required this.isAuthorizedUser});
 
   @override
   List<Object> get props => [email!];
@@ -187,10 +188,12 @@ class FetchStudentDetails extends OcrEvent {
   //String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
 
-class GetAssessmentAndSavedStudentResultSummaryForStandaloneApp extends OcrEvent {
+class GetAssessmentAndSavedStudentResultSummaryForStandaloneApp
+    extends OcrEvent {
   final String? fileId;
   final GoogleClassroomCourses? assessmentObj;
-  GetAssessmentAndSavedStudentResultSummaryForStandaloneApp({required this.fileId, required this.assessmentObj});
+  GetAssessmentAndSavedStudentResultSummaryForStandaloneApp(
+      {required this.fileId, required this.assessmentObj});
 
   @override
   List<Object> get props => [fileId!, assessmentObj!];
@@ -224,6 +227,9 @@ class LogUserActivityEvent extends OcrEvent {
   final String? description;
   final String? operationResult;
   final String? activityType;
+  final String? userType;
+  final String? email;
+
   // final String? type;
 
   LogUserActivityEvent(
@@ -235,7 +241,9 @@ class LogUserActivityEvent extends OcrEvent {
       required this.dateTime,
       required this.description,
       required this.operationResult,
-      required this.activityType});
+      required this.activityType,
+      required this.userType,
+      required this.email});
 
   @override
   List<Object> get props => [];
@@ -310,9 +318,16 @@ class GetAssessmentAndSavedStudentResultSummaryForStandardApp extends OcrEvent {
   String toString() => 'GlobalSearchEvent { keyword: $fileId}';
 }
 
-
 class FetchGradedApprovedDomains extends OcrEvent {
   FetchGradedApprovedDomains();
+  @override
+  List<Object> get props => [];
+}
+
+// ignore: must_be_immutable
+class AuthenticateEmail extends OcrEvent {
+  String email;
+  AuthenticateEmail({required this.email});
   @override
   List<Object> get props => [];
 }

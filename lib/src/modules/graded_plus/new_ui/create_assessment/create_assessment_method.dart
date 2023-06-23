@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
@@ -101,8 +102,8 @@ class CreateAssessmentScreenMethod {
       localDb.addData(e);
     });
 
-    Utility.updateLogs(
-        activityType: 'GRADED+',
+    PlusUtility.updateLogs(
+        activityType: 'GRADED+', userType: 'Teacher',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');
@@ -218,37 +219,5 @@ class CreateAssessmentScreenMethod {
         selectedGrade.value = lastGrade;
       });
     }
-  }
-
-/*------------------------------------------------------------------------------------------------*/
-/*---------------------------------------updateGradeList------------------------------------------*/
-/*------------------------------------------------------------------------------------------------*/
-  static updateGradeList(
-      {context,
-      required String sectionName,
-      required customGrades,
-      required selectedGrade,
-      required scaffoldKey,
-      required void setState}) async {
-    LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
-
-    if (!customGrades.contains(sectionName)) {
-      customGrades.removeLast();
-      customGrades.add(sectionName);
-      customGrades.add('+');
-      //-----------------------------
-      setState;
-      //-----------------------------
-
-      selectedGrade.value = customGrades[customGrades.length - 2];
-    } else {
-      Utility.showSnackBar(
-          scaffoldKey, "Subject \'$sectionName\' Already Exist", context, null);
-    }
-
-    await _localDb.clear();
-    customGrades.forEach((String e) {
-      _localDb.addData(e);
-    });
   }
 }

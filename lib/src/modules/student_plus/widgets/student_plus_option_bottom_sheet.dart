@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
@@ -143,13 +144,14 @@ class _GradedPlusResultOptionBottomSheetState
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
         //check student+ folder available or not if not create one
-        if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-            false) {
-          print("Trigger to check the folder ");
-          studentPlusGooglePresentationIsAvailable();
-        } else {
-          _checkDriveFolderExistsOrNot();
-        }
+        // if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
+        //     false) {
+        //   print("Trigger to check the folder ");
+        //   studentPlusGooglePresentationIsAvailable();
+        // } else {
+        //   _checkDriveFolderExistsOrNot();
+        // }
+        studentPlusGooglePresentationIsAvailable(true);
 
         break;
       default:
@@ -239,24 +241,33 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleDriveBloc,
         child: Container(),
         listener: (context, state) async {
+          // if (state is GoogleSuccess) {
+
+          //   if (StudentPlusOverrides
+          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
+          //       false) {
+          //     studentPlusGooglePresentationIsAvailable();
+          //   } else {
+          //     Navigator.of(context).pop();
+          //     Utility.currentScreenSnackBar(
+          //         "Something Went Wrong. Please Try Again.", null);
+          //   }
+          // }
+
           if (state is GoogleSuccess) {
-            if (StudentPlusOverrides
-                    ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-                false) {
-              studentPlusGooglePresentationIsAvailable();
-            } else {
-              Navigator.of(context).pop();
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
+            studentPlusGooglePresentationIsAvailable(false);
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: false,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
@@ -296,10 +307,14 @@ class _GradedPlusResultOptionBottomSheetState
             Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: false,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
@@ -328,12 +343,29 @@ class _GradedPlusResultOptionBottomSheetState
         refreshToken: userProfile.refreshToken));
   }
 
-  void studentPlusGooglePresentationIsAvailable() {
-    print("check  Presentation event trigger");
-    googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
-      studentPlusDriveFolderId:
-          StudentPlusOverrides.studentPlusGoogleDriveFolderId,
-      studentDetails: widget.studentDetails,
-    ));
+  Future<void> studentPlusGooglePresentationIsAvailable(
+      bool? isSyncPresentation) async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
+      print("Trigger to check the folder ");
+      googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
+        studentPlusDriveFolderId:
+            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+        studentDetails: widget.studentDetails,
+      ));
+    }
+    //Sync Presentation
+    else if (isSyncPresentation == true) {
+      _checkDriveFolderExistsOrNot();
+    }
+    //Google Success Event
+    else {
+      Navigator.of(context).pop();
+      Utility.currentScreenSnackBar(
+          "Something Went Wrong. Please Try Again.", null);
+    }
   }
 }

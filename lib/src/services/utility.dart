@@ -119,32 +119,7 @@ class Utility {
     }
   }
 
-  static bool updateLogs(
-      {required String activityId,
-      //  required String accountType,
-      required String description,
-      required String operationResult,
-      String? sessionId,
-      required String? activityType}) {
-    DateTime currentDateTime = DateTime.now(); //DateTime
-    // instance for maintaining logs
-    final OcrBloc _ocrBlocLogs = new OcrBloc();
-    _ocrBlocLogs.add(LogUserActivityEvent(
-        activityType: activityType,
-        sessionId: sessionId != null && sessionId != ''
-            ? sessionId
-            : Globals.sessionId,
-        teacherId: Globals.teacherId,
-        activityId: activityId,
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: 'Premium',
-        //Globals.isPremiumUser == true ? "Premium" : "Free",
-        dateTime: currentDateTime.toString(),
-        description: description,
-        operationResult: operationResult));
-    return true;
-  }
-
+ 
   static void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
@@ -649,7 +624,7 @@ class Utility {
                               child: FittedBox(
                                 child: Utility.textWidget(
                                     text: msg ??
-                                        GradedGlobals.loadingMessage ??
+                                        // GradedGlobals.loadingMessage ??
                                         'Please Wait...',
                                     context: context,
                                     textTheme: Theme.of(context)

@@ -9,6 +9,8 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,8 +73,9 @@ class GoogleClassroomBloc
           coursesList.forEach((GoogleClassroomCourses e) {
             _localDb.addData(e);
           });
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully',
               operationResult: 'Success');
@@ -574,7 +577,8 @@ class GoogleClassroomBloc
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken!);
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -593,8 +597,9 @@ class GoogleClassroomBloc
         return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure',
           operationResult: 'failure');
@@ -618,43 +623,43 @@ class GoogleClassroomBloc
     } catch (e) {}
   }
 
-  Future<bool> toRefreshAuthenticationToken(String refreshToken) async {
-    try {
-      final body = {"refreshToken": refreshToken};
-      final ResponseModel response = await _dbServices.postApi(
-          "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
-          body: body,
-          isGoogleApi: true);
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        var newToken = response.data['body']; //["access_token"]
-        //!=null?response.data['body']["access_token"]:response.data['body']["error"];
-        if (newToken["access_token"] != null) {
-          List<UserInformation> _userProfileLocalData =
-              await UserGoogleProfile.getUserProfile();
+  // Future<bool> toRefreshAuthenticationToken(String refreshToken) async {
+  //   try {
+  //     final body = {"refreshToken": refreshToken};
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
+  //         body: body,
+  //         isGoogleApi: true);
+  //     if (response.statusCode != 401 &&
+  //         response.statusCode == 200 &&
+  //         response.data['statusCode'] != 500) {
+  //       var newToken = response.data['body']; //["access_token"]
+  //       //!=null?response.data['body']["access_token"]:response.data['body']["error"];
+  //       if (newToken["access_token"] != null) {
+  //         List<UserInformation> _userProfileLocalData =
+  //             await UserGoogleProfile.getUserProfile();
 
-          UserInformation updatedObj = UserInformation(
-              userName: _userProfileLocalData[0].userName,
-              userEmail: _userProfileLocalData[0].userEmail,
-              profilePicture: _userProfileLocalData[0].profilePicture,
-              refreshToken: _userProfileLocalData[0].refreshToken,
-              authorizationToken: newToken["access_token"]);
+  //         UserInformation updatedObj = UserInformation(
+  //             userName: _userProfileLocalData[0].userName,
+  //             userEmail: _userProfileLocalData[0].userEmail,
+  //             profilePicture: _userProfileLocalData[0].profilePicture,
+  //             refreshToken: _userProfileLocalData[0].refreshToken,
+  //             authorizationToken: newToken["access_token"]);
 
-          await UserGoogleProfile.updateUserProfile(updatedObj);
+  //         await UserGoogleProfile.updateUserProfile(updatedObj);
 
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      throw (e);
-    }
-  }
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     throw (e);
+  //   }
+  // }
 
   Future<List<dynamic>> _createClassRoomCourseWork(
       {required String authorizationToken,
@@ -737,7 +742,8 @@ class GoogleClassroomBloc
       }
       //retry =3 max
       else if (retry > 0) {
-        var result = await toRefreshAuthenticationToken(refreshToken);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
@@ -807,7 +813,8 @@ class GoogleClassroomBloc
         final url = response?.data?['body']?['alternateLink'] as String?;
         return [url?.isNotEmpty == true, url ?? ''];
       } else if (retry > 0) {
-        var result = await toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken ?? '');
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -896,7 +903,8 @@ class GoogleClassroomBloc
               classroomCourseName: courseAndStudentList[i].name,
             );
           } else if (retry > 0) {
-            final result = await toRefreshAuthenticationToken(refreshToken);
+            final result = await Authentication.refreshAuthenticationToken(
+                refreshToken: refreshToken);
 
             if (result == true) {
               final userProfileLocalData =
@@ -1005,7 +1013,8 @@ class GoogleClassroomBloc
       }
       //retry =3 max
       else if (retry > 0) {
-        var result = await toRefreshAuthenticationToken(refreshToken);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();

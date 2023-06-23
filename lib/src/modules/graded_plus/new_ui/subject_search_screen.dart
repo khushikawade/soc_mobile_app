@@ -12,14 +12,18 @@ import 'package:Soc/src/modules/graded_plus/modal/assessment_status_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
@@ -583,10 +587,14 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -598,24 +606,27 @@ class _GradedPlusSearchScreenPageState
             }
           }
           if (state is RecallTheEvent) {
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
+
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
           }
 
           if (state is GoogleSlideCreated) {
             Globals.googleSlidePresentationId = state.slideFiledId;
-            // if (Globals.googleSlidePresentationId!.isNotEmpty &&
-            //     (Globals.googleSlidePresentationLink == null ||
-            //         Globals.googleSlidePresentationLink!.isEmpty)) {
+
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             //    }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -632,12 +643,16 @@ class _GradedPlusSearchScreenPageState
               studentObj.questionImgUrl = state.questionImageUrl;
               await _studentAssessmentInfoDb.putAt(0, studentObj);
             }
+
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -659,8 +674,9 @@ class _GradedPlusSearchScreenPageState
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
@@ -687,10 +703,14 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -708,10 +728,14 @@ class _GradedPlusSearchScreenPageState
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -729,8 +753,9 @@ class _GradedPlusSearchScreenPageState
           }
 
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');
@@ -783,8 +808,9 @@ class _GradedPlusSearchScreenPageState
             true) {
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           "save_to_drive_from_subject_search");
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '12',
           description: 'Save to drive',
           operationResult: 'Success');
@@ -825,11 +851,13 @@ class _GradedPlusSearchScreenPageState
         Globals.googleExcelSheetId?.isEmpty == true) {
       // Check if question image exists
       if (widget.gradedPlusQueImage == null) {
+          List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
         googleBloc.add(CreateExcelSheetToDrive(
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: Globals.googleDriveFolderId!,
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId??'',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(
@@ -903,8 +931,9 @@ class _GradedPlusSearchScreenPageState
         listener: (context, state) async {
           print("state is $state");
           if (state is CreateClassroomCourseWorkSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
@@ -912,10 +941,14 @@ class _GradedPlusSearchScreenPageState
           }
           if (state is GoogleClassroomErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
 
               widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
@@ -976,7 +1009,7 @@ class _GradedPlusSearchScreenPageState
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
+        teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
             '',
@@ -993,11 +1026,11 @@ class _GradedPlusSearchScreenPageState
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    if (showDialogSetState != null) {
-      showDialogSetState!(() {
-        GradedGlobals.loadingMessage = 'Result Detail is Updating';
-      });
-    }
+    // if (showDialogSetState != null) {
+    //   showDialogSetState!(() {
+    //     GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    //   });
+    // }
 
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
@@ -1019,6 +1052,7 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {
               Utility.scrollToTop(scrollController: _scrollController);
