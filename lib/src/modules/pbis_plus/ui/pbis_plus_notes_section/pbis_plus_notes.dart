@@ -17,6 +17,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -41,6 +42,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   static const double _KVertcalSpace = 60.0;
   // used for space between the widgets
   static const double _kLabelSpacing = 20.0;
+  static const double _kHorizontalLabelSpacing = 20.0;
   PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   FocusNode searchFocusNode = new FocusNode();
@@ -51,6 +53,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   final _searchController = TextEditingController();
   // hide animated container
   final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
+  final _deBouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
@@ -73,11 +76,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
         onWillPop: () async => false,
         child: Scaffold(
             key: _scaffoldKey,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            // backgroundColor: Theme.of(context).colorScheme.secondary,
             appBar: PBISPlusUtility.pbisAppBar(
               context: context,
               titleIconData: widget.titleIconData,
-              title: 'Class',
+              title: 'Notes',
               scaffoldKey: _scaffoldKey,
             ),
             extendBody: true,
@@ -114,8 +117,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: StudentPlusOverrides.kSymmetricPadding),
+            padding: EdgeInsets.symmetric(horizontal: _kHorizontalLabelSpacing),
             child: FittedBox(
               child: Utility.textWidget(
                   text: "Student Notes",
@@ -165,7 +167,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
     return studentNotesList.length > 0
         ? Container(
             height: MediaQuery.of(context).size.height * 0.7,
-            // color: Colors.red,
             child: ValueListenableBuilder(
                 valueListenable: filterNotifier,
                 builder: (BuildContext context, String value, Widget? child) {
@@ -229,9 +230,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
           horizontalTitleGap: 20,
           minVerticalPadding: 20,
           contentPadding:
-              EdgeInsets.only(top: 12.0, bottom: 12.0, left: 0, right: 16),
+              EdgeInsets.only(top: 12.0, bottom: 12.0, left: 12, right: 16),
           leading: isShimmerLoading
               ? Container(
+                  margin: EdgeInsets.only(
+                    left: 12,
+                  ),
                   width: 40,
                   height: 40,
                   child: ShimmerLoading(
@@ -239,17 +243,21 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                       child: localSimmerWidget(height: 30, width: 30)))
               : Container(
                   width: 72,
-                  height: 40,
+                  height: 50,
                   child: CachedNetworkImage(
-                    placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator.adaptive(
-                      backgroundColor: AppTheme.kButtonColor,
-                    )),
+                    placeholder: (context, url) => SizedBox(
+                      height: 8,
+                      width: 8,
+                      child: Center(
+                          child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor,
+                      )),
+                    ),
                     imageUrl:
                         "https://togbog-user-profiles.s3.ap-south-1.amazonaws.com/U-0026821-1685521725385.jpg",
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: 32,
+                      radius: 56,
                       backgroundImage: imageProvider,
                     ),
                   ),
@@ -275,7 +283,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
             ),
           ),
           onTap: (() {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                   builder: (context) => PBISPlusNotesDetailPage(
                         item: obj,
@@ -303,6 +311,20 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
     // /*-------------------------User Activity Track END----------------------------*/
+  }
+
+  /* --------------- Things Perform on On changes in search bar --------------- */
+  onItemChanged(String value) {
+    _deBouncer.run(() {
+      if (_searchController.text.length >= 3) {
+        // PBISPlusBlocInstance.add(
+        //     StudentPlusSearchEvent(keyword: _searchController.text));
+      } else {
+        // isRecentList.value = true;
+        // showErrorInSearch.value = true;
+      }
+      setState(() {});
+    });
   }
 
 //------------------------------for filter call bottom sheet"-------------------//

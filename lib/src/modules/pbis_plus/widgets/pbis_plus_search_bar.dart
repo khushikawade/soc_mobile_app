@@ -40,6 +40,9 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
       height: 80,
       child: Container(
         width: MediaQuery.of(context).size.width * 1,
+        margin: EdgeInsets.symmetric(
+          horizontal: widget.kLabelSpacing / 2,
+        ),
         padding: EdgeInsets.symmetric(
             vertical: widget.kLabelSpacing / 3,
             horizontal: widget.kLabelSpacing / 3.5),

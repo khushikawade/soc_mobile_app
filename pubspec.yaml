@@ -115,7 +115,7 @@ dev_dependencies:
 
 dependency_overrides:
   webview_flutter: ^3.0.4
-  modal_bottom_sheet: ^3.0.0-pre
+  # modal_bottom_sheet: ^3.0.0-pre
 
 flutter_icons:
   image_path: "assets/images/appicon.png"

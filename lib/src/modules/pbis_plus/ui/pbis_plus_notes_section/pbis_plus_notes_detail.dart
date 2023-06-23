@@ -20,6 +20,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -85,21 +86,44 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     ]);
   }
 
+  Widget _buildbackIcon() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+              IconData(0xe80d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              size: Globals.deviceType == 'phone' ? 24 : 32,
+              color: AppTheme.kButtonColor),
+        ),
+      ),
+    );
+  }
+
   Widget body(BuildContext context) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       children: [
-        SpacerWidget(48),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        SpacerWidget(24),
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+          _buildbackIcon(),
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 20),
           Padding(
-            padding: EdgeInsets.only(left: 24),
+            padding: EdgeInsets.only(left: 4),
             child: FittedBox(
               child: Text("${widget.item.studentName}" + " Notes",
                   textAlign: TextAlign.left,
                   style: Theme.of(context)
                       .textTheme
                       .headline1!
-                      .copyWith(fontSize: 30, fontWeight: FontWeight.w600)),
+                      .copyWith(fontSize: 28, fontWeight: FontWeight.w600)),
             ),
           ),
         ]),
@@ -138,7 +162,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
       {required final bool isShimmerLoading}) {
     return studentNotesList.length > 0
         ? Container(
-            height: MediaQuery.of(context).size.height * 0.7,
+            height: MediaQuery.of(context).size.height * 0.8,
             // color: Colors.red,
             child: ValueListenableBuilder(
                 valueListenable: filterNotifier,
@@ -213,7 +237,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             ),
             SpacerWidget(24),
             _buildDateList(obj),
-            SpacerWidget(12),
+            SpacerWidget(24),
           ],
         ),
       ),
@@ -223,14 +247,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Widget _buildDateList(PBISPlusStudentNotes item) {
     return Row(
       children: [
-        _buildCardDateTime(item.date),
-        _buildCardDateTime(item.date),
-        _buildCardDateTime(item.date)
+        _buildCardDateTime(item.date, true),
+        _buildCardDateTime(item.date, true),
+        _buildCardDateTime(item.date, false)
       ],
     );
   }
 
-  Widget _buildCardDateTime(item) {
+  Widget _buildCardDateTime(item, bool isShowDivider) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -244,7 +268,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                 fontSize: 10,
                 fontWeight: FontWeight.w500),
           ),
-          _buildVerticalDivider()
+          isShowDivider ? _buildVerticalDivider() : SizedBox.shrink()
         ]);
   }
 

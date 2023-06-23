@@ -241,7 +241,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget('Select Students', Color(0xff111C20)),
         divider(context),
         textWidget('Select Courses', Color(0xff111C20)),
-        textWidget('Edit Skills', AppTheme.kButtonColor),
+        textWidget('Edit Behaviour', AppTheme.kButtonColor),
         textWidget('Edit Behaviour', Color(0xff111C20)),
       ],
     );
