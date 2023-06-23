@@ -326,6 +326,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
 
+            case PBISPlusOverrides.kresetOptionFourtitle:
+              _pageController.animateToPage(3,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              break;
+
             case 'Edit Skills':
               sectionName = 'Skills';
               // Navigator.pop(context);
