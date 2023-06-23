@@ -1,3 +1,5 @@
+import 'package:Soc/src/globals.dart';
+
 import 'local_database/local_db.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 
@@ -32,6 +34,15 @@ class UserGoogleProfile {
       UserInformation _userInformation) async {
     try {
       await clearUserProfile();
+
+// If Salesforce Single Sign-On (SSO) is enabled, refreshToken is not required. However, the some node lambda API expects a refreshToken.
+// To accommodate this requirement, assign the same authorizationToken value to refreshToken.
+      if (Globals.appSetting.enableGoogleSSO == "true") {
+        print(" ------------SSO IS ENABLED-----");
+        _userInformation.refreshToken = _userInformation.authorizationToken;
+      } else {
+        print(" ------------SSO IS DISABLED-----");
+      }
 
       await _localDb.addData(_userInformation);
       // await _localDb.close();
