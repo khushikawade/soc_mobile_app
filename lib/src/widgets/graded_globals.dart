@@ -1,3 +1,3 @@
-class GradedGlobals {
-  static String? loadingMessage;
-}
+// class GradedGlobals {
+//   static String? loadingMessage;
+// }

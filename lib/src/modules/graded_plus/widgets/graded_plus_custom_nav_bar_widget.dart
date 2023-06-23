@@ -30,12 +30,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-              blurRadius: 10.0,
-            ),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryVariant
+                    .withOpacity(0.1),
+                blurRadius: 5.0,
+                offset: Offset(0, -8)),
           ]),
-      height: 140.0,
+      // height: 140.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((item) {
@@ -49,7 +51,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                   ? _buildSelectedMenu(
                       item, selectedIndex == index, 50, context)
                   : _buildUnselectedMenus(
-                      item, selectedIndex == index, 140, context),
+                      item, selectedIndex == index, 140, context, index),
             ),
           );
         }).toList(),
@@ -58,7 +60,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
   }
 
   Widget _buildUnselectedMenus(PersistentBottomNavBarItem item, bool isSelected,
-      double height, BuildContext context) {
+      double height, BuildContext context, int index) {
     return Container(
       width: 120,
       height: height,
@@ -72,12 +74,21 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           Flexible(
             child: IconTheme(
               data: IconThemeData(
-                  size: isSelected ? 28 : 22.0,
+                  size: index == 3
+                      ? isSelected
+                          ? 33
+                          : 28.0
+                      : isSelected
+                          ? 28
+                          : 22.0,
                   color: isSelected
                       ? item.activeColorPrimary
                       : item.inactiveColorPrimary),
               child: item.icon,
             ),
+          ),
+          SizedBox(
+            height: index == 3 ? 1 : 5,
           ),
           Container(
             child: Align(

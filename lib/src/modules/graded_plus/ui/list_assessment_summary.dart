@@ -477,10 +477,10 @@
 //               createdAsPremium = true;
 //             }
 //             //     Globals.historyAssessmentId = list[index].assessmentId!;
-//             GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//             GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //                 GoogleClassroomCourses();
 
-//             GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//             GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
 //                 GoogleClassroomCourses(
 //                     assessmentCId: list[index].assessmentId,
 //                     courseId: list[index].classroomCourseId,
@@ -682,7 +682,7 @@
 //   //         element.presentationLink!.isNotEmpty)
 //   //       GestureDetector(
 //   //           onTap: () {
-//   //             Utility.updateLogs(
+//   //             PlusUtility.updateLogs(
 //   //                 activityType: 'GRADED+',
 //   //                 activityId: '31',
 //   //                 sessionId: element.sessionId ?? '',
@@ -701,7 +701,7 @@
 //   //           )),
 //   //     GestureDetector(
 //   //       onTap: () {
-//   //         Utility.updateLogs(
+//   //         PlusUtility.updateLogs(
 //   //             activityType: 'GRADED+',
 //   //             activityId: '13',
 //   //             sessionId: element.sessionId != null ? element.sessionId : '',

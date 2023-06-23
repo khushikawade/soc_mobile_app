@@ -64,3 +64,11 @@ class GetClassroomCourseWorkURLSuccess extends GoogleClassroomState {
   @override
   List<Object> get props => [];
 }
+
+class CreateClassroomCourseWorkSuccessForStandardApp
+    extends GoogleClassroomState {
+  CreateClassroomCourseWorkSuccessForStandardApp();
+
+  @override
+  List<Object> get props => [];
+}

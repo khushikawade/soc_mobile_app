@@ -1,5 +1,6 @@
 import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/auth_dummy/sign_in_screen.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
 import 'package:Soc/src/overrides.dart';
@@ -97,28 +98,31 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   Widget build(BuildContext context) {
     return AdaptiveTheme(
-        light: AppTheme.lightTheme,
-        dark: AppTheme.darkTheme,
-        initial: Globals.disableDarkMode == true
-            ? AdaptiveThemeMode.light
-            : AdaptiveThemeMode.system,
-        builder: (theme, darkTheme) => CalendarControllerProvider<Event>(
-            controller: EventController<Event>()..addAll(staticEventList),
-            child: MaterialApp(
-                navigatorKey: Globals.navigatorKey,
-                debugShowCheckedModeBanner: false,
-                scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-                title: 'Solved',
-                theme: theme,
-                darkTheme: darkTheme,
-                home: StartupPage(
-                    isOcrSection:
-                        Overrides.STANDALONE_GRADED_APP //Standalone app
-                    //false,  /For standard app
-                    ),
-                //  home: SchoolIDLogin(),
-                navigatorObservers: [
-                  FirebaseAnalyticsService().appAnalyticsObserver()
-                ])));
+      light: AppTheme.lightTheme,
+      dark: AppTheme.darkTheme,
+      initial: Globals.disableDarkMode == true
+          ? AdaptiveThemeMode.light
+          : AdaptiveThemeMode.system,
+      builder: (theme, darkTheme) => CalendarControllerProvider<Event>(
+        controller: EventController<Event>()..addAll(staticEventList),
+        child: MaterialApp(
+          navigatorKey: Globals.navigatorKey,
+          debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+          title: 'Solved',
+          theme: theme,
+          darkTheme: darkTheme,
+          //home: SignInScreen(),
+          home: StartupPage(
+              isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
+              //false,  /For standard app
+              ),
+          //  home: SchoolIDLogin(),
+          navigatorObservers: [
+            FirebaseAnalyticsService().appAnalyticsObserver()
+          ],
+        ),
+      ),
+    );
   }
 }
