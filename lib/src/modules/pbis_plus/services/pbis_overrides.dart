@@ -24,6 +24,13 @@ class PBISPlusOverrides {
   static final String pbisBaseUrl =
       "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/";
 
-  static String pbisPlusGoogleDriveFolderId = '';
-  static String pbisPlusGoogleDriveFolderPath = '';
+  // static String pbisPlusGoogleDriveFolderId = '';
+  // static String pbisPlusGoogleDriveFolderPath = '';
+
+
+//for reseting bottom sheet items titles
+  static const String kresetOptionOnetitle = 'All Courses & Students';
+  static const String kresetOptionTwotitle = 'Select Students';
+  static const String kresetOptionThreetitle = 'Select Courses';
+  static const String kresetOptionFourtitle = 'Select Students by Course';
 }

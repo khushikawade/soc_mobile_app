@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -31,7 +31,6 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
 
   // list of screen on navigation
   List<Widget> _screens = [];
-
   @override
   void initState() {
     _controller.index = widget.index;

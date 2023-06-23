@@ -280,7 +280,7 @@
 //                 //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
 //                 //     sessionId: Globals.sessionId,
 //                 //     teacherContactId: Globals.teacherId,
-//                 //     teacherEmail: Globals.teacherEmailId));
+//                 //     teacherEmail: Globals.userEmailId));
 //               }
 //               if (state is ErrorState) {
 //                 if (state.errorMsg == 'ReAuthentication is required') {
@@ -337,7 +337,7 @@
 //               //       slidePresentationId: Globals.googleSlidePresentationId));
 //               // }
 //               if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-//                 Utility.updateLogs(
+//                 PlusUtility.updateLogs(
 //                     activityType: 'GRADED+',
 //                     activityId: '44',
 //                     description: 'G-Slide Updated',
@@ -373,11 +373,11 @@
 //                     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
 //                     sessionId: Globals.sessionId,
 //                     teacherContactId: Globals.teacherId,
-//                     teacherEmail: Globals.teacherEmailId,
-//                     classroomCourseId: GoogleClassroomGlobals
+//                     teacherEmail: Globals.userEmailId,
+//                     classroomCourseId: GoogleClassroomOverrides
 //                             ?.studentAssessmentAndClassroomObj?.courseId ??
 //                         '',
-//                     classroomCourseWorkId: GoogleClassroomGlobals
+//                     classroomCourseWorkId: GoogleClassroomOverrides
 //                             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
 //                         ''));
 //               }
@@ -388,7 +388,7 @@
 //             child: Container(),
 //             listener: (context, state) async {
 //               if (state is CreateClassroomCourseWorkSuccess) {
-//                 Utility.updateLogs(
+//                 PlusUtility.updateLogs(
 //                     activityType: 'GRADED+',
 //                     activityId: '34',
 //                     description: 'G-Classroom Created',
@@ -406,7 +406,7 @@
 //                   widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
 //                       studentAssessmentInfoDb: LocalDatabase('student_info'),
 //                       pointPossible: Globals.pointPossible ?? '0',
-//                       studentClassObj: GoogleClassroomGlobals
+//                       studentClassObj: GoogleClassroomOverrides
 //                           .studentAssessmentAndClassroomObj!,
 //                       title: Globals.assessmentName!.split("_")[1] ?? ''));
 //                 } else {
@@ -714,7 +714,7 @@
 //                               }
 //                               if (state is AssessmentIdSuccess) {
 //                                 if (Overrides.STANDALONE_GRADED_APP &&
-//                                     (GoogleClassroomGlobals
+//                                     (GoogleClassroomOverrides
 //                                             .studentAssessmentAndClassroomObj
 //                                             ?.courseWorkId
 //                                             ?.isEmpty ??
@@ -729,7 +729,7 @@
 //                                               LocalDatabase('student_info'),
 //                                           pointPossible:
 //                                               Globals.pointPossible ?? '0',
-//                                           studentClassObj: GoogleClassroomGlobals
+//                                           studentClassObj: GoogleClassroomOverrides
 //                                               .studentAssessmentAndClassroomObj!,
 //                                           title: Globals.assessmentName!
 //                                                   .split("_")[1] ??
@@ -816,7 +816,7 @@
 
 //     FirebaseAnalyticsService.addCustomAnalyticsEvent(
 //         "save_to_drive_from_subject_search");
-//     Utility.updateLogs(
+//     PlusUtility.updateLogs(
 //         activityType: 'GRADED+',
 //         activityId: '12',
 //         description: 'Save to drive',

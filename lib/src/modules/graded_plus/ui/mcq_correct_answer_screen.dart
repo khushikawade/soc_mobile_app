@@ -106,7 +106,7 @@
 //               if (state is ErrorState) {
 //                 if (Globals.sessionId == '') {
 //                   Globals.sessionId =
-//                       "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+//                       "${Globals.userEmailId}_${myTimeStamp.toString()}";
 //                 }
 //                 _ocrBlocLogs.add(LogUserActivityEvent(
 //                     activityType: 'GRADED+',
@@ -235,7 +235,7 @@
 //             selectedAnswerKey.value = value.title!;
 //             FirebaseAnalyticsService.addCustomAnalyticsEvent(
 //                 "answer_key_selected_${value.title}");
-//             Utility.updateLogs(
+//             PlusUtility.updateLogs(
 //                 activityType: 'GRADED+',
 //                 activityId: '29',
 //                 description: 'MCQ Selection Answer key selected ${value.title}',
@@ -284,7 +284,7 @@
 
 //   void _beforeNavigateOnCameraSection() {
 //     if (Globals.sessionId == '') {
-//       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+//       Globals.sessionId = "${Globals.userEmailId}_${myTimeStamp.toString()}";
 //     }
 //     _ocrBlocLogs.add(LogUserActivityEvent(
 //         activityType: 'GRADED+',

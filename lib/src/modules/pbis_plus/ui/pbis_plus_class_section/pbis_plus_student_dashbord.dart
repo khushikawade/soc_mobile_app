@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_new_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';

@@ -31,6 +31,8 @@ class StudentPlusOverrides {
   static final String studentPlusBaseUrl =
       "https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production";
 
-      static const double kLabelSpacing = 20.0;
-  
+  static const double kLabelSpacing = 20.0;
+
+  // static String studentPlusGoogleDriveFolderId = '';
+  // static String studentPlusGoogleDriveFolderPath = '';
 }

@@ -17,9 +17,13 @@ class PBISBottomNavBar {
       {required VoidCallback backOnTap}) {
     return [
       PBISPlusClass(
-        titleIconData: IconData(0xe825,
-            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        titleIconData: IconData(
+          0xe825,
+          fontFamily: Overrides.kFontFam,
+          fontPackage: Overrides.kFontPkg,
+        ),
         backOnTap: backOnTap,
+        isGradedPlus: false,
       ),
       PBISPlusHistory(
         titleIconData: IconData(0xe824,

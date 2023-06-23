@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/services/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
@@ -11,18 +11,22 @@ import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_search_screen.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -77,6 +81,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   OcrBloc ocrAssessmentBloc = OcrBloc();
   //Used to fetch subject details
   OcrBloc _ocrBloc = OcrBloc();
+  bool allProcessDone = false;
 
 //---------------------------------------------------------------------------------------------------------------
   static const double _KVerticalSpace = 60.0;
@@ -112,12 +117,25 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   // Value Notifier to check which is update or not
-  ValueNotifier<AssessmentStatusModel> assessmentExportAndSaveStatus =
-      ValueNotifier<AssessmentStatusModel>(AssessmentStatusModel(
-    excelSheetPrepared: false,
-    slidePrepared: false,
-    saveAssessmentResultToDashboard: false,
-  ));
+  ValueNotifier<LoadingStatusModel> assessmentExportAndSaveStatus =
+      ValueNotifier<LoadingStatusModel>(LoadingStatusModel(
+          excelSheetPrepared: false,
+          slidePrepared: false,
+          saveAssessmentResultToDashboard: false,
+          googleClassroomPrepared: false));
+
+  List<String> processList = ((GoogleClassroomOverrides
+              .recentStudentResultSummaryForStandardApp.id?.isNotEmpty ??
+          false))
+      //     &&
+      // Overrides.STANDALONE_GRADED_APP != true)
+      ? [
+          'Google Sheet',
+          'Google Slides',
+          'Google Classroom',
+          '${Globals.schoolDbnC} Dashboard'
+        ]
+      : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
 
 //---------------------------------------------------------------------------------------------------------------
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
@@ -246,6 +264,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  plusAppName: 'GRADED+',
                   fromGradedPlus: true,
                   hideStateSelection: true,
                   onTap: () {
@@ -863,6 +882,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                               // Condition to check selected subject from local or not
                               if ((list[index].id == null)) {
                                 isSubmitButton.value = true;
+                                isSkipButton.value = false;
                               } else {
                                 isSkipButton.value = true;
                                 isSubmitButton.value = false;
@@ -1100,6 +1120,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   addCustomSubjectBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
+
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
@@ -1157,8 +1179,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                             backgroundColor:
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
-                              Utility.updateLogs(
+                              // showLoadingDialog(
+                              //     context: context,
+                              //     state: (p0) => {showDialogSetState = p0});
+                              //!UNCOMMENT
+                              PlusUtility.updateLogs(
                                   activityType: 'GRADED+',
+                                  userType: 'Teacher',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1194,43 +1221,23 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           final bool connected =
                               connectivity != ConnectivityResult.none;
                           return FloatingActionButton.extended(
-                              backgroundColor:
-                                  AppTheme.kButtonColor.withOpacity(1.0),
-                              onPressed: () async {
-                                floatingButtonOnTap();
-                                // updateExcelSheetOnDriveAndNavigate(
-                                //     connected: connected);
-                              },
-                              label: Row(
-                                children: [
-                                  Utility.textWidget(
-                                      text: 'Save',
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .headline2!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .backgroundColor)),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                                    child: Image(
-                                      width: Globals.deviceType == "phone"
-                                          ? 23
-                                          : 28,
-                                      height: Globals.deviceType == "phone"
-                                          ? 23
-                                          : 28,
-                                      image: AssetImage(
-                                        "assets/images/drive_ico.png",
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ));
+                            backgroundColor:
+                                AppTheme.kButtonColor.withOpacity(1.0),
+                            onPressed: () async {
+                              floatingButtonOnTap();
+                              // updateExcelSheetOnDriveAndNavigate(
+                              //     connected: connected);
+                            },
+                            label: Utility.textWidget(
+                                text: 'Save',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        color:
+                                            Theme.of(context).backgroundColor)),
+                          );
                         },
                         child: Container(),
                       )
@@ -1342,9 +1349,14 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         //Updating remaining common details of assignment
         StudentAssessmentInfo element = studentAssessmentInfoDblist.first;
 
-        element.subject = subject == null || subject == '' ? "NA" : subject;
-        element.learningStandard =
-            learningStandard == null || learningStandard == ''
+        element.subject = widget.isSearchPage == true
+            ? widget.selectedSubject
+            : subject == null || subject == ''
+                ? "NA"
+                : subject;
+        element.learningStandard = widget.isSearchPage == true
+            ? widget.domainNameC
+            : learningStandard == null || learningStandard == ''
                 ? "NA"
                 : learningStandard;
         element.subLearningStandard = subLearningStandard == null ||
@@ -1366,12 +1378,12 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             Globals.googleSlidePresentationLink;
         await _studentAssessmentInfoDb.putAt(0, element);
 
-        GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
+        // GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
 
-        Utility.showLoadingDialog(
-            context: context,
-            isOCR: true,
-            state: (p0) => {showDialogSetState = p0});
+        // Utility.showLoadingDialog(
+        //     context: context,
+        //     isOCR: true,
+        //     state: (p0) => {showDialogSetState = p0});
 
         //calling API
         updateDocOnDrive(
@@ -1417,24 +1429,15 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
-// //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//   googleSlidesPreparation() {
-//     if (Globals.googleSlidePresentationId!.isNotEmpty &&
-//         (Globals.googleSlidePresentationLink == null ||
-//             Globals.googleSlidePresentationLink!.isEmpty)) {
-//       _googleDriveBloc.add(GetShareLink(
-//           fileId: Globals.googleSlidePresentationId, slideLink: true));
-//     }
-//   }
-
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _navigateToResultSection() {
-    GradedGlobals.loadingMessage = null;
+    // GradedGlobals.loadingMessage = null;
     Navigator.of(context).pop();
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
@@ -1465,10 +1468,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    showDialogSetState!(() {
-      GradedGlobals.loadingMessage = 'Result Detail is Updating';
-    });
-
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
@@ -1481,50 +1480,67 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  void _navigateToResultSectionOnSkipButton() {
-    Navigator.of(context).pop();
+  // void _navigateToResultSectionOnSkipButton() {
+  //   Navigator.of(context).pop();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
-                fileId: Globals.googleExcelSheetId,
-                subjectId: subjectId ?? '',
-                standardId: standardId ?? '',
-                assessmentName: Globals.assessmentName,
-                shareLink: '',
-                assessmentDetailPage: false,
-              )),
-    );
-  }
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => GradedPlusResultsSummary(
+  //               isMcqSheet: widget.isMcqSheet,
+  //               selectedAnswer: widget.selectedAnswer,
+  //               fileId: Globals.googleExcelSheetId,
+  //               subjectId: subjectId ?? '',
+  //               standardId: standardId ?? '',
+  //               assessmentName: Globals.assessmentName,
+  //               shareLink: '',
+  //               assessmentDetailPage: false,
+  //             )),
+  //   );
+  // }
 
   Widget classRoomBlocListener() {
     return BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
         bloc: _googleClassroomBloc,
         child: Container(),
         listener: (context, state) async {
-          if (state is CreateClassroomCourseWorkSuccess) {
-            Utility.updateLogs(
+          print("state is $state");
+
+          //Standalone State //Standard State
+          if (state is CreateClassroomCourseWorkSuccess ||
+              state is CreateClassroomCourseWorkSuccessForStandardApp) {
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '34',
                 description: 'G-Classroom Created',
                 operationResult: 'Success');
-            _navigateToResultSection();
+
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.googleClassroomPrepared =
+                  true;
+            });
+
+            //  _navigateToResultSection();
+            saveAssessmentToDashboardAndGetId();
           }
+
           if (state is GoogleClassroomErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
               _googleClassroomBloc.add(CreateClassRoomCourseWork(
                   studentAssessmentInfoDb: LocalDatabase('student_info'),
                   pointPossible: Globals.pointPossible ?? '0',
-                  studentClassObj:
-                      GoogleClassroomGlobals.studentAssessmentAndClassroomObj!,
+                  studentClassObj: GoogleClassroomOverrides
+                      .studentAssessmentAndClassroomObj!,
                   title: Globals.assessmentName ?? ''));
             } else {
               Navigator.of(context).pop();
@@ -1532,6 +1548,21 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                   state.errorMsg?.toString() ?? "", null);
             }
           }
+
+          //Standard State
+          //   if (state is CreateClassroomCourseWorkSuccessForStandardApp) {
+          //     PlusUtility.updateLogs(
+          //         activityType: 'GRADED+',
+          //         activityId: '34',
+          //         description: 'G-Classroom Created',
+          //         operationResult: 'Success');
+          //     showDialogSetState!(() {
+          //       assessmentExportAndSaveStatus.value.googleClassroomPrepared =
+          //           true;
+          //     });
+          //     saveAssessmentToDashboardAndGetId();
+          //     navigateToResultSummery();
+          //   }
         });
   }
 
@@ -1556,10 +1587,14 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -1571,12 +1606,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             }
           }
           if (state is RecallTheEvent) {
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is GoogleSlideCreated) {
@@ -1587,8 +1626,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             googleBloc.add(GetShareLink(
                 fileId: Globals.googleSlidePresentationId, slideLink: true));
             // }
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '33',
                 description: 'G-Slide Created',
                 operationResult: 'Success');
@@ -1605,12 +1645,16 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
               studentObj.questionImgUrl = state.questionImageUrl;
               await _studentAssessmentInfoDb.putAt(0, studentObj);
             }
+            List<UserInformation> userProfileInfoData =
+                await UserGoogleProfile.getUserProfile();
             googleBloc.add(CreateExcelSheetToDrive(
                 description: widget.isMcqSheet == true
                     ? "Multiple Choice Sheet"
                     : "Graded+",
                 name: Globals.assessmentName,
-                folderId: Globals.googleDriveFolderId!));
+                folderId:
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -1620,41 +1664,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 AddAndUpdateAssessmentAndResultDetailsToSlidesOnDrive(
                     studentInfoDb: _studentAssessmentInfoDb,
                     slidePresentationId: Globals.googleSlidePresentationId));
-
-            Globals.currentAssessmentId = '';
-
-            List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                await OcrUtility.getSortedStudentInfoList(
-                    tableName: 'student_info');
-            ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
-                isMcqSheet: widget.isMcqSheet ?? false,
-                assessmentQueImage:
-                    studentAssessmentInfoDblist?.first?.questionImgUrl ?? '',
-                assessmentName: Globals.assessmentName ?? 'Assessment Name',
-                rubricScore: Globals.scoringRubric ?? '2',
-                subjectName: widget.isSearchPage == true
-                    ? widget.selectedSubject ?? 'NA'
-                    : subject ??
-                        'NA', //Student Id will not be there in case of custom subject
-                domainName: widget.isSearchPage == true
-                    ? widget.domainNameC ?? ''
-                    : learningStandard ?? '',
-                subDomainName: subLearningStandard ?? '',
-                grade: widget.selectedClass ?? '',
-                schoolId: Globals.appSetting.schoolNameC ?? '',
-                standardId: standardId ?? '',
-                scaffoldKey: _scaffoldKey,
-                context: context,
-                fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
-                sessionId: Globals.sessionId,
-                teacherContactId: Globals.teacherId,
-                teacherEmail: Globals.teacherEmailId,
-                classroomCourseId: GoogleClassroomGlobals
-                        ?.studentAssessmentAndClassroomObj?.courseId ??
-                    '',
-                classroomCourseWorkId: GoogleClassroomGlobals
-                        ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-                    ''));
           }
         });
   }
@@ -1666,22 +1675,77 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         listener: (context, state) async {
           print("state is $state");
           if (state is GoogleSuccess) {
-            Utility.updateLogs(
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
+            });
+
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '45',
                 description: 'G-Excel File Updated',
                 operationResult: 'Success');
-            assessmentExportAndSaveStatus.value.excelSheetPrepared =
-                true; // update loading dialog and navigate
-            navigateToResultSummery();
+
+            // List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+            //     await OcrUtility.getSortedStudentInfoList(
+            //         tableName: 'student_info');
+            // ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
+            //     isMcqSheet: widget.isMcqSheet ?? false,
+            //     assessmentQueImage:
+            //         studentAssessmentInfoDblist?.first?.questionImgUrl ?? '',
+            //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
+            //     rubricScore: Globals.scoringRubric ?? '2',
+            //     subjectName: widget.isSearchPage == true
+            //         ? widget.selectedSubject ?? 'NA'
+            //         : subject ??
+            //             'NA', //Student Id will not be there in case of custom subject
+            //     domainName: widget.isSearchPage == true
+            //         ? widget.domainNameC ?? ''
+            //         : learningStandard ?? '',
+            //     subDomainName: subLearningStandard ?? '',
+            //     grade: widget.selectedClass ?? '',
+            //     schoolId: Globals.appSetting.schoolNameC ?? '',
+            //     standardId: standardId ?? '',
+            //     scaffoldKey: _scaffoldKey,
+            //     context: context,
+            //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+            //     sessionId: Globals.sessionId,
+            //     teacherContactId: Globals.teacherId,
+            //     teacherEmail: Globals.userEmailId,
+            //     classroomCourseId: GoogleClassroomOverrides
+            //             ?.studentAssessmentAndClassroomObj?.courseId ??
+            //         '',
+            //     classroomCourseWorkId: GoogleClassroomOverrides
+            //             ?.studentAssessmentAndClassroomObj?.courseWorkId ??
+            //         ''));
+            //! navigateToResultSummery();
+
+//If classroom course id is empty or null thats mean user didnt select any classroom course
+
+            if ((GoogleClassroomOverrides
+                        .recentStudentResultSummaryForStandardApp
+                        .id
+                        ?.isNotEmpty ??
+                    false) &&
+                Overrides.STANDALONE_GRADED_APP != true) {
+              createClassRoomCourseWorkForStandardApp();
+            } else {
+              assessmentExportAndSaveStatus.value.googleClassroomPrepared =
+                  true;
+              saveAssessmentToDashboardAndGetId();
+            }
           }
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -1699,10 +1763,14 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           if (state is ErrorState) {
             if (state.errorMsg == 'ReAuthentication is required') {
               Navigator.of(context).pop();
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
+              // await Utility.refreshAuthenticationToken(
+              //     isNavigator: true,
+              //     errorMsg: state.errorMsg!,
+              //     context: context,
+              //     scaffoldKey: _scaffoldKey);
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: _scaffoldKey);
             } else {
               Navigator.of(context).pop();
@@ -1717,14 +1785,18 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 studentAssessmentInfoDB: _studentAssessmentInfoDb));
           }
           if (state is UpdateAssignmentDetailsOnSlideSuccess) {
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '44',
                 description: 'G-Slide Updated',
                 operationResult: 'Success');
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "assessment_detail_added_first_slide");
-            assessmentExportAndSaveStatus.value.slidePrepared = true;
+            showDialogSetState!(() {
+              assessmentExportAndSaveStatus.value.slidePrepared = true;
+            });
+
             navigateToResultSummery();
           }
         });
@@ -1746,8 +1818,12 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           Navigator.of(context).pop();
           Utility.currentScreenSnackBar('Something went wrong' ?? "", null);
         } else if (state is GradedPlusSaveResultToDashboardSuccess) {
-          assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard =
-              true;
+          showDialogSetState!(() {
+            assessmentExportAndSaveStatus
+                .value.saveAssessmentResultToDashboard = true;
+          });
+          // assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard =
+          //     true;
           navigateToResultSummery();
         }
       },
@@ -1786,40 +1862,55 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     if (assessmentExportAndSaveStatus.value.excelSheetPrepared == true &&
         assessmentExportAndSaveStatus.value.slidePrepared == true &&
         assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
-            true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GradedPlusResultsSummary(
-            isMcqSheet: widget.isMcqSheet,
-            selectedAnswer: widget.selectedAnswer,
-            fileId: Globals.googleExcelSheetId,
-            subjectId: subjectId ?? '',
-            standardId: standardId ?? '',
-            assessmentName: Globals.assessmentName,
-            shareLink: '',
-            assessmentDetailPage: false,
+            true &&
+        assessmentExportAndSaveStatus.value.googleClassroomPrepared == true) {
+      Navigator.pop(context);
+      OcrUtility.showSuccessDialog(context: context);
+      Timer(Duration(seconds: 2), () {
+        // <-- Delay here
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GradedPlusResultsSummary(
+              isMcqSheet: widget.isMcqSheet,
+              selectedAnswer: widget.selectedAnswer,
+              fileId: Globals.googleExcelSheetId,
+              subjectId: subjectId ?? '',
+              standardId: standardId ?? '',
+              assessmentName: Globals.assessmentName,
+              shareLink: '',
+              assessmentDetailPage: false,
+            ),
           ),
-        ),
-      );
+        );
+      });
+
+      //    });
     }
   }
 
   /* ------ Function call when someone tap on skip button or save button ------ */
   floatingButtonOnTap() async {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: "Please Wait");
+    OcrUtility.showProgressLoadingDialog(
+        context: context,
+        state: (p0) => {showDialogSetState = p0},
+        assessmentExportAndSaveStatus: assessmentExportAndSaveStatus,
+        processList: processList);
+    // Utility.showLoadingDialog(
+    //     context: context, isOCR: true, msg: "Please Wait");
 
     if (Globals.googleExcelSheetId == null ||
         Globals.googleExcelSheetId?.isEmpty == true) {
       // Check if question image exists
 
       if (widget.gradedPlusQueImage == null) {
+        List<UserInformation> userProfileInfoData =
+            await UserGoogleProfile.getUserProfile();
         googleBloc.add(CreateExcelSheetToDrive(
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: Globals.googleDriveFolderId!,
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? '',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(
@@ -1872,22 +1963,43 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       ));
     }
 
+    //google classroom with student details if not already updated
+    if (assessmentExportAndSaveStatus.value.googleClassroomPrepared == false) {
+      createClassRoomCourseWorkForStandardApp();
+    }
+
     //------------------------------------------------------------------------------
     //Updating student result to dashboard if not already updated
     if (assessmentExportAndSaveStatus.value.saveAssessmentResultToDashboard ==
         false) {
-      Globals.currentAssessmentId = '';
-      List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-          await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
-      ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
+      saveAssessmentToDashboardAndGetId();
+    }
+  }
+
+  void createClassRoomCourseWorkForStandardApp() {
+    _googleClassroomBloc.add(CreateClassroomCourseWorkForStandardApp(
+        studentAssessmentInfoDb: _studentAssessmentInfoDb,
+        studentClassObj:
+            GoogleClassroomOverrides.recentStudentResultSummaryForStandardApp,
+        title: Globals.assessmentName ?? '',
+        pointPossible: Globals.pointPossible ?? "0"));
+  }
+
+  Future<void> saveAssessmentToDashboardAndGetId() async {
+    Globals.currentAssessmentId = '';
+
+    List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+        await OcrUtility.getSortedStudentInfoList(tableName: 'student_info');
+    ocrAssessmentBloc.add(SaveAssessmentToDashboardAndGetId(
         isMcqSheet: widget.isMcqSheet ?? false,
         assessmentQueImage:
             studentAssessmentInfoDblist?.first?.questionImgUrl ?? '',
         assessmentName: Globals.assessmentName ?? 'Assessment Name',
         rubricScore: Globals.scoringRubric ?? '2',
         subjectName: widget.isSearchPage == true
-            ? widget.selectedSubject ?? ''
-            : subject ?? '',
+            ? widget.selectedSubject ?? 'NA'
+            : subject ??
+                'NA', //Student Id will not be there in case of custom subject
         domainName: widget.isSearchPage == true
             ? widget.domainNameC ?? ''
             : learningStandard ?? '',
@@ -1900,14 +2012,20 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
         teacherContactId: Globals.teacherId,
-        teacherEmail: Globals.teacherEmailId,
-        classroomCourseId: GoogleClassroomGlobals
-                ?.studentAssessmentAndClassroomObj?.courseId ??
-            '',
-        classroomCourseWorkId: GoogleClassroomGlobals
-                ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-            '',
-      ));
-    }
+        teacherEmail: Globals.userEmailId,
+        classroomCourseId: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseId ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.id ??
+                '',
+        classroomCourseWorkId: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseWorkId ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkId ??
+                ''));
   }
 }

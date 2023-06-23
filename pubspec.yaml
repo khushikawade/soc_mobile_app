@@ -32,7 +32,8 @@ dependencies:
   http: ^0.13.4
   equatable: ^2.0.3
   webview_flutter: ^3.0.4
-  modal_bottom_sheet: ^2.0.0
+  # modal_bottom_sheet: ^2.0.0
+  modal_bottom_sheet: ^3.0.0-pre
   cached_network_image: ^3.0.0
   device_info: ^2.0.2 #Used to get device info
   xml2json: ^5.3.1 # Used to convert xml response to json
@@ -74,7 +75,7 @@ dependencies:
   speech_bubble: ^0.0.9 #Used in standard app appbar userguide
   invert_colors: ^0.0.4 #Used for dark mode color inversion
   # new_version: ^0.2.3 #^0.2.3 #Used to show new version available popup
-  new_version: ^0.3.1
+  new_version: ^0.3.1 #^0.2.3 #Used to show new version available popup
   flutter_math_fork: ^0.5.0 #^0.4.2+1 #
   back_button_interceptor: ^5.0.2 #Used to manage the back button for android (at news/social screen)
   camera: 0.10.0+1 #^0.9.4+16
@@ -95,16 +96,22 @@ dependencies:
   scrollable_positioned_list: ^0.2.0-nullsafety.0 #Used on courses list to scroll to specific course index
   csv: ^5.0.1 #Used to expose the csv file
   fluttertoast: ^8.0.9 #Used to show toast messages
-  firebase_core: ^2.3.0 #^1.24.0
-  firebase_analytics: ^10.0.6 #^9.3.8
-  firebase_crashlytics: ^3.0.10
+  # firebase_core: ^2.3.0 #^1.24.0 #used for initializing the FirebaseApp()
+  # firebase_auth: ^4.6.1
+  # firebase_analytics: ^10.0.6 #^9.3.8
+  # firebase_crashlytics: ^3.0.10
+  firebase_core: ^2.3.0
+  firebase_auth: ^4.6.2
+  firebase_analytics: ^10.0.6
+  firebase_crashlytics: ^3.3.2
+  google_sign_in: ^6.1.2 #Used in google authentication
   visibility_detector: ^0.3.3 #Used to get the feed view by user - View Interaction
-  fl_chart: ^0.61.0
+  fl_chart: ^0.61.0 #Used to create graphs and charts / Used in Student+
   pdf: ^3.0.1 #Used in PBIS+ psf generation and customization
   screenshot: ^1.3.0
   audioplayers: ^3.0.1
- 
-
+  # screenshot: ^1.3.0 #used to take screenshot / Used in PBIS+
+  uuid: ^3.0.7 #Used to generate unique ids / Used to generate user logs session_Id
 
 dev_dependencies:
   flutter_test:

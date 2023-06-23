@@ -139,7 +139,7 @@ class PBISPlusSkillsError extends PBISPlusState {
 }
 
 class PBISPlusSkillsUpdateLoading extends PBISPlusState {
-  final data;
+  // final data;
 
   PBISPlusSkillsUpdateLoading();
   @override

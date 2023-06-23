@@ -1,9 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/contweek.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
@@ -329,11 +329,7 @@ class PBISPlusActionInteractionButtonState
     }
 
     /*-------------------------User Activity Track START----------------------------*/
-    Utility.updateLogs(
-        activityType: 'PBIS+',
-        activityId: '38',
-        description: 'User Interaction PBIS+',
-        operationResult: 'Success');
+    //Postgres event track for interaction added to bloc success
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));

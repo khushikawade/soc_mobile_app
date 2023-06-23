@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -9,6 +8,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/week_view.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';

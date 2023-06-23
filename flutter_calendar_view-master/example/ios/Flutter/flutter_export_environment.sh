@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/zehntech/Documents/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/zehntech/Documents/flutterproject/soc_mobile_app/flutter_calendar_view-master/example"
+export "FLUTTER_ROOT=/Users/apple/Documents/Setups/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/apple/Documents/Flutter_Projects/SOC/soc_mobile_app/flutter_calendar_view-master/example"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
