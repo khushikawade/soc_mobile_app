@@ -139,6 +139,8 @@ class PBISPlusSkillsError extends PBISPlusState {
 }
 
 class PBISPlusSkillsUpdateLoading extends PBISPlusState {
+  final data;
+
   PBISPlusSkillsUpdateLoading();
   @override
   List<Object> get props => [];

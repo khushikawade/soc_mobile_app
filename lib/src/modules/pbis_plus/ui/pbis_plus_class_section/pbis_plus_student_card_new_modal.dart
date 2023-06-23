@@ -31,8 +31,6 @@ class PBISPlusStudentCardNewModal extends StatefulWidget {
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   final String? studentProfile;
 
-  //final Function(bool) onValueUpdate;
-
   PBISPlusStudentCardNewModal({
     Key? key,
     required this.isFromDashboardPage,
@@ -132,13 +130,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                     size: Size(MediaQuery.of(context).size.width * 0.29,
                         MediaQuery.of(context).size.width / 10),
                     borderColor: AppTheme.kButtonColor,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
+                    textColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
                     text: "Done",
                     onClick: () {
                       isexpanded.value = false;

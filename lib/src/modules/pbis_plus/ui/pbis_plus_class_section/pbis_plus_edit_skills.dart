@@ -31,10 +31,9 @@ class PBISPlusEditSkills extends StatefulWidget {
 
 class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<int> hoveredIconIndex = ValueNotifier<int>(-1);
-
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
-  ValueNotifier<bool> toogle = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isCustomBehaviour = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   bool tooglevalue = false;
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
@@ -56,34 +55,19 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     addSkill,
     addSkill
   ]);
-  int nonAddSkillCount = -1;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    // pbisPlusClassroomBloc.add(GetPBISPlusBehaviour());
-    pbisPlusClassroomBloc.add(GetPBISSkills());
+    // pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
+    pbisPlusClassroomBloc
+        .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
   }
 
   ValueNotifier<List<PBISPlusSkills>> localskillsList =
       ValueNotifier<List<PBISPlusSkills>>([]);
-
-  // getcount() {
-  //   nonAddSkillCount = 0;
-  //   containerIcons.value.where((item) => item.name != "Add Skill").length;
-  //   return nonAddSkillCount;
-  // }
-
-  // bool isItemExist(data) {
-  //   if (containerIcons.value.isNotEmpty) {
-  //     final result =
-  //         containerIcons.value.where((item) => item.name == data.name);
-  //     return result.isNotEmpty;
-  //   }
-  //   return false;
-  // }
 
   Widget body(BuildContext context) {
     return Column(
@@ -104,20 +88,20 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ValueListenableBuilder(
-          valueListenable: toogle,
+          valueListenable: isCustomBehaviour,
           builder: (context, value, _) => Transform.scale(
                 transformHitTests: false,
                 scale: 0.8, // Adjust the scale factor as needed
                 child: CupertinoSwitch(
-                  value: toogle.value,
+                  value: isCustomBehaviour.value,
                   onChanged: (value) {
-                    toogle.value = value;
+                    isCustomBehaviour.value = value;
                   },
                   trackColor:
                       Color(0xff000000) == Theme.of(context).backgroundColor
                           ? AppTheme.klistTilePrimaryLight.withOpacity(0.1)
                           : Color(0xff000000).withOpacity(0.5),
-                  thumbColor: toogle.value
+                  thumbColor: isCustomBehaviour.value
                       ? AppTheme.GreenColor
                       : AppTheme.klistTilePrimaryLight,
                   activeColor:
@@ -151,7 +135,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 
   Widget _buildHeader() {
     return ValueListenableBuilder(
-        valueListenable: toogle,
+        valueListenable: isCustomBehaviour,
         builder: (context, value, _) => Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -176,7 +160,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ),
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        toogle.value ? "Edit Behaviour" : "Default Behaviour",
+                        // toogle.value ? "Edit Behaviour" : "Default Behaviour",
+                        isCustomBehaviour.value
+                            ? "Teacher Behaviour"
+                            : "School Behaviour",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline5!.copyWith(
                             color: Color(0xff000000) ==
@@ -265,7 +252,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   print(
                       "-----------------INSIDE ON onAccept---------------------------");
                   pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                      index: hoveredIconIndex.value, item: draggedData));
+                      index: hoveredIconIndex.value,
+                      item: draggedData,
+                      olditem: localskillsList.value));
                   // print(isItemExist(draggedData));
                   // if (isItemExist(draggedData) == false) {
                   //   int count;
@@ -329,27 +318,22 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                                 child: Container(
                                                   height: 40,
                                                   width: 40,
-                                                  child: SvgPicture.asset(
+                                                  child: _buildIcons(
                                                     item.iconUrlC!,
-                                                    // item.dataList[0].iconUrlC!,
-                                                    fit: BoxFit.contain,
                                                   ),
                                                 ),
                                                 feedback: Container(
                                                   height: 40,
                                                   width: 40,
-                                                  child: SvgPicture.asset(
+                                                  child: _buildIcons(
                                                     item.iconUrlC!,
-                                                    // item.dataList[0].iconUrlC!,
-                                                    fit: BoxFit.contain,
                                                   ),
                                                 ),
                                                 childWhenDragging: Container(
                                                   height: 40,
                                                   width: 40,
-                                                  child: SvgPicture.asset(
+                                                  child: _buildIcons(
                                                     item.iconUrlC!,
-                                                    fit: BoxFit.contain,
                                                   ),
                                                 ),
                                               ),
@@ -378,33 +362,16 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     });
   }
 
-  Widget _buildaddSkillsWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          height: 40,
-          width: 40,
-          child: SvgPicture.asset(
-            "assets/Pbis_plus/add_icon.svg",
+  Widget _buildIcons(String assestPath) {
+    return assestPath.contains('http://') || assestPath.contains('https://')
+        ? Image.network(
+            assestPath!,
             fit: BoxFit.contain,
-          ),
-        ),
-        SpacerWidget(4),
-        Padding(
-          padding: Globals.deviceType != 'phone'
-              ? const EdgeInsets.only(top: 10, left: 10)
-              : EdgeInsets.zero,
-          child: Utility.textWidget(
-              text: "Add Skills",
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontSize: 12)),
-        )
-      ],
-    );
+          )
+        : SvgPicture.asset(
+            assestPath,
+            fit: BoxFit.contain,
+          );
   }
 
   Widget _buildEditWidget(
@@ -417,7 +384,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         print("----------botton sheet ======== close=======----------------");
         isEditMode.value = !isEditMode.value;
         changedIndex.value = -1;
-        pbisPlusClassroomBloc.add(GetPBISSkills());
+        pbisPlusClassroomBloc
+            .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -452,8 +420,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 
   Widget _buildAdditionalBehaviour() {
     return ValueListenableBuilder(
-        valueListenable: toogle,
-        builder: (context, value, _) => toogle.value
+        valueListenable: isCustomBehaviour,
+        builder: (context, value, _) => isCustomBehaviour.value
             ? Expanded(
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -579,11 +547,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: Center(
         child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Opacity(
-                opacity: 0.1,
-                child: SvgPicture.asset(
-                  item.iconUrlC!,
-                ))),
+            child: Opacity(opacity: 0.1, child: _buildIcons(item.iconUrlC!))),
       ),
     );
   }
@@ -595,51 +559,38 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         Utility.doVibration();
       },
       child: Draggable(
-        data: item,
-        ignoringFeedbackPointer: !isIconDisabled,
-        child: Container(
-          width: 40,
-          height: 40,
-          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                spreadRadius: 0,
-                blurRadius: 1,
-                offset: Offset(0, 0),
+          data: item,
+          ignoringFeedbackPointer: !isIconDisabled,
+          child: Container(
+            width: 40,
+            height: 40,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: isIconDisabled
+                    ? Opacity(opacity: 0.2, child: _buildIcons(item.iconUrlC!))
+                    : _buildIcons(item.iconUrlC!),
               ),
-            ],
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: isIconDisabled
-                  ? Opacity(
-                      opacity: 0.2,
-                      child: SvgPicture.asset(
-                        item.iconUrlC!,
-                      ))
-                  : SvgPicture.asset(
-                      item.iconUrlC!,
-                    ),
             ),
           ),
-        ),
-        feedback: isIconDisabled
-            ? SizedBox.shrink()
-            : SvgPicture.asset(
-                item.iconUrlC!,
-              ),
-        childWhenDragging: isIconDisabled
-            ? SizedBox.shrink()
-            : SvgPicture.asset(
-                item.iconUrlC!,
-              ),
-      ),
+          feedback:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!),
+          childWhenDragging:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!)),
     );
   }
 

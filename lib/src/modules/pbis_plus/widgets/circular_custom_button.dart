@@ -19,7 +19,7 @@ class CircularCustomButton extends StatelessWidget {
   CircularCustomButton({
     Key? key,
     Color? borderColor,
-    Color? textColor,
+    required Color? textColor,
     required String? text,
     required Function? onClick,
     Enum? buttonType,
@@ -45,7 +45,7 @@ class CircularCustomButton extends StatelessWidget {
           fontSize: Globals.deviceType == "phone"
               ? AppTheme.kBodyText1FontSize
               : AppTheme.kBodyText1FontSize + AppTheme.kSize,
-          color: Colors.white,
+          color: textColor,
           fontWeight: FontWeight.normal,
           fontFamily: 'Roboto Regular',
           height: 1.5,

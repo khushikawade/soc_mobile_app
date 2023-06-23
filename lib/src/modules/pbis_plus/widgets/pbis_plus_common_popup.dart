@@ -134,6 +134,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                           },
                           backgroundColor: AppTheme.kButtonColor,
                           isBusy: false,
+                          textColor: Color(0xffF7F8F9),
                           buttonRadius: 64,
                         ),
                         SizedBox(

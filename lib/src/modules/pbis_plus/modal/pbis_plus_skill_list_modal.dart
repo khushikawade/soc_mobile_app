@@ -1,37 +1,6 @@
 import 'package:hive/hive.dart';
 part 'pbis_plus_skill_list_modal.g.dart';
 
-// @HiveType(typeId: 43)
-// class PBISPlusSkillsListModal extends HiveObject {
-//   @HiveField(0)
-//   late List<PBISPlusSkills> dataList;
-
-//   PBISPlusSkillsListModal({
-//     required this.dataList,
-//   });
-
-//   PBISPlusSkillsListModal.fromJson(Map<String, dynamic> json) {
-//     if (json['dataList'] != null) {
-//       dataList = <PBISPlusSkills>[];
-//       json['dataList'].forEach((v) {
-//         dataList!.add(new PBISPlusSkills.fromJson(v));
-//       });
-//     } else {
-//       dataList = [];
-//     }
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     if (this.dataList != null) {
-//       data['dataList'] = this.dataList!.map((v) => v.toJson()).toList();
-//     } else {
-//       data['dataList'] = [];
-//     }
-//     return data;
-//   }
-// }
-
 @HiveType(typeId: 44)
 class PBISPlusSkills extends HiveObject {
   @HiveField(0)

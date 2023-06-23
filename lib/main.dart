@@ -20,6 +20,7 @@ import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
@@ -119,6 +120,7 @@ void main() async {
       ..registerAdapter(StudentPlusSearchModelAdapter())
       ..registerAdapter(StudentPlusGradeModelAdapter())
       ..registerAdapter(PBISPlusSkillsAdapter())
+      ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
       ..registerAdapter(PBISPlusStudentNotesAdapter());
 
     // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())

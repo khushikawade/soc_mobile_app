@@ -92,13 +92,16 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
 }
 
 class GetPBISPlusBehaviour extends PBISPlusEvent {
-  GetPBISPlusBehaviour();
+  final bool? isCustom;
+  GetPBISPlusBehaviour({
+    required this.isCustom,
+  });
   @override
-  List<Object> get props => [];
+  List<bool> get props => [isCustom!];
 }
 
-class GetPBISSkills extends PBISPlusEvent {
-  GetPBISSkills();
+class GetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
+  GetPBISPlusAdditionalBehaviour();
   @override
   List<Object> get props => [];
 }
@@ -126,11 +129,13 @@ class GetPBISSkillsDeleteItem extends PBISPlusEvent {
 
 class GetPBISSkillsUpdateList extends PBISPlusEvent {
   final PBISPlusSkills item;
+  final List<PBISPlusSkills> olditem;
   int index;
-  GetPBISSkillsUpdateList({required this.item, required this.index});
+  GetPBISSkillsUpdateList(
+      {required this.item, required this.index, required this.olditem});
 
   @override
-  List<Object> get props => [item, index];
+  List<Object> get props => [item, index, olditem];
 }
 
 // ignore: must_be_immutable
