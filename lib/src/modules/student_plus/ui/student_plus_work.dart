@@ -34,9 +34,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
 
-  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  StudentPlusWorkScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -459,7 +459,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 if (filterNotifier.value == '' &&
                     state is StudentPlusWorkSuccess &&
                     state.obj.length > 0) {
-                  return PlusCustomFloatingActionButton(onPressed: ()
+                  return PlusCustomFloatingActionButton(onPressed: () async
 
                       //  {
                       //   if (StudentPlusOverrides
@@ -474,19 +474,32 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                       //     _shareBottomSheetMenu();
                       //   }
                       // }
-                      async {
+                      //    {
+                      //   List<UserInformation> userProfileInfoData =
+                      //       await UserGoogleProfile.getUserProfile();
+
+                      // if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
+                      //         null ||
+                      //     userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
+                      //         "") {
+                      //   _checkDriveFolderExistsOrNot();
+                      // } else if (widget.studentDetails
+                      //         ?.studentgooglePresentationUrl?.isEmpty ??
+                      //     true) {
+                      //   getGooglePresentationUrl();
+                      // } else {
+                      //   _shareBottomSheetMenu();
+                      // }
+                      // }
+
+                      {
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
-
                     if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             null ||
                         userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             "") {
                       _checkDriveFolderExistsOrNot();
-                    } else if (widget
-                            .studentDetails?.googlePresentationUrl?.isEmpty ??
-                        true) {
-                      getGooglePresentationUrl();
                     } else {
                       _shareBottomSheetMenu();
                     }
@@ -505,7 +518,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         svgPath: '',
       ),
     ];
-    if (widget.studentDetails.googlePresentationUrl?.isNotEmpty ?? false) {
+    if (widget.studentDetails.studentgooglePresentationUrl != null &&
+        widget.studentDetails.studentgooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
           title: 'Go to Presentation',
@@ -514,7 +528,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       );
     }
 
-    showModalBottomSheet(
+    final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -534,6 +548,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             },
           );
         });
+
+    if (result != null) {
+      widget.studentDetails = result;
+    }
   }
 
   // void getGooglePresentationUrl() {
@@ -544,23 +562,23 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   //       studentPlusDriveFolderId:
   //           StudentPlusOverrides.studentPlusGoogleDriveFolderId));
   // }
-  Future<void> getGooglePresentationUrl() async {
-    List<UserInformation> userProfileInfoData =
-        await UserGoogleProfile.getUserProfile();
+  // Future<void> getGooglePresentationUrl() async {
+  //   List<UserInformation> userProfileInfoData =
+  //       await UserGoogleProfile.getUserProfile();
 
-    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-      Utility.showLoadingDialog(
-          context: context, isOCR: true, msg: 'Please Wait...');
-      googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-          studentDetails: widget.studentDetails,
-          studentPlusDriveFolderId:
-              userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
-    } else {
-      Utility.currentScreenSnackBar(
-          "Something Went Wrong. Please Try Again.", null);
-    }
-  }
+  //   if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
+  //       userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
+  //     Utility.showLoadingDialog(
+  //         context: context, isOCR: true, msg: 'Please Wait...');
+  //     googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
+  //         studentDetails: widget.studentDetails,
+  //         studentPlusDriveFolderId:
+  //             userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
+  //   } else {
+  //     Utility.currentScreenSnackBar(
+  //         "Something Went Wrong. Please Try Again.", null);
+  //   }
+  // }
 
   BlocListener googleSlidesPresentationBlocListener() {
     return BlocListener<GoogleSlidesPresentationBloc,
@@ -570,7 +588,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         listener: (context, state) async {
           if (state is GetGooglePresentationURLSuccess) {
             Navigator.pop(context, false);
-            widget.studentDetails.googlePresentationUrl =
+            widget.studentDetails.studentgooglePresentationUrl =
                 state.googlePresentationFileUrl;
 
             _shareBottomSheetMenu();
@@ -605,24 +623,11 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         child: Container(),
         listener: (context, state) async {
           print("On student work ------------$state---------");
-          // //Checking Google Folder State
-          // if (state is GoogleSuccess) {
-          //   Navigator.of(context).pop();
-          //   if (StudentPlusOverrides
-          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-          //       false) {
-          //     getGooglePresentationUrl();
-          //   } else {
-          //     // Navigator.of(context).pop();
-          //     Utility.currentScreenSnackBar(
-          //         "Something Went Wrong. Please Try Again.", null);
-          //   }
-          // }
 
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
-            getGooglePresentationUrl();
+            _shareBottomSheetMenu();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();

@@ -44,3 +44,30 @@ class GetStudentPlusPresentationURL extends GoogleSlidesPresentationEvent {
   @override
   List<Object> get props => [];
 }
+
+class StudentPlusCreateGooglePresentationForStudent
+    extends GoogleSlidesPresentationEvent {
+  final StudentPlusDetailsModel studentDetails;
+  final String studentPlusDriveFolderId;
+
+  StudentPlusCreateGooglePresentationForStudent({
+    required this.studentPlusDriveFolderId,
+    required this.studentDetails,
+  });
+
+  @override
+  List<Object> get props => [];
+}
+
+class StudentPlusUpdateGooglePresentationForStudent
+    extends GoogleSlidesPresentationEvent {
+  final StudentPlusDetailsModel studentDetails;
+  final List<StudentPlusWorkModel> allRecords;
+  StudentPlusUpdateGooglePresentationForStudent({
+    required this.studentDetails,
+    required this.allRecords,
+  });
+
+  @override
+  List<Object> get props => [];
+}

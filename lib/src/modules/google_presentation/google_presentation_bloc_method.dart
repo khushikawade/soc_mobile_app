@@ -76,7 +76,7 @@ class GooglePresentationBlocMethods {
         if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
           StudentPlusDetailsModel student = studentsLocalData[index];
 
-          student.googlePresentationUrl = studentGooglePresentationUrl;
+          student.studentgooglePresentationUrl = studentGooglePresentationUrl;
 
           await _localDb.putAt(index, student);
           break;

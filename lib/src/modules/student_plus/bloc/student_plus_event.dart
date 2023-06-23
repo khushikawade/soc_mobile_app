@@ -36,16 +36,15 @@ class FetchStudentWorkEvent extends StudentPlusEvent {
 
 /* ------------------ Event use to trigger student details from id ------------------ */
 class GetStudentPlusDetails extends StudentPlusEvent {
-  final String studentId;
+  final String studentOsis;
   GetStudentPlusDetails({
-    required this.studentId,
+    required this.studentOsis,
   });
   @override
-  List<Object> get props => [studentId];
+  List<Object> get props => [studentOsis];
   @override
-  String toString() => '$studentId';
+  String toString() => '$studentOsis';
 }
-
 
 /* ---------------- Event use to trigger student grade details --------------- */
 class FetchStudentGradesEvent extends StudentPlusEvent {

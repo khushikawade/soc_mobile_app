@@ -127,7 +127,7 @@ class _GradedPlusResultOptionBottomSheetState
         onTap: () {
           bottomIconsOnTap(
               title: element.title ?? '',
-              url: widget.studentDetails.googlePresentationUrl ?? '');
+              url: widget.studentDetails.studentgooglePresentationUrl ?? '');
         });
   }
 
@@ -151,7 +151,14 @@ class _GradedPlusResultOptionBottomSheetState
         // } else {
         //   _checkDriveFolderExistsOrNot();
         // }
-        studentPlusGooglePresentationIsAvailable(true);
+
+        if (widget.studentDetails.studentgooglePresentationId == null ||
+            widget.studentDetails.studentgooglePresentationId == '') {
+          createStudentGooglePresentation();
+        } else {
+          updateStudentGooglePresentation();
+          // studentPlusGooglePresentationIsAvailable(true);
+        }
 
         break;
       default:
@@ -324,6 +331,19 @@ class _GradedPlusResultOptionBottomSheetState
                   null);
             }
           }
+          if (state is StudentPlusCreateGooglePresentationForStudentSuccess) {
+            widget.studentDetails.studentgooglePresentationId =
+                state.googlePresentationFileId;
+            widget.studentDetails.studentgooglePresentationUrl =
+                StudentPlusOverrides.studentPlusGooglePresentationUrl +
+                    state.googlePresentationFileId;
+            updateStudentGooglePresentation();
+          }
+          if (state is StudentPlusUpdateGooglePresentationForStudentSuccess) {
+            Utility.currentScreenSnackBar(
+                "Student Presentation is Sync Successfully ", null);
+            Navigator.of(context).pop(widget.studentDetails);
+          }
         });
   }
 
@@ -367,5 +387,30 @@ class _GradedPlusResultOptionBottomSheetState
       Utility.currentScreenSnackBar(
           "Something Went Wrong. Please Try Again.", null);
     }
+  }
+
+  Future<void> createStudentGooglePresentation() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
+    googleSlidesPresentationBloc
+        .add(StudentPlusCreateGooglePresentationForStudent(
+      studentPlusDriveFolderId:
+          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+      studentDetails: widget.studentDetails,
+    ));
+  }
+
+  updateStudentGooglePresentation() async {
+    LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
+        "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
+
+    List<StudentPlusWorkModel>? _localData = await _localDb.getData();
+    _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+    print("update the presentation event trigger");
+
+    googleSlidesPresentationBloc.add(
+        StudentPlusUpdateGooglePresentationForStudent(
+            studentDetails: widget.studentDetails, allRecords: _localData));
   }
 }

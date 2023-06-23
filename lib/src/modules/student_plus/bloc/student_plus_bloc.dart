@@ -47,7 +47,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     if (event is GetStudentPlusDetails) {
       try {
         LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
-            "${StudentPlusOverrides.studentPlusDetails}_${event.studentId}");
+            "${StudentPlusOverrides.studentPlusDetails}_${event.studentOsis}");
 
         List<StudentPlusDetailsModel> _localData = await _localDb.getData();
 
@@ -60,7 +60,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         }
 
         StudentPlusDetailsModel studentDetails =
-            await getStudentDetailsFromId(studentId: event.studentId);
+            await getStudentDetailsFromOsis(studentOsis: event.studentOsis);
 
         await _localDb.clear();
         await _localDb.addData(studentDetails);
@@ -69,7 +69,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         );
       } catch (e) {
         LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
-            "${StudentPlusOverrides.studentPlusDetails}_${event.studentId}");
+            "${StudentPlusOverrides.studentPlusDetails}_${event.studentOsis}");
 
         List<StudentPlusDetailsModel> _localData = await _localDb.getData();
 
@@ -221,11 +221,29 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-  /* ------------- Function to get student details for student id ------------- */
-  Future getStudentDetailsFromId({required String studentId}) async {
+  // /* ------------- Function to get student details for student id ------------- */
+  // Future getStudentDetailsFromId({required String studentId}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         '${Overrides.API_BASE_URL}getRecord/Student__c/${studentId}',
+  //         isCompleteUrl: true,
+  //         headers: {
+  //           "Content-Type": "application/json;charset=UTF-8",
+  //           "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+  //         }); //change DBN to dynamic
+  //     if (response.statusCode == 200) {
+  //       return StudentPlusDetailsModel.fromJson(response.data['body']);
+  //     }
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  /* ------------- Function to get student details for student Osis ------------- */
+  Future getStudentDetailsFromOsis({required String studentOsis}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          '${Overrides.API_BASE_URL}getRecord/Student__c/${studentId}',
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/${studentOsis}',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",

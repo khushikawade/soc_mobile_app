@@ -35,4 +35,7 @@ class StudentPlusOverrides {
 
   // static String studentPlusGoogleDriveFolderId = '';
   // static String studentPlusGoogleDriveFolderPath = '';
+
+ static final String studentPlusGooglePresentationUrl = 'https://docs.google.com/presentation/d/';
+
 }

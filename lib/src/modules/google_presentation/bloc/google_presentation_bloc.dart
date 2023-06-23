@@ -12,6 +12,7 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,7 @@ class GoogleSlidesPresentationBloc
     //Used to search the presentation URL if already exist and update the student's local database
     //Create Presentation in case of not exist
     //This will call on pressing sync slide button from Student+ work
+
     if (event is SearchStudentPresentationStudentPlus) {
       try {
         List<UserInformation> userProfileLocalData =
@@ -184,6 +186,86 @@ class GoogleSlidesPresentationBloc
         yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
       }
     }
+
+    if (event is StudentPlusCreateGooglePresentationForStudent) {
+      try {
+        //GET CURRENT GOOGLE USER PROFILE
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        //GET STUDENT PRESENTAION FILE NAME
+        String studentGooglePresentationFileName =
+            createStudentGooglePresentationFileName(event.studentDetails);
+
+        //CREATE STUDENT PRESENTAION FILE
+        List GooglePresentationCreateResponse =
+            await googleDriveBloc.createPresentationOnDrive(
+                name: studentGooglePresentationFileName,
+                folderId: event.studentPlusDriveFolderId,
+                accessToken: userProfileLocalData[0].authorizationToken,
+                refreshToken: userProfileLocalData[0].refreshToken,
+                excelSheetId: '',
+                isMcqSheet: false);
+
+        //Return Google presentation if once presentation created
+        if (GooglePresentationCreateResponse[0] == true) {
+          yield StudentPlusCreateGooglePresentationForStudentSuccess(
+              googlePresentationFileId: GooglePresentationCreateResponse[1]);
+        }
+        //Return Error in case of presentation not created
+        else {
+          yield GoogleSlidesPresentationErrorState(
+              errorMsg: GooglePresentationCreateResponse[1].toString());
+        }
+      } catch (e) {
+        print(e);
+        yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+      }
+    }
+
+    if (event is StudentPlusUpdateGooglePresentationForStudent) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        //Count the number of slide already exist to the Google Presentation
+        List countGooglePresentationSlide =
+            await getSlidesCountFromGooglePresentation(
+          presentationFileId:
+              event.studentDetails.studentgooglePresentationId ?? '',
+          userProfile: userProfileLocalData[0],
+        );
+
+        //Compare Google Presentation slide count with the Student work count
+        if (countGooglePresentationSlide[0] == true &&
+            countGooglePresentationSlide[1] <= event.allRecords.length) {
+          List updatedPresentationResponse =
+              await updateNewSlidesToGooglePresentation(
+                  presentationId:
+                      event.studentDetails.studentgooglePresentationId ?? '',
+                  studentDetails: event.studentDetails,
+                  allRecords: event.allRecords,
+                  numberOfSlidesAlreadyAvailable:
+                      countGooglePresentationSlide[1],
+                  userProfile: userProfileLocalData[0]);
+
+          if (updatedPresentationResponse[0] == true) {
+            yield StudentPlusUpdateGooglePresentationForStudentSuccess();
+          } else {
+            yield GoogleSlidesPresentationErrorState(
+                errorMsg: countGooglePresentationSlide[1].toString());
+          }
+        } else if (countGooglePresentationSlide[1]! > event.allRecords.length) {
+          yield StudentPlusUpdateGooglePresentationForStudentSuccess();
+        } else {
+          yield GoogleSlidesPresentationErrorState(
+              errorMsg: countGooglePresentationSlide[1].toString());
+        }
+      } catch (e) {
+        print(e);
+        yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+      }
+    }
   }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -271,6 +353,7 @@ class GoogleSlidesPresentationBloc
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
 
+      print(headers);
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationFileId";
 
@@ -343,6 +426,7 @@ class GoogleSlidesPresentationBloc
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
+        print(response);
         return [true, true];
       } else if (retry > 0) {
         // var result = googleDriveBloc
@@ -367,6 +451,26 @@ class GoogleSlidesPresentationBloc
       }
 
       return [false, response.statusCode];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  String createStudentGooglePresentationFileName(
+      StudentPlusDetailsModel studentDetails) {
+    try {
+      //create file name for student Presentation
+      String fileName = '';
+      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
+        fileName += studentDetails.lastNameC! + "_";
+      }
+      if (studentDetails.firstNameC != null &&
+          studentDetails.firstNameC != '') {
+        fileName += studentDetails.firstNameC! + "_";
+      }
+
+      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
+      return fileName ?? '';
     } catch (e) {
       throw (e);
     }
