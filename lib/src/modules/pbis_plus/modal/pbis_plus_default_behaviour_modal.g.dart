@@ -6,10 +6,48 @@ part of 'pbis_plus_default_behaviour_modal.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
+class PBISPlusDefaultAndCustomBehaviourModalAdapter
+    extends TypeAdapter<PBISPlusDefaultAndCustomBehaviourModal> {
+  @override
+  final int typeId = 46;
+
+  @override
+  PBISPlusDefaultAndCustomBehaviourModal read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return PBISPlusDefaultAndCustomBehaviourModal(
+      defaultList: fields[0] as PBISPlusDefaultBehaviourModal?,
+      customList: fields[1] as PBISPlusDefaultBehaviourModal?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, PBISPlusDefaultAndCustomBehaviourModal obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.defaultList)
+      ..writeByte(1)
+      ..write(obj.customList);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PBISPlusDefaultAndCustomBehaviourModalAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class PBISPlusDefaultBehaviourModalAdapter
     extends TypeAdapter<PBISPlusDefaultBehaviourModal> {
   @override
-  final int typeId = 46;
+  final int typeId = 47;
 
   @override
   PBISPlusDefaultBehaviourModal read(BinaryReader reader) {

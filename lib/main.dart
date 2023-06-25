@@ -121,7 +121,8 @@ void main() async {
       ..registerAdapter(StudentPlusGradeModelAdapter())
       ..registerAdapter(PBISPlusSkillsAdapter())
       ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
-      ..registerAdapter(PBISPlusStudentNotesAdapter());
+      ..registerAdapter(PBISPlusStudentNotesAdapter())
+      ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter());
 
     // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
   }
