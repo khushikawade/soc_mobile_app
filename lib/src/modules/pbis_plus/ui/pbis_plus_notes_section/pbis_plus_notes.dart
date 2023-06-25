@@ -76,7 +76,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
         onWillPop: () async => false,
         child: Scaffold(
             key: _scaffoldKey,
-            // backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: Colors.transparent,
+            // Theme.of(context).colorScheme.secondary,
             appBar: PBISPlusUtility.pbisAppBar(
               context: context,
               titleIconData: widget.titleIconData,
