@@ -29,14 +29,13 @@ class PBISBottomNavBar {
         titleIconData: IconData(0xe824,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
-        PBISPlusNotes(
+      PBISPlusNotes(
         titleIconData: IconData(0xe824,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),
       ),
-    
     ];
   }
 
@@ -65,9 +64,12 @@ class PBISBottomNavBar {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: pbisBottomNavBarIcons(  IconData(0xe824,
+        icon: pbisBottomNavBarIcons(
+            IconData(0xe824,
                 fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg), 'Notes', context),
+                fontPackage: Overrides.kFontPkg),
+            'Notes',
+            context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -76,7 +78,6 @@ class PBISBottomNavBar {
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
-      
     ];
   }
 

@@ -170,6 +170,7 @@ flutter:
     - family: SOC_CustomIcons
       fonts:
         - asset: fonts/CustomFlutterIcons.ttf
+        - asset: fonts/CustomFlutterIcons_25_06.ttf
 
     # - family: PBISPlusIcons
     #   fonts:

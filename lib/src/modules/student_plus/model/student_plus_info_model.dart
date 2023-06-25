@@ -388,7 +388,6 @@ class StudentPlusInfoModel {
 // D (FEE8D0)
 // E (EBD2FF)
 // F (B5E0FF) Optional
-
 }
 
 class MyData {
@@ -415,4 +414,3 @@ class MyData {
 //     required this.teacher,
 //   });
 // }
-

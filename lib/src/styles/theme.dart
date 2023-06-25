@@ -813,5 +813,4 @@ class AppTheme {
   }
 
   // Dark theme color are define here
-
 }

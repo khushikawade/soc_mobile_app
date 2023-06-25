@@ -42,7 +42,7 @@ class UserGoogleProfile {
         _userInformation.refreshToken = _userInformation.authorizationToken;
       } else {
         print(" ------------SSO IS DISABLED-----");
-      } 
+      }
 
       await _localDb.addData(_userInformation);
       // await _localDb.close();

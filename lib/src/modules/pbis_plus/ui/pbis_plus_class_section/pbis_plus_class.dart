@@ -297,7 +297,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       //     errorMsg: state.error!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                      await Authentication.reAuthenticationRequired(context: context,errorMessage: state.error,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.error,
+                          scaffoldKey: _scaffoldKey);
                       pbisPlusClassroomBloc.add(PBISPlusImportRoster(
                           isGradedPlus: widget.isGradedPlus));
                     } else {
