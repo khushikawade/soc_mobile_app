@@ -75,7 +75,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
       child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         ValueListenableBuilder(
             valueListenable: maxLine,
-            builder: (context, value, _) => TextFormField(
+            builder: (context, value, _) =>
+           Container(
+       
+        width:MediaQuery.of(context).size.width * 0.9,
+        child:   Padding(
+      padding: EdgeInsets.only(left:16,right:16), // Adjust the padding as needed
+      child:
+     
+             TextFormField(
                   minLines: 1,
                   maxLines: 3,
                   textAlign: TextAlign.center,
@@ -119,14 +127,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                   // },
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-                )),
+                )))),
         ValueListenableBuilder(
           valueListenable: isexpanded,
           builder: (context, value, _) => isexpanded.value
-              ? Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  alignment: Alignment.bottomRight,
-                  child: CircularCustomButton(
+              ?
+              //  Container(
+              //     margin: EdgeInsets .symmetric(horizontal: 12, vertical: 8),
+              //     alignment: Alignment.bottomRight,
+              //     child:
+                  Positioned(
+              right: 0,
+              child:
+                   CircularCustomButton(
                     size: Size(MediaQuery.of(context).size.width * 0.29,
                         MediaQuery.of(context).size.width / 10),
                     borderColor: AppTheme.kButtonColor,
@@ -199,7 +212,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
     final pbisStudentDetailWidget = Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
@@ -268,26 +281,30 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
           //             : widget.isFromDashboardPage!
           //                 ? MediaQuery.of(context).size.width * 0.08
           //                 : MediaQuery.of(context).size.width * 0.05),
-          widget.isFromStudentPlus!
-              ? SizedBox.shrink()
-              : Container(
-                  // color: Colors.red,
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(
-                    top: (widget.isFromStudentPlus == true &&
-                            widget.constraint <= 552)
-                        ? 8
-                        : widget.constraint > 115
-                            ? 15
-                            : 0.0,
-                  ),
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: AddNotes),
+        //  Expanded(child:Container()),
+              //      widget.isFromStudentPlus!
+              // ? SizedBox.shrink()
+              // : Container(
+              //     // color: Colors.red,
+              //     alignment:  Alignment.bottomCenter,
+              //     margin: EdgeInsets.only(
+              //       top: (widget.isFromStudentPlus == true &&
+              //               widget.constraint <= 552)
+              //           ? 8
+              //           : widget.constraint > 115
+              //               ? 15
+              //               : 0.0,
+              //     ),
+              //     width: MediaQuery.of(context).size.width * 1,
+              //     child: AddNotes),
         ],
       ),
     );
 
-    return Hero(
+    return
+    SingleChildScrollView(
+  child: 
+     Hero(
         tag: widget.heroTag,
         createRectTween: (begin, end) {
           return CustomRectTween(begin: begin!, end: end!);
@@ -305,10 +322,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                           : MediaQuery.of(context).size.height * 0.4
                       : (widget.constraint <= 115)
                           ? isexpanded.value
-                              ? MediaQuery.of(context).size.height * 0.58
+                              ? MediaQuery.of(context).size.height * 0.61
                               : MediaQuery.of(context).size.height * 0.51
                           : isexpanded.value
-                              ? MediaQuery.of(context).size.height * 0.54
+                              ? MediaQuery.of(context).size.height * 0.57
                               : MediaQuery.of(context).size.height * 0.45, //Row
                   //old
                   // height: widget.isFromDashboardPage!
@@ -364,13 +381,42 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
                         0.0,
                       ],
                     ),
-                  ),
+                  ), 
                   child: Column(
                     children: [
                       FittedBox(child: pbisStudentDetailWidget),
                     ],
                   )),
             ),
+            
+          
+
+                Positioned(
+              bottom: 0,
+              child:
+                widget.isFromStudentPlus!
+              ? SizedBox.shrink()
+              : Container(
+               
+                  // color: Colors.red,
+                  alignment:  Alignment.bottomCenter,
+                  margin: EdgeInsets.only(
+                    top: (widget.isFromStudentPlus == true &&
+                            widget.constraint <= 552)
+                        ? 8
+                        : widget.constraint > 115
+                            ? 15
+                            : 0.0,
+                  ),
+                  width: MediaQuery.of(context).size.width * 1,
+                  child: 
+                  
+                     
+                  AddNotes)),
+
+
+
+
             Positioned(
               top: 0,
               child: GestureDetector(
@@ -414,7 +460,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
               ),
             ),
           ],
-        ));
+        )));
   }
 
   // void trackUserActivity() {
