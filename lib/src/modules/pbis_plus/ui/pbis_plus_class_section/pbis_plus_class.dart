@@ -179,6 +179,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           //----------setting bottom sheet funtion------------//
+
                           settingBottomSheet(
                               context, pbisBloc, googleClassroomCourseworkList);
                           // Navigator.of(context).pushReplacement(
@@ -874,19 +875,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Set the maximum height of the bottom sheet based on the screen size
                 return PBISPlusSettingBottomSheet(
-                    // editBehaviourFunction: () {
-                    //   print("----inddie the call back 0");
-                    //   // Navigator.pop(context);
-                    //   // pushNewScreen(
-                    //   //   context,
-                    //   //   screen: PBISPlusEditSkills(),
-                    //   //   withNavBar: true,
-                    //   // );
-                    //   // Navigator.of(context).push(
-                    //   //   MaterialPageRoute(
-                    //   //       builder: (context) => PBISPlusEditSkills()),
-                    //   // );
-                    // },
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,

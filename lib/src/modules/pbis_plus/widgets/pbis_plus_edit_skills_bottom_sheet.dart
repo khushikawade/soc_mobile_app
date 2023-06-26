@@ -186,8 +186,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     return GestureDetector(
       onTap: onTap!,
       child: Container(
-        width: MediaQuery.of(context).size.width / 2.7,
-        height: 145,
+        width: MediaQuery.of(context).size.width / 3,
+        height: //145
+            // widget.constraints!.maxHeight <= 115
+            //     ?
+            MediaQuery.of(context).size.width / 3
+        // : MediaQuery.of(context).size.width / 4,
+        ,
         decoration: BoxDecoration(
             color: AppTheme.kButtonColor,
             borderRadius: BorderRadius.circular(16.0),
@@ -274,7 +279,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     .headline5!
                     .copyWith(fontWeight: FontWeight.bold)),
           ),
-          SpacerWidget(30),
+          SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           Form(
             key: _formKey,
             child: Container(
@@ -288,7 +293,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     controller: pointPossibleController,
                     onSaved: (String value) {})),
           ),
-          SpacerWidget(20),
+          SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),

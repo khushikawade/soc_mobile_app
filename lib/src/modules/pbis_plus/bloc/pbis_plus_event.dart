@@ -91,3 +91,9 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
+  GetPBISPlusAdditionalBehaviour();
+  @override
+  List<Object> get props => [];
+}

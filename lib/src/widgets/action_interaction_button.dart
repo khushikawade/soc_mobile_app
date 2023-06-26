@@ -605,8 +605,7 @@ class _ActionInteractionButtonWidgetState
     Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
-        builder: (showDialogContext) => 
-        CommonPopupWidget(
+        builder: (showDialogContext) => CommonPopupWidget(
               backgroundColor:
                   Theme.of(showDialogContext).colorScheme.background ==
                           Color(0xff000000)
@@ -703,7 +702,6 @@ class _ActionInteractionButtonWidgetState
 
     if (widget.obj.id != Globals.feedPostId) {
       Globals.feedPostId = widget.obj.id;
-
       if (view.value < (recordObject.viewCount ?? 0)) {
         view.value = recordObject.viewCount!;
       }

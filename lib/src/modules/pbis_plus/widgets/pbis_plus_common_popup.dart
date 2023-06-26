@@ -42,13 +42,12 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(context),
-    );
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: contentBox(context));
   }
 
   bool replaceItems(String title) {
@@ -57,10 +56,9 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           .indexWhere((item) => item.title == title);
       if (index != -1) {
         widget.behaviourIcons!.value[index] = PBISPlusActionInteractionModal(
-          imagePath: "assets/Pbis_plus/add_icon.svg",
-          title: 'Add Skill',
-          color: Colors.red,
-        );
+            imagePath: "assets/Pbis_plus/add_icon.svg",
+            title: 'Add Skill',
+            color: Colors.red);
       }
       return true;
     } catch (e) {
@@ -69,9 +67,8 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   }
 
   contentBox(context) {
-    return Stack(
-      children: <Widget>[
-        Container(
+    return Stack(children: <Widget>[
+      Container(
           height: MediaQuery.of(context).size.height * 0.26,
           padding: EdgeInsets.only(left: 16, top: 54, right: 16, bottom: 16),
           margin: EdgeInsets.only(top: 54),
@@ -97,70 +94,67 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                     color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
               ]),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SpacerWidget(MediaQuery.of(context).size.height / 40),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text("Are you sure you want to delete this item?",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 16)),
-              ),
-              SpacerWidget(MediaQuery.of(context).size.height / 40),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CircularCustomButton(
-                          size: Size(MediaQuery.of(context).size.width * 0.29,
-                              MediaQuery.of(context).size.width / 10),
-                          text: "Cancel",
-                          onClick: () {
-                            Navigator.pop(context!);
-                          },
-                          backgroundColor: AppTheme.kButtonColor,
-                          isBusy: false,
-                          buttonRadius: 64,
-                        ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.height / 40),
-                        CircularCustomButton(
-                          borderColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          text: "Delete",
-                          textColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          onClick: () async {
-                            _handleDeleteItem();
-                          },
-                          backgroundColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                          isBusy: false,
-                          size: Size(MediaQuery.of(context).size.width * 0.29,
-                              MediaQuery.of(context).size.width / 10),
-                          buttonRadius: 64,
-                        )
-                      ])),
-            ],
-          ),
-        ),
-        Positioned(
-            top: 0, left: 16, right: 16, child: _buildIconWidget(widget.item)),
-      ],
-    );
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SpacerWidget(MediaQuery.of(context).size.height / 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("Are you sure you want to delete this item?",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontSize: 16)),
+                ),
+                SpacerWidget(MediaQuery.of(context).size.height / 40),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CircularCustomButton(
+                            size: Size(MediaQuery.of(context).size.width * 0.29,
+                                MediaQuery.of(context).size.width / 10),
+                            text: "Cancel",
+                            onClick: () {
+                              Navigator.pop(context!);
+                            },
+                            backgroundColor: AppTheme.kButtonColor,
+                            isBusy: false,
+                            buttonRadius: 64,
+                          ),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.height / 40),
+                          CircularCustomButton(
+                              borderColor: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              text: "Delete",
+                              textColor: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              onClick: () async {
+                                _handleDeleteItem();
+                              },
+                              backgroundColor: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffF7F8F9)
+                                  : Color(0xff111C20),
+                              isBusy: false,
+                              size: Size(
+                                  MediaQuery.of(context).size.width * 0.29,
+                                  MediaQuery.of(context).size.width / 10),
+                              buttonRadius: 64)
+                        ]))
+              ])),
+      Positioned(
+          top: 0, left: 16, right: 16, child: _buildIconWidget(widget.item))
+    ]);
   }
 
   void _handleDeleteItem() async {
@@ -184,13 +178,10 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(
-          radius: 42.0,
-          backgroundColor: Colors.transparent,
-          child: SvgPicture.asset(
-            item.imagePath,
-            // width: 108.0,
-            // height: 108.0,
-          ),
-        ));
+            radius: 42.0,
+            backgroundColor: Colors.transparent,
+            child: SvgPicture.asset(
+              item.imagePath,
+            )));
   }
 }
