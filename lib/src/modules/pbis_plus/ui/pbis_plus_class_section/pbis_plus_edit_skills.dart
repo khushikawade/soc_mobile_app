@@ -477,26 +477,19 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                 is GetPBISPlusAdditionalBehaviourLoading) {
                               print(
                                   "-----------state is $state------------------");
-                              return Center(
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator.adaptive(
-                                      backgroundColor: AppTheme.kButtonColor,
-                                    )),
-                              );
+                              return _buildBehaviourList(
+                                  PBISPlusSkillsModalLocal
+                                      .PBISPlusSkillLocalBehaviourlist,
+                                  true);
                             } else if (state
                                 is PbisPlusAdditionalBehaviourSuccess) {
                               print(
                                   "-----------state is $state------------------");
                               if (state.additionalbehaviourList.isNotEmpty) {
                                 return _buildBehaviourList(
-                                    state.additionalbehaviourList);
+                                    state.additionalbehaviourList, false);
                               } else {
                                 return _noDataFoundWidget();
-
-                                //  _buildBehaviourList(
-                                //     PBISPlusSkillsModalLocal
-                                //         .PBISPlusSkillLocalBehaviourlist);
                               }
                             } else if (state
                                 is PBISPlusAdditionalBehaviourError) {
@@ -504,8 +497,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                   "-----------state is $state------------------");
                               return _noDataFoundWidget();
                             }
-                            return _buildBehaviourList(PBISPlusSkillsModalLocal
-                                .PBISPlusSkillLocalBehaviourlist);
+                            return _buildBehaviourList(
+                                PBISPlusSkillsModalLocal
+                                    .PBISPlusSkillLocalBehaviourlist,
+                                false);
                           },
                           listener: (context, state) async {}),
                       SpacerWidget(18),
@@ -516,7 +511,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             : SizedBox.shrink());
   }
 
-  Widget _buildBehaviourList(List<PBISPlusGenricBehaviourModal> skillsList) {
+  Widget _buildBehaviourList(
+      List<PBISPlusGenricBehaviourModal> skillsList, bool loading) {
     return Expanded(
         child: ValueListenableBuilder(
             valueListenable: localskillsList,
@@ -546,9 +542,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       final isIconDisabled = IsItemExits(item);
                       print(
                           "-------isIconDisabled-------------${isIconDisabled}------------==${index}============------------");
-                      return isIconDisabled
-                          ? _buildNonDraggbleIcon(item, isIconDisabled)
-                          : _buildEditSkillIcon(item, isIconDisabled);
+                      return loading
+                          ? ShimmerLoading(
+                              isLoading: loading,
+                              child: _buildNonDraggbleIcon(item, true))
+                          : isIconDisabled
+                              ? _buildNonDraggbleIcon(item, isIconDisabled)
+                              : _buildEditSkillIcon(item, isIconDisabled);
                     },
                   ),
                 )));

@@ -221,9 +221,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                     behaviourId: "0",
                   ))
               .toList();
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalbehaviourList: genralDataList);
         }
-        yield PbisPlusAdditionalBehaviourSuccess(
-            additionalbehaviourList: genralDataList);
+
         List<PbisPlusAdditionalBehaviourList> apiData =
             await getPBISPBehaviourListData();
 
