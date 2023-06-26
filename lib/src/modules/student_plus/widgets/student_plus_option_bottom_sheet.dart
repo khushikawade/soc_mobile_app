@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
@@ -20,10 +23,10 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 class StudentPlusOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
 
-  const StudentPlusOptionBottomSheet(
+  StudentPlusOptionBottomSheet(
       {Key? key,
       this.title,
       this.height = 200,
@@ -45,6 +48,7 @@ class _GradedPlusResultOptionBottomSheetState
       GoogleSlidesPresentationBloc();
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
 
   @override
   void initState() {
@@ -53,6 +57,9 @@ class _GradedPlusResultOptionBottomSheetState
     super.initState();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------initMethod----------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   initMethod() async {
     _pageController = PageController()
       ..addListener(() {
@@ -60,17 +67,26 @@ class _GradedPlusResultOptionBottomSheetState
       });
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------dispose-----------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------MAIN METHOD---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   Widget build(BuildContext context) {
     return body();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------BODY FRAME---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget body() {
     return SingleChildScrollView(
       controller: ModalScrollController.of(context),
@@ -100,6 +116,9 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------_listTileMenu-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget _listTileMenu({required ResultSummaryIcons element}) {
     return ListTile(
         dense: true,
@@ -110,16 +129,7 @@ class _GradedPlusResultOptionBottomSheetState
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20))
-            : SvgPicture.asset(
-                element.svgPath!,
-                height: 30,
-                width: 30,
-                // color: element.title == "Dashboard"
-                //     ? Color(0xff000000) == Theme.of(context).backgroundColor
-                //         ? Color(0xffF7F8F9)
-                //         : Color(0xff111C20)
-                //     : null
-              ),
+            : SvgPicture.asset(element.svgPath!, height: 30, width: 30),
         title: Utility.textWidget(
             text: element.title!,
             context: context,
@@ -127,41 +137,41 @@ class _GradedPlusResultOptionBottomSheetState
         onTap: () {
           bottomIconsOnTap(
               title: element.title ?? '',
-              url: widget.studentDetails.googlePresentationUrl ?? '');
+              url: widget.studentDetails.studentGooglePresentationUrl ?? '');
         });
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------bottomIconsOnTap-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
       case 'Go to Presentation':
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }
-
         break;
+
       case 'Sync Presentation':
         _pageController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
-        //check student+ folder available or not if not create one
-        // if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-        //     false) {
-        //   print("Trigger to check the folder ");
-        //   studentPlusGooglePresentationIsAvailable();
-        // } else {
-        //   _checkDriveFolderExistsOrNot();
-        // }
-        studentPlusGooglePresentationIsAvailable(true);
-
+        if (widget.studentDetails.studentGooglePresentationId == null ||
+            widget.studentDetails.studentGooglePresentationId == '') {
+          createStudentGooglePresentation();
+        } else {
+          updateStudentGooglePresentation();
+        }
         break;
+
       default:
-        Utility.currentScreenSnackBar('$title is Not available ', null);
+        Utility.currentScreenSnackBar('$title is not available', null);
     }
-    // if (((url?.isEmpty ?? true) || (url == 'NA'))) {
-    //   Utility.currentScreenSnackBar('$title is Not available ', null);
-    // }
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------buildOptions---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget buildOptions() {
     return Padding(
       padding: EdgeInsets.only(
@@ -202,6 +212,9 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------commonLoaderWidget-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
 //page value=4
   Widget commonLoaderWidget() {
     return Padding(
@@ -227,8 +240,9 @@ class _GradedPlusResultOptionBottomSheetState
           if (pageValue == 1)
             Column(
               children: [
-                googleDriveBlocListener(),
-                googleSlidesPresentationBlocListener()
+                // googleDriveBlocListener(),
+                googleSlidesPresentationBlocListener(),
+                studentPlusBlocListener()
               ],
             )
         ],
@@ -236,82 +250,21 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
-  BlocListener googleDriveBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: googleDriveBloc,
-        child: Container(),
-        listener: (context, state) async {
-          // if (state is GoogleSuccess) {
-
-          //   if (StudentPlusOverrides
-          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-          //       false) {
-          //     studentPlusGooglePresentationIsAvailable();
-          //   } else {
-          //     Navigator.of(context).pop();
-          //     Utility.currentScreenSnackBar(
-          //         "Something Went Wrong. Please Try Again.", null);
-          //   }
-          // }
-
-          if (state is GoogleSuccess) {
-            studentPlusGooglePresentationIsAvailable(false);
-          }
-          if (state is ErrorState) {
-            Navigator.of(context).pop();
-            if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
-              await Authentication.reAuthenticationRequired(
-                  context: context,
-                  errorMessage: state.errorMsg!,
-                  scaffoldKey: scaffoldKey);
-            } else {
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
-          }
-        });
-  }
-
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------googleSlidesPresentationBlocListener--------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   BlocListener googleSlidesPresentationBlocListener() {
     return BlocListener<GoogleSlidesPresentationBloc,
             GoogleSlidesPresentationState>(
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
-          print("On student work ------------$state---------");
-
-          if (state is StudentPlusGooglePresentationSearchSuccess) {
-            LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
-                "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
-
-            List<StudentPlusWorkModel>? _localData = await _localDb.getData();
-            _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-            print("update the presentation event trigger");
-            googleSlidesPresentationBloc.add(
-                StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
-                    googlePresentationFileId: state.googlePresentationFileId,
-                    studentDetails: widget.studentDetails,
-                    allRecords: _localData));
-          }
-
-          if (state is StudentPlusCreateAndUpdateSlideSuccess) {
-            Navigator.of(context).pop();
-          }
-
           if (state is GoogleSlidesPresentationErrorState) {
+            widget.studentDetails.studentGooglePresentationId = '';
+            widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
               await Authentication.reAuthenticationRequired(
                   context: context,
                   errorMessage: state.errorMsg!,
@@ -324,48 +277,82 @@ class _GradedPlusResultOptionBottomSheetState
                   null);
             }
           }
+
+          if (state is StudentPlusCreateStudentWorkGooglePresentationSuccess) {
+            //update the current student object
+            widget.studentDetails.studentGooglePresentationId =
+                state.googlePresentationFileId;
+
+            //now update the student google Presentation on drive
+            updateStudentGooglePresentation();
+          }
+          if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
+            if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
+              Navigator.of(context).pop();
+              Utility.currentScreenSnackBar(
+                  "Student presentation synced to google drive successfully.",
+                  null);
+            } else {
+              widget.studentDetails = state.studentDetails;
+              //now update the save the student google Presentation work on database
+              studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                  studentDetails: state.studentDetails));
+            }
+          }
         });
   }
 
-  void _checkDriveFolderExistsOrNot() async {
-    //FOR STUDENT PLUS
-    final List<UserInformation> _profileData =
-        await UserGoogleProfile.getUserProfile();
-    final UserInformation userProfile = _profileData[0];
-
-    //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
-    //is available or not if not this will create one or the available get the drive folder id
-    googleDriveBloc.add(GetDriveFolderIdEvent(
-        fromGradedPlusAssessmentSection: false,
-        isReturnState: true,
-        token: userProfile.authorizationToken,
-        folderName: "SOLVED STUDENT+",
-        refreshToken: userProfile.refreshToken));
-  }
-
-  Future<void> studentPlusGooglePresentationIsAvailable(
-      bool? isSyncPresentation) async {
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------createStudentGooglePresentation-----------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
+  Future<void> createStudentGooglePresentation() async {
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-      print("Trigger to check the folder ");
-      googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
-        studentPlusDriveFolderId:
-            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-        studentDetails: widget.studentDetails,
-      ));
-    }
-    //Sync Presentation
-    else if (isSyncPresentation == true) {
-      _checkDriveFolderExistsOrNot();
-    }
-    //Google Success Event
-    else {
-      Navigator.of(context).pop();
-      Utility.currentScreenSnackBar(
-          "Something Went Wrong. Please Try Again.", null);
-    }
+    googleSlidesPresentationBloc
+        .add(StudentPlusCreateGooglePresentationForStudent(
+      studentPlusDriveFolderId:
+          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+      studentDetails: widget.studentDetails,
+    ));
+  }
+
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------updateStudentGooglePresentation-----------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
+  updateStudentGooglePresentation() async {
+    LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
+        "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
+
+    List<StudentPlusWorkModel>? _localData = await _localDb.getData();
+    _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+
+    googleSlidesPresentationBloc.add(
+        StudentPlusUpdateGooglePresentationForStudent(
+            studentDetails: widget.studentDetails, allRecords: _localData));
+  }
+
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------studentPlusBlocListener---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
+  BlocListener studentPlusBlocListener() {
+    return BlocListener(
+        bloc: studentPlusBloc,
+        child: Container(),
+        listener: (context, state) async {
+          if (state is SaveStudentGooglePresentationWorkEventSuccess) {
+            Navigator.of(context).pop(widget.studentDetails);
+            Utility.currentScreenSnackBar(
+                "Student presentation synced to google drive successfully.",
+                null);
+          }
+          if (state is StudentPlusErrorReceived) {
+            widget.studentDetails.studentGooglePresentationId = '';
+            widget.studentDetails.studentGooglePresentationUrl = '';
+            Navigator.of(context).pop();
+            Utility.currentScreenSnackBar(
+                "Something went wrong. Please try Again.", null);
+          }
+        });
   }
 }
