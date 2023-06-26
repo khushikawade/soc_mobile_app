@@ -412,7 +412,6 @@ class GoogleSlidesPresentationBloc
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['slides'];
-        print(response.data['body']);
 
         var slideCount = data != null ? data.length : 0;
         return [true, slideCount];
@@ -481,7 +480,6 @@ class GoogleSlidesPresentationBloc
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        print(response);
         return [true, true];
       } else if (retry > 0) {
         // var result = googleDriveBloc
