@@ -1,16 +1,15 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart'
-    as customIntroLayout;
-import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -23,13 +22,34 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
-import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
+import './Common_popup.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
+  ValueListenable<bool>? isSuccessState;
+  bool? isBackButton;
+  bool? isProfilePage;
+  bool? isTitle;
+  bool? isOcrHome;
+  bool? isResultScreen;
+  bool? isHomeButtonPopup;
+  bool? assessmentDetailPage;
+  bool? assessmentPage;
+  Widget? actionIcon;
+  Widget? customBackButton;
+  bool? hideStateSelection;
+  ValueListenable<bool>? isBackOnSuccess;
+  String? sessionId;
+  bool? isFromResultSection;
+  bool? navigateBack;
+  final VoidCallback? onTap;
+  bool? fromGradedPlus;
+  String? plusAppName;
+  final scaffoldKey;
+
   CustomOcrAppBarWidget(
       {required Key? key,
       this.hideStateSelection,
@@ -50,29 +70,10 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isFromResultSection,
       this.navigateBack,
       this.isProfilePage,
-      required this.fromGradedPlus})
+      required this.fromGradedPlus,
+      required this.plusAppName})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-  ValueListenable<bool>? isSuccessState;
-  bool? isBackButton;
-  bool? isProfilePage;
-  bool? isTitle;
-  bool? isOcrHome;
-  bool? isResultScreen;
-  bool? isHomeButtonPopup;
-  bool? assessmentDetailPage;
-  bool? assessmentPage;
-  Widget? actionIcon;
-  Widget? customBackButton;
-  bool? hideStateSelection;
-  ValueListenable<bool>? isBackOnSuccess;
-  String? sessionId;
-  bool? isFromResultSection;
-  bool? navigateBack;
-  final VoidCallback? onTap;
-  bool? fromGradedPlus;
-
-  final scaffoldKey;
 
   @override
   final Size preferredSize;
@@ -177,8 +178,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
+                                userType: 'Teacher',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -187,10 +189,27 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     ? 'Drive Button pressed from Assessment History Detail Page'
                                     : 'Drive Button pressed from Result Summary',
                                 operationResult: 'Success');
-                            Globals.googleDriveFolderPath != null
-                                ? Utility.launchUrlOnExternalBrowser(
-                                    Globals.googleDriveFolderPath!)
-                                : getGoogleFolderPath();
+
+                            // Globals.googleDriveFolderPath != null
+                            //     ? Utility.launchUrlOnExternalBrowser(
+                            //         Globals.googleDriveFolderPath!)
+                            //     : getGoogleFolderPath();
+
+                            List<UserInformation> userProfileInfoData =
+                                await UserGoogleProfile.getUserProfile();
+                            if (userProfileInfoData[0]
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
+                                    null &&
+                                userProfileInfoData[0]
+                                        .gradedPlusGoogleDriveFolderPathUrl !=
+                                    '') {
+                              Utility.launchUrlOnExternalBrowser(
+                                  userProfileInfoData[0]
+                                          .gradedPlusGoogleDriveFolderPathUrl ??
+                                      '');
+                            } else {
+                              getGoogleFolderPath();
+                            }
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -235,14 +254,34 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(50),
                             ),
-                            child: CachedNetworkImage(
-                              height: Globals.deviceType == "phone" ? 28 : 32,
-                              width: Globals.deviceType == "phone" ? 28 : 32,
-                              imageUrl: snapshot.data!.profilePicture!,
-                              placeholder: (context, url) =>
-                                  CupertinoActivityIndicator(
-                                      animating: true, radius: 10),
-                            ),
+                            child: snapshot.data!.profilePicture != null
+                                ? CachedNetworkImage(
+                                    height:
+                                        Globals.deviceType == "phone" ? 28 : 32,
+                                    width:
+                                        Globals.deviceType == "phone" ? 28 : 32,
+                                    imageUrl:
+                                        snapshot.data!.profilePicture ?? '',
+                                    placeholder: (context, url) =>
+                                        CupertinoActivityIndicator(
+                                            animating: true, radius: 10))
+                                : CircleAvatar(
+                                    // alignment: Alignment.center,
+                                    // height:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // width:
+                                    //     Globals.deviceType == "phone" ? 28 : 32,
+                                    // color: Color.fromARGB(255, 29, 146, 242),
+                                    child: Text(
+                                      snapshot.data!.userName!.substring(0, 1),
+                                      style: TextStyle(
+                                          color: Color(0xff000000) ==
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
+                                  ),
                           ),
                           onPressed: () async {
                             await FirebaseAnalyticsService
@@ -251,6 +290,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        plusAppName: 'Graded+',
                                         fromGradedPlus: widget.fromGradedPlus,
                                         hideStateSelection:
                                             widget.hideStateSelection ?? false,
@@ -272,11 +312,40 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return CommonPopupWidget(
-                  isLogout: true,
-                  orientation: orientation,
-                  context: context,
-                  message: message,
-                  title: title!);
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message: message,
+                title: title!,
+                confirmationOnPress: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "logout");
+                  await UserGoogleProfile.clearUserProfile();
+                  await GoogleClassroom.clearClassroomCourses();
+                  Authentication.signOut(context: context);
+                  Utility.clearStudentInfo(tableName: 'student_info');
+                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  // Globals.googleDriveFolderId = null;
+                  PlusUtility.updateLogs(
+                      activityType: 'GRADED+',
+                      userType: 'Teacher',
+                      activityId: '3',
+                      description: 'User profile logout',
+                      operationResult: 'Success');
+                  // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                  if (Overrides.STANDALONE_GRADED_APP) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => GradedLandingPage(
+                                  isFromLogoutPage: true,
+                                )),
+                        (_) => false);
+                  } else {
+                    // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                },
+              );
             }));
   }
 
@@ -429,24 +498,11 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation =
+        await UserGoogleProfile.getUserProfile();
+    Globals.userEmailId = _userInformation[0].userEmail!;
     return _userInformation[0];
-  }
-
-  void _showPopUp(UserInformation userInformation) {
-    showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (context) {
-          return CustomDialogBox(
-            activityType: 'GRADED+',
-            profileData: userInformation,
-            isUserInfoPop: true,
-          );
-        });
   }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
@@ -465,10 +521,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           });
           /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
+              'Google Translation ${widget.plusAppName ?? ''}'
+                  .toLowerCase()
+                  .replaceAll(" ", "_"));
 
-          Utility.updateLogs(
-              activityType: 'PBIS+',
+          PlusUtility.updateLogs(
+              activityType: widget.plusAppName ?? '',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -495,6 +554,20 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        //----------------------------------------------------------------------
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility ${widget.plusAppName ?? ''}'
+                .toLowerCase()
+                .replaceAll(" ", "_"));
+
+        PlusUtility.updateLogs(
+            activityType: widget.plusAppName ?? '',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+        //----------------------------------------------------------------------
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);

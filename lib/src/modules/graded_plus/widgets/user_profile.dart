@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_pa
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/warning_popup_model.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 import '../../../globals.dart';
 import '../../../styles/theme.dart';
 import '../../google_classroom/modal/google_classroom_list.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../home/ui/home.dart';
 import '../modal/student_assessment_info_modal.dart';
 
@@ -182,39 +183,31 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                             ),
                             primary: AppTheme.kSelectedColor),
                         onPressed: () {
-                          if (widget.onSignOut != null) {
-                            widget.onSignOut!();
-                            return;
-                          }
-                          WarningPopupModel();
-                          UserGoogleProfile.clearUserProfile();
-                          GoogleClassroom.clearClassroomCourses();
-                          Utility.updateLogs(
-                              activityType: widget.activityType,
-                              activityId: '3',
-                              description: 'User profile logout',
-                              operationResult: 'Success');
-                          // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                          if (Overrides.STANDALONE_GRADED_APP) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => GradedLandingPage(
-                                          isFromLogoutPage: true,
-                                        )),
-                                (_) => false);
-                          } else {
-                            // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(
-                            //         builder: (context) => HomePage(
-                            //               isFromOcrSection: true,
-                            //             )),
-                            //     (_) => false);
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                          }
-
-                          //Globals.isCameraPopup = false;
+                          // if (widget.onSignOut != null) {
+                          //   widget.onSignOut!();
+                          //   return;
+                          // }
+                          // WarningPopupModel();
+                          // UserGoogleProfile.clearUserProfile();
+                          // GoogleClassroom.clearClassroomCourses();
+                          // Utility.updateLogs(
+                          //     activityType: widget.activityType,
+                          //     activityId: '3',
+                          //     description: 'User profile logout',
+                          //     operationResult: 'Success');
+                          // // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                          // if (Overrides.STANDALONE_GRADED_APP) {
+                          //   Navigator.of(context).pushAndRemoveUntil(
+                          //       MaterialPageRoute(
+                          //           builder: (context) => GradedLandingPage(
+                          //                 isFromLogoutPage: true,
+                          //               )),
+                          //       (_) => false);
+                          // } else {
+                          //   // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                          //   Navigator.of(context)
+                          //       .popUntil((route) => route.isFirst);
+                          // }
                         },
                       ),
                     ),

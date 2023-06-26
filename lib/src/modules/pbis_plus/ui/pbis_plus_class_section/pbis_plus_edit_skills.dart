@@ -2,30 +2,16 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/common_cached_network_image.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
   PBISPlusEditSkills({
@@ -46,15 +32,15 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
-  static final addSkill = PBISPlusActionInteractionModalNew(
+  static final addSkill = PBISPlusActionInteractionModal(
     imagePath: "assets/Pbis_plus/add_icon.svg",
     title: 'Add Skill',
     color: Colors.red,
   );
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>> containerIcons =
-      ValueNotifier<List<PBISPlusActionInteractionModalNew>>([
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[0],
-    PBISPlusActionInteractionModalNew.PBISPlusActionInteractionIconsNew[1],
+  ValueNotifier<List<PBISPlusActionInteractionModal>> containerIcons =
+      ValueNotifier<List<PBISPlusActionInteractionModal>>([
+    PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[0],
+    PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[1],
     addSkill,
     addSkill,
     addSkill,
@@ -145,7 +131,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             ),
           ),
           SpacerWidget(18),
-          DragTarget<PBISPlusActionInteractionModalNew>(
+          DragTarget<PBISPlusActionInteractionModal>(
             builder: (context, candidateData, rejectedData) {
               return GridView.builder(
                 shrinkWrap: true,
@@ -160,7 +146,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 itemCount: 6,
                 itemBuilder: (BuildContext context, int index) {
                   final item = containerIcons.value[index];
-                  return DragTarget<PBISPlusActionInteractionModalNew>(
+                  return DragTarget<PBISPlusActionInteractionModal>(
                       onWillAccept: (draggedData) {
                     hoveredIconIndex.value =
                         index; // Update the hovered icon index
@@ -291,7 +277,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditWidget(PBISPlusActionInteractionModalNew item) {
+  Widget _buildEditWidget(PBISPlusActionInteractionModal item) {
     return GestureDetector(
       onTap: () async {
         await _modalBottomSheetMenu(item);
@@ -369,12 +355,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                 4.0, // Adjust the spacing between items vertically
                           ),
                           itemCount: 3 *
-                              PBISPlusAdditionalBehaviourModal
-                                  .PBISPlusAdditionalBehaviourModalIcons.length
+                              PBISPlusActionInteractionModal
+                                  .pbisPlusActionInteractionIconsNew.length
                                   .ceil(),
                           itemBuilder: (BuildContext context, int index) {
-                            final item = PBISPlusActionInteractionModalNew
-                                .PBISPlusActionInteractionIconsNew[index % 9];
+                            final item = PBISPlusActionInteractionModal
+                                .pbisPlusActionInteractionIconsNew[index % 9];
                             final isIconDisabled =
                                 containerIcons.value.contains(item);
                             return isIconDisabled
@@ -470,7 +456,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  _modalBottomSheetMenu(PBISPlusActionInteractionModalNew item) =>
+  _modalBottomSheetMenu(PBISPlusActionInteractionModal item) =>
       showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
@@ -483,8 +469,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                constraints: constraints,
-                containerIcons: containerIcons,
+                // constraints: constraints,
+                behaviourIcons: containerIcons,
                 item: item,
                 height:
                     // constraints.maxHeight < 750 && Globals.deviceType == "phone"

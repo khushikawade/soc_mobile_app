@@ -1,17 +1,13 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
-import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
@@ -67,8 +63,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
-        itemCount: (PBISPlusActionInteractionModalNew
-                    .PBISPlusActionInteractionIconsNew.length /
+        itemCount: (PBISPlusActionInteractionModal
+                    .pbisPlusActionInteractionIconsNew.length /
                 2)
             .ceil(),
         itemBuilder: (BuildContext context, int rowIndex) {
@@ -77,14 +73,14 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
               children: List.generate(2, (int columnIndex) {
                 final index = rowIndex * 2 + columnIndex;
                 if (index >=
-                    PBISPlusActionInteractionModalNew
-                            .PBISPlusActionInteractionIconsNew.length -
+                    PBISPlusActionInteractionModal
+                            .pbisPlusActionInteractionIconsNew.length -
                         3) {
                   return SizedBox
                       .shrink(); // Return an empty SizedBox for excess cells
                 }
-                final iconData = PBISPlusActionInteractionModalNew
-                    .PBISPlusActionInteractionIconsNew[index];
+                final iconData = PBISPlusActionInteractionModal
+                    .pbisPlusActionInteractionIconsNew[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: PBISPlusActionInteractionButton(
@@ -122,11 +118,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
         crossAxisSpacing: 4.0, // Adjust the spacing between items horizontally
         mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
       ),
-      itemCount: PBISPlusActionInteractionModalNew
-          .PBISPlusActionInteractionIconsNew.length,
+      itemCount: PBISPlusActionInteractionModal
+          .pbisPlusActionInteractionIconsNew.length,
       itemBuilder: (BuildContext context, int index) {
-        final iconData = PBISPlusActionInteractionModalNew
-            .PBISPlusActionInteractionIconsNew[index];
+        final iconData = PBISPlusActionInteractionModal
+            .pbisPlusActionInteractionIconsNew[index];
         return Container(
           height: 18,
           child: Padding(

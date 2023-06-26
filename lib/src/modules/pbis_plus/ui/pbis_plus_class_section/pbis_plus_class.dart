@@ -2,23 +2,25 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_new_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_behaviour.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal_old.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -33,13 +35,13 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class PBISPlusClass extends StatefulWidget {
   final IconData titleIconData;
   final VoidCallback backOnTap;
-  final bool? isGradedPlus;
+  final bool isGradedPlus;
 
   PBISPlusClass(
       {Key? key,
       required this.titleIconData,
       required this.backOnTap,
-      this.isGradedPlus = false})
+      required this.isGradedPlus})
       : super(key: key);
 
   @override
@@ -69,7 +71,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   @override
   void initState() {
     super.initState();
-    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+    pbisPlusClassroomBloc
+        .add(PBISPlusImportRoster(isGradedPlus: widget.isGradedPlus));
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -289,13 +292,17 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                   if (state is PBISErrorState) {
                     if (state.error == 'ReAuthentication is required') {
-                      await Utility.refreshAuthenticationToken(
-                          isNavigator: true,
-                          errorMsg: state.error!,
+                      // await Utility.refreshAuthenticationToken(
+                      //     isNavigator: true,
+                      //     errorMsg: state.error!,
+                      //     context: context,
+                      //     scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
                           context: context,
+                          errorMessage: state.error,
                           scaffoldKey: _scaffoldKey);
-
-                      pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+                      pbisPlusClassroomBloc.add(PBISPlusImportRoster(
+                          isGradedPlus: widget.isGradedPlus));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -424,7 +431,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             child: Container(
                 height:
                     MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.60 //7
+                        ? MediaQuery.of(context).size.height * 0.68 //7
                         : MediaQuery.of(context).size.height * 0.45,
                 child: screenShotNotifier.value == true
                     ? SingleChildScrollView(
@@ -600,7 +607,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
-                //OLD FLOW MAKE BY NIKHAR
+                //--------------------------- START //OLD FLOW MAKE BY NIKHAR ------------------------
                 // child: PBISPlusStudentCardModal(
                 //   constraint: constraints.maxHeight,
                 //   onValueUpdate: (updatedStudentValueNotifier) {
@@ -611,8 +618,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 //   classroomCourseId: classroomCourseId,
                 //   scaffoldKey: _scaffoldKey,
                 // ),
+                //--------------------------- END //OLD FLOW MAKE BY NIKHAR --------------------------
+
                 // NEW FLOW
-                child: PBISPlusStudentCardNewModal(
+                child: PBISPlusStudentCardModal(
               constraint: constraints.maxHeight,
               isFromDashboardPage: false,
               onValueUpdate: (updatedStudentValueNotifier) {
@@ -697,8 +706,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       PlusCustomFloatingActionButton(
         onPressed: () {
           /*-------------------------User Activity Track START----------------------------*/
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '36',
               description: 'Save and Share button open from All Courses',
               operationResult: 'Success');
@@ -716,8 +726,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Future<void> _saveAndShareBottomSheetMenu(
       List<ClassroomCourse> allClassroomCourses) async {
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'PBIS+',
+        userType: 'Teacher',
         activityId: '36',
         description: 'Save and Share',
         operationResult: 'Success');
@@ -829,7 +840,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+    pbisPlusClassroomBloc
+        .add(PBISPlusImportRoster(isGradedPlus: widget.isGradedPlus));
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'Sync Google Classroom Course List PBIS+'
@@ -863,19 +875,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Set the maximum height of the bottom sheet based on the screen size
                 return PBISPlusSettingBottomSheet(
-                    editSkills: () {
-                      print("----index the call back 0=====");
-                      // Navigator.pop(context);
-                      // pushNewScreen(
-                      //   context,
-                      //   screen: PBISPlusEditSkills(),
-                      //   withNavBar: true,
-                      // );
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //       builder: (context) => PBISPlusEditSkills()),
-                      // );
-                    },
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,

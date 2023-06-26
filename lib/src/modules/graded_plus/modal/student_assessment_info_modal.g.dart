@@ -45,13 +45,14 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       slideTableObjId: fields[25] as String?,
       isScanMore: fields[27] as bool?,
       isStudentResultAssignmentSavedOnDashboard: fields[28] as bool?,
+      studentEmail: fields[29] as String?,
     )..questionImgFilePath = fields[26] as String?;
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(29)
+      ..writeByte(30)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -109,7 +110,9 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(27)
       ..write(obj.isScanMore)
       ..writeByte(28)
-      ..write(obj.isStudentResultAssignmentSavedOnDashboard);
+      ..write(obj.isStudentResultAssignmentSavedOnDashboard)
+      ..writeByte(29)
+      ..write(obj.studentEmail);
   }
 
   @override

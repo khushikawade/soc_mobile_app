@@ -5,7 +5,8 @@ abstract class PBISPlusEvent extends Equatable {
 }
 
 class PBISPlusImportRoster extends PBISPlusEvent {
-  PBISPlusImportRoster();
+  final bool isGradedPlus;
+  PBISPlusImportRoster({required this.isGradedPlus});
   @override
   List<Object> get props => [];
 }
