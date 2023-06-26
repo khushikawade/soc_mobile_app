@@ -35,7 +35,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                     .primaryVariant
                     .withOpacity(0.1),
                 blurRadius: 5.0,
-                offset: Offset(0, -8)),
+                offset: Offset(0, -10)),
           ]),
       // height: 140.0,
       child: Row(
