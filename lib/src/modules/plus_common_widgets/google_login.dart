@@ -123,9 +123,8 @@ class GoogleLogin {
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
     //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
+    //UPDATE CURRENT GOOGLE USER PROFILE
+    await UserGoogleProfile.updateUserProfile(_userInformation);
   }
 
   static verifyUserAndGetDriveFolder(

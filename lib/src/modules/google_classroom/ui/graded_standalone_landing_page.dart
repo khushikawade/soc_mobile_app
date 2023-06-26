@@ -285,7 +285,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                         //     errorMsg: state.errorMsg!,
                         //     context: context,
                         //     scaffoldKey: _scaffoldKey);
-                        await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                        await Authentication.reAuthenticationRequired(
+                            context: context,
+                            errorMessage: state.errorMsg!,
+                            scaffoldKey: _scaffoldKey);
                         _googleClassroomBloc.add(GetClassroomCourses());
                       } else {
                         Navigator.of(context).pop();
@@ -307,9 +310,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation =
+        await UserGoogleProfile.getUserProfile();
     if (_userInformation.isNotEmpty) {
       Globals.userEmailId = _userInformation[0].userEmail!;
     }

@@ -119,7 +119,6 @@ class Utility {
     }
   }
 
- 
   static void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
@@ -488,61 +487,6 @@ class Utility {
     return true;
   }
 
-  //      {
-
-  //   //Use to show snackbar at any current screen
-  //   BuildContext? context = Globals.navigatorKey.currentContext;
-  //   ScaffoldMessenger.of(context!).removeCurrentSnackBar();
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     // margin: EdgeInsets.only(
-  //     //     bottom: marginFromBottom != null ? marginFromBottom : 0),
-  //     padding: EdgeInsets.only(
-  //       left: 16,
-  //     ),
-  //     margin: EdgeInsets.only(
-  //         left: 16,
-  //         right: 16,
-  //         bottom: marginFromBottom == null
-  //             ? MediaQuery.of(context).size.height * 0.08
-  //             : marginFromBottom),
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //     behavior: SnackBarBehavior.floating,
-  //     duration: Duration(seconds: 3),
-  //     backgroundColor:
-  //         Globals.themeType == 'Dark' ? Colors.white : Colors.black,
-  //     content: Container(
-  //       alignment: Alignment.centerLeft,
-  //       height: height ?? 40,
-  //       child: TranslationWidget(
-  //         message: msg,
-  //         fromLanguage: "en",
-  //         toLanguage: Globals.selectedLanguage,
-  //         builder: (translatedMessage) => Text(translatedMessage,
-  //             textAlign: TextAlign.left,
-  //             style: TextStyle(
-  //               color: Theme.of(context).colorScheme.background,
-  //               fontWeight: FontWeight.w600,
-  //             )),
-  //       ),
-  //     ),
-  //     //  TranslationWidget(
-  //     //     message: text,
-  //     //     fromLanguage: "en",
-  //     //     toLanguage: Globals.selectedLanguage,
-  //     //     builder: (translatedMessage) {
-  //     //       return Text(translatedMessage.toString(),
-  //     //           textAlign: TextAlign.left,
-  //     //           style: TextStyle(
-  //     //             color: Theme.of(context).colorScheme.background,
-  //     //             // Theme.of(context).colorScheme.background,
-  //     //             fontWeight: FontWeight.w600,
-  //     //           ));
-  //     //     })
-  //   ));
-  //   return true;
-  // }
-
   static Future<bool> checkUserConnection() async {
     try {
       final result = await InternetAddress.lookup(
@@ -662,22 +606,22 @@ class Utility {
         });
   }
 
-  static Future<void> saveUserProfile(String profileData) async {
-    UserGoogleProfile.clearUserProfile();
-    List<String> profile = profileData.split('+');
-    UserInformation _userInformation = UserInformation(
-        userName: profile[0].toString().split('=')[1],
-        userEmail: profile[1].toString().split('=')[1],
-        profilePicture: profile[2].toString().split('=')[1],
-        authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+  // static Future<void> saveUserProfile(String profileData) async {
+  //   UserGoogleProfile.clearUserProfile();
+  //   List<String> profile = profileData.split('+');
+  //   UserInformation _userInformation = UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
-  }
+  //   //Save user profile to locally
+  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+  //   await _localDb.addData(_userInformation);
+  //   await _localDb.close();
+  // }
 
   static Future<bool> checkUser(
       {required BuildContext context,
@@ -752,14 +696,21 @@ class Utility {
             profile[3].toString().split('=')[1].replaceAll('#', ''),
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _profileData = await _localDb.getData();
+    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    // List<UserInformation> _profileData = await _localDb.getData();
 
+//GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+
+//verify the current user is last user
     if (_profileData[0].userEmail == _userInformation.userEmail) {
       //Save existing user profile locally to store latest details and refreshToken
-      await _localDb.clear();
-      await _localDb.addData(_userInformation);
-      await _localDb.close();
+      // await _localDb.clear();
+      // await _localDb.addData(_userInformation);
+      // await _localDb.close();
+      //UPDATE CURRENT GOOGLE USER PROFILE
+      await UserGoogleProfile.updateUserProfile(_userInformation);
 
       return UserInformation(userName: null);
     } else {
@@ -769,9 +720,11 @@ class Utility {
 
   static userVerificationPopUp(
       BuildContext context, UserInformation newUserInfo) async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _existingProfileData = await _localDb.getData();
-
+    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    // List<UserInformation> _existingProfileData = await _localDb.getData();
+    ////GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _existingProfileData =
+        await UserGoogleProfile.getUserProfile();
     return showDialog(
         context: context,
         builder: (context) =>
@@ -808,7 +761,7 @@ class Utility {
                 ),
                 content: TranslationWidget(
                     message:
-                        "The existing user account is '$_existingProfileData', and you are trying to log in with another account '$newUserInfo'. You might lose the scanned assessments if not yet saved to google drive. \nWould you like to continue with $newUserInfo ?",
+                        "The existing user account is '${_existingProfileData[0].userEmail}', and you are trying to log in with another account '${newUserInfo.userEmail}'. You might lose the scanned assessments if not yet saved to google drive. \nWould you like to continue with $newUserInfo ?",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
@@ -862,12 +815,15 @@ class Utility {
                             }),
                         onPressed: () async {
                           //Globals.isCameraPopup = false;
-                          LocalDatabase<UserInformation> _localDb =
-                              LocalDatabase('user_profile');
+                          // LocalDatabase<UserInformation> _localDb =
+                          //     LocalDatabase('user_profile');
 
-                          await _localDb.clear();
-                          await _localDb.addData(newUserInfo);
-                          await _localDb.close();
+                          // await _localDb.clear();
+                          // await _localDb.addData(newUserInfo);
+                          // await _localDb.close();
+                          //UPDATE NEW CURRENT GOOGLE USER PROFILE
+                          await UserGoogleProfile.updateUserProfile(
+                              newUserInfo);
 
                           // Navigator.of(context).pushAndRemoveUntil(
                           //     MaterialPageRoute(
