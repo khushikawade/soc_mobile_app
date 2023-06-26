@@ -487,8 +487,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         svgPath: '',
       ),
     ];
-    if (widget.studentDetails.studentgooglePresentationUrl != null &&
-        widget.studentDetails.studentgooglePresentationUrl != '') {
+    if (widget.studentDetails.studentGooglePresentationUrl != null &&
+        widget.studentDetails.studentGooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
           title: 'Go to Presentation',
@@ -519,7 +519,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
 
     if (result != null) {
-      //UPDATE THE CURRENT STUDENT DEAILS LOCAL VARIABLE
+      //UPDATE THE CURRENT STUDENT DETAILS TO LOCAL VARIABLE WITH PRESENTATION URL AND ID
       widget.studentDetails = result;
     }
   }

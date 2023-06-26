@@ -70,12 +70,12 @@ class GooglePresentationBlocMethods {
 
       List<StudentPlusDetailsModel> studentsLocalData =
           await _localDb.getData();
-      //it will find the student by id and update the updated object wwith googlePresentationUrl
+      //it will find the student by id and update the updated object with googlePresentationUrl
 
       for (int index = 0; index < studentsLocalData.length; index++) {
         if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
           StudentPlusDetailsModel student = studentDetails;
-          print("stdduent lcoal db updated");
+
           await _localDb.putAt(index, student);
           break;
         }
@@ -314,6 +314,28 @@ class GooglePresentationBlocMethods {
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  static String createStudentGooglePresentationFileName(
+      StudentPlusDetailsModel studentDetails) {
+    try {
+      //create file name for student Presentation
+      String fileName = '';
+
+      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
+        fileName += studentDetails.lastNameC! + "_";
+      }
+
+      if (studentDetails.firstNameC != null &&
+          studentDetails.firstNameC != '') {
+        fileName += studentDetails.firstNameC! + "_";
+      }
+
+      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
+      return fileName ?? '';
+    } catch (e) {
+      throw (e);
     }
   }
 }

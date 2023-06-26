@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -55,6 +57,9 @@ class _GradedPlusResultOptionBottomSheetState
     super.initState();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------initMethod----------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   initMethod() async {
     _pageController = PageController()
       ..addListener(() {
@@ -62,17 +67,26 @@ class _GradedPlusResultOptionBottomSheetState
       });
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------dispose-----------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------MAIN METHOD---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   Widget build(BuildContext context) {
     return body();
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------BODY FRAME---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget body() {
     return SingleChildScrollView(
       controller: ModalScrollController.of(context),
@@ -102,6 +116,9 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------_listTileMenu-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget _listTileMenu({required ResultSummaryIcons element}) {
     return ListTile(
         dense: true,
@@ -112,16 +129,7 @@ class _GradedPlusResultOptionBottomSheetState
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20))
-            : SvgPicture.asset(
-                element.svgPath!,
-                height: 30,
-                width: 30,
-                // color: element.title == "Dashboard"
-                //     ? Color(0xff000000) == Theme.of(context).backgroundColor
-                //         ? Color(0xffF7F8F9)
-                //         : Color(0xff111C20)
-                //     : null
-              ),
+            : SvgPicture.asset(element.svgPath!, height: 30, width: 30),
         title: Utility.textWidget(
             text: element.title!,
             context: context,
@@ -129,37 +137,41 @@ class _GradedPlusResultOptionBottomSheetState
         onTap: () {
           bottomIconsOnTap(
               title: element.title ?? '',
-              url: widget.studentDetails.studentgooglePresentationUrl ?? '');
+              url: widget.studentDetails.studentGooglePresentationUrl ?? '');
         });
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------bottomIconsOnTap-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
       case 'Go to Presentation':
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }
-
         break;
+
       case 'Sync Presentation':
         _pageController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
-        if (widget.studentDetails.studentgooglePresentationId == null ||
-            widget.studentDetails.studentgooglePresentationId == '') {
-          print("crated the new presentation ");
+        if (widget.studentDetails.studentGooglePresentationId == null ||
+            widget.studentDetails.studentGooglePresentationId == '') {
           createStudentGooglePresentation();
         } else {
-          print("update the presentataion");
           updateStudentGooglePresentation();
         }
-
         break;
+
       default:
-        Utility.currentScreenSnackBar('$title is Not available ', null);
+        Utility.currentScreenSnackBar('$title is not available', null);
     }
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------buildOptions---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Widget buildOptions() {
     return Padding(
       padding: EdgeInsets.only(
@@ -200,6 +212,9 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------commonLoaderWidget-------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
 //page value=4
   Widget commonLoaderWidget() {
     return Padding(
@@ -235,17 +250,18 @@ class _GradedPlusResultOptionBottomSheetState
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------googleSlidesPresentationBlocListener--------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   BlocListener googleSlidesPresentationBlocListener() {
     return BlocListener<GoogleSlidesPresentationBloc,
             GoogleSlidesPresentationState>(
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
-          print("On student work ------------$state---------");
-
           if (state is GoogleSlidesPresentationErrorState) {
-            widget.studentDetails.studentgooglePresentationId = '';
-            widget.studentDetails.studentgooglePresentationUrl = '';
+            widget.studentDetails.studentGooglePresentationId = '';
+            widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
@@ -262,19 +278,20 @@ class _GradedPlusResultOptionBottomSheetState
             }
           }
 
-          if (state is StudentPlusCreateGooglePresentationForStudentSuccess) {
+          if (state is StudentPlusCreateStudentWorkGooglePresentationSuccess) {
             //update the current student object
-            widget.studentDetails.studentgooglePresentationId =
+            widget.studentDetails.studentGooglePresentationId =
                 state.googlePresentationFileId;
 
             //now update the student google Presentation on drive
             updateStudentGooglePresentation();
           }
-          if (state is StudentPlusUpdateGooglePresentationForStudentSuccess) {
+          if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
             if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
               Navigator.of(context).pop();
               Utility.currentScreenSnackBar(
-                  "Student Presentation is Sync Successfully ", null);
+                  "Student presentation synced to google drive successfully.",
+                  null);
             } else {
               widget.studentDetails = state.studentDetails;
               //now update the save the student google Presentation work on database
@@ -285,6 +302,9 @@ class _GradedPlusResultOptionBottomSheetState
         });
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------createStudentGooglePresentation-----------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   Future<void> createStudentGooglePresentation() async {
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
@@ -297,37 +317,41 @@ class _GradedPlusResultOptionBottomSheetState
     ));
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------updateStudentGooglePresentation-----------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   updateStudentGooglePresentation() async {
     LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
         "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
 
     List<StudentPlusWorkModel>? _localData = await _localDb.getData();
     _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-    print("update the presentation event trigger");
 
     googleSlidesPresentationBloc.add(
         StudentPlusUpdateGooglePresentationForStudent(
             studentDetails: widget.studentDetails, allRecords: _localData));
   }
 
+/*-------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------studentPlusBlocListener---------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------*/
   BlocListener studentPlusBlocListener() {
     return BlocListener(
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
-          print("state is $state");
-
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(
-                "Student Presentation is Sync Successfully ", null);
+                "Student presentation synced to google drive successfully.",
+                null);
           }
           if (state is StudentPlusErrorReceived) {
-            widget.studentDetails.studentgooglePresentationId = '';
-            widget.studentDetails.studentgooglePresentationUrl = '';
+            widget.studentDetails.studentGooglePresentationId = '';
+            widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
-                "Something Went Wrong. Please Try Again.", null);
+                "Something went wrong. Please try Again.", null);
           }
         });
   }

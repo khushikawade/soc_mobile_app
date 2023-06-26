@@ -73,8 +73,8 @@ class StudentPlusDetailsModelAdapter
       grade20_21: fields[52] as String?,
       grade21_22: fields[53] as String?,
       studentPhoto: fields[54] as String?,
-      studentgooglePresentationUrl: fields[55] as String?,
-      studentgooglePresentationId: fields[56] as String?,
+      studentGooglePresentationUrl: fields[55] as String?,
+      studentGooglePresentationId: fields[56] as String?,
     );
   }
 
@@ -193,9 +193,9 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(54)
       ..write(obj.studentPhoto)
       ..writeByte(55)
-      ..write(obj.studentgooglePresentationUrl)
+      ..write(obj.studentGooglePresentationUrl)
       ..writeByte(56)
-      ..write(obj.studentgooglePresentationId);
+      ..write(obj.studentGooglePresentationId);
   }
 
   @override

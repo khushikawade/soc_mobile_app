@@ -180,12 +180,12 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     if (event is SaveStudentGooglePresentationWorkEvent) {
       try {
         //update the student google Presentation Url
-        event.studentDetails.studentgooglePresentationUrl =
+        event.studentDetails.studentGooglePresentationUrl =
             StudentPlusOverrides.studentPlusGooglePresentationBaseUrl +
-                (event.studentDetails.studentgooglePresentationId ?? '');
+                (event.studentDetails.studentGooglePresentationId ?? '');
 
         var isStudentGooglePresentationWorkSaved =
-            await saveStudentGooglePresentationWorkEvent(
+            await saveStudentGooglePresentationWorkDetails(
                 studentDetails: event.studentDetails);
 
         if (isStudentGooglePresentationWorkSaved == true) {
@@ -222,7 +222,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     return chipList;
   }
 
+  /* -------------------------------------------------------------------------- */
   /* ---- Function to call search api and return response according to that --- */
+  /* -------------------------------------------------------------------------- */
 
   Future getStudentPlusSearch(
       {required String keyword, required String teacherEmail}) async {
@@ -323,7 +325,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   }
 
   /* ------------- Function to save Student Google Presentation Work on database ------------- */
-  Future saveStudentGooglePresentationWorkEvent(
+  Future saveStudentGooglePresentationWorkDetails(
       {required StudentPlusDetailsModel studentDetails}) async {
     try {
       final body = {
@@ -333,9 +335,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         "DBN__c": Globals.schoolDbnC ?? "",
         "School_App__c": Overrides.SCHOOL_ID ?? '',
         "Google_Presentation_Id":
-            studentDetails.studentgooglePresentationId ?? '',
+            studentDetails.studentGooglePresentationId ?? '',
         "Google_Presentation_URL":
-            studentDetails.studentgooglePresentationUrl ?? ''
+            studentDetails.studentGooglePresentationUrl ?? ''
       };
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",

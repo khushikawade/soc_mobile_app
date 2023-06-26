@@ -53,21 +53,21 @@ class GooglePresentationLoading extends GoogleSlidesPresentationState {
   List<Object> get props => [];
 }
 
-class StudentPlusCreateGooglePresentationForStudentSuccess
+class StudentPlusCreateStudentWorkGooglePresentationSuccess
     extends GoogleSlidesPresentationState {
   final String googlePresentationFileId;
-  StudentPlusCreateGooglePresentationForStudentSuccess(
+  StudentPlusCreateStudentWorkGooglePresentationSuccess(
       {required this.googlePresentationFileId});
 
   @override
   List<Object> get props => [];
 }
 
-class StudentPlusUpdateGooglePresentationForStudentSuccess
+class StudentPlusUpdateStudentWorkGooglePresentationSuccess
     extends GoogleSlidesPresentationState {
-  StudentPlusDetailsModel studentDetails;
-  bool isSaveStudentGooglePresentationWorkOnDataBase;
-  StudentPlusUpdateGooglePresentationForStudentSuccess(
+  final StudentPlusDetailsModel studentDetails;
+  final bool isSaveStudentGooglePresentationWorkOnDataBase;
+  StudentPlusUpdateStudentWorkGooglePresentationSuccess(
       {required this.studentDetails,
       required this.isSaveStudentGooglePresentationWorkOnDataBase});
 

@@ -61,7 +61,7 @@ class FetchStudentGradesEvent extends StudentPlusEvent {
 }
 
 class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
-  StudentPlusDetailsModel studentDetails;
+  final StudentPlusDetailsModel studentDetails;
   SaveStudentGooglePresentationWorkEvent({
     required this.studentDetails,
   });

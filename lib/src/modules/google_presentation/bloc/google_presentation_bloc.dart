@@ -35,68 +35,68 @@ class GoogleSlidesPresentationBloc
     //Create Presentation in case of not exist
     //This will call on pressing sync slide button from Student+ work
 
-    if (event is SearchStudentPresentationStudentPlus) {
-      try {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
-        String? googlePresentationId;
+    // if (event is SearchStudentPresentationStudentPlus) {
+    //   try {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
+    //     String? googlePresentationId;
 
-        //------------------Search Student Presentation--------------------------------------------
-        List searchPresentationResult = await searchStudentPresentation(
-            folderId: event.studentPlusDriveFolderId,
-            userProfile: userProfileLocalData[0],
-            studentDetails: event.studentDetails);
+    //     //------------------Search Student Presentation--------------------------------------------
+    //     List searchPresentationResult = await searchStudentPresentation(
+    //         folderId: event.studentPlusDriveFolderId,
+    //         userProfile: userProfileLocalData[0],
+    //         studentDetails: event.studentDetails);
 
-        if (searchPresentationResult[0] == true) {
-          //--------------------------Storing presentation search result---------------------------
-          List<HistoryAssessment> presentationData =
-              searchPresentationResult[1];
-          // searchPresentationResult[1] =
-          googlePresentationId =
-              presentationData.isNotEmpty ? presentationData[0].fileId : '';
-        }
+    //     if (searchPresentationResult[0] == true) {
+    //       //--------------------------Storing presentation search result---------------------------
+    //       List<HistoryAssessment> presentationData =
+    //           searchPresentationResult[1];
+    //       // searchPresentationResult[1] =
+    //       googlePresentationId =
+    //           presentationData.isNotEmpty ? presentationData[0].fileId : '';
+    //     }
 
-        //Return Search Success if file found in search
-        if (searchPresentationResult[0] == true && googlePresentationId != '') {
-          yield StudentPlusGooglePresentationSearchSuccess(
-              googlePresentationFileId: googlePresentationId!);
-        }
-        //Create presentation to google drive Student+ folder if not already exist
-        else if (searchPresentationResult[0] && googlePresentationId == '') {
-          String fileName = (event.studentDetails.firstNameC ?? '') +
-              "_" +
-              (event.studentDetails.lastNameC ?? '') +
-              "_" +
-              (event.studentDetails.studentIdC ?? '');
+    //     //Return Search Success if file found in search
+    //     if (searchPresentationResult[0] == true && googlePresentationId != '') {
+    //       yield StudentPlusGooglePresentationSearchSuccess(
+    //           googlePresentationFileId: googlePresentationId!);
+    //     }
+    //     //Create presentation to google drive Student+ folder if not already exist
+    //     else if (searchPresentationResult[0] && googlePresentationId == '') {
+    //       String fileName = (event.studentDetails.firstNameC ?? '') +
+    //           "_" +
+    //           (event.studentDetails.lastNameC ?? '') +
+    //           "_" +
+    //           (event.studentDetails.studentIdC ?? '');
 
-          List GooglePresentationCreateResponse =
-              await googleDriveBloc.createPresentationOnDrive(
-                  name: fileName,
-                  folderId: event.studentPlusDriveFolderId,
-                  accessToken: userProfileLocalData[0].authorizationToken,
-                  refreshToken: userProfileLocalData[0].refreshToken,
-                  excelSheetId: '',
-                  isMcqSheet: false);
+    //       List GooglePresentationCreateResponse =
+    //           await googleDriveBloc.createPresentationOnDrive(
+    //               name: fileName,
+    //               folderId: event.studentPlusDriveFolderId,
+    //               accessToken: userProfileLocalData[0].authorizationToken,
+    //               refreshToken: userProfileLocalData[0].refreshToken,
+    //               excelSheetId: '',
+    //               isMcqSheet: false);
 
-          //Return Google presentation if once presentation created
-          if (GooglePresentationCreateResponse[0]) {
-            yield StudentPlusGooglePresentationSearchSuccess(
-                googlePresentationFileId: GooglePresentationCreateResponse[1]);
-          }
-          //Return Error in case of presentation not created
-          else {
-            yield GoogleSlidesPresentationErrorState(
-                errorMsg: GooglePresentationCreateResponse[1].toString());
-          }
-        } else if (searchPresentationResult[0] == false) {
-          yield GoogleSlidesPresentationErrorState(
-              errorMsg: googlePresentationId.toString());
-        }
-      } catch (e) {
-        print(e);
-        yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
-      }
-    }
+    //       //Return Google presentation if once presentation created
+    //       if (GooglePresentationCreateResponse[0]) {
+    //         yield StudentPlusGooglePresentationSearchSuccess(
+    //             googlePresentationFileId: GooglePresentationCreateResponse[1]);
+    //       }
+    //       //Return Error in case of presentation not created
+    //       else {
+    //         yield GoogleSlidesPresentationErrorState(
+    //             errorMsg: GooglePresentationCreateResponse[1].toString());
+    //       }
+    //     } else if (searchPresentationResult[0] == false) {
+    //       yield GoogleSlidesPresentationErrorState(
+    //           errorMsg: googlePresentationId.toString());
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //     yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+    //   }
+    // }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------StudentPlusCreateAndUpdateNewSlidesToGooglePresentation------------------------------------------------*/
@@ -198,11 +198,11 @@ class GoogleSlidesPresentationBloc
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        //GET STUDENT PRESENTAION FILE NAME
-        String studentGooglePresentationFileName =
-            createStudentGooglePresentationFileName(event.studentDetails);
+        //GET STUDENT PRESENTATION FILE NAME
+        String studentGooglePresentationFileName = GooglePresentationBlocMethods
+            .createStudentGooglePresentationFileName(event.studentDetails);
 
-        //CREATE STUDENT PRESENTAION FILE
+        //CREATE STUDENT PRESENTATION TO DRIVE
         List GooglePresentationCreateResponse =
             await googleDriveBloc.createPresentationOnDrive(
                 name: studentGooglePresentationFileName,
@@ -212,9 +212,9 @@ class GoogleSlidesPresentationBloc
                 excelSheetId: '',
                 isMcqSheet: false);
 
-        //Return Google presentation if once presentation created
+        //Return Google presentation once created
         if (GooglePresentationCreateResponse[0] == true) {
-          yield StudentPlusCreateGooglePresentationForStudentSuccess(
+          yield StudentPlusCreateStudentWorkGooglePresentationSuccess(
               googlePresentationFileId: GooglePresentationCreateResponse[1]);
         }
         //Return Error in case of presentation not created
@@ -243,7 +243,7 @@ class GoogleSlidesPresentationBloc
         List countGooglePresentationSlide =
             await getSlidesCountFromGooglePresentation(
           presentationFileId:
-              event.studentDetails.studentgooglePresentationId ?? '',
+              event.studentDetails.studentGooglePresentationId ?? '',
           userProfile: userProfileLocalData[0],
         );
 
@@ -253,7 +253,9 @@ class GoogleSlidesPresentationBloc
             countGooglePresentationSlide[1] == 404) {
           //GET STUDENT PRESENTAION FILE NAME
           String studentGooglePresentationFileName =
-              createStudentGooglePresentationFileName(event.studentDetails);
+              GooglePresentationBlocMethods
+                  .createStudentGooglePresentationFileName(
+                      event.studentDetails);
 
           //CREATE STUDENT PRESENTAION FILE
           List GooglePresentationCreateResponse =
@@ -269,7 +271,7 @@ class GoogleSlidesPresentationBloc
 
           //Return Google presentation if once presentation created
           if (GooglePresentationCreateResponse[0] == true) {
-            event.studentDetails.studentgooglePresentationId =
+            event.studentDetails.studentGooglePresentationId =
                 GooglePresentationCreateResponse[1];
             countGooglePresentationSlide[1] = 0;
             countGooglePresentationSlide[0] = true;
@@ -286,7 +288,7 @@ class GoogleSlidesPresentationBloc
           List updatedPresentationResponse =
               await updateNewSlidesToGooglePresentation(
                   presentationId:
-                      event.studentDetails.studentgooglePresentationId ?? '',
+                      event.studentDetails.studentGooglePresentationId ?? '',
                   studentDetails: event.studentDetails,
                   allRecords: event.allRecords,
                   numberOfSlidesAlreadyAvailable:
@@ -294,7 +296,7 @@ class GoogleSlidesPresentationBloc
                   userProfile: userProfileLocalData[0]);
 
           if (updatedPresentationResponse[0] == true) {
-            yield StudentPlusUpdateGooglePresentationForStudentSuccess(
+            yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
                 isSaveStudentGooglePresentationWorkOnDataBase:
                     isSaveStudentGooglePresentationWorkOnDataBase);
@@ -302,13 +304,17 @@ class GoogleSlidesPresentationBloc
             yield GoogleSlidesPresentationErrorState(
                 errorMsg: countGooglePresentationSlide[1].toString());
           }
-        } else if (countGooglePresentationSlide[0] == true &&
+        }
+        //---------------------------
+        else if (countGooglePresentationSlide[0] == true &&
             countGooglePresentationSlide[1]! > event.allRecords.length) {
-          yield StudentPlusUpdateGooglePresentationForStudentSuccess(
+          yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
               studentDetails: event.studentDetails,
               isSaveStudentGooglePresentationWorkOnDataBase:
                   isSaveStudentGooglePresentationWorkOnDataBase);
-        } else {
+        }
+        //---------------------------
+        else {
           yield GoogleSlidesPresentationErrorState(
               errorMsg: countGooglePresentationSlide[1].toString());
         }
@@ -322,74 +328,74 @@ class GoogleSlidesPresentationBloc
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method searchStudentPresentation----------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-  Future<List> searchStudentPresentation(
-      {required final folderId,
-      required final UserInformation? userProfile,
-      required final StudentPlusDetailsModel studentDetails,
-      int retry = 3}) async {
-    try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer ${userProfile!.authorizationToken}'
-      };
+  // Future<List> searchStudentPresentation(
+  //     {required final folderId,
+  //     required final UserInformation? userProfile,
+  //     required final StudentPlusDetailsModel studentDetails,
+  //     int retry = 3}) async {
+  //   try {
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'authorization': 'Bearer ${userProfile!.authorizationToken}'
+  //     };
 
-      String fileName = (studentDetails.firstNameC ?? '') +
-          "_" +
-          (studentDetails.lastNameC ?? '') +
-          "_" +
-          (studentDetails.studentIdC ?? '');
-      // String query =
-      //     'name%3D%22$fileName%22+and+mimeType%3D%22application%2Fvnd.google-apps.presentation%22+and+trashed%3Dfalse';
-      String query =
-          '((mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and title contains \'${fileName}\') and trashed = false';
+  //     String fileName = (studentDetails.firstNameC ?? '') +
+  //         "_" +
+  //         (studentDetails.lastNameC ?? '') +
+  //         "_" +
+  //         (studentDetails.studentIdC ?? '');
+  //     // String query =
+  //     //     'name%3D%22$fileName%22+and+mimeType%3D%22application%2Fvnd.google-apps.presentation%22+and+trashed%3Dfalse';
+  //     String query =
+  //         '((mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and title contains \'${fileName}\') and trashed = false';
 
-      String api =
-          "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
-              Uri.encodeFull(query);
+  //     String api =
+  //         "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
+  //             Uri.encodeFull(query);
 
-      //  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/drives/$folderId/files?q=$query",
-      final ResponseModel response = await _dbServices.getApiNew(api,
-          headers: headers, isCompleteUrl: true);
+  //     //  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/drives/$folderId/files?q=$query",
+  //     final ResponseModel response = await _dbServices.getApiNew(api,
+  //         headers: headers, isCompleteUrl: true);
 
-      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<HistoryAssessment> data = response.data['body']['items']
-            .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
-            .toList();
+  //     if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //       List<HistoryAssessment> data = response.data['body']['items']
+  //           .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
+  //           .toList();
 
-        return [true, data];
-      } else if (retry > 0) {
-        // var result = await googleDriveBloc
-        //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
+  //       return [true, data];
+  //     } else if (retry > 0) {
+  //       // var result = await googleDriveBloc
+  //       //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
 
-        var result = await Authentication.refreshToken();
+  //       var result = await Authentication.refreshToken();
 
-        // if (result == true) {
-        if (result != null && result != '') {
-          List<UserInformation> _userProfileLocalData =
-              await UserGoogleProfile.getUserProfile();
+  //       // if (result == true) {
+  //       if (result != null && result != '') {
+  //         List<UserInformation> _userProfileLocalData =
+  //             await UserGoogleProfile.getUserProfile();
 
-          return await searchStudentPresentation(
-              folderId: folderId,
-              studentDetails: studentDetails,
-              userProfile: _userProfileLocalData[0],
-              retry: retry - 1);
-        } else {
-          //  print("rery  find file ReAuthentication is required");
-          return [false, 'ReAuthentication is required'];
-        }
-      }
+  //         return await searchStudentPresentation(
+  //             folderId: folderId,
+  //             studentDetails: studentDetails,
+  //             userProfile: _userProfileLocalData[0],
+  //             retry: retry - 1);
+  //       } else {
+  //         //  print("rery  find file ReAuthentication is required");
+  //         return [false, 'ReAuthentication is required'];
+  //       }
+  //     }
 
-      return [
-        false,
-        response.statusCode == 200
-            ? response.data['statusCode']
-            : response.statusCode
-      ];
-    } catch (e) {
-      print(e);
-      throw (e);
-    }
-  }
+  //     return [
+  //       false,
+  //       response.statusCode == 200
+  //           ? response.data['statusCode']
+  //           : response.statusCode
+  //     ];
+  //   } catch (e) {
+  //     print(e);
+  //     throw (e);
+  //   }
+  // }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method getSlidesCountFromGooglePresentation-----------------------------------------------*/
@@ -504,26 +510,6 @@ class GoogleSlidesPresentationBloc
       }
 
       return [false, response.statusCode];
-    } catch (e) {
-      throw (e);
-    }
-  }
-
-  String createStudentGooglePresentationFileName(
-      StudentPlusDetailsModel studentDetails) {
-    try {
-      //create file name for student Presentation
-      String fileName = '';
-      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
-        fileName += studentDetails.lastNameC! + "_";
-      }
-      if (studentDetails.firstNameC != null &&
-          studentDetails.firstNameC != '') {
-        fileName += studentDetails.firstNameC! + "_";
-      }
-
-      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
-      return fileName ?? '';
     } catch (e) {
       throw (e);
     }

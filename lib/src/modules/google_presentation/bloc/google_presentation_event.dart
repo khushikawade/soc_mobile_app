@@ -4,19 +4,19 @@ abstract class GoogleSlidesPresentationEvent extends Equatable {
   const GoogleSlidesPresentationEvent();
 }
 
-class SearchStudentPresentationStudentPlus
-    extends GoogleSlidesPresentationEvent {
-  final StudentPlusDetailsModel studentDetails;
-  final String studentPlusDriveFolderId;
+// class SearchStudentPresentationStudentPlus
+//     extends GoogleSlidesPresentationEvent {
+//   final StudentPlusDetailsModel studentDetails;
+//   final String studentPlusDriveFolderId;
 
-  SearchStudentPresentationStudentPlus({
-    required this.studentPlusDriveFolderId,
-    required this.studentDetails,
-  });
+//   SearchStudentPresentationStudentPlus({
+//     required this.studentPlusDriveFolderId,
+//     required this.studentDetails,
+//   });
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 // class StudentPlusCreateAndUpdateNewSlidesToGooglePresentation
 //     extends GoogleSlidesPresentationEvent {
@@ -33,17 +33,17 @@ class SearchStudentPresentationStudentPlus
 //   List<Object> get props => [];
 // }
 
-class GetStudentPlusPresentationURL extends GoogleSlidesPresentationEvent {
-  final StudentPlusDetailsModel studentDetails;
-  final String studentPlusDriveFolderId;
-  GetStudentPlusPresentationURL({
-    required this.studentPlusDriveFolderId,
-    required this.studentDetails,
-  });
+// class GetStudentPlusWorkPresentationURL extends GoogleSlidesPresentationEvent {
+//   final StudentPlusDetailsModel studentDetails;
+//   final String studentPlusDriveFolderId;
+//   GetStudentPlusWorkPresentationURL({
+//     required this.studentPlusDriveFolderId,
+//     required this.studentDetails,
+//   });
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class StudentPlusCreateGooglePresentationForStudent
     extends GoogleSlidesPresentationEvent {
@@ -61,7 +61,7 @@ class StudentPlusCreateGooglePresentationForStudent
 
 class StudentPlusUpdateGooglePresentationForStudent
     extends GoogleSlidesPresentationEvent {
-  StudentPlusDetailsModel studentDetails;
+  final StudentPlusDetailsModel studentDetails;
   final List<StudentPlusWorkModel> allRecords;
   StudentPlusUpdateGooglePresentationForStudent({
     required this.studentDetails,
