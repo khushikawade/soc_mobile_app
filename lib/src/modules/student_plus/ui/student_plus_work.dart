@@ -150,7 +150,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           ),
           floatingActionButton: fab(),
         ),
-        googleSlidesPresentationBlocListener(),
+        // googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
       ],
     );
@@ -459,40 +459,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 if (filterNotifier.value == '' &&
                     state is StudentPlusWorkSuccess &&
                     state.obj.length > 0) {
-                  return PlusCustomFloatingActionButton(onPressed: () async
-
-                      //  {
-                      //   if (StudentPlusOverrides
-                      //           ?.studentPlusGoogleDriveFolderId?.isEmpty ??
-                      //       true) {
-                      //     _checkDriveFolderExistsOrNot();
-                      //   } else if (widget
-                      //           .studentDetails?.googlePresentationUrl?.isEmpty ??
-                      //       true) {
-                      //     getGooglePresentationUrl();
-                      //   } else {
-                      //     _shareBottomSheetMenu();
-                      //   }
-                      // }
-                      //    {
-                      //   List<UserInformation> userProfileInfoData =
-                      //       await UserGoogleProfile.getUserProfile();
-
-                      // if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
-                      //         null ||
-                      //     userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
-                      //         "") {
-                      //   _checkDriveFolderExistsOrNot();
-                      // } else if (widget.studentDetails
-                      //         ?.studentgooglePresentationUrl?.isEmpty ??
-                      //     true) {
-                      //   getGooglePresentationUrl();
-                      // } else {
-                      //   _shareBottomSheetMenu();
-                      // }
-                      // }
-
-                      {
+                  return PlusCustomFloatingActionButton(onPressed: () async {
                     //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
@@ -557,68 +524,38 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     }
   }
 
-  // void getGooglePresentationUrl() {
-  //   Utility.showLoadingDialog(
-  //       context: context, isOCR: true, msg: 'Please Wait...');
-  //   googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-  //       studentDetails: widget.studentDetails,
-  //       studentPlusDriveFolderId:
-  //           StudentPlusOverrides.studentPlusGoogleDriveFolderId));
+  // BlocListener googleSlidesPresentationBlocListener() {
+  //   return BlocListener<GoogleSlidesPresentationBloc,
+  //           GoogleSlidesPresentationState>(
+  //       bloc: googleSlidesPresentationBloc,
+  //       child: Container(),
+  //       listener: (context, state) async {
+  //         // if (state is GetGooglePresentationURLSuccess) {
+  //         //   Navigator.pop(context, false);
+  //         //   widget.studentDetails.studentgooglePresentationUrl =
+  //         //       state.googlePresentationFileUrl;
+
+  //         //   _shareBottomSheetMenu();
+  //         // }
+
+  //         if (state is GoogleSlidesPresentationErrorState) {
+  //           Navigator.pop(context, false);
+  //           if (state.errorMsg == 'ReAuthentication is required') {
+
+  //             await Authentication.reAuthenticationRequired(
+  //                 context: context,
+  //                 errorMessage: state.errorMsg!,
+  //                 scaffoldKey: scaffoldKey);
+  //           } else {
+  //             Utility.currentScreenSnackBar(
+  //                 state.errorMsg == 'NO_CONNECTION'
+  //                     ? 'No Internet Connection'
+  //                     : "Something Went Wrong. Please Try Again.",
+  //                 null);
+  //           }
+  //         }
+  //       });
   // }
-  // Future<void> getGooglePresentationUrl() async {
-  //   List<UserInformation> userProfileInfoData =
-  //       await UserGoogleProfile.getUserProfile();
-
-  //   if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-  //       userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-  //     Utility.showLoadingDialog(
-  //         context: context, isOCR: true, msg: 'Please Wait...');
-  //     googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-  //         studentDetails: widget.studentDetails,
-  //         studentPlusDriveFolderId:
-  //             userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
-  //   } else {
-  //     Utility.currentScreenSnackBar(
-  //         "Something Went Wrong. Please Try Again.", null);
-  //   }
-  // }
-
-  BlocListener googleSlidesPresentationBlocListener() {
-    return BlocListener<GoogleSlidesPresentationBloc,
-            GoogleSlidesPresentationState>(
-        bloc: googleSlidesPresentationBloc,
-        child: Container(),
-        listener: (context, state) async {
-          if (state is GetGooglePresentationURLSuccess) {
-            Navigator.pop(context, false);
-            widget.studentDetails.studentgooglePresentationUrl =
-                state.googlePresentationFileUrl;
-
-            _shareBottomSheetMenu();
-          }
-
-          if (state is GoogleSlidesPresentationErrorState) {
-            Navigator.pop(context, false);
-            if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
-              await Authentication.reAuthenticationRequired(
-                  context: context,
-                  errorMessage: state.errorMsg!,
-                  scaffoldKey: scaffoldKey);
-            } else {
-              Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
-                  null);
-            }
-          }
-        });
-  }
 
   BlocListener googleDriveBlocListener() {
     return BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -630,16 +567,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
+
             _shareBottomSheetMenu();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
             if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
               await Authentication.reAuthenticationRequired(
                   context: context,
                   errorMessage: state.errorMsg!,

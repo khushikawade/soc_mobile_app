@@ -15,6 +15,7 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'student_plus_event.dart';
 part 'student_plus_state.dart';
 
@@ -33,6 +34,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusLoading();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
+
         List<StudentPlusSearchModel> list = await getStudentPlusSearch(
             keyword: event.keyword ?? '',
             teacherEmail: _userProfileLocalData[0].userEmail ?? '');
@@ -50,6 +52,18 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       try {
         LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
             "${StudentPlusOverrides.studentPlusDetails}_${event.studentIdC}");
+
+        //Clear student_plus_details local data
+        SharedPreferences clearNewsCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult = await clearNewsCache
+            .getBool('delete_local_student_plus_details_cache');
+
+        if (clearCacheResult != true) {
+          await _localDb.clear();
+          await clearNewsCache.setBool(
+              'delete_local_student_plus_details_cache', true);
+        }
 
         List<StudentPlusDetailsModel> _localData = await _localDb.getData();
 
@@ -103,10 +117,10 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         List<StudentPlusWorkModel> list =
             await getStudentWorkDetails(studentId: event.studentId ?? '');
 
-        list.asMap().forEach((i, element) {
-          print(i);
-          print(element.standardAndDescriptionC);
-        });
+        // list.asMap().forEach((i, element) {
+        //   print(i);
+        //   print(element.standardAndDescriptionC);
+        // });
 
         await _localDb.clear();
         list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
