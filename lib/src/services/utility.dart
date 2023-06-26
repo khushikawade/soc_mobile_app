@@ -1006,4 +1006,10 @@ class Utility {
     );
     await Utility.launchUrlOnExternalBrowser('$mailtoLink');
   }
+
+  static Color getContrastColor(BuildContext context) {
+    return Color(0xff000000) != Theme.of(context).backgroundColor
+        ? Color(0xffF7F8F9)
+        : Color(0xff111C20);
+  }
 }

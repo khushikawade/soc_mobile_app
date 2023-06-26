@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/overrides.dart';
@@ -605,7 +605,8 @@ class _ActionInteractionButtonWidgetState
     Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
-        builder: (showDialogContext) => CommonPopupWidget(
+        builder: (showDialogContext) => 
+        CommonPopupWidget(
               backgroundColor:
                   Theme.of(showDialogContext).colorScheme.background ==
                           Color(0xff000000)

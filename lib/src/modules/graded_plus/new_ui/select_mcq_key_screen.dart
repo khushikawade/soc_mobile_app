@@ -221,7 +221,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         builder: (BuildContext context, dynamic value, Widget? child) {
           return LayoutBuilder(builder: (context, constraints) {
             return new GridView.count(
-                padding: EdgeInsets.symmetric(vertical: 10),
+                padding:EdgeInsets.symmetric(vertical: 10),
                 childAspectRatio: constraints.biggest.aspectRatio * 3 / 1.50,
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -229,7 +229,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                 children: AnswerKeyModal.answerKeyModelList
                     .map((AnswerKeyModal value) {
                   return _buildCircularWidget(value, constraints);
-                }).toList());
+                }).toList()); 
           });
         });
   }

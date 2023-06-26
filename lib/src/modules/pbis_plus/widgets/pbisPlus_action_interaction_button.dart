@@ -7,6 +7,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:like_button/like_button.dart';
+import 'package:flutter_svg/svg.dart';
 
 // ignore: must_be_immutable
 class PBISPlusActionInteractionButton extends StatefulWidget {
@@ -18,7 +19,9 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final Key? scaffoldKey;
   final String? classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
-
+  final bool? isShowCircle;
+  final double? size;
+  // final Size
   // final Future<bool?> Function(bool)? onTapCallback;
 
   PBISPlusActionInteractionButton({
@@ -30,7 +33,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
     required this.scaffoldKey,
     required this.classroomCourseId,
     required this.onValueUpdate,
-
+    required this.isShowCircle,
+    required this.size,
     // required this.onTapCallback,
   }) : super(key: key);
 
@@ -43,25 +47,13 @@ class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
   final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
-  // void updateState(bool isLiked) {
-  //   if (_isOffline) {
-  //     Utility.currentScreenSnackBar("No Internet Connection", null);
-  //   }
-  //   _showMessage.value = true;
-  //   Future.delayed(Duration(seconds: 1), () {
-  //     _showMessage.value = false;
-  //   });
-
-  //   /// send your request here
-  //   // final bool success = await sendRequest();
-
-  //   /// if failed, you can do nothing
-  //   // return success? !isLiked:isLiked;
-  // }
 
   bool _isOffline = false;
 
   final ValueNotifier<bool> _showMessage = ValueNotifier<bool>(false);
+  final ValueNotifier<int> participation = ValueNotifier<int>(0);
+  final ValueNotifier<int> collaboration = ValueNotifier<int>(0);
+  final ValueNotifier<int> listening = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
@@ -75,32 +67,30 @@ class PBISPlusActionInteractionButtonState
         return InkWell(
           onTap: () {},
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     LikeButton(
                       padding: EdgeInsets.only(
                           top: widget.isFromStudentPlus == true ? 15 : 20,
-                          bottom: widget.isFromStudentPlus == true ? 0 : 5,
+                          bottom: widget.isFromStudentPlus == true ? 0 : 14,
                           left: 15,
                           right: 5),
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       likeCountAnimationType: LikeCountAnimationType.none,
-                      likeCountPadding: const EdgeInsets.only(left: 5.0),
+                      likeCountPadding: const EdgeInsets.only(left: 0.0),
                       animationDuration: Duration(
                           milliseconds:
                               widget.isFromStudentPlus == true ? 0 : 1000),
                       countPostion: CountPostion.right,
                       isLiked: null,
-
-                      size: 20,
+                      size: widget.size!,
                       onTap: widget.isLoading == true
                           ?
                           // Interaction should not be tappable in STUDENT+ module
@@ -117,45 +107,60 @@ class PBISPlusActionInteractionButtonState
                         dotSecondaryColor: widget.iconData.color,
                       ),
                       likeBuilder: (bool isLiked) {
-                        return Icon(widget.iconData.iconData,
-                            color: widget.iconData.color,
-                            size: Globals.deviceType == 'phone' ? 20 : 30
-                            // 20
-                            // widget.iconData.iconSize,
-                            );
-                      },
+                        return SvgPicture.asset(
+                          widget.iconData.imagePath,
+                          height: widget.size,
+                          width: widget.size,
+                          // height: Globals.deviceType == 'phone' ? 64 : 74,
+                          // width: Globals.deviceType == 'phone' ? 64 : 74,
+                        );
 
-                      // likeCount: _getCounts(),
+                        // Icon(widget.iconData.iconData,
+                        //     color: widget.iconData.color,
+                        //     size: Globals.deviceType == 'phone' ? 64 : 74);
+                      },
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        top: widget.isFromStudentPlus == true ? 15 : 20,
+                        // top: widget.isFromStudentPlus == true ? 15 : 0,
+                        // bottom: widget.isFromStudentPlus == true ? 0 : 5,
+                        top: widget.isFromStudentPlus == true ? 15 : 15,
                         bottom: widget.isFromStudentPlus == true ? 0 : 5,
                       ),
                       child: ValueListenableBuilder(
                           valueListenable: onTapDetect,
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
-                            // print('only likes count');
-                            // print(widget.obj.likeCount);
-                            return widget.isLoading == true
-                                ? Utility.textWidget(
-                                    text: '0',
-                                    context: context,
-                                    textTheme: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontSize: 12))
-                                : _getCounts();
+                            return Container(
+                                height: 24,
+                                width: 24,
+                                alignment: Alignment.center,
+                                // padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.isShowCircle!
+                                      ? Colors.grey[300]
+                                      : Colors.transparent,
+                                ),
+                                child: widget.isLoading == true
+                                    ? Utility.textWidget(
+                                        text: '0',
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18))
+                                    : _getCounts());
                           }),
                     )
                   ],
                 ),
               ),
-
               Padding(
                 padding: Globals.deviceType != 'phone'
-                    ? const EdgeInsets.all(16.0)
+                    ? const EdgeInsets.all(0.0)
                     : EdgeInsets.zero,
                 child: Utility.textWidget(
                     text: widget.iconData.title,
@@ -163,28 +168,8 @@ class PBISPlusActionInteractionButtonState
                     textTheme: Theme.of(context)
                         .textTheme
                         .bodyText1!
-                        .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
+                        .copyWith(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
-              // ValueListenableBuilder<bool>(
-              //   valueListenable: _showMessage,
-              //   builder: (BuildContext context, bool value, Widget? child) {
-              //     return value
-              //         ? SizedBox(
-              //             width: 40,
-              //             height: 20,
-              //             child: FittedBox(
-              //               child: Text(
-              //                 widget.iconData.title,
-              //                 style: Theme.of(context).textTheme.bodyText1!,
-              //               ),
-              //             ),
-              //           )
-              //         : SizedBox(
-              //             width: 40,
-              //             height: 20,
-              //           );
-              //   },
-              // ),
             ],
           ),
         );
@@ -250,12 +235,6 @@ class PBISPlusActionInteractionButtonState
           helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
     }
 
-    /// send your request here
-    // final bool success = await sendRequest();
-
-    /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
-    // setState(() {prin});
     return !isLiked;
   }
 
@@ -265,19 +244,29 @@ class PBISPlusActionInteractionButtonState
       'Engaged': widget.studentValueNotifier.value.profile!.engaged,
       'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+      'Participation': ++participation.value,
+      'Collaboration': ++collaboration.value,
+      'Listening': ++listening.value,
+      // widget.studentValueNotifier.value.profile!.niceWork,
+      // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };
 
     int viewCount = map[title] ?? 0;
     // return viewCount;
     return Padding(
       padding: Globals.deviceType != 'phone'
-          ? const EdgeInsets.only(top: 10, left: 10)
+          ? EdgeInsets.zero
+          // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
           : EdgeInsets.zero,
       child: Utility.textWidget(
           text: viewCount.toString(),
           context: context,
-          textTheme:
-              Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12)),
+          textAlign: TextAlign.center,
+          textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+              color: Color(0xff000000) == Theme.of(context).backgroundColor
+                  ? Color(0xff111C20)
+                  : Color(0xff111C20),
+              fontSize: 12)),
     );
   }
 }
