@@ -18,8 +18,8 @@ class PBISPlusDefaultAndCustomBehaviourModalAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PBISPlusDefaultAndCustomBehaviourModal(
-      defaultList: fields[0] as PBISPlusDefaultBehaviourModal?,
-      customList: fields[1] as PBISPlusDefaultBehaviourModal?,
+      defaultList: (fields[0] as List?)?.cast<PBISPlusDefaultBehaviourModal>(),
+      customList: (fields[1] as List?)?.cast<PBISPlusDefaultBehaviourModal>(),
     );
   }
 

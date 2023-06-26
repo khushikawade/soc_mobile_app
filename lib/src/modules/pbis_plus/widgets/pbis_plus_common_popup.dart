@@ -145,14 +145,15 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                               print(state);
                               if (state is PBISPlusSkillsDeleteLoading) {
                                 return _buildDeletebutton(true);
-                              } else if (state is PBISPlusSkillsSucess) {
+                              } else if (state
+                                  is PBISPlusDefaultBehaviourSucess) {
                                 return _buildDeletebutton(false);
                               } else if (state is PBISErrorState)
                                 return _buildDeletebutton(false);
                               return _buildDeletebutton(false);
                             },
                             listener: (context, state) async {
-                              if (state is PBISPlusSkillsSucess) {
+                              if (state is PBISPlusDefaultBehaviourSucess) {
                                 Utility.currentScreenSnackBar(
                                     "Successfully Deleted skills", null);
                                 Navigator.pop(context, true);

@@ -66,7 +66,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     super.initState();
     pbisPlusAdditionalBehaviourBloc.add(GetPBISPlusAdditionalBehaviour());
     // pbisPlusClassroomBloc
-    //     .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
+    //     .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
     getCustomValue();
   }
 
@@ -197,7 +197,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       bloc: pbisPlusClassroomBloc,
                       builder: (context, state) {
                         print(state);
-                        if (state is PBISPlusSkillsLoading) {
+                        if (state is PBISPlusDefaultBehaviourLoading) {
                           print("-----------state is $state------------------");
                           return _buildEditItemList(
                               PBISPlusSkillsModalLocal
@@ -205,7 +205,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                               true);
                         } else if (state is PBISPlusSkillsUpdateLoading) {
                           return _buildEditItemList(state.skillsList, false);
-                        } else if (state is PBISPlusSkillsSucess) {
+                        } else if (state is PBISPlusDefaultBehaviourSucess) {
                           print("-----------state is $state------------------");
                           localskillsList.value = state.skillsList;
                           if (state.skillsList.isNotEmpty) {
@@ -213,7 +213,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                           } else {
                             return _noDataFoundWidget();
                           }
-                        } else if (state is PBISErrorState) {
+                        } else if (state is PBISPlusDefaultBehaviourError) {
                           print("-----------state is $state------------------");
                           return _noDataFoundWidget();
                         }
@@ -409,8 +409,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         print("----------botton sheet ======== close=======----------------");
         isEditMode.value = !isEditMode.value;
         changedIndex.value = -1;
-        pbisPlusClassroomBloc
-            .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
+        pbisPlusClassroomBloc.add(
+            GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -498,7 +498,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                 //     PBISPlusSkillsModalLocal
                                 //         .PBISPlusSkillLocalBehaviourlist);
                               }
-                            } else if (state is PBISErrorState) {
+                            } else if (state
+                                is PBISPlusAdditionalBehaviourError) {
                               print(
                                   "-----------state is $state------------------");
                               return _noDataFoundWidget();

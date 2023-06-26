@@ -4,9 +4,9 @@ part 'pbis_plus_default_behaviour_modal.g.dart';
 @HiveType(typeId: 46)
 class PBISPlusDefaultAndCustomBehaviourModal extends HiveObject {
   @HiveField(0)
-  PBISPlusDefaultBehaviourModal? defaultList;
+  List<PBISPlusDefaultBehaviourModal>? defaultList;
   @HiveField(1)
-  PBISPlusDefaultBehaviourModal? customList;
+  List<PBISPlusDefaultBehaviourModal>? customList;
 
   PBISPlusDefaultAndCustomBehaviourModal({
     this.defaultList,
@@ -14,22 +14,20 @@ class PBISPlusDefaultAndCustomBehaviourModal extends HiveObject {
   });
 
   factory PBISPlusDefaultAndCustomBehaviourModal.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return PBISPlusDefaultAndCustomBehaviourModal(
       defaultList: json['defaultList'] != null
-          ? PBISPlusDefaultBehaviourModal.fromJson(json['defaultList'])
-          : null,
+          ? (json['defaultList'] as List<dynamic>)
+              .map((item) => PBISPlusDefaultBehaviourModal.fromJson(item))
+              .toList()
+          : [],
       customList: json['customList'] != null
-          ? PBISPlusDefaultBehaviourModal.fromJson(json['customList'])
-          : null,
+          ? (json['customList'] as List<dynamic>)
+              .map((item) => PBISPlusDefaultBehaviourModal.fromJson(item))
+              .toList()
+          : [],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['defaultList'] = defaultList?.toJson();
-    data['customList'] = customList?.toJson();
-    return data;
   }
 }
 

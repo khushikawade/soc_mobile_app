@@ -92,9 +92,9 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
   List<Object> get props => [];
 }
 
-class GetPBISPlusBehaviour extends PBISPlusEvent {
+class GetPBISPlusDefaultBehaviour extends PBISPlusEvent {
   final bool? isCustom;
-  GetPBISPlusBehaviour({
+  GetPBISPlusDefaultBehaviour({
     required this.isCustom,
   });
   @override

@@ -312,7 +312,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                       child: CircularProgressIndicator.adaptive(
                         backgroundColor: AppTheme.kButtonColor,
                       ));
-                } else if (state is PBISPlusSkillsSucess) {
+                } else if (state is PBISPlusDefaultBehaviourSucess) {
                   if (state.skillsList.isNotEmpty ?? false) {
                     return _buildNextbutton(dataList);
                   } else {
@@ -323,7 +323,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 return _buildNextbutton(dataList);
               },
               listener: (context, state) async {
-                if (state is PBISPlusSkillsSucess) {
+                if (state is PBISPlusDefaultBehaviourSucess) {
                   Utility.currentScreenSnackBar(
                       "Successfully updated skills name", null);
                   Navigator.pop(context);
