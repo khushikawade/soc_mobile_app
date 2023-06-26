@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -31,13 +32,16 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
   ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
+
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+
   static final addSkill = PBISPlusActionInteractionModal(
     imagePath: "assets/Pbis_plus/add_icon.svg",
     title: 'Add Skill',
     color: Colors.red,
   );
-  ValueNotifier<List<PBISPlusActionInteractionModal>> containerIcons =
+
+  ValueNotifier<List<PBISPlusActionInteractionModal>> behaviourIcons =
       ValueNotifier<List<PBISPlusActionInteractionModal>>([
     PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[0],
     PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[1],
@@ -46,27 +50,27 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     addSkill,
     addSkill
   ]);
-  int nonAddSkillCount = -1;
+  int totalCurrentBehaviours = -1;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    pbisPlusClassroomBloc.add(GetPBISPlusBehaviour());
-    // widget.studentValueNotifier.value = widget.student!;
+    pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
   }
 
-  getcount() {
-    nonAddSkillCount =
-        containerIcons.value.where((item) => item.title != "Add Skill").length;
-    return nonAddSkillCount;
+  getCount() {
+    totalCurrentBehaviours =
+        behaviourIcons.value.where((item) => item.title != "Add Skill").length;
+    return totalCurrentBehaviours;
   }
 
+//Check if item exist
   bool isItemExist(data) {
-    if (containerIcons.value.isNotEmpty) {
+    if (behaviourIcons.value.isNotEmpty) {
       final result =
-          containerIcons.value.where((item) => item.title == data.title);
+          behaviourIcons.value.where((item) => item.title == data.title);
       return result.isNotEmpty;
     }
     return false;
@@ -78,7 +82,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SpacerWidget(18),
-        _buildbackIcon(),
+        _buildBackIcon(),
         _buildHeader(),
         SpacerWidget(18),
         _buildAdditionalBehaviour(),
@@ -87,51 +91,81 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildbackIcon() {
+/*-------------------------------------------------------------------------------------------------------------- */
+/*--------------------------------------------------_buildBackIcon---------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  Widget _buildBackIcon() {
     return IconButton(
-      onPressed: () {
-        Navigator.pop(context);
-      },
-      icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          size: Globals.deviceType == 'phone' ? 24 : 32,
-          color: AppTheme.kButtonColor),
-    );
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+            IconData(0xe80d,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            size: Globals.deviceType == 'phone' ? 24 : 32,
+            color: AppTheme.kButtonColor));
   }
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------------trackUserActivity--------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  void trackUserActivity() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_edit_behaviour_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_edit_behaviour_screen',
+        screenClass: 'PBISPlusEditSkills');
+    /*-------------------------------------------------------------------------------------*/
+    // Utility.updateLogs(
+    //     activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+    //     activityId: '37',
+    //     description:
+    //         'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+    //     operationResult: 'Success');
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*--------------------------------------------------_buildHeader------------------------------------------------ */
+/*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildHeader() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05),
-      color: Theme.of(context).backgroundColor,
-      child: Column(
-        children: [
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05),
+        color: Theme.of(context).backgroundColor,
+        child: Column(children: [
           Container(
-            width: MediaQuery.of(context).size.height * 0.80,
-            decoration: BoxDecoration(
-              color: AppTheme.kButtonColor,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(8.0),
-                topLeft: Radius.circular(8.0),
+              width: MediaQuery.of(context).size.height * 0.80,
+              decoration: BoxDecoration(
+                color: AppTheme.kButtonColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8.0),
+                  topLeft: Radius.circular(8.0),
+                ),
               ),
-            ),
-            padding: EdgeInsets.all(16),
-            child: Text(
-              "Edit Skills",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
-                  color: Color(0xff000000) == Theme.of(context).backgroundColor
-                      ? Color(0xffFFFFFF)
-                      : Color(0xff000000),
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
+              padding: EdgeInsets.all(16),
+              child: Text("Edit Behaviours",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline5!.copyWith(
+                      color:
+                          Color(0xff000000) == Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff000000),
+                      fontWeight: FontWeight.bold))),
           SpacerWidget(18),
-          DragTarget<PBISPlusActionInteractionModal>(
+          additionalBehaviourList()
+        ]));
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------additionalBehaviourList--------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  Widget additionalBehaviourList() {
+    return Container(
+        child: DragTarget<PBISPlusActionInteractionModal>(
             builder: (context, candidateData, rejectedData) {
               return GridView.builder(
                 shrinkWrap: true,
@@ -140,142 +174,124 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 1.5,
+                  // Adjust this value to change item aspect ratio
                   crossAxisSpacing: 4.0,
+                  // Adjust the spacing between items horizontally
                   mainAxisSpacing: 4.0,
+                  // Adjust the spacing between items vertically
                 ),
-                itemCount: 6,
+                itemCount: (PBISPlusActionInteractionModal
+                    .pbisPlusActionInteractionIconsNew.length),
                 itemBuilder: (BuildContext context, int index) {
-                  final item = containerIcons.value[index];
-                  return DragTarget<PBISPlusActionInteractionModal>(
-                      onWillAccept: (draggedData) {
-                    hoveredIconIndex.value =
-                        index; // Update the hovered icon index
-                    print(hoveredIconIndex);
-                    return true;
-                  }, onAccept: (draggedData) {
-                    print(isItemExist(draggedData));
-                    if (isItemExist(draggedData) == false) {
-                      int count;
-                      count = getcount();
-                      if (count < 6) {
-                        if (hoveredIconIndex.value < count) {
-                          containerIcons.value[hoveredIconIndex.value] =
-                              draggedData;
-                        } else {
-                          containerIcons.value[count] = draggedData;
-                        }
-                      } else {
-                        containerIcons.value[hoveredIconIndex.value] =
-                            draggedData; // Change the hovered icon
-                      }
-
-                      hoveredIconIndex.value = -1;
-                      changedIndex.value = -1;
-                    }
-                    setState(() {});
-                  }, builder: (context, candidateData, rejectedData) {
-                    return GestureDetector(
-                        onTap: () {
-                          if (containerIcons.value[index].title !=
-                              "Add Skill") {
-                            isEditMode.value = true;
-                            changedIndex.value = index;
-                          }
-                        },
-                        child: ValueListenableBuilder(
-                            valueListenable: changedIndex,
-                            builder: (context, value, _) =>
-                                ValueListenableBuilder(
-                                  valueListenable: isEditMode,
-                                  builder: (context, value, _) => index ==
-                                          changedIndex.value
-                                      ? _buildEditWidget(item)
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Draggable(
+                  final item = behaviourIcons.value[index];
+                  totalCurrentBehaviours = index;
+                  return GestureDetector(
+                      onTap: () {
+                        isEditMode.value = true;
+                        changedIndex.value = index;
+                      },
+                      child: ValueListenableBuilder(
+                          valueListenable: changedIndex,
+                          builder: (context, value, _) =>
+                              ValueListenableBuilder(
+                                valueListenable: isEditMode,
+                                builder: (context, value, _) => index ==
+                                        changedIndex.value
+                                    ? _buildEditWidget(item)
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Draggable(
                                               data: item,
                                               child: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: SvgPicture.asset(
+                                                      item.imagePath,
+                                                      fit: BoxFit.contain)),
                                               feedback: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: SvgPicture.asset(
+                                                      item.imagePath,
+                                                      fit: BoxFit.contain)),
                                               childWhenDragging: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: SvgPicture.asset(
-                                                  item.imagePath,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            SpacerWidget(4),
-                                            Padding(
-                                              padding:
-                                                  Globals.deviceType != 'phone'
-                                                      ? const EdgeInsets.only(
-                                                          top: 10, left: 10)
-                                                      : EdgeInsets.zero,
-                                              child: Utility.textWidget(
-                                                  text: item.title,
-                                                  context: context,
-                                                  textTheme: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1!
-                                                      .copyWith(fontSize: 12)),
-                                            )
-                                          ],
-                                        ),
-                                )));
-                  });
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: SvgPicture.asset(
+                                                      item.imagePath,
+                                                      fit: BoxFit.contain))),
+                                          SpacerWidget(4),
+                                          Padding(
+                                            padding:
+                                                Globals.deviceType != 'phone'
+                                                    ? const EdgeInsets.only(
+                                                        top: 10, left: 10)
+                                                    : EdgeInsets.zero,
+                                            child: Utility.textWidget(
+                                                text: item.title,
+                                                context: context,
+                                                textTheme: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .copyWith(fontSize: 12)),
+                                          )
+                                        ],
+                                      ),
+                              )));
                 },
               );
             },
-          ),
-        ],
-      ),
-    );
+            onWillAccept: (PBISPlusActionInteractionModal? iconData) {
+              return true;
+            },
+            onAccept: (PBISPlusActionInteractionModal? iconData) {
+              print(iconData?.title);
+              if (behaviourIcons.value.contains(iconData)) {
+              } else {
+                behaviourIcons.value[totalCurrentBehaviours!] = iconData!;
+                changedIndex.value = -1;
+              }
+              setState(() {});
+            },
+            onAcceptWithDetails:
+                (DragTargetDetails<PBISPlusActionInteractionModal> details) {
+              final item = details.data;
+            },
+            onMove: (details) {},
+            onLeave: (PBISPlusActionInteractionModal? iconData) {
+              print("INSIDE THE ON LEAVE ");
+            }));
   }
 
-  Widget _buildaddSkillsWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          height: 40,
-          width: 40,
-          child: SvgPicture.asset(
-            "assets/Pbis_plus/add_icon.svg",
-            fit: BoxFit.contain,
-          ),
-        ),
-        SpacerWidget(4),
-        Padding(
-          padding: Globals.deviceType != 'phone'
-              ? const EdgeInsets.only(top: 10, left: 10)
-              : EdgeInsets.zero,
-          child: Utility.textWidget(
-              text: "Add Skills",
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontSize: 12)),
-        )
-      ],
-    );
-  }
+  // Widget _buildaddSkillsWidget() {
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: <Widget>[
+  //       Container(
+  //         height: 40,
+  //         width: 40,
+  //         child: SvgPicture.asset(
+  //           "assets/Pbis_plus/add_icon.svg",
+  //           fit: BoxFit.contain,
+  //         ),
+  //       ),
+  //       SpacerWidget(4),
+  //       Padding(
+  //         padding: Globals.deviceType != 'phone'
+  //             ? const EdgeInsets.only(top: 10, left: 10)
+  //             : EdgeInsets.zero,
+  //         child: Utility.textWidget(
+  //             text: "Add Skills",
+  //             context: context,
+  //             textTheme: Theme.of(context)
+  //                 .textTheme
+  //                 .bodyText1!
+  //                 .copyWith(fontSize: 12)),
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget _buildEditWidget(PBISPlusActionInteractionModal item) {
     return GestureDetector(
@@ -314,190 +330,171 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------_buildAdditionalBehaviour------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildAdditionalBehaviour() {
     return Expanded(
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05),
-        color: Theme.of(context).backgroundColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16, left: 16),
-              child: Text(
-                "Additional Behaviors",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline1!.copyWith(),
-              ),
+        child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
             ),
-            SpacerWidget(16),
-            Expanded(
-              child: ValueListenableBuilder(
-                  valueListenable: containerIcons,
-                  builder: (context, value, _) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: BouncingScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            childAspectRatio:
-                                0.9, // Adjust this value to change item aspect ratio
-                            crossAxisSpacing:
-                                0.0, // Adjust the spacing between items horizontally
-                            mainAxisSpacing:
-                                4.0, // Adjust the spacing between items vertically
-                          ),
-                          itemCount: 3 *
-                              PBISPlusActionInteractionModal
-                                  .pbisPlusActionInteractionIconsNew.length
-                                  .ceil(),
-                          itemBuilder: (BuildContext context, int index) {
-                            final item = PBISPlusActionInteractionModal
-                                .pbisPlusActionInteractionIconsNew[index % 9];
-                            final isIconDisabled =
-                                containerIcons.value.contains(item);
-                            return isIconDisabled
-                                ? _buildNonDraggbleIcon(item, isIconDisabled)
-                                : _buildEditSkillIcon(item, isIconDisabled);
-                          },
-                        ),
-                      )),
-            ),
-            SpacerWidget(18),
-          ],
-        ),
-      ),
-    );
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            color: Theme.of(context).backgroundColor,
+            child: Column(
+                // physics: NeverScrollableScrollPhysics(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 16),
+                    child: Text(
+                      "Additional Behaviors",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(),
+                    ),
+                  ),
+                  SpacerWidget(16),
+                  Expanded(
+                      child: ValueListenableBuilder(
+                          valueListenable: behaviourIcons,
+                          builder: (context, value, _) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: GridView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  physics: BouncingScrollPhysics(),
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    childAspectRatio:
+                                        0.9, // Adjust this value to change item aspect ratio
+                                    crossAxisSpacing:
+                                        0.0, // Adjust the spacing between items horizontally
+                                    mainAxisSpacing:
+                                        4.0, // Adjust the spacing between items vertically
+                                  ),
+                                  itemCount: 3 *
+                                      PBISPlusActionInteractionModal
+                                          .pbisPlusActionInteractionIconsNew
+                                          .length
+                                          .ceil(),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final item = PBISPlusActionInteractionModal
+                                            .pbisPlusActionInteractionIconsNew[
+                                        index % 6];
+                                    final isIconDisabled =
+                                        behaviourIcons.value.contains(item);
+                                    return isIconDisabled
+                                        ? _buildAdditionalBehaviourNonDraggableIcons(
+                                            item, isIconDisabled)
+                                        : _buildAdditionalBehaviourDraggableIcons(
+                                            item, isIconDisabled);
+                                  })))),
+                  SpacerWidget(18)
+                ])));
   }
 
-  Widget _buildNonDraggbleIcon(item, isIconDisabled) {
+/*---------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------_buildAdditionalBehaviourNonDraggableIcons---------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------*/
+  Widget _buildAdditionalBehaviourNonDraggableIcons(item, isIconDisabled) {
     return Container(
-      width: 40,
-      height: 40,
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.4),
-            spreadRadius: 0,
-            blurRadius: 1,
-            offset: Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Opacity(
-                opacity: 0.2,
-                child: SvgPicture.asset(
-                  item.imagePath,
-                ))),
-      ),
-    );
-  }
-
-  Widget _buildEditSkillIcon(item, isIconDisabled) {
-    return Draggable(
-      data: item,
-      ignoringFeedbackPointer: !isIconDisabled,
-      child: Container(
         width: 40,
         height: 40,
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 0,
-              blurRadius: 1,
-              offset: Offset(0, 0),
-            ),
-          ],
-        ),
+            color: Theme.of(context).backgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 0))
+            ]),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: isIconDisabled
-                ? Opacity(
-                    opacity: 0.2,
-                    child: SvgPicture.asset(
-                      item.imagePath,
-                    ))
-                : SvgPicture.asset(
-                    item.imagePath,
-                  ),
-          ),
-        ),
-      ),
-      feedback: isIconDisabled
-          ? SizedBox.shrink()
-          : SvgPicture.asset(
-              item.imagePath,
-            ),
-      childWhenDragging: isIconDisabled
-          ? SizedBox.shrink()
-          : SvgPicture.asset(
-              item.imagePath,
-            ),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Opacity(
+                    opacity: 0.2, child: SvgPicture.asset(item.imagePath)))));
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*----------------------------------------_buildAdditionalBehaviourIcons---------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  Widget _buildAdditionalBehaviourDraggableIcons(item, isIconDisabled) {
+    return Draggable(
+      data: item,
+      ignoringFeedbackPointer: !isIconDisabled,
+      child: Container(
+          width: 40,
+          height: 40,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    spreadRadius: 0,
+                    blurRadius: 1,
+                    offset: Offset(0, 0))
+              ]),
+          child: Center(
+              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isIconDisabled
+                      ? Opacity(
+                          opacity: 0.2, child: SvgPicture.asset(item.imagePath))
+                      : SvgPicture.asset(item.imagePath)))),
+      feedback:
+          isIconDisabled ? SizedBox.shrink() : SvgPicture.asset(item.imagePath),
+      childWhenDragging:
+          isIconDisabled ? SizedBox.shrink() : SvgPicture.asset(item.imagePath),
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*-------------------------------------------_modalBottomSheetMenu---------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
   _modalBottomSheetMenu(PBISPlusActionInteractionModal item) =>
       showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        elevation: 10,
-        context: context,
-        builder: (BuildContext context) {
-          return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          isScrollControlled: true,
+          isDismissible: true,
+          enableDrag: true,
+          backgroundColor: Colors.transparent,
+          elevation: 10,
+          context: context,
+          builder: (BuildContext context) {
+            return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                // constraints: constraints,
-                behaviourIcons: containerIcons,
+                behaviourIcons: behaviourIcons,
                 item: item,
-                height:
-                    // constraints.maxHeight < 750 && Globals.deviceType == "phone"
-                    //     ? MediaQuery.of(context).size.height * 0. //0.45
-                    //     : Globals.deviceType == "phone"
-                    //         ? MediaQuery.of(context).size.height * 0.19 //0.45
-                    //         : MediaQuery.of(context).size.height * 0.15,
-                    MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.35,
               );
-            },
-          );
-        },
-      );
+            });
+          });
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*-----------------------------------------------Main Method---------------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackgroundImgWidget(),
       Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PBISPlusAppBar(
-          title: "",
-          backButton: true,
-          scaffoldKey: _scaffoldKey,
-        ),
-        body: body(context),
-      )
+          backgroundColor: Colors.transparent,
+          appBar: PBISPlusAppBar(
+              title: "", backButton: true, scaffoldKey: _scaffoldKey),
+          body: body(context))
     ]);
   }
 }

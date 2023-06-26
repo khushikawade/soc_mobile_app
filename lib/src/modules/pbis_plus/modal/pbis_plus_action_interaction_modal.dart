@@ -1,4 +1,3 @@
-import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 // class PBISPlusActionInteractionModal {
@@ -76,21 +75,21 @@ class PBISPlusActionInteractionModal {
       title: 'Listening',
       color: Colors.red,
     ),
-    PBISPlusActionInteractionModal(
-      imagePath: "assets/Pbis_plus/courteous.svg",
-      title: 'Courteous',
-      color: Colors.red,
-    ),
-    PBISPlusActionInteractionModal(
-      imagePath: "assets/Pbis_plus/responsible.svg",
-      title: 'Responsible',
-      color: Colors.red,
-    ),
-    PBISPlusActionInteractionModal(
-      imagePath: "assets/Pbis_plus/punctual.svg",
-      title: 'Punctual',
-      color: Colors.red,
-    ),
+    // PBISPlusActionInteractionModal(
+    //   imagePath: "assets/Pbis_plus/courteous.svg",
+    //   title: 'Courteous',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModal(
+    //   imagePath: "assets/Pbis_plus/responsible.svg",
+    //   title: 'Responsible',
+    //   color: Colors.red,
+    // ),
+    // PBISPlusActionInteractionModal(
+    //   imagePath: "assets/Pbis_plus/punctual.svg",
+    //   title: 'Punctual',
+    //   color: Colors.red,
+    // ),
   ];
 }
 

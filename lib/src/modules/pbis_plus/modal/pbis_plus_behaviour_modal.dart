@@ -1,38 +1,36 @@
-import 'dart:convert';
+// PbisPlusAdditionalBehaviourModal PbisPlusAdditionalBehaviourModalFromJson(String str) =>
+//     PbisPlusAdditionalBehaviourModal.fromJson(json.decode(str));
 
-PbisPlusBehaviourModal pbisPlusBehaviourModalFromJson(String str) =>
-    PbisPlusBehaviourModal.fromJson(json.decode(str));
+// String PbisPlusAdditionalBehaviourModalToJson(PbisPlusAdditionalBehaviourModal data) =>
+//     json.encode(data.toJson());
 
-String pbisPlusBehaviourModalToJson(PbisPlusBehaviourModal data) =>
-    json.encode(data.toJson());
+// class PbisPlusAdditionalBehaviourModal {
+//   int? statusCode;
+//   List<PbisPlusBehaviourList>? body;
 
-class PbisPlusBehaviourModal {
-  int? statusCode;
-  List<PbisPlusBehaviourList>? body;
+//   PbisPlusAdditionalBehaviourModal({
+//     this.statusCode,
+//     this.body,
+//   });
 
-  PbisPlusBehaviourModal({
-    this.statusCode,
-    this.body,
-  });
+//   factory PbisPlusAdditionalBehaviourModal.fromJson(Map<String, dynamic> json) =>
+//       PbisPlusAdditionalBehaviourModal(
+//         statusCode: json["statusCode"],
+//         body: json["body"] == null
+//             ? []
+//             : List<PbisPlusBehaviourList>.from(
+//                 json["body"]!.map((x) => PbisPlusBehaviourList.fromJson(x))),
+//       );
 
-  factory PbisPlusBehaviourModal.fromJson(Map<String, dynamic> json) =>
-      PbisPlusBehaviourModal(
-        statusCode: json["statusCode"],
-        body: json["body"] == null
-            ? []
-            : List<PbisPlusBehaviourList>.from(
-                json["body"]!.map((x) => PbisPlusBehaviourList.fromJson(x))),
-      );
+//   Map<String, dynamic> toJson() => {
+//         "statusCode": statusCode,
+//         "body": body == null
+//             ? []
+//             : List<dynamic>.from(body!.map((x) => x.toJson())),
+//       };
+// }
 
-  Map<String, dynamic> toJson() => {
-        "statusCode": statusCode,
-        "body": body == null
-            ? []
-            : List<dynamic>.from(body!.map((x) => x.toJson())),
-      };
-}
-
-class PbisPlusBehaviourList {
+class PbisPlusAdditionalBehaviourModal {
   String? id;
   String? activeStatusC;
   String? iconUrlC;
@@ -41,7 +39,7 @@ class PbisPlusBehaviourList {
   String? createdById;
   String? lastModifiedById;
 
-  PbisPlusBehaviourList({
+  PbisPlusAdditionalBehaviourModal({
     this.id,
     this.activeStatusC,
     this.iconUrlC,
@@ -51,8 +49,9 @@ class PbisPlusBehaviourList {
     this.lastModifiedById,
   });
 
-  factory PbisPlusBehaviourList.fromJson(Map<String, dynamic> json) =>
-      PbisPlusBehaviourList(
+  factory PbisPlusAdditionalBehaviourModal.fromJson(
+          Map<String, dynamic> json) =>
+      PbisPlusAdditionalBehaviourModal(
         id: json["Id"] ?? null,
         activeStatusC: json["Active_Status__c"] ?? null,
         iconUrlC: json["Icon_URL__c"] ?? null,

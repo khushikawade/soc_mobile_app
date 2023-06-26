@@ -79,9 +79,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        LocalDatabase<ClassroomCourse> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<ClassroomCourse>? _pbisPlusSkillsData = await _localDb.getData();
+        // LocalDatabase<ClassroomCourse> _pbisPlusSkillsDB =
+        //     LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
+        // List<ClassroomCourse>? _pbisPlusSkillsData = await _localDb.getData();
 
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
@@ -398,18 +398,19 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is GetPBISPlusBehaviour) {
+    if (event is GetPBISPlusAdditionalBehaviour) {
       try {
         List<ClassroomCourse> list = [];
         yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
-        List<PbisPlusBehaviourList> result = await getPBISPBehaviourListData();
+        List<PbisPlusAdditionalBehaviourModal> result =
+            await getPBISPlusBehaviourAdditionalBehaviourList();
 
         result.removeWhere((item) => item.activeStatusC == 'Hide');
         result
             .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
 
         if (result.isNotEmpty) {
-          yield PBISPlusBehaviourSucess(behaviourList: result);
+          yield PBISPlusAdditionalBehaviourSucess(behaviourList: result);
         } else {
           yield PBISErrorState(error: result);
         }
@@ -884,26 +885,25 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-//-----------------------------------GET THE BEHAVIOUR List----------------------------------------//
+  /* -------------------------------------------------------------------------- */
+  /* ------------ Function to fetch list of Additional Behaviours ------------- */
+  /* -------------------------------------------------------------------------- */
 
-  Future getPBISPBehaviourListData() async {
+  Future getPBISPlusBehaviourAdditionalBehaviourList() async {
     try {
-      print("--------------INSIDE --getPBISPBehaviourListData---");
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
+          '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           isCompleteUrl: true);
-      print("--------------response------ -${response.statusCode}--");
-      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PbisPlusBehaviourList> resp = response.data['body']
-            .map<PbisPlusBehaviourList>(
-                (i) => PbisPlusBehaviourList.fromJson(i))
-            .toList();
 
-        print(resp.length);
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PbisPlusAdditionalBehaviourModal> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviourModal>(
+                (i) => PbisPlusAdditionalBehaviourModal.fromJson(i))
+            .toList();
 
         return resp;
       }

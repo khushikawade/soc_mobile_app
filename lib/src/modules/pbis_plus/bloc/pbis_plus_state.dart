@@ -95,12 +95,12 @@ class PBISPlusClassRoomShimmerLoading extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusBehaviourSucess extends PBISPlusState {
-  final List<PbisPlusBehaviourList> behaviourList;
+class PBISPlusAdditionalBehaviourSucess extends PBISPlusState {
+  final List<PbisPlusAdditionalBehaviourModal> behaviourList;
 
-  PBISPlusBehaviourSucess({required this.behaviourList});
-  PBISPlusBehaviourSucess copyWith({final behaviourListj}) {
-    return PBISPlusBehaviourSucess(
+  PBISPlusAdditionalBehaviourSucess({required this.behaviourList});
+  PBISPlusAdditionalBehaviourSucess copyWith({final behaviourListj}) {
+    return PBISPlusAdditionalBehaviourSucess(
         behaviourList: behaviourListj ?? this.behaviourList);
   }
 

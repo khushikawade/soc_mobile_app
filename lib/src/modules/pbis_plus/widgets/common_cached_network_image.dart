@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
