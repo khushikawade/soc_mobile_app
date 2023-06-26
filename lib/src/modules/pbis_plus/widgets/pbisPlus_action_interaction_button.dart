@@ -11,7 +11,7 @@ import 'package:flutter_svg/svg.dart';
 
 // ignore: must_be_immutable
 class PBISPlusActionInteractionButton extends StatefulWidget {
-  final PBISPlusActionInteractionModalNew iconData;
+  final PBISPlusActionInteractionModal iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final bool?
       isFromStudentPlus; // to check it is from pbis plus or student plus
@@ -47,30 +47,13 @@ class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
   final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
-  // void updateState(bool isLiked) {
-  //   if (_isOffline) {
-  //     Utility.currentScreenSnackBar("No Internet Connection", null);
-  //   }
-  //   _showMessage.value = true;
-  //   Future.delayed(Duration(seconds: 1), () {
-  //     _showMessage.value = false;
-  //   });
-
-  //   /// send your request here
-  //   // final bool success = await sendRequest();
-
-  //   /// if failed, you can do nothing
-  //   // return success? !isLiked:isLiked;
-  // }
 
   bool _isOffline = false;
 
   final ValueNotifier<bool> _showMessage = ValueNotifier<bool>(false);
-
   final ValueNotifier<int> participation = ValueNotifier<int>(0);
   final ValueNotifier<int> collaboration = ValueNotifier<int>(0);
   final ValueNotifier<int> listening = ValueNotifier<int>(0);
-  void update() {}
 
   @override
   Widget build(BuildContext context) {
@@ -190,123 +173,6 @@ class PBISPlusActionInteractionButtonState
             ],
           ),
         );
-
-        // InkWell(
-        //   onTap: () {},
-        //   child: Column(
-        //     // mainAxisSize: MainAxisSize.min,
-        //     mainAxisAlignment: MainAxisAlignment.end,
-        //     children: [
-        //       Container(
-        //         alignment: Alignment.center,
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.center,
-        //           crossAxisAlignment: CrossAxisAlignment.center,
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: [
-        //             LikeButton(
-        //               padding: EdgeInsets.only(
-        //                   top: widget.isFromStudentPlus == true ? 15 : 20,
-        //                   bottom: widget.isFromStudentPlus == true ? 0 : 5,
-        //                   left: 15,
-        //                   right: 5),
-        //               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //               likeCountAnimationType: LikeCountAnimationType.none,
-        //               likeCountPadding: const EdgeInsets.only(left: 5.0),
-        //               animationDuration: Duration(
-        //                   milliseconds:
-        //                       widget.isFromStudentPlus == true ? 0 : 1000),
-        //               countPostion: CountPostion.right,
-        //               isLiked: null,
-
-        //               size: 20,
-        //               onTap: widget.isLoading == true
-        //                   ?
-        //                   // Interaction should not be tappable in STUDENT+ module
-        //                   (bool isLiked) async {
-        //                       return false;
-        //                     }
-        //                   : _onLikeButtonTapped,
-        //               circleColor: CircleColor(
-        //                 start: widget.iconData.color,
-        //                 end: widget.iconData.color,
-        //               ),
-        //               bubblesColor: BubblesColor(
-        //                 dotPrimaryColor: widget.iconData.color,
-        //                 dotSecondaryColor: widget.iconData.color,
-        //               ),
-        //               likeBuilder: (bool isLiked) {
-        //                 return Icon(widget.iconData.iconData,
-        //                     color: widget.iconData.color,
-        //                     size: Globals.deviceType == 'phone' ? 20 : 30
-        //                     // 20
-        //                     // widget.iconData.iconSize,
-        //                     );
-        //               },
-
-        //               // likeCount: _getCounts(),
-        //             ),
-        //             Padding(
-        //               padding: EdgeInsets.only(
-        //                 top: widget.isFromStudentPlus == true ? 15 : 20,
-        //                 bottom: widget.isFromStudentPlus == true ? 0 : 5,
-        //               ),
-        //               child: ValueListenableBuilder(
-        //                   valueListenable: onTapDetect,
-        //                   builder: (BuildContext context, dynamic value,
-        //                       Widget? child) {
-        //                     // print('only likes count');
-        //                     // print(widget.obj.likeCount);
-        //                     return widget.isLoading == true
-        //                         ? Utility.textWidget(
-        //                             text: '0',
-        //                             context: context,
-        //                             textTheme: Theme.of(context)
-        //                                 .textTheme
-        //                                 .bodyText1!
-        //                                 .copyWith(fontSize: 12))
-        //                         : _getCounts();
-        //                   }),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-
-        //       Padding(
-        //         padding: Globals.deviceType != 'phone'
-        //             ? const EdgeInsets.all(16.0)
-        //             : EdgeInsets.zero,
-        //         child: Utility.textWidget(
-        //             text: widget.iconData.title,
-        //             context: context,
-        //             textTheme: Theme.of(context)
-        //                 .textTheme
-        //                 .bodyText1!
-        //                 .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
-        //       ),
-        //       // ValueListenableBuilder<bool>(
-        //       //   valueListenable: _showMessage,
-        //       //   builder: (BuildContext context, bool value, Widget? child) {
-        //       //     return value
-        //       //         ? SizedBox(
-        //       //             width: 40,
-        //       //             height: 20,
-        //       //             child: FittedBox(
-        //       //               child: Text(
-        //       //                 widget.iconData.title,
-        //       //                 style: Theme.of(context).textTheme.bodyText1!,
-        //       //               ),
-        //       //             ),
-        //       //           )
-        //       //         : SizedBox(
-        //       //             width: 40,
-        //       //             height: 20,
-        //       //           );
-        //       //   },
-        //       // ),
-        //     ],
-        //   ),
-        // );
       },
       child: _isOffline
           ? Utility.textWidget(
@@ -369,12 +235,6 @@ class PBISPlusActionInteractionButtonState
           helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
     }
 
-    /// send your request here
-    // final bool success = await sendRequest();
-
-    /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
-    // setState(() {prin});
     return !isLiked;
   }
 

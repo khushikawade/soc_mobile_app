@@ -1,4 +1,4 @@
-import 'dart:io';
+// ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
@@ -15,8 +15,8 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final PBISPlusActionInteractionModalNew item;
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  final PBISPlusActionInteractionModal item;
+  final ValueNotifier<List<PBISPlusActionInteractionModal>>? behaviourIcons;
   PBISPlusCommonPopup({
     Key? key,
     required this.orientation,
@@ -26,7 +26,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
     required this.titleStyle,
     required this.backgroundColor,
     required this.item,
-    required this.containerIcons,
+    required this.behaviourIcons,
   }) : super(key: key);
 
   @override
@@ -53,10 +53,10 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
 
   bool replaceItems(String title) {
     try {
-      int index = widget.containerIcons!.value
+      int index = widget.behaviourIcons!.value
           .indexWhere((item) => item.title == title);
       if (index != -1) {
-        widget.containerIcons!.value[index] = PBISPlusActionInteractionModalNew(
+        widget.behaviourIcons!.value[index] = PBISPlusActionInteractionModal(
           imagePath: "assets/Pbis_plus/add_icon.svg",
           title: 'Add Skill',
           color: Colors.red,
@@ -166,16 +166,16 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   void _handleDeleteItem() async {
     bool res = await replaceItems(widget.item.title);
     if (res) {
-      Utility.currentScreenSnackBar("Skills deleted successfully", null);
+      Utility.currentScreenSnackBar("Behaviour deleted successfully", null);
       Navigator.pop(context);
     } else {
       Utility.currentScreenSnackBar(
-          "Failed to delete skills. Please try again.", null);
+          "Failed to delete selected behaviour. Please try again.", null);
       Navigator.pop(context);
     }
   }
 
-  Widget _buildIconWidget(PBISPlusActionInteractionModalNew item) {
+  Widget _buildIconWidget(PBISPlusActionInteractionModal item) {
     return Container(
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor

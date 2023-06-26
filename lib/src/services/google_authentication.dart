@@ -74,6 +74,7 @@ class Authentication {
       List<UserInformation> userInfo = await UserGoogleProfile.getUserProfile();
       return userInfo.length < 1 ? '' : userInfo[0].authorizationToken ?? '';
     }
+
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;
 
@@ -81,6 +82,7 @@ class Authentication {
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
+
     try {
       final UserCredential userCredential =
           await auth.signInWithCredential(credential);
@@ -235,7 +237,7 @@ class Authentication {
       User user, GoogleSignInAuthentication googleSignInAuthentication) async {
     // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
-
+    await UserGoogleProfile.clearUserProfile();
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
         userEmail: user.email,
@@ -260,7 +262,7 @@ class Authentication {
         content,
         style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
-    );
+    ); 
   }
 
   static Future refreshAuthenticationToken({String? refreshToken}) async {

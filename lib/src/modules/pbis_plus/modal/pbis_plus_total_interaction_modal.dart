@@ -24,7 +24,7 @@ class PBISPlusTotalInteractionModal {
   @HiveField(9)
   int? participation;
   @HiveField(10)
-  int? collabration;
+  int? collaboration;
   @HiveField(11)
   int? listening;
   PBISPlusTotalInteractionModal(
@@ -37,7 +37,7 @@ class PBISPlusTotalInteractionModal {
       this.createdAt,
       this.studentEmail,
       this.participation,
-      this.collabration,
+      this.collaboration,
       this.listening});
 
   PBISPlusTotalInteractionModal.fromJson(Map<String, dynamic> json) {
@@ -51,7 +51,7 @@ class PBISPlusTotalInteractionModal {
     createdAt = json["CreatedAt"];
     classroomCourseId = json["Classroom_Course_Id"];
     participation = json['Participation'] ?? 0;
-    collabration = json['Collabration'] ?? 0;
+    collaboration = json['Collaboration'] ?? 0;
     listening = json['Listening'] ?? 0;
   }
 
@@ -67,7 +67,7 @@ class PBISPlusTotalInteractionModal {
     data['CreatedAt'] = this.createdAt;
     data["Classroom_Course_Id"] = this.classroomCourseId;
     data["Participation"] = this.participation;
-    data["Collabration"] = this.collabration;
+    data["Collaboration"] = this.collaboration;
     data["Listening"] = this.listening;
     return data;
   }

@@ -27,7 +27,7 @@ class PBISPlusTotalInteractionModalAdapter
       createdAt: fields[7] as String?,
       studentEmail: fields[6] as String?,
       participation: fields[9] as int?,
-      collabration: fields[10] as int?,
+      collaboration: fields[10] as int?,
       listening: fields[11] as int?,
     )..classroomCourseId = fields[8] as String?;
   }
@@ -57,7 +57,7 @@ class PBISPlusTotalInteractionModalAdapter
       ..writeByte(9)
       ..write(obj.participation)
       ..writeByte(10)
-      ..write(obj.collabration)
+      ..write(obj.collaboration)
       ..writeByte(11)
       ..write(obj.listening);
   }
