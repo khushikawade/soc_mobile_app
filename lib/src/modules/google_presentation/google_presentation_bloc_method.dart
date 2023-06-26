@@ -60,13 +60,13 @@ class GooglePresentationBlocMethods {
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method updateStudentLocalDBWithGooglePresentationUrl------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-  static updateStudentLocalDBWithGooglePresentationUrl(
-      {required StudentPlusDetailsModel studentDetails,
-      required final String studentGooglePresentationUrl}) async {
+  static updateStudentLocalDBWithGooglePresentationUrl({
+    required StudentPlusDetailsModel studentDetails,
+  }) async {
     try {
       //this will get the all students saved in local db
       LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
-          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.id}");
+          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.studentIdC}");
 
       List<StudentPlusDetailsModel> studentsLocalData =
           await _localDb.getData();
@@ -74,10 +74,8 @@ class GooglePresentationBlocMethods {
 
       for (int index = 0; index < studentsLocalData.length; index++) {
         if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
-          StudentPlusDetailsModel student = studentsLocalData[index];
-
-          student.studentgooglePresentationUrl = studentGooglePresentationUrl;
-
+          StudentPlusDetailsModel student = studentDetails;
+          print("stdduent lcoal db updated");
           await _localDb.putAt(index, student);
           break;
         }

@@ -101,91 +101,96 @@ class GoogleSlidesPresentationBloc
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------StudentPlusCreateAndUpdateNewSlidesToGooglePresentation------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-    if (event is StudentPlusCreateAndUpdateNewSlidesToGooglePresentation) {
-      try {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
+    // if (event is StudentPlusCreateAndUpdateNewSlidesToGooglePresentation) {
+    //   try {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
 
-        //Count the number of slide already exist to the Google Presentation
-        List countGooglePresentationSlide =
-            await getSlidesCountFromGooglePresentation(
-          presentationFileId: event.googlePresentationFileId,
-          userProfile: userProfileLocalData[0],
-        );
+    //     //Count the number of slide already exist to the Google Presentation
+    //     List countGooglePresentationSlide =
+    //         await getSlidesCountFromGooglePresentation(
+    //       presentationFileId: event.googlePresentationFileId,
+    //       userProfile: userProfileLocalData[0],
+    //     );
 
-        //Compare Google Presentation slide count with the Student work count
-        if (countGooglePresentationSlide[0] == true &&
-            countGooglePresentationSlide[1] <= event.allRecords.length) {
-          List updatedPresentationResponse =
-              await updateNewSlidesToGooglePresentation(
-                  presentationId: event.googlePresentationFileId,
-                  studentDetails: event.studentDetails,
-                  allRecords: event.allRecords,
-                  numberOfSlidesAlreadyAvailable:
-                      countGooglePresentationSlide[1],
-                  userProfile: userProfileLocalData[0]);
+    //     //Compare Google Presentation slide count with the Student work count
+    //     if (countGooglePresentationSlide[0] == true &&
+    //         countGooglePresentationSlide[1] <= event.allRecords.length) {
+    //       List updatedPresentationResponse =
+    //           await updateNewSlidesToGooglePresentation(
+    //               presentationId: event.googlePresentationFileId,
+    //               studentDetails: event.studentDetails,
+    //               allRecords: event.allRecords,
+    //               numberOfSlidesAlreadyAvailable:
+    //                   countGooglePresentationSlide[1],
+    //               userProfile: userProfileLocalData[0]);
 
-          if (updatedPresentationResponse[0] == true) {
-            yield StudentPlusCreateAndUpdateSlideSuccess();
-          } else {
-            yield GoogleSlidesPresentationErrorState(
-                errorMsg: countGooglePresentationSlide[1].toString());
-          }
-        } else if (countGooglePresentationSlide[1]! > event.allRecords.length) {
-          yield StudentPlusCreateAndUpdateSlideSuccess();
-        } else {
-          yield GoogleSlidesPresentationErrorState(
-              errorMsg: countGooglePresentationSlide[1].toString());
-        }
-      } catch (e) {
-        print(e);
-        yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
-      }
-    }
+    //       if (updatedPresentationResponse[0] == true) {
+    //         yield StudentPlusCreateAndUpdateSlideSuccess();
+    //       } else {
+    //         yield GoogleSlidesPresentationErrorState(
+    //             errorMsg: countGooglePresentationSlide[1].toString());
+    //       }
+    //     } else if (countGooglePresentationSlide[0] == true &&
+    //         countGooglePresentationSlide[1]! > event.allRecords.length) {
+    //       yield StudentPlusCreateAndUpdateSlideSuccess();
+    //     } else {
+    //       yield GoogleSlidesPresentationErrorState(
+    //           errorMsg: countGooglePresentationSlide[1].toString());
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //     yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+    //   }
+    // }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------StudentPlusGetGooglePresentation----------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 //Used to get the presentation URL if already exist and update the student's local database
 //This is the default event fire on searching the presentation
-    if (event is GetStudentPlusPresentationURL) {
-      yield GooglePresentationLoading();
+    // if (event is GetStudentPlusPresentationURL) {
+    //   yield GooglePresentationLoading();
 
-      try {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
+    //   try {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
 
-        List isStudentPresentationAvailable = await searchStudentPresentation(
-            folderId: event.studentPlusDriveFolderId,
-            userProfile: userProfileLocalData[0],
-            studentDetails: event.studentDetails);
+    //     List isStudentPresentationAvailable = await searchStudentPresentation(
+    //         folderId: event.studentPlusDriveFolderId,
+    //         userProfile: userProfileLocalData[0],
+    //         studentDetails: event.studentDetails);
 
-        if (isStudentPresentationAvailable[0] == true) {
-          List<HistoryAssessment> data = isStudentPresentationAvailable[1];
-          isStudentPresentationAvailable[1] =
-              data.isNotEmpty ? data[0].webContentLink : '';
-        }
+    //     if (isStudentPresentationAvailable[0] == true) {
+    //       List<HistoryAssessment> data = isStudentPresentationAvailable[1];
+    //       isStudentPresentationAvailable[1] =
+    //           data.isNotEmpty ? data[0].webContentLink : '';
+    //     }
 
-        if (isStudentPresentationAvailable[0] == true) {
-          //if Presentation is available update the url
-          if (isStudentPresentationAvailable[1] != '') {
-            GooglePresentationBlocMethods
-                .updateStudentLocalDBWithGooglePresentationUrl(
-                    studentDetails: event.studentDetails,
-                    studentGooglePresentationUrl:
-                        isStudentPresentationAvailable[1]);
-          }
+    //     if (isStudentPresentationAvailable[0] == true) {
+    //       //if Presentation is available update the url
+    //       if (isStudentPresentationAvailable[1] != '') {
+    //         GooglePresentationBlocMethods
+    //             .updateStudentLocalDBWithGooglePresentationUrl(
+    //                 studentDetails: event.studentDetails,
+    //                 studentGooglePresentationUrl:
+    //                     isStudentPresentationAvailable[1]);
+    //       }
 
-          yield GetGooglePresentationURLSuccess(
-              googlePresentationFileUrl: isStudentPresentationAvailable[1]);
-        } else {
-          yield GoogleSlidesPresentationErrorState(
-              errorMsg: isStudentPresentationAvailable[1].toString());
-        }
-      } catch (e) {
-        yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
-      }
-    }
+    //       yield GetGooglePresentationURLSuccess(
+    //           googlePresentationFileUrl: isStudentPresentationAvailable[1]);
+    //     } else {
+    //       yield GoogleSlidesPresentationErrorState(
+    //           errorMsg: isStudentPresentationAvailable[1].toString());
+    //     }
+    //   } catch (e) {
+    //     yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+    //   }
+    // }
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------StudentPlusCreate New Slides To Google Presentation------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
     if (event is StudentPlusCreateGooglePresentationForStudent) {
       try {
@@ -223,8 +228,14 @@ class GoogleSlidesPresentationBloc
       }
     }
 
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------Student Plus Update Slides To GooglePresentation------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+
     if (event is StudentPlusUpdateGooglePresentationForStudent) {
       try {
+        bool isSaveStudentGooglePresentationWorkOnDataBase = false;
+
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
@@ -235,6 +246,39 @@ class GoogleSlidesPresentationBloc
               event.studentDetails.studentgooglePresentationId ?? '',
           userProfile: userProfileLocalData[0],
         );
+
+        //if the api response return (404) the resource you are trying to access doesn't exist
+        // so then create one google presentation
+        if (countGooglePresentationSlide[0] == false &&
+            countGooglePresentationSlide[1] == 404) {
+          //GET STUDENT PRESENTAION FILE NAME
+          String studentGooglePresentationFileName =
+              createStudentGooglePresentationFileName(event.studentDetails);
+
+          //CREATE STUDENT PRESENTAION FILE
+          List GooglePresentationCreateResponse =
+              await googleDriveBloc.createPresentationOnDrive(
+                  name: studentGooglePresentationFileName,
+                  folderId:
+                      userProfileLocalData[0].studentPlusGoogleDriveFolderId ??
+                          '',
+                  accessToken: userProfileLocalData[0].authorizationToken,
+                  refreshToken: userProfileLocalData[0].refreshToken,
+                  excelSheetId: '',
+                  isMcqSheet: false);
+
+          //Return Google presentation if once presentation created
+          if (GooglePresentationCreateResponse[0] == true) {
+            event.studentDetails.studentgooglePresentationId =
+                GooglePresentationCreateResponse[1];
+            countGooglePresentationSlide[1] = 0;
+            countGooglePresentationSlide[0] = true;
+            isSaveStudentGooglePresentationWorkOnDataBase = true;
+          }
+        } else {
+          isSaveStudentGooglePresentationWorkOnDataBase =
+              countGooglePresentationSlide[1] == 0;
+        }
 
         //Compare Google Presentation slide count with the Student work count
         if (countGooglePresentationSlide[0] == true &&
@@ -250,13 +294,20 @@ class GoogleSlidesPresentationBloc
                   userProfile: userProfileLocalData[0]);
 
           if (updatedPresentationResponse[0] == true) {
-            yield StudentPlusUpdateGooglePresentationForStudentSuccess();
+            yield StudentPlusUpdateGooglePresentationForStudentSuccess(
+                studentDetails: event.studentDetails,
+                isSaveStudentGooglePresentationWorkOnDataBase:
+                    isSaveStudentGooglePresentationWorkOnDataBase);
           } else {
             yield GoogleSlidesPresentationErrorState(
                 errorMsg: countGooglePresentationSlide[1].toString());
           }
-        } else if (countGooglePresentationSlide[1]! > event.allRecords.length) {
-          yield StudentPlusUpdateGooglePresentationForStudentSuccess();
+        } else if (countGooglePresentationSlide[0] == true &&
+            countGooglePresentationSlide[1]! > event.allRecords.length) {
+          yield StudentPlusUpdateGooglePresentationForStudentSuccess(
+              studentDetails: event.studentDetails,
+              isSaveStudentGooglePresentationWorkOnDataBase:
+                  isSaveStudentGooglePresentationWorkOnDataBase);
         } else {
           yield GoogleSlidesPresentationErrorState(
               errorMsg: countGooglePresentationSlide[1].toString());
@@ -353,17 +404,21 @@ class GoogleSlidesPresentationBloc
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
 
-      print(headers);
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationFileId";
 
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['slides'];
+        print(response.data['body']);
+
         var slideCount = data != null ? data.length : 0;
         return [true, slideCount];
+      } else if (response.statusCode == 404) {
+        //if the api response return (404) the resource you are trying to access doesn't exist
+        return [false, response.statusCode];
       } else if (retry > 0) {
         // var result = await googleDriveBloc
         //     .toRefreshAuthenticationToken(userProfile.refreshToken!);

@@ -65,7 +65,11 @@ class StudentPlusCreateGooglePresentationForStudentSuccess
 
 class StudentPlusUpdateGooglePresentationForStudentSuccess
     extends GoogleSlidesPresentationState {
-  StudentPlusUpdateGooglePresentationForStudentSuccess();
+  StudentPlusDetailsModel studentDetails;
+  bool isSaveStudentGooglePresentationWorkOnDataBase;
+  StudentPlusUpdateGooglePresentationForStudentSuccess(
+      {required this.studentDetails,
+      required this.isSaveStudentGooglePresentationWorkOnDataBase});
 
   @override
   List<Object> get props => [];

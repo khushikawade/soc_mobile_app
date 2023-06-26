@@ -289,7 +289,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                     StudentPlusUtility.addStudentInfoToLocalDb(
                         studentInfo: list[index]);
                     _studentPlusBloc.add(GetStudentPlusDetails(
-                        studentOsis: list[index].studentIDC ?? ''));
+                        studentIdC: list[index].studentIDC ?? ''));
                   }
                 },
                 contentPadding: EdgeInsets.only(left: 20),

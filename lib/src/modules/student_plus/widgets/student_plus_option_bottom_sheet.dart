@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
@@ -20,10 +21,10 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 class StudentPlusOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
 
-  const StudentPlusOptionBottomSheet(
+  StudentPlusOptionBottomSheet(
       {Key? key,
       this.title,
       this.height = 200,
@@ -45,6 +46,7 @@ class _GradedPlusResultOptionBottomSheetState
       GoogleSlidesPresentationBloc();
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
 
   @override
   void initState() {
@@ -143,30 +145,19 @@ class _GradedPlusResultOptionBottomSheetState
         _pageController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
 
-        //check student+ folder available or not if not create one
-        // if (StudentPlusOverrides?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-        //     false) {
-        //   print("Trigger to check the folder ");
-        //   studentPlusGooglePresentationIsAvailable();
-        // } else {
-        //   _checkDriveFolderExistsOrNot();
-        // }
-
         if (widget.studentDetails.studentgooglePresentationId == null ||
             widget.studentDetails.studentgooglePresentationId == '') {
+          print("crated the new presentation ");
           createStudentGooglePresentation();
         } else {
+          print("update the presentataion");
           updateStudentGooglePresentation();
-          // studentPlusGooglePresentationIsAvailable(true);
         }
 
         break;
       default:
         Utility.currentScreenSnackBar('$title is Not available ', null);
     }
-    // if (((url?.isEmpty ?? true) || (url == 'NA'))) {
-    //   Utility.currentScreenSnackBar('$title is Not available ', null);
-    // }
   }
 
   Widget buildOptions() {
@@ -234,54 +225,14 @@ class _GradedPlusResultOptionBottomSheetState
           if (pageValue == 1)
             Column(
               children: [
-                googleDriveBlocListener(),
-                googleSlidesPresentationBlocListener()
+                // googleDriveBlocListener(),
+                googleSlidesPresentationBlocListener(),
+                studentPlusBlocListener()
               ],
             )
         ],
       ),
     );
-  }
-
-  BlocListener googleDriveBlocListener() {
-    return BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: googleDriveBloc,
-        child: Container(),
-        listener: (context, state) async {
-          // if (state is GoogleSuccess) {
-
-          //   if (StudentPlusOverrides
-          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-          //       false) {
-          //     studentPlusGooglePresentationIsAvailable();
-          //   } else {
-          //     Navigator.of(context).pop();
-          //     Utility.currentScreenSnackBar(
-          //         "Something Went Wrong. Please Try Again.", null);
-          //   }
-          // }
-
-          if (state is GoogleSuccess) {
-            studentPlusGooglePresentationIsAvailable(false);
-          }
-          if (state is ErrorState) {
-            Navigator.of(context).pop();
-            if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
-              await Authentication.reAuthenticationRequired(
-                  context: context,
-                  errorMessage: state.errorMsg!,
-                  scaffoldKey: scaffoldKey);
-            } else {
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
-          }
-        });
   }
 
   BlocListener googleSlidesPresentationBlocListener() {
@@ -292,33 +243,12 @@ class _GradedPlusResultOptionBottomSheetState
         listener: (context, state) async {
           print("On student work ------------$state---------");
 
-          if (state is StudentPlusGooglePresentationSearchSuccess) {
-            LocalDatabase<StudentPlusWorkModel> _localDb = LocalDatabase(
-                "${StudentPlusOverrides.studentWorkList}_${widget.studentDetails.studentIdC}");
-
-            List<StudentPlusWorkModel>? _localData = await _localDb.getData();
-            _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-            print("update the presentation event trigger");
-            googleSlidesPresentationBloc.add(
-                StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
-                    googlePresentationFileId: state.googlePresentationFileId,
-                    studentDetails: widget.studentDetails,
-                    allRecords: _localData));
-          }
-
-          if (state is StudentPlusCreateAndUpdateSlideSuccess) {
-            Navigator.of(context).pop();
-          }
-
           if (state is GoogleSlidesPresentationErrorState) {
+            widget.studentDetails.studentgooglePresentationId = '';
+            widget.studentDetails.studentgooglePresentationUrl = '';
             Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
               await Authentication.reAuthenticationRequired(
                   context: context,
                   errorMessage: state.errorMsg!,
@@ -331,62 +261,28 @@ class _GradedPlusResultOptionBottomSheetState
                   null);
             }
           }
+
           if (state is StudentPlusCreateGooglePresentationForStudentSuccess) {
+            //update the current student object
             widget.studentDetails.studentgooglePresentationId =
                 state.googlePresentationFileId;
-            widget.studentDetails.studentgooglePresentationUrl =
-                StudentPlusOverrides.studentPlusGooglePresentationUrl +
-                    state.googlePresentationFileId;
+
+            //now update the student google Presentation on drive
             updateStudentGooglePresentation();
           }
           if (state is StudentPlusUpdateGooglePresentationForStudentSuccess) {
-            Utility.currentScreenSnackBar(
-                "Student Presentation is Sync Successfully ", null);
-            Navigator.of(context).pop(widget.studentDetails);
+            if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
+              Navigator.of(context).pop();
+              Utility.currentScreenSnackBar(
+                  "Student Presentation is Sync Successfully ", null);
+            } else {
+              widget.studentDetails = state.studentDetails;
+              //now update the save the student google Presentation work on database
+              studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                  studentDetails: state.studentDetails));
+            }
           }
         });
-  }
-
-  void _checkDriveFolderExistsOrNot() async {
-    //FOR STUDENT PLUS
-    final List<UserInformation> _profileData =
-        await UserGoogleProfile.getUserProfile();
-    final UserInformation userProfile = _profileData[0];
-
-    //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
-    //is available or not if not this will create one or the available get the drive folder id
-    googleDriveBloc.add(GetDriveFolderIdEvent(
-        fromGradedPlusAssessmentSection: false,
-        isReturnState: true,
-        token: userProfile.authorizationToken,
-        folderName: "SOLVED STUDENT+",
-        refreshToken: userProfile.refreshToken));
-  }
-
-  Future<void> studentPlusGooglePresentationIsAvailable(
-      bool? isSyncPresentation) async {
-    List<UserInformation> userProfileInfoData =
-        await UserGoogleProfile.getUserProfile();
-
-    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-      print("Trigger to check the folder ");
-      googleSlidesPresentationBloc.add(SearchStudentPresentationStudentPlus(
-        studentPlusDriveFolderId:
-            userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-        studentDetails: widget.studentDetails,
-      ));
-    }
-    //Sync Presentation
-    else if (isSyncPresentation == true) {
-      _checkDriveFolderExistsOrNot();
-    }
-    //Google Success Event
-    else {
-      Navigator.of(context).pop();
-      Utility.currentScreenSnackBar(
-          "Something Went Wrong. Please Try Again.", null);
-    }
   }
 
   Future<void> createStudentGooglePresentation() async {
@@ -412,5 +308,27 @@ class _GradedPlusResultOptionBottomSheetState
     googleSlidesPresentationBloc.add(
         StudentPlusUpdateGooglePresentationForStudent(
             studentDetails: widget.studentDetails, allRecords: _localData));
+  }
+
+  BlocListener studentPlusBlocListener() {
+    return BlocListener(
+        bloc: studentPlusBloc,
+        child: Container(),
+        listener: (context, state) async {
+          print("state is $state");
+
+          if (state is SaveStudentGooglePresentationWorkEventSuccess) {
+            Navigator.of(context).pop(widget.studentDetails);
+            Utility.currentScreenSnackBar(
+                "Student Presentation is Sync Successfully ", null);
+          }
+          if (state is StudentPlusErrorReceived) {
+            widget.studentDetails.studentgooglePresentationId = '';
+            widget.studentDetails.studentgooglePresentationUrl = '';
+            Navigator.of(context).pop();
+            Utility.currentScreenSnackBar(
+                "Something Went Wrong. Please Try Again.", null);
+          }
+        });
   }
 }

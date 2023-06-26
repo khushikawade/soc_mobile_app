@@ -493,8 +493,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                       // }
 
                       {
+                    //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
+
                     if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             null ||
                         userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
@@ -550,6 +552,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
 
     if (result != null) {
+      //UPDATE THE CURRENT STUDENT DEAILS LOCAL VARIABLE
       widget.studentDetails = result;
     }
   }

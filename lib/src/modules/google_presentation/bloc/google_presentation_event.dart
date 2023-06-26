@@ -18,20 +18,20 @@ class SearchStudentPresentationStudentPlus
   List<Object> get props => [];
 }
 
-class StudentPlusCreateAndUpdateNewSlidesToGooglePresentation
-    extends GoogleSlidesPresentationEvent {
-  final StudentPlusDetailsModel studentDetails;
-  final List<StudentPlusWorkModel> allRecords;
-  final String googlePresentationFileId;
+// class StudentPlusCreateAndUpdateNewSlidesToGooglePresentation
+//     extends GoogleSlidesPresentationEvent {
+//   final StudentPlusDetailsModel studentDetails;
+//   final List<StudentPlusWorkModel> allRecords;
+//   final String googlePresentationFileId;
 
-  StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
-      {required this.studentDetails,
-      required this.allRecords,
-      required this.googlePresentationFileId});
+//   StudentPlusCreateAndUpdateNewSlidesToGooglePresentation(
+//       {required this.studentDetails,
+//       required this.allRecords,
+//       required this.googlePresentationFileId});
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class GetStudentPlusPresentationURL extends GoogleSlidesPresentationEvent {
   final StudentPlusDetailsModel studentDetails;
@@ -61,7 +61,7 @@ class StudentPlusCreateGooglePresentationForStudent
 
 class StudentPlusUpdateGooglePresentationForStudent
     extends GoogleSlidesPresentationEvent {
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
   final List<StudentPlusWorkModel> allRecords;
   StudentPlusUpdateGooglePresentationForStudent({
     required this.studentDetails,
