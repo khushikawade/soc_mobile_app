@@ -34,9 +34,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
 
-  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  StudentPlusWorkScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -150,7 +150,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           ),
           floatingActionButton: fab(),
         ),
-        googleSlidesPresentationBlocListener(),
+        // googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
       ],
     );
@@ -459,22 +459,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 if (filterNotifier.value == '' &&
                     state is StudentPlusWorkSuccess &&
                     state.obj.length > 0) {
-                  return PlusCustomFloatingActionButton(onPressed: ()
-
-                      //  {
-                      //   if (StudentPlusOverrides
-                      //           ?.studentPlusGoogleDriveFolderId?.isEmpty ??
-                      //       true) {
-                      //     _checkDriveFolderExistsOrNot();
-                      //   } else if (widget
-                      //           .studentDetails?.googlePresentationUrl?.isEmpty ??
-                      //       true) {
-                      //     getGooglePresentationUrl();
-                      //   } else {
-                      //     _shareBottomSheetMenu();
-                      //   }
-                      // }
-                      async {
+                  return PlusCustomFloatingActionButton(onPressed: () async {
+                    //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
 
@@ -483,10 +469,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                         userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             "") {
                       _checkDriveFolderExistsOrNot();
-                    } else if (widget
-                            .studentDetails?.googlePresentationUrl?.isEmpty ??
-                        true) {
-                      getGooglePresentationUrl();
                     } else {
                       _shareBottomSheetMenu();
                     }
@@ -505,7 +487,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         svgPath: '',
       ),
     ];
-    if (widget.studentDetails.googlePresentationUrl?.isNotEmpty ?? false) {
+    if (widget.studentDetails.studentGooglePresentationUrl != null &&
+        widget.studentDetails.studentGooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
           title: 'Go to Presentation',
@@ -514,7 +497,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       );
     }
 
-    showModalBottomSheet(
+    final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -534,70 +517,45 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             },
           );
         });
-  }
 
-  // void getGooglePresentationUrl() {
-  //   Utility.showLoadingDialog(
-  //       context: context, isOCR: true, msg: 'Please Wait...');
-  //   googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-  //       studentDetails: widget.studentDetails,
-  //       studentPlusDriveFolderId:
-  //           StudentPlusOverrides.studentPlusGoogleDriveFolderId));
-  // }
-  Future<void> getGooglePresentationUrl() async {
-    List<UserInformation> userProfileInfoData =
-        await UserGoogleProfile.getUserProfile();
-
-    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId != null &&
-        userProfileInfoData[0].studentPlusGoogleDriveFolderId != '') {
-      Utility.showLoadingDialog(
-          context: context, isOCR: true, msg: 'Please Wait...');
-      googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-          studentDetails: widget.studentDetails,
-          studentPlusDriveFolderId:
-              userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? ''));
-    } else {
-      Utility.currentScreenSnackBar(
-          "Something Went Wrong. Please Try Again.", null);
+    if (result != null) {
+      //UPDATE THE CURRENT STUDENT DETAILS TO LOCAL VARIABLE WITH PRESENTATION URL AND ID
+      widget.studentDetails = result;
     }
   }
 
-  BlocListener googleSlidesPresentationBlocListener() {
-    return BlocListener<GoogleSlidesPresentationBloc,
-            GoogleSlidesPresentationState>(
-        bloc: googleSlidesPresentationBloc,
-        child: Container(),
-        listener: (context, state) async {
-          if (state is GetGooglePresentationURLSuccess) {
-            Navigator.pop(context, false);
-            widget.studentDetails.googlePresentationUrl =
-                state.googlePresentationFileUrl;
+  // BlocListener googleSlidesPresentationBlocListener() {
+  //   return BlocListener<GoogleSlidesPresentationBloc,
+  //           GoogleSlidesPresentationState>(
+  //       bloc: googleSlidesPresentationBloc,
+  //       child: Container(),
+  //       listener: (context, state) async {
+  //         // if (state is GetGooglePresentationURLSuccess) {
+  //         //   Navigator.pop(context, false);
+  //         //   widget.studentDetails.studentgooglePresentationUrl =
+  //         //       state.googlePresentationFileUrl;
 
-            _shareBottomSheetMenu();
-          }
+  //         //   _shareBottomSheetMenu();
+  //         // }
 
-          if (state is GoogleSlidesPresentationErrorState) {
-            Navigator.pop(context, false);
-            if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
-              await Authentication.reAuthenticationRequired(
-                  context: context,
-                  errorMessage: state.errorMsg!,
-                  scaffoldKey: scaffoldKey);
-            } else {
-              Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
-                  null);
-            }
-          }
-        });
-  }
+  //         if (state is GoogleSlidesPresentationErrorState) {
+  //           Navigator.pop(context, false);
+  //           if (state.errorMsg == 'ReAuthentication is required') {
+
+  //             await Authentication.reAuthenticationRequired(
+  //                 context: context,
+  //                 errorMessage: state.errorMsg!,
+  //                 scaffoldKey: scaffoldKey);
+  //           } else {
+  //             Utility.currentScreenSnackBar(
+  //                 state.errorMsg == 'NO_CONNECTION'
+  //                     ? 'No Internet Connection'
+  //                     : "Something Went Wrong. Please Try Again.",
+  //                 null);
+  //           }
+  //         }
+  //       });
+  // }
 
   BlocListener googleDriveBlocListener() {
     return BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -605,33 +563,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         child: Container(),
         listener: (context, state) async {
           print("On student work ------------$state---------");
-          // //Checking Google Folder State
-          // if (state is GoogleSuccess) {
-          //   Navigator.of(context).pop();
-          //   if (StudentPlusOverrides
-          //           ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-          //       false) {
-          //     getGooglePresentationUrl();
-          //   } else {
-          //     // Navigator.of(context).pop();
-          //     Utility.currentScreenSnackBar(
-          //         "Something Went Wrong. Please Try Again.", null);
-          //   }
-          // }
 
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
-            getGooglePresentationUrl();
+
+            _shareBottomSheetMenu();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
             if (state.errorMsg == 'ReAuthentication is required') {
-              // await Utility.refreshAuthenticationToken(
-              //     isNavigator: false,
-              //     errorMsg: state.errorMsg!,
-              //     context: context,
-              //     scaffoldKey: scaffoldKey);
               await Authentication.reAuthenticationRequired(
                   context: context,
                   errorMessage: state.errorMsg!,
