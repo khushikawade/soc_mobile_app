@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
-part 'pbis_plus_skill_list_modal.g.dart';
+part 'pbis_plus_genric_behaviour_modal.g.dart';
 
 @HiveType(typeId: 44)
-class PBISPlusSkills extends HiveObject {
+class PBISPlusGenricBehaviourModal extends HiveObject {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -15,17 +15,20 @@ class PBISPlusSkills extends HiveObject {
   String? sortOrderC;
   @HiveField(5)
   int? counter;
+  @HiveField(6)
+  String? behaviourId;
 
-  PBISPlusSkills({
+  PBISPlusGenricBehaviourModal({
     required this.id,
     required this.activeStatusC,
     required this.iconUrlC,
     required this.name,
     required this.sortOrderC,
     required this.counter,
+    required this.behaviourId,
   });
 
-  PBISPlusSkills.fromJson(Map<String, dynamic> json) {
+  PBISPlusGenricBehaviourModal.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
     activeStatusC = json['activeStatusC'] ?? '';
     iconUrlC = json['iconUrlC'].toString().contains('http')
@@ -36,6 +39,7 @@ class PBISPlusSkills extends HiveObject {
     name = json['name'] ?? '';
     sortOrderC = json['sortOrderC'] ?? '';
     counter = json['counter'] ?? 0;
+    behaviourId = json['behaviourId'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +50,7 @@ class PBISPlusSkills extends HiveObject {
     data['name'] = this.name;
     data['sortOrderC'] = this.sortOrderC;
     data['counter'] = this.counter;
+    data['behaviourId'] = this.behaviourId;
     return data;
   }
 }

@@ -2,13 +2,9 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/overrides.dart';
@@ -31,7 +27,7 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusSkills? item;
+  PBISPlusGenricBehaviourModal? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
@@ -123,7 +119,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         ));
   }
 
-  Widget EditAndDeleteIcon(PBISPlusSkills? dataList) {
+  Widget EditAndDeleteIcon(PBISPlusGenricBehaviourModal? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -213,7 +209,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   showPopup(
       {required String message,
       required String? title,
-      PBISPlusSkills? item,
+      PBISPlusGenricBehaviourModal? item,
       PBISPlusBloc? pbisPlusClassroomBloc}) async {
     final res = await Navigator.of(context).push(HeroDialogRoute(
         builder: (context) => PBISPlusCommonPopup(
@@ -238,7 +234,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     }
   }
 
-  Widget _buildNextbutton(PBISPlusSkills dataList) {
+  Widget _buildNextbutton(PBISPlusGenricBehaviourModal dataList) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
@@ -266,7 +262,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  Widget _buildEditNameWidget(PBISPlusSkills? dataList) {
+  Widget _buildEditNameWidget(PBISPlusGenricBehaviourModal? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -310,7 +306,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
               bloc: pbisPlusClassroomBloc,
               builder: (context, state) {
                 print(state);
-                if (state is PBISPlusSkillsUpdateLoading) {
+                if (state is GetPBISSkillsUpdateNameLoading) {
                   return Container(
                       alignment: Alignment.center,
                       child: CircularProgressIndicator.adaptive(

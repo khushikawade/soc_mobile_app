@@ -95,13 +95,13 @@ class PBISPlusClassRoomShimmerLoading extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusBehaviourSucess extends PBISPlusState {
-  final List<PbisPlusBehaviourList> behaviourList;
+class PbisPlusAdditionalBehaviourSuccess extends PBISPlusState {
+  final List<PBISPlusGenricBehaviourModal> additionalbehaviourList;
 
-  PBISPlusBehaviourSucess({required this.behaviourList});
-  PBISPlusBehaviourSucess copyWith({final behaviourListj}) {
-    return PBISPlusBehaviourSucess(
-        behaviourList: behaviourListj ?? this.behaviourList);
+  PbisPlusAdditionalBehaviourSuccess({required this.additionalbehaviourList});
+  PbisPlusAdditionalBehaviourSuccess copyWith({final additionalbehaviourList}) {
+    return PbisPlusAdditionalBehaviourSuccess(
+        additionalbehaviourList: additionalbehaviourList ?? this.additionalbehaviourList);
   }
 
   @override
@@ -109,7 +109,7 @@ class PBISPlusBehaviourSucess extends PBISPlusState {
 }
 
 class PBISPlusSkillsSucess extends PBISPlusState {
-  final List<PBISPlusSkills> skillsList;
+  final List<PBISPlusGenricBehaviourModal> skillsList;
 
   PBISPlusSkillsSucess({required this.skillsList});
   PBISPlusSkillsSucess copyWith({final skillsList}) {
@@ -117,7 +117,7 @@ class PBISPlusSkillsSucess extends PBISPlusState {
   }
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [skillsList];
 }
 
 class PBISPlusSkillsLoading extends PBISPlusState {
@@ -139,11 +139,16 @@ class PBISPlusSkillsError extends PBISPlusState {
 }
 
 class PBISPlusSkillsUpdateLoading extends PBISPlusState {
-  // final data;
+  final List<PBISPlusGenricBehaviourModal> skillsList;
 
-  PBISPlusSkillsUpdateLoading();
+  PBISPlusSkillsUpdateLoading({required this.skillsList});
+  PBISPlusSkillsUpdateLoading copyWith({final skillsList}) {
+    return PBISPlusSkillsUpdateLoading(
+        skillsList: skillsList ?? this.skillsList);
+  }
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [skillsList];
 }
 
 class PBISPlusSkillsUpdateError extends PBISPlusState {
@@ -154,6 +159,12 @@ class PBISPlusSkillsUpdateError extends PBISPlusState {
 
 class PBISPlusSkillsDeleteLoading extends PBISPlusState {
   PBISPlusSkillsDeleteLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class GetPBISSkillsUpdateNameLoading extends PBISPlusState {
+  GetPBISSkillsUpdateNameLoading();
   @override
   List<Object> get props => [];
 }
@@ -197,6 +208,12 @@ class PBISPlusStudentNotesError extends PBISPlusState {
     return PBISPlusStudentNotesError(error: error ?? this.error);
   }
 
+  @override
+  List<Object> get props => [];
+}
+
+class GetPBISPlusAdditionalBehaviourLoading extends PBISPlusState {
+  GetPBISPlusAdditionalBehaviourLoading();
   @override
   List<Object> get props => [];
 }

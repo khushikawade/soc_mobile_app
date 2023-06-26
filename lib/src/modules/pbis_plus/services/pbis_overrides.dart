@@ -2,7 +2,10 @@ import 'package:Soc/src/globals.dart';
 
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
-  static final String pbisPlusSkillsDB = 'PBISPlus_skills';
+  static final String pbisPlusBehaviourGenricDB = 'PBISPlus_Behaviour_Genric';
+  static final String pbisPlusAdditionalBehviourDB =
+      'PBISPlusAdditionalBehviour';
+  static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
   static final String pbisPlusStudentNotesDB = 'PBISPlus_student_notes';
   static final String PBISPlusTotalInteractionByTeacherDB =

@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_course_modal.g.dart';
 
@@ -113,17 +113,17 @@ class ClassroomProfile {
   @HiveField(7)
   int? helpful;
   // @HiveField(5)
-  // PBISPlusSkills? behaviour1;
+  // PBISPlusGenricBehaviourModal? behaviour1;
   // @HiveField(6)
-  // PBISPlusSkills? behaviour2;
+  // PBISPlusGenricBehaviourModal? behaviour2;
   // @HiveField(7)
-  // PBISPlusSkills? behaviour3;
+  // PBISPlusGenricBehaviourModal? behaviour3;
   // @HiveField(8)
-  // PBISPlusSkills? behaviour4;
+  // PBISPlusGenricBehaviourModal? behaviour4;
   // @HiveField(9)
-  // PBISPlusSkills? behaviour5;
+  // PBISPlusGenricBehaviourModal? behaviour5;
   // @HiveField(10)
-  // PBISPlusSkills? behaviour6;
+  // PBISPlusGenricBehaviourModal? behaviour6;
 
   @HiveField(8)
   String? courseName;
@@ -165,22 +165,22 @@ class ClassroomProfile {
       });
     }
     // behaviour1 = json['behaviour1'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour2 = json['behaviour2'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour3 = json['behaviou3'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour4 = json['behaviour4'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour5 = json['behaviour5'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour6 = json['behaviour6'] != null
-    //     ? PBISPlusSkills.fromJson(json['name'])
+    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
     //     : null;
     engaged = 0;
     niceWork = 0;

@@ -1,35 +1,37 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'pbis_plus_skill_list_modal.dart';
+part of 'pbis_plus_genric_behaviour_modal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
+class PBISPlusGenricBehaviourModalAdapter
+    extends TypeAdapter<PBISPlusGenricBehaviourModal> {
   @override
   final int typeId = 44;
 
   @override
-  PBISPlusSkills read(BinaryReader reader) {
+  PBISPlusGenricBehaviourModal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PBISPlusSkills(
+    return PBISPlusGenricBehaviourModal(
       id: fields[0] as String?,
       activeStatusC: fields[1] as String?,
       iconUrlC: fields[2] as String?,
       name: fields[3] as String?,
       sortOrderC: fields[4] as String?,
       counter: fields[5] as int?,
+      behaviourId: fields[6] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, PBISPlusSkills obj) {
+  void write(BinaryWriter writer, PBISPlusGenricBehaviourModal obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,9 @@ class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
       ..writeByte(4)
       ..write(obj.sortOrderC)
       ..writeByte(5)
-      ..write(obj.counter);
+      ..write(obj.counter)
+      ..writeByte(6)
+      ..write(obj.behaviourId);
   }
 
   @override
@@ -50,7 +54,7 @@ class PBISPlusSkillsAdapter extends TypeAdapter<PBISPlusSkills> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PBISPlusSkillsAdapter &&
+      other is PBISPlusGenricBehaviourModalAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

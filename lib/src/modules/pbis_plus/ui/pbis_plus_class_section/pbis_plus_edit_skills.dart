@@ -3,7 +3,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -16,6 +16,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Soc/src/services/Strings.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
   PBISPlusEditSkills({
@@ -37,37 +39,56 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   bool tooglevalue = false;
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
-  static final addSkill = PBISPlusSkills(
-    id: "5",
-    activeStatusC: "Show",
-    iconUrlC: "assets/Pbis_plus/add_icon.svg",
-    name: 'Add Skill',
-    sortOrderC: "5",
-    counter: 0,
-  );
+  // static final addSkill = PBISPlusGenricBehaviourModal(
+  //   id: "5",
+  //   activeStatusC: "Show",
+  //   iconUrlC: "assets/Pbis_plus/add_icon.svg",
+  //   name: 'Add Skill',
+  //   sortOrderC: "5",
+  //   counter: 0,
+  // );
 
-  ValueNotifier<List<PBISPlusSkills>> containerIcons =
-      ValueNotifier<List<PBISPlusSkills>>([
-    PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[0],
-    PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[1],
-    addSkill,
-    addSkill,
-    addSkill,
-    addSkill
-  ]);
+  // ValueNotifier<List<PBISPlusGenricBehaviourModal>> containerIcons =
+  //     ValueNotifier<List<PBISPlusGenricBehaviourModal>>([
+  //   PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[0],
+  //   PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist[1],
+  //   addSkill,
+  //   addSkill,
+  //   addSkill,
+  //   addSkill
+  // ]);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pbisPlusAdditionalBehaviourBloc = PBISPlusBloc();
 
   @override
   void initState() {
     super.initState();
-    // pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
-    pbisPlusClassroomBloc
-        .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
+    pbisPlusAdditionalBehaviourBloc.add(GetPBISPlusAdditionalBehaviour());
+    // pbisPlusClassroomBloc
+    //     .add(GetPBISPlusBehaviour(isCustom: isCustomBehaviour.value));
+    getCustomValue();
   }
 
-  ValueNotifier<List<PBISPlusSkills>> localskillsList =
-      ValueNotifier<List<PBISPlusSkills>>([]);
+  void getCustomValue() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final storedValue = pref.getBool(Strings.isCustomBehaviour);
+      if (storedValue != null) {
+        isCustomBehaviour.value = storedValue;
+      }
+    } catch (e) {}
+  }
+
+  void settheValueofCustomer({bool? value}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setBool(Strings.isCustomBehaviour, value ?? isCustomBehaviour.value);
+    } catch (e) {}
+  }
+
+  ValueNotifier<List<PBISPlusGenricBehaviourModal>> localskillsList =
+      ValueNotifier<List<PBISPlusGenricBehaviourModal>>([]);
 
   Widget body(BuildContext context) {
     return Column(
@@ -78,7 +99,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         _buildIconBar(),
         _buildHeader(),
         SpacerWidget(18),
-        _buildAdditionalBehaviour(),
+        // _buildAdditionalBehaviour(),
         SpacerWidget(48),
       ],
     );
@@ -96,6 +117,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   value: isCustomBehaviour.value,
                   onChanged: (value) {
                     isCustomBehaviour.value = value;
+                    settheValueofCustomer(value: value);
                   },
                   trackColor:
                       Color(0xff000000) == Theme.of(context).backgroundColor
@@ -145,55 +167,56 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               color: Theme.of(context).backgroundColor,
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      // changedIndex.value = -1;
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.height * 0.80,
-                      decoration: BoxDecoration(
-                        color: AppTheme.kButtonColor,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8.0),
-                          topLeft: Radius.circular(8.0),
-                        ),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        // toogle.value ? "Edit Behaviour" : "Default Behaviour",
-                        isCustomBehaviour.value
-                            ? "Teacher Behaviour"
-                            : "School Behaviour",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: Color(0xff000000) ==
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffFFFFFF)
-                                : Color(0xff000000),
-                            fontWeight: FontWeight.bold),
+                  Container(
+                    width: MediaQuery.of(context).size.height * 0.80,
+                    decoration: BoxDecoration(
+                      color: AppTheme.kButtonColor,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8.0),
+                        topLeft: Radius.circular(8.0),
                       ),
                     ),
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      // toogle.value ? "Edit Behaviour" : "Default Behaviour",
+                      isCustomBehaviour.value
+                          ? "Teacher Behaviour"
+                          : "School Behaviour",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5!.copyWith(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff000000),
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
+
                   SpacerWidget(18),
                   BlocConsumer<PBISPlusBloc, PBISPlusState>(
                       bloc: pbisPlusClassroomBloc,
                       builder: (context, state) {
                         print(state);
-                        if (state is PBISPlusSkillsLoading ||
-                            state is PBISPlusSkillsUpdateLoading) {
+                        if (state is PBISPlusSkillsLoading) {
+                          print("-----------state is $state------------------");
                           return _buildEditItemList(
                               PBISPlusSkillsModalLocal
                                   .PBISPlusSkillLocalBehaviourlist,
-                              false);
+                              true);
+                        } else if (state is PBISPlusSkillsUpdateLoading) {
+                          return _buildEditItemList(state.skillsList, false);
                         } else if (state is PBISPlusSkillsSucess) {
+                          print("-----------state is $state------------------");
                           localskillsList.value = state.skillsList;
                           if (state.skillsList.isNotEmpty) {
                             return _buildEditItemList(state.skillsList, false);
                           } else {
                             return _noDataFoundWidget();
                           }
-                        } else if (state is PBISErrorState)
+                        } else if (state is PBISErrorState) {
+                          print("-----------state is $state------------------");
                           return _noDataFoundWidget();
+                        }
                         return _noDataFoundWidget();
                       },
                       listener: (context, state) async {}
@@ -218,8 +241,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditItemList(List<PBISPlusSkills> skillsList, bool loading) {
-    return DragTarget<PBISPlusSkills>(
+  Widget _buildEditItemList(
+      List<PBISPlusGenricBehaviourModal> skillsList, bool loading) {
+    return DragTarget<PBISPlusGenricBehaviourModal>(
         builder: (context, candidateData, rejectedData) {
       return GridView.builder(
           shrinkWrap: true,
@@ -237,7 +261,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           itemBuilder: (BuildContext context, int index) {
             // final item = containerIcons.value[index];
             final item = skillsList[index];
-            return DragTarget<PBISPlusSkills>(
+            return DragTarget<PBISPlusGenricBehaviourModal>(
                 onWillAccept: (draggedData) {
                   print(
                       "-----------------INSIDE ON  onWillAccep---------------------------");
@@ -251,6 +275,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 onAccept: (draggedData) {
                   print(
                       "-----------------INSIDE ON onAccept---------------------------");
+                  print(draggedData.name);
                   pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
                       index: hoveredIconIndex.value,
                       item: draggedData,
@@ -374,8 +399,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           );
   }
 
-  Widget _buildEditWidget(
-      PBISPlusSkills item, int index, PBISPlusBloc pbisPlusClassroomBloc) {
+  Widget _buildEditWidget(PBISPlusGenricBehaviourModal item, int index,
+      PBISPlusBloc pbisPlusClassroomBloc) {
     return GestureDetector(
       onTap: () async {
         print(item.runtimeType);
@@ -444,9 +469,14 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ),
                       SpacerWidget(16),
                       BlocConsumer(
-                          bloc: pbisPlusClassroomBloc,
+                          bloc: pbisPlusAdditionalBehaviourBloc,
                           builder: (context, state) {
-                            if (state is PBISPlusSkillsLoading) {
+                            print(
+                                "-----------state is $state------------------");
+                            if (state
+                                is GetPBISPlusAdditionalBehaviourLoading) {
+                              print(
+                                  "-----------state is $state------------------");
                               return Center(
                                 child: Container(
                                     alignment: Alignment.center,
@@ -454,18 +484,25 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                       backgroundColor: AppTheme.kButtonColor,
                                     )),
                               );
-                            } else if (state is PBISPlusSkillsSucess) {
-                              if (state.skillsList.isNotEmpty) {
+                            } else if (state
+                                is PbisPlusAdditionalBehaviourSuccess) {
+                              print(
+                                  "-----------state is $state------------------");
+                              if (state.additionalbehaviourList.isNotEmpty) {
                                 return _buildBehaviourList(
-                                    PBISPlusSkillsModalLocal
-                                        .PBISPlusSkillLocalBehaviourlist);
+                                    state.additionalbehaviourList);
                               } else {
-                                return _buildBehaviourList(
-                                    PBISPlusSkillsModalLocal
-                                        .PBISPlusSkillLocalBehaviourlist);
+                                return _noDataFoundWidget();
+
+                                //  _buildBehaviourList(
+                                //     PBISPlusSkillsModalLocal
+                                //         .PBISPlusSkillLocalBehaviourlist);
                               }
-                            } else if (state is PBISErrorState)
+                            } else if (state is PBISErrorState) {
+                              print(
+                                  "-----------state is $state------------------");
                               return _noDataFoundWidget();
+                            }
                             return _buildBehaviourList(PBISPlusSkillsModalLocal
                                 .PBISPlusSkillLocalBehaviourlist);
                           },
@@ -478,7 +515,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             : SizedBox.shrink());
   }
 
-  Widget _buildBehaviourList(List<PBISPlusSkills> skillsList) {
+  Widget _buildBehaviourList(List<PBISPlusGenricBehaviourModal> skillsList) {
     return Expanded(
         child: ValueListenableBuilder(
             valueListenable: localskillsList,
@@ -502,8 +539,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             .PBISPlusSkillLocalBehaviourlist.length
                             .ceil(),
                     itemBuilder: (BuildContext context, int index) {
-                      PBISPlusSkills item = PBISPlusSkillsModalLocal
-                          .PBISPlusSkillLocalBehaviourlist[index % 6];
+                      PBISPlusGenricBehaviourModal item =
+                          PBISPlusSkillsModalLocal
+                              .PBISPlusSkillLocalBehaviourlist[index % 6];
                       final isIconDisabled = IsItemExits(item);
                       print(
                           "-------isIconDisabled-------------${isIconDisabled}------------==${index}============------------");
@@ -515,7 +553,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 )));
   }
 
-  bool IsItemExits(PBISPlusSkills itemtoFind) {
+  bool IsItemExits(PBISPlusGenricBehaviourModal itemtoFind) {
     try {
       final res = localskillsList.value
           .where((item) => itemtoFind.id == item.id)
@@ -526,7 +564,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     }
   }
 
-  Widget _buildNonDraggbleIcon(PBISPlusSkills item, isIconDisabled) {
+  Widget _buildNonDraggbleIcon(
+      PBISPlusGenricBehaviourModal item, isIconDisabled) {
     return Container(
       width: 40,
       height: 40,
@@ -552,7 +591,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  Widget _buildEditSkillIcon(PBISPlusSkills item, isIconDisabled) {
+  Widget _buildEditSkillIcon(
+      PBISPlusGenricBehaviourModal item, isIconDisabled) {
     return GestureDetector(
       onTap: () {
         print(item.runtimeType);
@@ -594,8 +634,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  _modalBottomSheetMenu(
-          PBISPlusSkills item, int index, PBISPlusBloc pbisPlusClassroomBloc) =>
+  _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
+          PBISPlusBloc pbisPlusClassroomBloc) =>
       showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,

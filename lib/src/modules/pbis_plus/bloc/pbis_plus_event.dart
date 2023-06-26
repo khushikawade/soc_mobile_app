@@ -108,7 +108,7 @@ class GetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
 }
 
 class GetPBISSkillsUpdateName extends PBISPlusEvent {
-  final PBISPlusSkills item;
+  final PBISPlusGenricBehaviourModal item;
   final String newName;
 
   GetPBISSkillsUpdateName({required this.item, required this.newName});
@@ -118,7 +118,7 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
 }
 
 class GetPBISSkillsDeleteItem extends PBISPlusEvent {
-  final PBISPlusSkills item;
+  final PBISPlusGenricBehaviourModal item;
 
   GetPBISSkillsDeleteItem({
     required this.item,
@@ -129,8 +129,8 @@ class GetPBISSkillsDeleteItem extends PBISPlusEvent {
 }
 
 class GetPBISSkillsUpdateList extends PBISPlusEvent {
-  final PBISPlusSkills item;
-  final List<PBISPlusSkills> olditem;
+  final PBISPlusGenricBehaviourModal item;
+  final List<PBISPlusGenricBehaviourModal> olditem;
   int index;
   GetPBISSkillsUpdateList(
       {required this.item, required this.index, required this.olditem});
