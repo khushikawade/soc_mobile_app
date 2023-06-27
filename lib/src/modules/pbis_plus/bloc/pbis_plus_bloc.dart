@@ -244,7 +244,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                     behaviourId: "0",
                   ))
               .toList();
-
+          _pbisPlusAdditionalBehaviourDB.clear();
           apiData.forEach((element) async {
             await _pbisPlusAdditionalBehaviourDB
                 .addData(element); // Pass 'element' instead of 'list'
