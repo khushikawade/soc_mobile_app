@@ -88,31 +88,34 @@ class _GradedPlusResultOptionBottomSheetState
 /*------------------------------------------------------------BODY FRAME---------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------------------------*/
   Widget body() {
-    return SingleChildScrollView(
-      controller: ModalScrollController.of(context),
-      child: Container(
-          height: widget.height,
-          decoration: BoxDecoration(
-            color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          ),
-          // padding: EdgeInsets.only(left: 16),
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              onPageChanged: ((value) {
-                pageValue = value;
-              }),
-              allowImplicitScrolling: false,
-              pageSnapping: false,
-              controller: _pageController,
-              children: [
-                buildOptions(),
-                commonLoaderWidget(),
-              ])),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: SingleChildScrollView(
+        controller: ModalScrollController.of(context),
+        child: Container(
+            height: widget.height,
+            decoration: BoxDecoration(
+              color: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+            // padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                onPageChanged: ((value) {
+                  pageValue = value;
+                }),
+                allowImplicitScrolling: false,
+                pageSnapping: false,
+                controller: _pageController,
+                children: [
+                  buildOptions(),
+                  commonLoaderWidget(),
+                ])),
+      ),
     );
   }
 
