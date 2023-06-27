@@ -233,7 +233,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
 
         if (apiData!.isNotEmpty) {
-          genralDataList = _pbisPlusAdditionalBehaviourDataList
+          genralDataList = apiData
               .map((item) => PBISPlusGenricBehaviourModal(
                     id: item.id.toString(),
                     activeStatusC: "true",
@@ -250,7 +250,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 .addData(element); // Pass 'element' instead of 'list'
           });
         }
+        List<PbisPlusAdditionalBehaviourList> _check =
+            await _pbisPlusAdditionalBehaviourDB.getData();
 
+        print(_check);
         if (apiData.isNotEmpty) {
           yield PbisPlusAdditionalBehaviourSuccess(
               additionalbehaviourList: genralDataList);
@@ -295,9 +298,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                       name: item.name,
                       sortOrderC: item.sortingOrder,
                       counter: 0,
-                      behaviourId: "0",
+                      behaviourId: "${item.id}",
                     ))
                 .toList();
+            _pbisPlusGenricBehaviourDB.clear();
             genralDataList.forEach((element) async {
               await _pbisPlusGenricBehaviourDB
                   .addData(element); // Pass 'element' instead of 'list'
@@ -306,19 +310,21 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         } else {
           if (_pbisPlusdefaultBehaviourDataList != null &&
               _pbisPlusdefaultBehaviourDataList.isNotEmpty &&
-              _pbisPlusdefaultBehaviourDataList.length > 0) {
-            genralDataList = _pbisPlusdefaultBehaviourDataList[0]
-                .defaultList!
-                .map((item) => PBISPlusGenricBehaviourModal(
-                      id: item.id.toString(),
-                      activeStatusC: "true",
-                      iconUrlC: item.iconUrl,
-                      name: item.name,
-                      sortOrderC: item.sortingOrder,
-                      counter: 0,
-                      behaviourId: "0",
-                    ))
-                .toList();
+              _pbisPlusdefaultBehaviourDataList.length > 0 &&
+              _pbisPlusdefaultBehaviourDataList[0].defaultList != null) {
+            // genralDataList = _pbisPlusdefaultBehaviourDataList[0]
+            //     .defaultList!
+            //     .map((item) => PBISPlusGenricBehaviourModal(
+            //           id: item.id.toString(),
+            //           activeStatusC: "true",
+            //           iconUrlC: item.iconUrl,
+            //           name: item.name,
+            //           sortOrderC: item.sortingOrder,
+            //           counter: 0,
+            //           behaviourId: "0",
+            //         ))
+            //     .toList();
+            _pbisPlusGenricBehaviourDB.clear();
             genralDataList.forEach((element) async {
               await _pbisPlusGenricBehaviourDB
                   .addData(element); // Pass 'element' instead of 'list'
@@ -332,21 +338,30 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (event.isCustom!) {
           apidata = await getPBISCustomBehaviour();
-        } else {
-          apidata = await getPBISDefaultBehaviour();
-        }
+          if (apidata != null && apidata.isNotEmpty) {
+            await _pbisPlusdefaultBehaviourDB.clear();
 
-        if (apidata.isEmpty) {
-          if (event.isCustom!) {
             await _pbisPlusdefaultBehaviourDB.addData(
               PBISPlusDefaultAndCustomBehaviourModal(customList: apidata),
             );
-          } else {
+
+            // _pbisPlusdefaultBehaviourDB.clear();
+            // await _pbisPlusdefaultBehaviourDB.addData(
+            //   PBISPlusDefaultAndCustomBehaviourModal(customList: apidata),
+            // );
+          }
+        } else {
+          apidata = await getPBISDefaultBehaviour();
+          if (apidata != null && apidata.isNotEmpty) {
+            _pbisPlusdefaultBehaviourDB.clear();
             await _pbisPlusdefaultBehaviourDB.addData(
               PBISPlusDefaultAndCustomBehaviourModal(defaultList: apidata),
             );
           }
         }
+
+        var res = _pbisPlusdefaultBehaviourDB.getData();
+        print(res);
 
         list = apidata
             .map((item) => PBISPlusGenricBehaviourModal(
@@ -1415,7 +1430,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future<List<PBISPlusDefaultBehaviourModal>> getPBISCustomBehaviour() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-behaviour/teacher/0034W00003AwJSfQAN/custom',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/0034W00003AwJSfQAN',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
