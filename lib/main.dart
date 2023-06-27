@@ -19,6 +19,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
@@ -122,8 +123,8 @@ void main() async {
       ..registerAdapter(PBISPlusGenricBehaviourModalAdapter())
       ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
       ..registerAdapter(PBISPlusStudentNotesAdapter())
-      ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter());
-
+      ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter())
+      ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter());
     // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
   }
   clearTheme();

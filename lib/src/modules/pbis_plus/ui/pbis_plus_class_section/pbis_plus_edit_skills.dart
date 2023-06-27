@@ -65,8 +65,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   void initState() {
     super.initState();
     pbisPlusAdditionalBehaviourBloc.add(GetPBISPlusAdditionalBehaviour());
-    // pbisPlusClassroomBloc
-    //     .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
+    pbisPlusClassroomBloc
+        .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
     getCustomValue();
   }
 
@@ -99,7 +99,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         _buildIconBar(),
         _buildHeader(),
         SpacerWidget(18),
-        // _buildAdditionalBehaviour(),
+        _buildAdditionalBehaviour(),
         SpacerWidget(48),
       ],
     );
@@ -473,6 +473,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                           builder: (context, state) {
                             print(
                                 "-----------state is $state------------------");
+
                             if (state
                                 is GetPBISPlusAdditionalBehaviourLoading) {
                               print(
@@ -531,14 +532,15 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       mainAxisSpacing:
                           4.0, // Adjust the spacing between items vertically
                     ),
-                    itemCount: 3 *
-                        PBISPlusSkillsModalLocal
-                            .PBISPlusSkillLocalBehaviourlist.length
-                            .ceil(),
+                    itemCount: skillsList.length,
+                    // 3 *
+                    //     PBISPlusSkillsModalLocal
+                    //         .PBISPlusSkillLocalBehaviourlist.length
+                    //         .ceil(),
                     itemBuilder: (BuildContext context, int index) {
-                      PBISPlusGenricBehaviourModal item =
-                          PBISPlusSkillsModalLocal
-                              .PBISPlusSkillLocalBehaviourlist[index % 6];
+                      PBISPlusGenricBehaviourModal item = skillsList[index % 6];
+                      // PBISPlusSkillsModalLocal
+                      //     .PBISPlusSkillLocalBehaviourlist[index % 6];
                       final isIconDisabled = IsItemExits(item);
                       print(
                           "-------isIconDisabled-------------${isIconDisabled}------------==${index}============------------");
