@@ -412,8 +412,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return Container(
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 25),
+                padding: EdgeInsets.all(5),
                 height: widget.height! * 0.65,
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -432,7 +431,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             }),
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
@@ -577,8 +576,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
+                  padding: EdgeInsets.all(5),
                   height: widget.height! * 0.60,
                   child: (allStudents?.isNotEmpty ?? false)
                       ? ListView.builder(
@@ -603,7 +601,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
@@ -960,7 +958,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           SpacerWidget(30),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
@@ -1104,12 +1102,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
-                  height: widget.height! * 0.70,
+                  padding: EdgeInsets.all(5),
+                  height: widget.height! * 0.65,
                   child: (widget.googleClassroomCourseworkList?.isNotEmpty ??
                           false)
                       ? ListView.builder(
+                          padding: EdgeInsets.all(0),
                           itemBuilder: (BuildContext context, int index) {
                             return _buildCourseSeparationList(
                                 course:
@@ -1133,7 +1131,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
@@ -1180,7 +1178,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       if ((course.students?.isNotEmpty ?? false) && parentIndex != 0)
         Center(
             child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+          padding: EdgeInsets.all(5),
           child: Text(
             course.name ?? '',
             style: Theme.of(context)
@@ -1191,7 +1189,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         )),
       if (course.students?.isNotEmpty ?? false)
         Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
+          // padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
           child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(0),
@@ -1235,9 +1233,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       },
       child: Container(
           height: 54,
-          padding: EdgeInsets.symmetric(
-            horizontal: 0,
-          ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
