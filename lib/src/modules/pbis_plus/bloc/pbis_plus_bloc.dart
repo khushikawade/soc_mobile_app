@@ -319,10 +319,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                       behaviourId: "0",
                     ))
                 .toList();
-            genralDataList.forEach((element) async {
-              await _pbisPlusGenricBehaviourDB
-                  .addData(element); // Pass 'element' instead of 'list'
-            });
+            // genralDataList.forEach((element) async {
+            //   await _pbisPlusGenricBehaviourDB
+            //       .addData(element); // Pass 'element' instead of 'list'
+            // });
           }
         }
 
