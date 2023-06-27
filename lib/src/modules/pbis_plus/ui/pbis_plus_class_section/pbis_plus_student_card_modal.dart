@@ -260,42 +260,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               padding: EdgeInsets.only(
                 left: 10,
                 right: 10,
-
-                // top: (widget.isFromStudentPlus == true &&
-                //         widget.constraint <= 552)
-                //     ? 0
-                //     : widget.constraint > 115
-                //         ? 15
-                //         : 0.0
               ),
               width: MediaQuery.of(context).size.width * 1,
               child: ActionInteractionButtonsRowWise),
-          // SpacerWidget(
-          //     (widget.isFromStudentPlus == true && widget.constraint <= 553)
-          //         ? MediaQuery.of(context).size.width * 0.9
-          //         : (widget.constraint <= 115)
-          //             ? widget.isFromDashboardPage!
-          //                 ? MediaQuery.of(context).size.width * 0.06
-          //                 : MediaQuery.of(context).size.width * 0.11
-          //             : widget.isFromDashboardPage!
-          //                 ? MediaQuery.of(context).size.width * 0.08
-          //                 : MediaQuery.of(context).size.width * 0.05),
-          //  Expanded(child:Container()),
-          //      widget.isFromStudentPlus!
-          // ? SizedBox.shrink()
-          // : Container(
-          //     // color: Colors.red,
-          //     alignment:  Alignment.bottomCenter,
-          //     margin: EdgeInsets.only(
-          //       top: (widget.isFromStudentPlus == true &&
-          //               widget.constraint <= 552)
-          //           ? 8
-          //           : widget.constraint > 115
-          //               ? 15
-          //               : 0.0,
-          //     ),
-          //     width: MediaQuery.of(context).size.width * 1,
-          //     child: AddNotes),
         ],
       ),
     );
@@ -342,7 +309,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           : EdgeInsets.only(top: 45),
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           Color(0xff000000) == Theme.of(context).backgroundColor
                               ? widget.isFromDashboardPage == false
@@ -375,9 +342,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           ],
                           stops: [
                             widget.isFromDashboardPage! ? 0.3 : 0.2,
-                            // 0.3,//Row
-                            // 0.2, //col
-
                             0.0,
                           ],
                         ),
@@ -393,7 +357,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     child: widget.isFromStudentPlus!
                         ? SizedBox.shrink()
                         : Container(
-
                             // color: Colors.red,
                             alignment: Alignment.bottomCenter,
                             margin: EdgeInsets.only(
