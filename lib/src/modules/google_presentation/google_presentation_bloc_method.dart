@@ -60,23 +60,21 @@ class GooglePresentationBlocMethods {
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method updateStudentLocalDBWithGooglePresentationUrl------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-  static updateStudentLocalDBWithGooglePresentationUrl(
-      {required StudentPlusDetailsModel studentDetails,
-      required final String studentGooglePresentationUrl}) async {
+  static updateStudentLocalDBWithGooglePresentationUrl({
+    required StudentPlusDetailsModel studentDetails,
+  }) async {
     try {
       //this will get the all students saved in local db
       LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
-          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.id}");
+          "${StudentPlusOverrides.studentPlusDetails}_${studentDetails.studentIdC}");
 
       List<StudentPlusDetailsModel> studentsLocalData =
           await _localDb.getData();
-      //it will find the student by id and update the updated object wwith googlePresentationUrl
+      //it will find the student by id and update the updated object with googlePresentationUrl
 
       for (int index = 0; index < studentsLocalData.length; index++) {
         if (studentsLocalData[index].studentIdC == studentDetails.studentIdC) {
-          StudentPlusDetailsModel student = studentsLocalData[index];
-
-          student.googlePresentationUrl = studentGooglePresentationUrl;
+          StudentPlusDetailsModel student = studentDetails;
 
           await _localDb.putAt(index, student);
           break;
@@ -316,6 +314,28 @@ class GooglePresentationBlocMethods {
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  static String createStudentGooglePresentationFileName(
+      StudentPlusDetailsModel studentDetails) {
+    try {
+      //create file name for student Presentation
+      String fileName = '';
+
+      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
+        fileName += studentDetails.lastNameC! + "_";
+      }
+
+      if (studentDetails.firstNameC != null &&
+          studentDetails.firstNameC != '') {
+        fileName += studentDetails.firstNameC! + "_";
+      }
+
+      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
+      return fileName ?? '';
+    } catch (e) {
+      throw (e);
     }
   }
 }

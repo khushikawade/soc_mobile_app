@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -144,17 +145,38 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 
   Widget _buildbackIcon() {
     return IconButton(
-      onPressed: () {
-        Navigator.pop(context);
-      },
-      icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          size: Globals.deviceType == 'phone' ? 24 : 32,
-          color: AppTheme.kButtonColor),
-    );
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+            IconData(0xe80d,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            size: Globals.deviceType == 'phone' ? 24 : 32,
+            color: AppTheme.kButtonColor));
   }
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------------trackUserActivity--------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  void trackUserActivity() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_edit_behaviour_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_edit_behaviour_screen',
+        screenClass: 'PBISPlusEditSkills');
+    /*-------------------------------------------------------------------------------------*/
+    // Utility.updateLogs(
+    //     activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+    //     activityId: '37',
+    //     description:
+    //         'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+    //     operationResult: 'Success');
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*--------------------------------------------------_buildHeader------------------------------------------------ */
+/*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildHeader() {
     return ValueListenableBuilder(
         valueListenable: isCustomBehaviour,
@@ -443,6 +465,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------_buildAdditionalBehaviour------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildAdditionalBehaviour() {
     return ValueListenableBuilder(
         valueListenable: isCustomBehaviour,
@@ -640,48 +665,39 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
           PBISPlusBloc pbisPlusClassroomBloc) =>
       showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        elevation: 10,
-        context: context,
-        builder: (BuildContext context) {
-          return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          isScrollControlled: true,
+          isDismissible: true,
+          enableDrag: true,
+          backgroundColor: Colors.transparent,
+          elevation: 10,
+          context: context,
+          builder: (BuildContext context) {
+            return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
                 pbisPlusClassroomBloc: pbisPlusClassroomBloc,
                 index: index,
                 constraints: constraints,
                 // containerIcons: containerIcons,
                 item: item,
-                height:
-                    // constraints.maxHeight < 750 && Globals.deviceType == "phone"
-                    //     ? MediaQuery.of(context).size.height * 0. //0.45
-                    //     : Globals.deviceType == "phone"
-                    //         ? MediaQuery.of(context).size.height * 0.19 //0.45
-                    //         : MediaQuery.of(context).size.height * 0.15,
-                    MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.35,
               );
-            },
-          );
-        },
-      );
+            });
+          });
 
+/*-------------------------------------------------------------------------------------------------------------- */
+/*-----------------------------------------------Main Method---------------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackgroundImgWidget(),
       Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PBISPlusAppBar(
-          title: "",
-          backButton: true,
-          scaffoldKey: _scaffoldKey,
-        ),
-        body: body(context),
-      )
+          backgroundColor: Colors.transparent,
+          appBar: PBISPlusAppBar(
+              title: "", backButton: true, scaffoldKey: _scaffoldKey),
+          body: body(context))
     ]);
   }
 }

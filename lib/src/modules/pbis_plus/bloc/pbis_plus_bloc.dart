@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -845,6 +846,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISErrorState(error: e.toString());
       }
     }
+
+    if (event is GetPBISPlusAdditionalBehaviour) {
+      try {
+        List<ClassroomCourse> list = [];
+        yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
+        List<PbisPlusAdditionalBehaviourModal> result =
+            await getPBISPlusBehaviourAdditionalBehaviourList();
+
+        result.removeWhere((item) => item.activeStatusC == 'Hide');
+        result
+            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
+
+        if (result.isNotEmpty) {
+          yield PBISPlusAdditionalBehaviourSucess(behaviourList: result);
+        } else {
+          yield PBISErrorState(error: result);
+        }
+      } catch (e) {
+        yield PBISErrorState(error: e.toString());
+      }
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -1325,19 +1347,24 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
+<<<<<<< HEAD
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
+=======
+  /* -------------------------------------------------------------------------- */
+  /* ------------ Function to fetch list of Additional Behaviours ------------- */
+  /* -------------------------------------------------------------------------- */
+>>>>>>> pbis_main
 
-  Future getPBISPBehaviourListData() async {
+  Future getPBISPlusBehaviourAdditionalBehaviourList() async {
     try {
-      print("--------------INSIDE --getPBISPBehaviourListData---");
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
+          '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           isCompleteUrl: true);
-      print("--------------response------ -${response.statusCode}--");
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
             .map<PbisPlusAdditionalBehaviourList>(
@@ -1353,7 +1380,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
-
+}
   //-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
 
   Future<List<PBISPlusDefaultBehaviourModal>> getPBISDefaultBehaviour() async {
@@ -1384,7 +1411,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
-
+}
   Future<List<PBISPlusDefaultBehaviourModal>> getPBISCustomBehaviour() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(

@@ -22,13 +22,14 @@ class StudentPlusSearchModelAdapter
       firstNameC: fields[1] as String?,
       lastNameC: fields[2] as String?,
       classC: fields[3] as String?,
+      studentIDC: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusSearchModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -36,7 +37,9 @@ class StudentPlusSearchModelAdapter
       ..writeByte(2)
       ..write(obj.lastNameC)
       ..writeByte(3)
-      ..write(obj.classC);
+      ..write(obj.classC)
+      ..writeByte(4)
+      ..write(obj.studentIDC);
   }
 
   @override

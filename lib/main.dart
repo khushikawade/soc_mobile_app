@@ -125,7 +125,10 @@ void main() async {
       ..registerAdapter(PBISPlusStudentNotesAdapter())
       ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter())
       ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter());
+    // ..registerAdapter(PBISPlusSkillsModalAdapter())
+
     // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
+    ;
   }
   clearTheme();
   await disableDarkMode();

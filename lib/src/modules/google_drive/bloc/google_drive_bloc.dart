@@ -2258,13 +2258,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        print(response.data);
         await deleteSlide(
             slideObjId:
                 "p", //default first slide object ID//Always delete this to change the type of slide
             accessToken: accessToken,
             refreshToken: refreshToken,
             presentationId: response.data['body']['id']);
+
         return [true, response.data['body']['id']];
       } else if (retry > 0) {
         _totalRetry++;

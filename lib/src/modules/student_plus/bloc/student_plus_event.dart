@@ -36,14 +36,14 @@ class FetchStudentWorkEvent extends StudentPlusEvent {
 
 /* ------------------ Event use to trigger student details from id ------------------ */
 class GetStudentPlusDetails extends StudentPlusEvent {
-  final String studentId;
+  final String studentIdC;
   GetStudentPlusDetails({
-    required this.studentId,
+    required this.studentIdC,
   });
   @override
-  List<Object> get props => [studentId];
+  List<Object> get props => [studentIdC];
   @override
-  String toString() => '$studentId';
+  String toString() => '$studentIdC';
 }
 
 /* ---------------- Event use to trigger student grade details --------------- */
@@ -58,4 +58,14 @@ class FetchStudentGradesEvent extends StudentPlusEvent {
 
   @override
   String toString() => 'GlobalSearchEvent { keyword: $studentId}';
+}
+
+class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
+  final StudentPlusDetailsModel studentDetails;
+  SaveStudentGooglePresentationWorkEvent({
+    required this.studentDetails,
+  });
+
+  @override
+  List<Object> get props => [studentDetails!];
 }

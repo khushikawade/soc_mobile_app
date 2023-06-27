@@ -2,16 +2,14 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_behaviour.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -22,7 +20,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../styles/theme.dart';
-import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class PBISPlusSettingBottomSheet extends StatefulWidget {
@@ -31,7 +28,7 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
   final double? constraintDeviceHeight;
   final PBISPlusBloc? pbisBloc;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  Function? editSkills;
+  // Function? editBehaviourFunction;
 
   PBISPlusSettingBottomSheet(
       {Key? key,
@@ -39,7 +36,7 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
       required this.constraintDeviceHeight,
       this.pbisBloc,
       this.height = 200,
-      required this.editSkills,
+      // required this.editBehaviourFunction,
       required this.scaffoldKey})
       : super(key: key);
 
@@ -51,21 +48,21 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
 class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
+  AnimationController? _animationControllerForSync;
+  Animation? animation;
+  Animation? rotateAnimation;
+
   final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
+
   PBISPlusBloc pbisBloc = new PBISPlusBloc();
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
   List<ClassroomCourse> selectedRecords = []; //Add selected student and courses
   List<ClassroomStudents> selectedStudentList = [];
   List<ClassroomStudents> allStudents = [];
 
-  AnimationController? _animationControllerForSync;
-  Animation? animation;
-  Animation? rotateAnimation;
-
   int pageValue = 0;
   String sectionName = '';
-  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
-
   get heightMap => {
         0: widget.height! * 1.1,
         1: widget.height! * 1.2,
@@ -80,7 +77,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   @override
   void initState() {
     initMethod();
-
     super.initState();
   }
 
@@ -134,14 +130,13 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     pageSnapping: false,
                     controller: _pageController,
                     children: [
-                      settingWidget(
-                          context), //-----------------setting widget design------------//
-                      buildGoogleClassroomCourseWidget(
-                          context), //----------select ClassroomCourse view-----------------//
-                      buildSelectStudentBottomsheetWidget(
-                          context), //----------------------select student view---------------//
+                      settingWidget(context),
+                      //-----------------setting widget design------------//
+                      buildGoogleClassroomCourseWidget(context),
+                      //----------select ClassroomCourse view-----------------//
+                      buildSelectStudentBottomsheetWidget(context),
+                      //----------------------select student view---------------//
                       buildSelectStudentByCourseBottomsheetWidget(context),
-
                       warningWidget(),
                       commonLoaderWidget(),
                     ],
@@ -331,11 +326,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
+
             case 'Edit Behaviour':
-              sectionName = 'Skills';
-
-              Navigator.pop(context);
-
+              sectionName = 'Behaviour';
+              // Navigator.pop(context);
               pushNewScreen(
                 context,
                 screen: PBISPlusEditSkills(),
@@ -361,6 +355,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               // );
 
               break;
+            case PBISPlusOverrides.kresetOptionFourtitle:
+              _pageController.animateToPage(3,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              break;
+
             default:
               // Code to handle an unknown text value.
               break;

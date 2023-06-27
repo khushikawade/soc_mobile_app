@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// // ignore_for_file: must_be_immutable
 
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -184,25 +184,25 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
           height: 18,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: PBISPlusActionInteractionButton(
-              size: widget.isFromDashboardPage! ? 36 : 64,
-              isShowCircle: true,
-              onValueUpdate: (updatedStudentValueNotifier) {
-                widget.classroomCourseId = widget.classroomCourseId;
-                widget.onValueUpdate(
-                    updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                widget.studentValueNotifier =
-                    updatedStudentValueNotifier; // Used on current screen to update the value
-                valueChange.value = !valueChange
-                    .value; // Update the changes on bool change detect
-              },
-              isLoading: widget.isLoading,
-              isFromStudentPlus: widget.isFromStudentPlus,
-              studentValueNotifier: widget.studentValueNotifier,
-              iconData: iconData,
-              classroomCourseId: widget.classroomCourseId,
-              scaffoldKey: widget.scaffoldKey,
-            ),
+            // child: PBISPlusActionInteractionButton(
+            //   size: widget.isFromDashboardPage! ? 36 : 64,
+            //   isShowCircle: true,
+            //   onValueUpdate: (updatedStudentValueNotifier) {
+            //     widget.classroomCourseId = widget.classroomCourseId;
+            //     widget.onValueUpdate(
+            //         updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+            //     widget.studentValueNotifier =
+            //         updatedStudentValueNotifier; // Used on current screen to update the value
+            //     valueChange.value = !valueChange
+            //         .value; // Update the changes on bool change detect
+            //   },
+            //   isLoading: widget.isLoading,
+            //   isFromStudentPlus: widget.isFromStudentPlus,
+            //   studentValueNotifier: widget.studentValueNotifier,
+            //   iconData: iconData,
+            //   classroomCourseId: widget.classroomCourseId,
+            //   scaffoldKey: widget.scaffoldKey,
+            // ),
           ),
         );
       },
@@ -454,18 +454,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
             )));
   }
 
-  // void trackUserActivity() {
-  //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //       "pbis_plus_student_card_modal_view");
-  //   FirebaseAnalyticsService.setCurrentScreen(
-  //       screenTitle: 'pbis_plus_student_card_modal_screen',
-  //       screenClass: 'PBISPlusStudentCardNewModal');
-  //   /*-------------------------------------------------------------------------------------*/
-  //   Utility.updateLogs(
-  //       activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-  //       activityId: '37',
-  //       description:
-  //           'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-  //       operationResult: 'Success');
-  // }
+//   // void trackUserActivity() {
+//   //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+//   //       "pbis_plus_student_card_modal_view");
+//   //   FirebaseAnalyticsService.setCurrentScreen(
+//   //       screenTitle: 'pbis_plus_student_card_modal_screen',
+//   //       screenClass: 'PBISPlusStudentCardNewModal');
+//   //   /*-------------------------------------------------------------------------------------*/
+//   //   Utility.updateLogs(
+//   //       activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+//   //       activityId: '37',
+//   //       description:
+//   //           'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+//   //       operationResult: 'Success');
+//   // }
+// }
 }
