@@ -661,7 +661,7 @@ class _GradedPlusAssessmentSummaryState
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: false,
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.45,
                 //   getURlForResultSummaryIcons: getURlForBottomIcons,
                 // resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
@@ -671,7 +671,7 @@ class _GradedPlusAssessmentSummaryState
                 // classroomUrlStatus: ValueNotifier<bool>(true),
                 allUrls: {
                   'Share': assessment.webContentLink ?? '',
-                //  'Drive': Globals.googleDriveFolderPath ?? '',
+                  //  'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',

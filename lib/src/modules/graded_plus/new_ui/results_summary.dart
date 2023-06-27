@@ -2009,7 +2009,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: widget.assessmentDetailPage!,
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.45,
 
                 //  getURlForResultSummaryIcons: getURlForBottomIcons,
                 //  resultSummaryIconsOnTap: bottomIconsOnTap,
