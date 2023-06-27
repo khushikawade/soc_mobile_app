@@ -207,11 +207,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                           return _buildEditItemList(state.skillsList, false);
                         } else if (state is PBISPlusDefaultBehaviourSucess) {
                           print("-----------state is $state------------------");
-                          localskillsList.value = state.skillsList;
+                          // localskillsList.value = state.skillsList;
                           if (state.skillsList.isNotEmpty) {
                             return _buildEditItemList(state.skillsList, false);
                           } else {
-                            return _noDataFoundWidget();
+                            return _buildEditItemList(state.skillsList, false);
                           }
                         } else if (state is PBISPlusDefaultBehaviourError) {
                           print("-----------state is $state------------------");
@@ -488,7 +488,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                   "-----------state is $state------------------");
                               if (state.additionalbehaviourList.isNotEmpty) {
                                 return _buildBehaviourList(
-                                    state.additionalbehaviourList, false);
+                                    PBISPlusSkillsModalLocal
+                                        .PBISPlusSkillLocalBehaviourlist,
+                                    false);
                               } else {
                                 return _noDataFoundWidget();
                               }

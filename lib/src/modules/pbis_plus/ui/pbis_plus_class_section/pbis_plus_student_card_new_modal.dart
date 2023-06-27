@@ -185,7 +185,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardNewModal> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: PBISPlusActionInteractionButton(
-              size: widget.isFromDashboardPage! ? 36 : 64,
+              size: widget.isFromDashboardPage! ? 36 : 56,
               isShowCircle: true,
               onValueUpdate: (updatedStudentValueNotifier) {
                 widget.classroomCourseId = widget.classroomCourseId;

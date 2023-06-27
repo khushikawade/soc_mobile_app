@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'pbis_plus_default_behaviour_modal.g.dart';
 
 @HiveType(typeId: 46)
-class PBISPlusDefaultAndCustomBehaviourModal extends HiveObject {
+class PBISPlusDefaultAndCustomBehaviourModal {
   @HiveField(0)
   List<PBISPlusDefaultBehaviourModal>? defaultList;
   @HiveField(1)
@@ -29,10 +29,17 @@ class PBISPlusDefaultAndCustomBehaviourModal extends HiveObject {
           : [],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'defaultList': defaultList?.map((item) => item.toJson()).toList(),
+      'customList': customList?.map((item) => item.toJson()).toList(),
+    };
+  }
 }
 
 @HiveType(typeId: 47)
-class PBISPlusDefaultBehaviourModal extends HiveObject {
+class PBISPlusDefaultBehaviourModal  {
   @HiveField(0)
   int? id;
   @HiveField(1)

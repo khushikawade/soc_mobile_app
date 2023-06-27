@@ -900,7 +900,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     googleClassroomCourseworkList: allClassroomCourses,
                     height: constraints.maxHeight < 750
                         ? MediaQuery.of(context).size.height * 0.6
-                        : MediaQuery.of(context).size.height * 0.45);
+                        : MediaQuery.of(context).size.height * 0.48);
               },
             ));
 

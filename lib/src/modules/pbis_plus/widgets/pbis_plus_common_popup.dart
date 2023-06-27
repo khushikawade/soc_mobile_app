@@ -118,7 +118,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                         .bodyText1!
                         .copyWith(fontSize: 16)),
               ),
-              SpacerWidget(MediaQuery.of(context).size.height / 40),
+              SpacerWidget(MediaQuery.of(context).size.height / 60),
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
@@ -213,6 +213,26 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     // }
   }
 
+  Widget _buildIcons(String assestPath) {
+    return assestPath.contains('http://') || assestPath.contains('https://')
+        ? Container(
+            height: 24,
+            width: 24,
+            child: Image.network(
+              assestPath!,
+              fit: BoxFit.contain,
+            ),
+          )
+        : Container(
+            height: 24,
+            width: 24,
+            child: SvgPicture.asset(
+              assestPath,
+              fit: BoxFit.contain,
+            ),
+          );
+  }
+
   Widget _buildIconWidget(PBISPlusGenricBehaviourModal item) {
     return Container(
         decoration: BoxDecoration(
@@ -222,13 +242,8 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(
-          radius: 42.0,
-          backgroundColor: Colors.transparent,
-          child: SvgPicture.asset(
-            item.iconUrlC!,
-            // width: 108.0,
-            // height: 108.0,
-          ),
-        ));
+            radius: 42.0,
+            backgroundColor: Colors.transparent,
+            child: _buildIcons(item.iconUrlC!)));
   }
 }
