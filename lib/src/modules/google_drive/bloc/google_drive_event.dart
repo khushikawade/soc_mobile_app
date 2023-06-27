@@ -272,5 +272,3 @@ class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
-
-

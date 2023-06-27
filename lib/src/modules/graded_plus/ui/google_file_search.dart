@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -22,7 +23,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share/share.dart';
 import '../../../services/utility.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/model/recent_google_file.dart';
 
@@ -324,8 +325,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                     : ""),
             trailing: GestureDetector(
               onTap: () {
-                Utility.updateLogs(
+                PlusUtility.updateLogs(
                     activityType: 'GRADED+',
+                    userType: 'Teacher',
                     activityId: '13',
                     sessionId: items[index].sessionId != ''
                         ? items[index].sessionId
@@ -355,10 +357,10 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
               List<dynamic> reversedRecentDetailDbList =
                   new List.from(recentDetailDbList.reversed);
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses();
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses(
                       assessmentCId:
                           reversedRecentDetailDbList[index].assessmentId,
@@ -509,7 +511,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
 
                                     //  GestureDetector(
                                     //   onTap: () {
-                                    //     Utility.updateLogs(
+                                    //     PlusUtility.updateLogs(
                                     //         activityId: '13',
                                     //         sessionId: data.sessionId != ''
                                     //             ? data.sessionId
@@ -583,11 +585,11 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                       }
                                       // }
 
-                                      GoogleClassroomGlobals
+                                      GoogleClassroomOverrides
                                               .studentAssessmentAndClassroomObj =
                                           GoogleClassroomCourses();
 
-                                      GoogleClassroomGlobals
+                                      GoogleClassroomOverrides
                                               .studentAssessmentAndClassroomObj =
                                           GoogleClassroomCourses(
                                               assessmentCId: data.assessmentId,
@@ -881,8 +883,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
           element.presentationLink!.isNotEmpty)
         GestureDetector(
             onTap: () {
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'GRADED+',
+                  userType: 'Teacher',
                   activityId: '31',
                   sessionId: element.sessionId != null ? element.sessionId : '',
                   description: 'Slide Icon Pressed - Google Search List',
@@ -900,8 +903,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
             )),
       GestureDetector(
         onTap: () {
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'GRADED+',
+              userType: 'Teacher',
               activityId: '13',
               sessionId: element.sessionId != null ? element.sessionId : '',
               description: 'Teacher tap on Share Button - Google Search List',

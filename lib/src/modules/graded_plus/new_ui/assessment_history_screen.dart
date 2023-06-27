@@ -11,9 +11,11 @@ import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_a
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -23,7 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
@@ -61,8 +63,8 @@ class _GradedPlusAssessmentSummaryState
 
   final ValueNotifier<bool> isSearch = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isCallPaginationApi = ValueNotifier<bool>(false);
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-      LocalDatabase('history_student_info');
+  // LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+  //     LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 //  late ScrollController _controller;
@@ -75,8 +77,9 @@ class _GradedPlusAssessmentSummaryState
       refreshPage(isFromPullToRefresh: false, delayInSeconds: 0);
     });
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '4',
         description: 'Moved to history screen Graded+',
         operationResult: 'Success');
@@ -106,6 +109,7 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {
                   Utility.scrollToTop(scrollController: _scrollController);
@@ -262,12 +266,16 @@ class _GradedPlusAssessmentSummaryState
                                 if (state is ErrorState) {
                                   if (state.errorMsg ==
                                       'ReAuthentication is required') {
-                                    await Utility.refreshAuthenticationToken(
-                                        isNavigator: false,
-                                        errorMsg: state.errorMsg!,
-                                        context: context,
-                                        scaffoldKey: _scaffoldKey);
-
+                                    // await Utility.refreshAuthenticationToken(
+                                    //     isNavigator: false,
+                                    //     errorMsg: state.errorMsg!,
+                                    //     context: context,
+                                    //     scaffoldKey: _scaffoldKey);
+                                    await Authentication
+                                        .reAuthenticationRequired(
+                                            context: context,
+                                            errorMessage: state.errorMsg!,
+                                            scaffoldKey: _scaffoldKey);
                                     _driveBloc.add(
                                         GetHistoryAssessmentFromDrive(
                                             isSearchPage: false,
@@ -453,30 +461,29 @@ class _GradedPlusAssessmentSummaryState
             }
             //     Globals.historyAssessmentId = list[index].assessmentId!;
             if (Overrides.STANDALONE_GRADED_APP) {
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                  GoogleClassroomCourses();
+              // GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+              //     GoogleClassroomCourses();
 
-              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-                  GoogleClassroomCourses(
+              GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
+                  await GoogleClassroomCourses(
                       assessmentCId: list[index].assessmentId,
                       courseId: list[index].classroomCourseId,
                       courseWorkId: list[index].classroomCourseWorkId);
             } else {
-              GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
-                  ClassroomCourse();
+              // GoogleClassroomOverrides
+              //         .historyStudentResultSummaryForStandardApp =
+              //     ClassroomCourse();
 
-              GoogleClassroomGlobals
-                      .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
-                  ClassroomCourse(
+              GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp =
+                  await ClassroomCourse(
                       assessmentCId: list[index].assessmentId,
                       id: list[index].classroomCourseId,
                       courseWorkId: list[index].classroomCourseWorkId);
             }
 
-            print(GoogleClassroomGlobals
-                .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
-                .courseWorkId);
+            print(GoogleClassroomOverrides
+                .historyStudentResultSummaryForStandardApp.courseWorkId);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -664,12 +671,12 @@ class _GradedPlusAssessmentSummaryState
                 // classroomUrlStatus: ValueNotifier<bool>(true),
                 allUrls: {
                   'Share': assessment.webContentLink ?? '',
-                  'Drive': Globals.googleDriveFolderPath ?? '',
+                //  'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',
                   'Sheets': assessment.webContentLink ?? '',
-                  'Class': GoogleClassroomGlobals
+                  'Class': GoogleClassroomOverrides
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
                 },

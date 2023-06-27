@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
@@ -16,7 +18,6 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -33,9 +34,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
 
-  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  StudentPlusWorkScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -69,8 +70,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         screenTitle: 'student_plus_work_screen',
         screenClass: 'StudentPlusWorkScreen');
 
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'STUDENT+',
+        userType: 'Teacher',
         activityId: '52',
         description: 'Student+ Work Screen',
         operationResult: 'Success');
@@ -148,7 +150,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           ),
           floatingActionButton: fab(),
         ),
-        googleSlidesPresentationBlocListener(),
+        // googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
       ],
     );
@@ -162,8 +164,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         GestureDetector(
           onTap: () {
             /*-------------------------User Activity Track START----------------------------*/
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'STUDENT+',
+                userType: 'Teacher',
                 activityId: '39',
                 description: 'Filter Record STUDENT+',
                 operationResult: 'Success');
@@ -177,6 +180,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             List<String> teacherList =
                 StudentPlusUtility.getTeacherList(list: list);
             showModalBottomSheet(
+              useRootNavigator: true,
               backgroundColor: Colors.transparent,
               context: context,
               isScrollControlled: true,
@@ -303,8 +307,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     return InkWell(
       onTap: () {
         /*-------------------------User Activity Track START----------------------------*/
-        Utility.updateLogs(
+        PlusUtility.updateLogs(
             activityType: 'STUDENT+',
+            userType: 'Teacher',
             activityId: '42',
             description: 'View Student Work STUDENT+',
             operationResult: 'Success');
@@ -454,15 +459,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 if (filterNotifier.value == '' &&
                     state is StudentPlusWorkSuccess &&
                     state.obj.length > 0) {
-                  return PlusCustomFloatingActionButton(onPressed: () {
-                    if (StudentPlusOverrides
-                            ?.studentPlusGoogleDriveFolderId?.isEmpty ??
-                        true) {
+                  return PlusCustomFloatingActionButton(onPressed: () async {
+                    //GET THE CURRENT USER PROFILE DETAIL
+                    List<UserInformation> userProfileInfoData =
+                        await UserGoogleProfile.getUserProfile();
+
+                    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
+                            null ||
+                        userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
+                            "") {
                       _checkDriveFolderExistsOrNot();
-                    } else if (widget
-                            .studentDetails?.googlePresentationUrl?.isEmpty ??
-                        true) {
-                      getGooglePresentationUrl();
                     } else {
                       _shareBottomSheetMenu();
                     }
@@ -481,7 +487,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         svgPath: '',
       ),
     ];
-    if (widget.studentDetails.googlePresentationUrl?.isNotEmpty ?? false) {
+    if (widget.studentDetails.studentGooglePresentationUrl != null &&
+        widget.studentDetails.studentGooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
           title: 'Go to Presentation',
@@ -490,7 +497,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       );
     }
 
-    showModalBottomSheet(
+    final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -510,49 +517,45 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             },
           );
         });
+
+    if (result != null) {
+      //UPDATE THE CURRENT STUDENT DETAILS TO LOCAL VARIABLE WITH PRESENTATION URL AND ID
+      widget.studentDetails = result;
+    }
   }
 
-  void getGooglePresentationUrl() {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: 'Please Wait...');
-    googleSlidesPresentationBloc.add(GetStudentPlusPresentationURL(
-        studentDetails: widget.studentDetails,
-        studentPlusDriveFolderId:
-            StudentPlusOverrides.studentPlusGoogleDriveFolderId));
-  }
+  // BlocListener googleSlidesPresentationBlocListener() {
+  //   return BlocListener<GoogleSlidesPresentationBloc,
+  //           GoogleSlidesPresentationState>(
+  //       bloc: googleSlidesPresentationBloc,
+  //       child: Container(),
+  //       listener: (context, state) async {
+  //         // if (state is GetGooglePresentationURLSuccess) {
+  //         //   Navigator.pop(context, false);
+  //         //   widget.studentDetails.studentgooglePresentationUrl =
+  //         //       state.googlePresentationFileUrl;
 
-  BlocListener googleSlidesPresentationBlocListener() {
-    return BlocListener<GoogleSlidesPresentationBloc,
-            GoogleSlidesPresentationState>(
-        bloc: googleSlidesPresentationBloc,
-        child: Container(),
-        listener: (context, state) async {
-          if (state is GetGooglePresentationURLSuccess) {
-            Navigator.pop(context, false);
-            widget.studentDetails.googlePresentationUrl =
-                state.googlePresentationFileUrl;
+  //         //   _shareBottomSheetMenu();
+  //         // }
 
-            _shareBottomSheetMenu();
-          }
+  //         if (state is GoogleSlidesPresentationErrorState) {
+  //           Navigator.pop(context, false);
+  //           if (state.errorMsg == 'ReAuthentication is required') {
 
-          if (state is GoogleSlidesPresentationErrorState) {
-            Navigator.pop(context, false);
-            if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: scaffoldKey);
-            } else {
-              Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
-                  null);
-            }
-          }
-        });
-  }
+  //             await Authentication.reAuthenticationRequired(
+  //                 context: context,
+  //                 errorMessage: state.errorMsg!,
+  //                 scaffoldKey: scaffoldKey);
+  //           } else {
+  //             Utility.currentScreenSnackBar(
+  //                 state.errorMsg == 'NO_CONNECTION'
+  //                     ? 'No Internet Connection'
+  //                     : "Something Went Wrong. Please Try Again.",
+  //                 null);
+  //           }
+  //         }
+  //       });
+  // }
 
   BlocListener googleDriveBlocListener() {
     return BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -560,26 +563,19 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         child: Container(),
         listener: (context, state) async {
           print("On student work ------------$state---------");
+
           //Checking Google Folder State
           if (state is GoogleSuccess) {
             Navigator.of(context).pop();
-            if (StudentPlusOverrides
-                    ?.studentPlusGoogleDriveFolderId?.isNotEmpty ??
-                false) {
-              getGooglePresentationUrl();
-            } else {
-              // Navigator.of(context).pop();
-              Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
-            }
+
+            _shareBottomSheetMenu();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
             if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: false,
-                  errorMsg: state.errorMsg!,
+              await Authentication.reAuthenticationRequired(
                   context: context,
+                  errorMessage: state.errorMsg!,
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
@@ -598,8 +594,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     final UserInformation userProfile = _profileData[0];
-
-    print("callig the the event to check the folder available or not ");
 
     //It will trigger the drive event to check is that (SOLVED STUDENT+) folder in drive
     //is available or not if not this will create one or the available get the drive folder id

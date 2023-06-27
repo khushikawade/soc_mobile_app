@@ -72,3 +72,11 @@ class StudentPlusGradeSuccess extends StudentPlusState {
   @override
   List<Object> get props => [];
 }
+
+class SaveStudentGooglePresentationWorkEventSuccess extends StudentPlusState {
+  StudentPlusDetailsModel studentDetails;
+  SaveStudentGooglePresentationWorkEventSuccess({required this.studentDetails});
+
+  @override
+  List<Object> get props => [];
+}

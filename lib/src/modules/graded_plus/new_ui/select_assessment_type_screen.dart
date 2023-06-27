@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/new_ui/select_mcq_key_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -61,6 +62,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone
       assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
@@ -115,12 +117,13 @@ class _GradedPlusSelectAssessmentTypeSectionState
               onTap: () async {
                 selectedAnswerKey.value = selectionList[index];
                 Globals.scanMoreStudentInfoLength = 0;
-                OcrUtility.clearOlderAssignmentdetails();
+                OcrUtility.clearOlderAssignmentDetails();
                 if (selectedAnswerKey.value.isEmpty) {
                   Utility.currentScreenSnackBar("Select the Answer Key", null);
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '28',
                       description: 'MCQ Type Selection',
                       operationResult: 'Success');
@@ -130,8 +133,9 @@ class _GradedPlusSelectAssessmentTypeSectionState
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => GradedPlusMultipleChoice()));
                 } else {
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'GRADED+',
+                      userType: 'Teacher',
                       activityId: '27',
                       description: 'Constructive Type Selection',
                       operationResult: 'Success');
@@ -247,126 +251,4 @@ class _GradedPlusSelectAssessmentTypeSectionState
           );
         });
   }
-
-  // Widget floatingActionButton() {
-  //   return Overrides.STANDALONE_GRADED_APP != true
-  //       ? Column(
-  //           mainAxisAlignment: MainAxisAlignment.end,
-  //           children: [
-  //             BlocListener<GoogleDriveBloc, GoogleDriveState>(
-  //                 bloc: _googleDriveBloc,
-  //                 child: Container(),
-  //                 listener: (context, state) async {
-  //                   if (state is GoogleDriveLoading) {
-  //                     Utility.showLoadingDialog(context: context, isOCR: true);
-  //                   }
-  //                   if (state is GoogleSuccess) {
-  //                     if (state.fromGradedPlusAssessmentSection == true) {
-  //                       Navigator.of(context).pop();
-  //                       _beforenavigateOnAssessmentSection();
-  //                     }
-  //                   }
-  //                   if (state is ErrorState) {
-  //                     if (Globals.sessionId == '') {
-  //                       Globals.sessionId =
-  //                           "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //                     }
-  //                     _ocrBlocLogs.add(LogUserActivityEvent(
-  //                         activityType: 'GRADED+',
-  //                         sessionId: Globals.sessionId,
-  //                         teacherId: Globals.teacherId,
-  //                         activityId: '1',
-  //                         accountId: Globals.appSetting.schoolNameC,
-  //                         accountType: "Premium",
-  //                         dateTime: currentDateTime.toString(),
-  //                         description: 'Start Scanning Failed',
-  //                         operationResult: 'Failed'));
-  //                     if (state.errorMsg == 'ReAuthentication is required') {
-  //                       await Utility.refreshAuthenticationToken(
-  //                           isNavigator: true,
-  //                           errorMsg: state.errorMsg!,
-  //                           context: context,
-  //                           scaffoldKey: _scaffoldKey);
-
-  //                       _triggerDriveFolderEvent(state.isAssessmentSection);
-  //                     } else {
-  //                       Navigator.of(context).pop();
-  //                       Utility.currentScreenSnackBar(
-  //                           "Something Went Wrong. Please Try Again.", null);
-  //                     }
-  //                     // Utility.refreshAuthenticationToken(
-  //                     //     state.errorMsg!, context, _scaffoldKey);
-
-  //                     //  await _launchURL('Google Authentication');
-  //                   }
-  //                 }),
-  //             OfflineBuilder(
-  //                 child: Container(),
-  //                 connectivityBuilder: (BuildContext context,
-  //                     ConnectivityResult connectivity, Widget child) {
-  //                   final bool connected =
-  //                       connectivity != ConnectivityResult.none;
-  //                   return GestureDetector(
-  //                     onTap: () async {
-  //                       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //                           "assessment_history");
-  //                       if (!connected) {
-  //                         Utility.currentScreenSnackBar(
-  //                             "No Internet Connection", null);
-  //                         return;
-  //                       }
-  //                       if (Globals.googleDriveFolderId!.isEmpty ||
-  //                           Globals.googleDriveFolderId == '') {
-  //                         _triggerDriveFolderEvent(true);
-  //                       } else {
-  //                         _beforenavigateOnAssessmentSection();
-  //                       }
-  //                     },
-  //                     child: Container(
-  //                         padding: EdgeInsets.only(top: 10),
-  //                         // color: Colors.red,
-  //                         child: Utility.textWidget(
-  //                             text: 'Assignment History',
-  //                             context: context,
-  //                             textTheme: Theme.of(context)
-  //                                 .textTheme
-  //                                 .headline2!
-  //                                 .copyWith(
-  //                                   decoration: TextDecoration.underline,
-  //                                 ))),
-  //                   );
-  //                 }),
-  //           ],
-  //         )
-  //       : Container();
-  // }
-
-  // void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
-  //   List<UserInformation> _profileData =
-  //       await UserGoogleProfile.getUserProfile();
-
-  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
-  //       fromGradedPlusAssessmentSection:
-  //           isTriggerdbyAssessmentSection ? true : null,
-  //       isReturnState: true,
-  //       //  filePath: file,
-  //       token: _profileData[0].authorizationToken,
-  //       folderName: "SOLVED GRADED+",
-  //       refreshToken: _profileData[0].refreshToken));
-  // }
-
-  // void _beforenavigateOnAssessmentSection() {
-  //   if (Globals.sessionId == '') {
-  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //   }
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => GradedPlusAssessmentSummary(
-  //               selectedFilterValue: 'All',
-  //               isFromHomeSection: true,
-  //             )),
-  //   );
-  // }
 }

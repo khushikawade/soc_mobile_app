@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -61,13 +63,31 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                     borderRadius: BorderRadius.all(
                       Radius.circular(50),
                     ),
-                    child: CachedNetworkImage(
-                      height: 28,
-                      width: 28,
-                      imageUrl: snapshot.data!.profilePicture!,
-                      placeholder: (context, url) => CupertinoActivityIndicator(
-                          animating: true, radius: 10),
-                    ),
+                    child: snapshot.data!.profilePicture != null
+                        ? CachedNetworkImage(
+                            height: 28,
+                            width: 28,
+                            imageUrl: snapshot.data!.profilePicture ?? '',
+                            placeholder: (context, url) =>
+                                CupertinoActivityIndicator(
+                                    animating: true, radius: 10),
+                          )
+                        : CircleAvatar(
+                            // alignment: Alignment.center,
+                            // height:
+                            //     Globals.deviceType == "phone" ? 28 : 32,
+                            // width:
+                            //     Globals.deviceType == "phone" ? 28 : 32,
+                            // color: Color.fromARGB(255, 29, 146, 242),
+                            child: Text(
+                              snapshot.data!.userName!.substring(0, 1),
+                              style: TextStyle(
+                                  color: Color(0xff000000) ==
+                                          Theme.of(context).backgroundColor
+                                      ? Colors.black
+                                      : Colors.white),
+                            ),
+                          ),
                   ),
                   onPressed: () async {
                     /*-------------------------User Activity Track START----------------------------*/
@@ -111,9 +131,10 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation =
+        await UserGoogleProfile.getUserProfile();
+    Globals.userEmailId = _userInformation[0].userEmail!;
     //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
@@ -136,8 +157,9 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -164,6 +186,16 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);

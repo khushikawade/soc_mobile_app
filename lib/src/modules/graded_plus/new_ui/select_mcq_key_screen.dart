@@ -1,9 +1,11 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -73,35 +75,44 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
               if (state is GoogleDriveLoading) {
                 Utility.showLoadingDialog(context: context, isOCR: true);
               }
+
               if (state is GoogleSuccess) {
                 Navigator.of(context).pop();
-                Globals.googleDriveFolderId?.isNotEmpty ?? false
-                    ? _beforeNavigateOnCameraSection()
-                    : Utility.currentScreenSnackBar(
-                        "Something Went Wrong. Please Try Again.", null);
+
+                List<UserInformation> userProfileInfoData =
+                    await UserGoogleProfile.getUserProfile();
+
+                Fluttertoast.cancel();
+                if (userProfileInfoData[0].gradedPlusGoogleDriveFolderId !=
+                        null &&
+                    userProfileInfoData[0]
+                        .gradedPlusGoogleDriveFolderId!
+                        .isNotEmpty) {
+                  _beforeNavigateOnCameraSection();
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
               }
+
               if (state is ErrorState) {
                 if (Globals.sessionId == '') {
                   Globals.sessionId =
-                      "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                      await PlusUtility.updateUserLogsSessionId();
                 }
-                _ocrBlocLogs.add(LogUserActivityEvent(
-                    activityType: 'GRADED+',
-                    sessionId: Globals.sessionId,
-                    teacherId: Globals.teacherId,
-                    activityId: '1',
-                    accountId: Globals.appSetting.schoolNameC,
-                    accountType: "Premium",
-                    dateTime: currentDateTime.toString(),
-                    description: 'Start Scanning Failed',
-                    operationResult: 'Failed'));
-                if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
 
+                PlusUtility.updateLogs(
+                    activityType: 'GRADED+',
+                    userType: 'Teacher',
+                    activityId: '1',
+                    description: 'Start Scanning Failed',
+                    operationResult: 'Failure');
+
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Authentication.reAuthenticationRequired(
+                      context: context,
+                      errorMessage: state.errorMsg!,
+                      scaffoldKey: _scaffoldKey);
                   _triggerDriveFolderEvent(state.isAssessmentSection);
                 } else {
                   Navigator.of(context).pop();
@@ -116,6 +127,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
       isBackOnSuccess: ValueNotifier<bool>(false),
@@ -163,10 +175,19 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                     Utility.currentScreenSnackBar(
                         "Select the Answer Key", null);
                   } else {
+                    List<UserInformation> userProfileInfoData =
+                        await UserGoogleProfile.getUserProfile();
+
                     Fluttertoast.cancel();
-                    Globals.googleDriveFolderId?.isEmpty ?? true
-                        ? _triggerDriveFolderEvent(false)
-                        : _beforeNavigateOnCameraSection();
+                    if (userProfileInfoData[0].gradedPlusGoogleDriveFolderId !=
+                            null &&
+                        userProfileInfoData[0]
+                            .gradedPlusGoogleDriveFolderId!
+                            .isNotEmpty) {
+                      _beforeNavigateOnCameraSection();
+                    } else {
+                      _triggerDriveFolderEvent(false);
+                    }
                   }
                 },
               );
@@ -221,8 +242,9 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
             selectedAnswerKey.value = value.title!;
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "answer_key_selected_${value.title}");
-            Utility.updateLogs(
+            PlusUtility.updateLogs(
                 activityType: 'GRADED+',
+                userType: 'Teacher',
                 activityId: '29',
                 description: 'MCQ Selection Answer key selected ${value.title}',
                 operationResult: 'Success');
@@ -268,20 +290,17 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         refreshToken: _profileData[0].refreshToken));
   }
 
-  void _beforeNavigateOnCameraSection() {
+  void _beforeNavigateOnCameraSection() async {
     if (Globals.sessionId == '') {
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
     }
-    _ocrBlocLogs.add(LogUserActivityEvent(
+
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
-        sessionId: Globals.sessionId,
-        teacherId: Globals.teacherId,
+        userType: 'Teacher',
         activityId: '1',
-        accountId: Globals.appSetting.schoolNameC,
-        accountType: "Premium",
-        dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
-        operationResult: 'Success'));
+        operationResult: 'Success');
 
     navigateToCamera();
   }

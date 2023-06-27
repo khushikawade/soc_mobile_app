@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -257,14 +258,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is VerifyUserWithDatabase) {
+    if (event is AuthorizedUserWithDatabase) {
       try {
         //  var data =
-        bool result =
-            await verifyUserWithDatabase(email: event.email.toString());
-        if (!result) {
-          await verifyUserWithDatabase(email: event.email.toString());
+        yield AuthorizedUserLoading();
+        bool result = event.isAuthorizedUser == true
+            ? await authorizedUserWithDatabase(email: event.email)
+            : await verifyUserWithDatabase(email: event.email.toString());
+        if (result == true) {
+          yield AuthorizedUserSuccess();
+        } else {
+          yield AuthorizedUserError();
         }
+        // if (!result) {
+        //   await verifyUserWithDatabase(email: event.email.toString());
+        // }
       } on SocketException catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'VerifyUserWithDatabase SocketException');
@@ -272,6 +280,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
@@ -280,6 +289,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         throw (e);
       }
     }
@@ -348,10 +358,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             List<SubjectDetailList> recentAddedList =
                 await addRecentDateTimeDetails(list: _list);
 
-            yield NycDataSuccess(
-              obj: recentAddedList,
-            );
-            // return;
+            // it would change after pushing the app
+            if (_list.isEmpty || _list == null || _list.length == 0) {
+              yield OcrLoading();
+            } else {
+              yield NycDataSuccess(
+                obj: recentAddedList,
+              );
+              return;
+            }
           }
 
           // calling function for getting particular subject related data
@@ -467,16 +482,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         var body = {
           "Activity_Type": event.activityType,
-          "Session_Id": "${event.sessionId ?? ''}",
-          "Teacher_Id": "${event.teacherId ?? ''}",
-          "Activity_Id": "${event.activityId ?? ''}",
-          "Account_Id": "${event.accountId ?? ''}",
-          "Account_Type": "${event.accountType ?? ''}",
-          "Date_Time": "${event.dateTime ?? ''}",
-          "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}",
+          "Session_Id": event.sessionId ?? '',
+          "Teacher_Id": event.teacherId ?? '',
+          "Activity_Id": event.activityId ?? '',
+          "Account_Id": event.accountId ?? '',
+          "Account_Type": event.accountType ?? '',
+          "Date_Time": event.dateTime ?? '',
+          "Description": event.description ?? '',
+          "Operation_Result": event.operationResult ?? '',
           "App_Type__c":
-              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard",
+          "User_Type": event.userType ?? '',
+          "Email": event.email
         };
         await activityLog(body: body);
       } catch (e, s) {
@@ -487,7 +504,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is GetDashBoardStatus) {
+    //Used in Standalone // This will be removed later on
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandaloneApp) {
       try {
         yield OcrLoading2();
 
@@ -495,53 +513,57 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           AssessmentDetails obj =
               await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
 
+          //Updating details to assessment object
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.courseId = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object
-                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                : await _getSavedStudentListFromDashboardByAssessmentId(
                     assessmentId: event.assessmentObj!.assessmentCId),
             assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
       }
     }
 
-    if (event is GetDashBoardStatusForStandardApp) {
+    //Used in Standard App
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandardApp) {
       try {
         yield OcrLoading2();
 
+        //Fetch Assessment Id by Google File Id
         if (event.assessmentObj?.assessmentCId?.isEmpty ?? true) {
           AssessmentDetails obj =
               await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
 
+          //Updating details to assessment object
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.id = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
-
+        //Fetch Saved Student List from Database/Dashboard
         yield AssessmentDashboardStatusForStandardApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object
-                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                : await _getSavedStudentListFromDashboardByAssessmentId(
                     assessmentId: event.assessmentObj!.assessmentCId),
             assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
-        yield AssessmentDashboardStatus(
-            resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
+        yield AssessmentDashboardStatusForStandardApp(
+            resultRecordCount: 0, assessmentObj: ClassroomCourse());
       }
     }
 
@@ -690,24 +712,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield StateListFetchSuccessfully(stateList: stateList);
       }
     }
-
-    // if (event is FetchGradedApprovedDomains) {
-    //   try {
-    //     LocalDatabase<StateListObject> _localDb =
-    //         LocalDatabase(Strings.gradedApprovedDomains);
-    //     List<StateListObject>? _localData = await _localDb.getData();
-    //   } catch (e, s) {
-    //     FirebaseAnalyticsService.firebaseCrashlytics(
-    //         e, s, 'FetchGradedApprovedDomains Event');
-    //     // In case of error or no internet Showing data from Local DB
-    //     // To get local data if exist
-    //     LocalDatabase<StateListObject> _localDb =
-    //         LocalDatabase(Strings.stateObjectName);
-    //     List<StateListObject>? _localData = await _localDb.getData();
-
-    //     yield GradedApprovedDomainsSuccess();
-    //   }
-    // }
   }
 
   // ---------- Function to update stateList according to to user location and last selection ---------
@@ -1196,6 +1200,44 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
+  Future<bool> authorizedUserWithDatabase({required String? email}) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "email": email.toString(),
+        "DBN": Globals.schoolDbnC,
+        "Schoolid": Overrides.SCHOOL_ID,
+        "teacherid": Globals.teacherId
+      };
+      final ResponseModel response = await _dbServices.postApi(
+          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200) {
+        var res = response.data;
+        var data = res["body"];
+        if (data == true) {
+          return true;
+        } else {
+          return false;
+        }
+
+        // return data;
+      } else {
+        return false;
+      }
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'verifyUserWithDatabase Method');
+      throw (e);
+    }
+  }
+
   Future<bool> verifyUserWithDatabase({required String? email}) async {
     try {
       Map<String, String> headers = {
@@ -1600,11 +1642,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           e, s, '_getTheDashBoardStatus Method');
       return data;
       // throw ('something_went_wrong');
-
     }
   }
 
-  Future<int> _getSavedStudentListSavedInDashboardByAssessmentId(
+  Future<int> _getSavedStudentListFromDashboardByAssessmentId(
       {required String? assessmentId, int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
@@ -1615,7 +1656,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             ? response?.data["body"].length
             : 0;
       } else if (retry > 0) {
-        return _getSavedStudentListSavedInDashboardByAssessmentId(
+        return _getSavedStudentListFromDashboardByAssessmentId(
             assessmentId: assessmentId, retry: retry - 1);
       }
       return 0;
@@ -1971,29 +2012,4 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return [];
     }
   }
-
-  // Future<List<GradedPlusApprovedDomainsModal>>
-  //     fetchGradedPlusApprovedDomains() async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getApi(
-  //       Uri.encodeFull(
-  //           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Graded_Approved_Email_Domain__c"),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       List<GradedPlusApprovedDomainsModal> gradedApprovedDomainsList =
-  //           response.data['body']
-  //               .map<GradedPlusApprovedDomainsModal>(
-  //                   (i) => GradedPlusApprovedDomainsModal.fromJson(i))
-  //               .toList();
-
-  //       return gradedApprovedDomainsList;
-  //     }
-  //     return [];
-  //   } catch (e, s) {
-  //     FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
-
-  //     throw Exception("Something went wrong");
-  //   }
-  // }
 }

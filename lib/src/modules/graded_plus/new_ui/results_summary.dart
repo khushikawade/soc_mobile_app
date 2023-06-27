@@ -2,11 +2,13 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/services/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -16,7 +18,7 @@ import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.da
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -61,7 +63,7 @@ class GradedPlusResultsSummary extends StatefulWidget {
       required this.shareLink,
       required this.assessmentName,
       this.historySecondTime,
-      this.isMcqSheet = false,
+      this.isMcqSheet,
       this.selectedAnswer})
       : super(key: key);
   final bool? assessmentDetailPage;
@@ -116,7 +118,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   List iconsList = [];
   List iconsName = [];
   bool createdAsPremium = false;
-
+  bool isMcqSheet = false;
+  String? selectedAnswer;
   final editingStudentNameController = TextEditingController();
   final editingStudentIdController = TextEditingController();
   final studentScoreController = TextEditingController();
@@ -150,7 +153,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   ValueNotifier<bool> isEditPerform = ValueNotifier<bool>(false);
 
   LocalDatabase<ClassroomCourse> _googleClassRoomlocalDbForStandardApp =
-      LocalDatabase(OcrOverrides.gradedPlusClassroomDB);
+      LocalDatabase(OcrOverrides.gradedPlusStandardClassroomDB);
 
   @override
   void initState() {
@@ -158,7 +161,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     _initState();
 
     _scrollController.addListener(_scrollListener);
-
+    if (widget.isMcqSheet != null) {
+      isMcqSheet = widget.isMcqSheet!;
+    }
+    if (widget.selectedAnswer != null) {
+      selectedAnswer = widget.selectedAnswer;
+    }
     super.initState();
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
@@ -204,6 +212,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
                 Utility.scrollToTop(scrollController: _scrollController);
@@ -241,8 +250,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                     .toLowerCase()
                                     .replaceAll(" ", "_") ??
                                 '');
-                        Utility.updateLogs(
+                        PlusUtility.updateLogs(
                             activityType: 'GRADED+',
+                            userType: 'Teacher',
                             activityId: '19',
                             description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
@@ -275,6 +285,28 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniCenterFloat,
           ),
+          //Fetch assessment details from database
+          BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _driveBloc,
+            child: Container(),
+            listener: (context, state) {
+              if (state is AssessmentDetailSuccess) {
+                if (state.obj.length > 0 &&
+                    state.obj[0].answerKey != '' &&
+                    state.obj[0].answerKey != 'NA' &&
+                    state.obj[0].answerKey != null) {
+                  widget.isMcqSheet = true;
+                  widget.selectedAnswer = state.obj[0].answerKey;
+                  isMcqSheet = true;
+                  selectedAnswer = state.obj[0].answerKey;
+                  print(
+                      'mcq updated ----------------------------- ${widget.isMcqSheet}');
+                }
+                // return studentSummaryCardWidget(list: state.obj);
+              }
+              //return Container();
+            },
+          ),
           BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
               bloc: _googleClassroomBloc,
               child: Container(),
@@ -284,16 +316,19 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 }
                 if (state is GoogleClassroomErrorState) {
                   if (state.errorMsg == 'ReAuthentication is required') {
-                    await Utility.refreshAuthenticationToken(
-                        isNavigator: true,
-                        errorMsg: state.errorMsg!,
+                    // await Utility.refreshAuthenticationToken(
+                    //     isNavigator: true,
+                    //     errorMsg: state.errorMsg!,
+                    //     context: context,
+                    //     scaffoldKey: scaffoldKey);
+                    await Authentication.reAuthenticationRequired(
                         context: context,
+                        errorMessage: state.errorMsg!,
                         scaffoldKey: scaffoldKey);
-
                     _googleClassroomBloc.add(CreateClassRoomCourseWork(
                         isEditStudentInfo: true,
                         studentAssessmentInfoDb: LocalDatabase('student_info'),
-                        studentClassObj: GoogleClassroomGlobals
+                        studentClassObj: GoogleClassroomOverrides
                             .studentAssessmentAndClassroomObj,
                         title: Globals.assessmentName!,
                         pointPossible: Globals.pointPossible ?? "0"));
@@ -311,7 +346,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         null);
                   }
 
-                  GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  GoogleClassroomOverrides.studentAssessmentAndClassroomObj
                       .courseWorkURL = state.classroomCouseWorkURL ?? '';
                   classroomUrlStatus.value = true;
                 }
@@ -408,9 +443,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             alignment: Alignment.centerLeft,
                             width: MediaQuery.of(context).size.width * 0.75,
                             child: Utility.textWidget(
-                                text: widget.assessmentName == null
-                                    ? 'Assessment Name'
-                                    : widget.assessmentName!,
+                                text: widget.assessmentDetailPage == true
+                                    ? Globals.historyAssessmentName ?? ''
+                                    : Globals.assessmentName ?? '',
                                 context: context,
                                 maxLines: 2,
                                 textAlign: TextAlign.left,
@@ -505,7 +540,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                         isEditStudentInfo: true,
                                         studentAssessmentInfoDb:
                                             LocalDatabase('student_info'),
-                                        studentClassObj: GoogleClassroomGlobals
+                                        studentClassObj: GoogleClassroomOverrides
                                             .studentAssessmentAndClassroomObj,
                                         title: Globals.assessmentName!,
                                         pointPossible:
@@ -671,12 +706,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         if (Overrides.STANDALONE_GRADED_APP) {
                           state.obj
                               .forEach((StudentAssessmentInfo student) async {
-                            if ((GoogleClassroomGlobals
+                            if ((GoogleClassroomOverrides
                                         .studentAssessmentAndClassroomObj
                                         ?.courseId
                                         ?.isNotEmpty ??
                                     false) &&
-                                (GoogleClassroomGlobals
+                                (GoogleClassroomOverrides
                                         .studentAssessmentAndClassroomObj
                                         ?.courseWorkId
                                         ?.isNotEmpty ??
@@ -694,13 +729,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         } else {
                           state.obj
                               .forEach((StudentAssessmentInfo student) async {
-                            if ((GoogleClassroomGlobals
-                                        .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                            if ((GoogleClassroomOverrides
+                                        .historyStudentResultSummaryForStandardApp
                                         ?.id
                                         ?.isNotEmpty ??
                                     false) &&
-                                (GoogleClassroomGlobals
-                                        .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                                (GoogleClassroomOverrides
+                                        .historyStudentResultSummaryForStandardApp
                                         ?.courseWorkId
                                         ?.isNotEmpty ??
                                     false)) {
@@ -721,11 +756,14 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             state.obj[0].googleSlidePresentationURL != null &&
                             state.obj[0].googleSlidePresentationURL!
                                 .isNotEmpty) {
-                          Globals.googleSlidePresentationId = state
-                              .obj[0].googleSlidePresentationURL!
-                              .split('/')[5];
+                          OcrOverrides
+                                  .gradedPlusHistoryAssignmentGooglePresentationId =
+                              state.obj[0].googleSlidePresentationURL!
+                                  .split('/')[5];
                         } else {
-                          Globals.googleSlidePresentationId = 'NA';
+                          OcrOverrides
+                                  .gradedPlusHistoryAssignmentGooglePresentationId =
+                              'NA';
                         }
 
                         if (state.obj[0].answerKey != '' &&
@@ -734,7 +772,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           widget.isMcqSheet = true;
                           widget.selectedAnswer = state.obj[0].answerKey;
                         }
-                        Globals.googleSlidePresentationLink =
+                        OcrOverrides
+                                .gradedPlusHistoryAssignmentGooglePresentationLink =
                             state.obj[0].googleSlidePresentationURL;
                         savedRecordCount != null
                             ? savedRecordCount == state.obj.length
@@ -757,16 +796,19 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                       //Get Course URL on detail page load
                       _googleClassroomBloc.add(GetClassroomCourseWorkURL(
-                          obj: GoogleClassroomGlobals
+                          obj: GoogleClassroomOverrides
                               .studentAssessmentAndClassroomObj));
                     } else if (state is ErrorState) {
                       if (state.errorMsg == 'ReAuthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
+                        // await Utility.refreshAuthenticationToken(
+                        //     isNavigator: false,
+                        //     errorMsg: state.errorMsg!,
+                        //     context: context,
+                        //     scaffoldKey: scaffoldKey);
+                        await Authentication.reAuthenticationRequired(
                             context: context,
+                            errorMessage: state.errorMsg!,
                             scaffoldKey: scaffoldKey);
-
                         _driveBloc.add(GetAssessmentDetail(
                             fileId: widget.fileId, nextPageUrl: ''));
                       } else {
@@ -790,8 +832,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     disableSlidableAction.value = true;
 
                     dashboardState.value = 'Success';
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: '14',
                         description: 'Save to dashboard success',
                         operationResult: 'Success');
@@ -827,7 +870,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   } else if (state is OcrErrorReceived) {
                     disableSlidableAction.value = false;
                   }
-                  if (state is AssessmentDashboardStatus) {
+                  if (state is AssessmentDashboardStatusForStandaloneApp) {
                     if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
                         false) {
                       List list = await OcrUtility.getSortedStudentInfoList(
@@ -849,11 +892,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             in _googleClassroomCourseslocalData) {
                           if (element.courseId ==
                               state.assessmentObj!.courseId) {
-                            //update the classroom course work id in GoogleClassroomGlobals obj
+                            //update the classroom course work id in GoogleClassroomOverrides obj
                             element.courseWorkId =
                                 state.assessmentObj!.courseWorkId!;
 
-                            GoogleClassroomGlobals
+                            GoogleClassroomOverrides
                                 .studentAssessmentAndClassroomObj = element;
 
                             break;
@@ -862,7 +905,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       }
 
                       savedRecordCount = state.resultRecordCount;
-                      GoogleClassroomGlobals
+                      GoogleClassroomOverrides
                               .studentAssessmentAndClassroomObj.assessmentCId =
                           historyAssessmentId =
                               state.assessmentObj!.assessmentCId;
@@ -887,12 +930,12 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       for (ClassroomCourse element
                           in _googleClassroomCourseslocalData) {
                         if (element.id == state.assessmentObj!.id) {
-                          //update the classroom course work id in GoogleClassroomGlobals obj
+                          //update the classroom course work id in GoogleClassroomOverrides obj
                           element.courseWorkId =
                               state.assessmentObj!.courseWorkId!;
 
-                          GoogleClassroomGlobals
-                                  .studentAssessmentAndClassroomHistoryAssignmentForStandardApp =
+                          GoogleClassroomOverrides
+                                  .historyStudentResultSummaryForStandardApp =
                               element;
 
                           break;
@@ -900,8 +943,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       }
 
                       savedRecordCount = state.resultRecordCount;
-                      GoogleClassroomGlobals
-                              .studentAssessmentAndClassroomHistoryAssignmentForStandardApp
+                      GoogleClassroomOverrides
+                              .historyStudentResultSummaryForStandardApp
                               .assessmentCId =
                           historyAssessmentId =
                               state.assessmentObj!.assessmentCId;
@@ -1111,115 +1154,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           );
   }
 
-  Widget studentSummaryCardWidget({List<StudentAssessmentInfo>? list}) {
-    return ValueListenableBuilder(
-      valueListenable: disableSlidableAction,
-      builder: (context, value, child) {
-        return FutureBuilder(
-          future: OcrUtility.getResultSummaryCardDetailsAndBarSize(
-              isMcqSheet: widget.isMcqSheet ?? false,
-              assessmentDetailPage: widget.assessmentDetailPage ?? false,
-              width: MediaQuery.of(context).size.width * 0.9,
-              assessmentList: list),
-          builder: (context,
-              AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
-            if (snapshot.hasData) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Row(
-                  children: snapshot.data!
-                      .map((item) => Container(
-                            width: item.width,
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: item.color,
-                                      border: Border.all(
-                                          color: Color(0xff000000) !=
-                                                  Theme.of(context)
-                                                      .backgroundColor
-                                              ? Color(0xffF7F8F9)
-                                              : Color(0xff111C20),
-                                          width: 2)),
-                                  width: item.width,
-                                  height: 25,
-                                  child: Center(
-                                    child: Utility.textWidget(
-                                        text: "${item.count}",
-                                        context: context,
-                                        textTheme: Theme.of(context)
-                                            .textTheme
-                                            .displaySmall!),
-                                  ),
-                                ),
-                                FittedBox(
-                                  child: Utility.textWidget(
-                                      text: widget.isMcqSheet == true
-                                          ? "${item.value}"
-                                          : "${item.value}/${item.pointPossible}",
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .displaySmall!
-                                          .copyWith(fontSize: 10)),
-                                )
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                ),
-              );
-            }
-            return Container();
-          },
-        );
-      },
-    );
-  }
-
-  // Widget _scanFloatingWidget() {
-  //   return ValueListenableBuilder<bool>(
-  //       valueListenable: isScrolling,
-  //       child: Container(),
-  //       builder: (BuildContext context, bool value, Widget? child) {
-  //         return Container(
-  //           //margin: EdgeInsets.only(left: 15),
-  //           alignment: Alignment.center,
-  //           // width: isScrolling.value ? null : 130,
-  //           child: FloatingActionButton.extended(
-  //               isExtended: !isScrolling.value,
-  //               backgroundColor: AppTheme.kButtonColor,
-  //               onPressed: () async {
-  //                 if (Overrides.STANDALONE_GRADED_APP) {
-  //                   List<GoogleClassroomCourses> _localData =
-  //                       await _googleClassRoomlocalDb.getData();
-  //                   if (_localData.isEmpty) {
-  //                     Utility.currentScreenSnackBar(
-  //                         "You need to import roster first", null);
-  //                     return;
-  //                   }
-  //                 }
-  //                 // print('perform scan more');
-  //                 performScanMore();
-  //               },
-  //               icon: Icon(
-  //                   IconData(0xe875,
-  //                       fontFamily: Overrides.kFontFam,
-  //                       fontPackage: Overrides.kFontPkg),
-  //                   color: Theme.of(context).backgroundColor,
-  //                   size: 16),
-  //               label: Utility.textWidget(
-  //                   text: isScrolling.value ? '' : 'Scan More',
-  //                   context: context,
-  //                   textTheme: Theme.of(context)
-  //                       .textTheme
-  //                       .headline2!
-  //                       .copyWith(color: Theme.of(context).backgroundColor))),
-  //         );
-  //       });
-  // }
-
 //--------------------------------------------------------------------------------------------------------------------------
   _showDataSavedPopup(
       {required bool? historyAssessmentSection,
@@ -1416,8 +1350,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           editingLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-      Utility.updateLogs(
+      PlusUtility.updateLogs(
           activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '17',
           description: editingLogMsg,
           operationResult: 'Success');
@@ -1703,8 +1638,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                       .replaceAll(" ", "_") ??
                                   '');
 
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
                               activityType: 'GRADED+',
+                              userType: 'Teacher',
                               activityId: '17',
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
@@ -1775,8 +1711,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
 //--------------------------------------------------------------------------------------------------------------------------
   Future<void> updateCount() async {
-    _listCount.value =
-        await OcrUtility.getStudentInfoListLength(tableName: 'student_info');
+    _listCount.value = await OcrUtility.getResultSummaryStudentInfoListLength(
+        tableName: 'student_info');
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -1817,10 +1753,14 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       listener: (context, state) async {
         if (state is ErrorState) {
           if (state.errorMsg == 'ReAuthentication is required') {
-            await Utility.refreshAuthenticationToken(
-                isNavigator: false,
-                errorMsg: state.errorMsg!,
+            // await Utility.refreshAuthenticationToken(
+            //     isNavigator: false,
+            //     errorMsg: state.errorMsg!,
+            //     context: context,
+            //     scaffoldKey: scaffoldKey);
+            await Authentication.reAuthenticationRequired(
                 context: context,
+                errorMessage: state.errorMsg!,
                 scaffoldKey: scaffoldKey);
 
             // _driveBloc
@@ -1834,181 +1774,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       },
     );
   }
-
-//--------------------------------------------------------------------------------------------------------------------------
-  // Widget detailPageActionButtons(iconName, index) {
-  //   return Container(
-  //     margin: EdgeInsets.only(bottom: 5.0),
-  //     //UNCOMMENT
-  //     //  color: Colors.black,
-  //     child: IconButton(
-  //         padding: EdgeInsets.zero,
-  //         icon: iconsName[index] == 'Share' &&
-  //                 !widget.assessmentDetailPage! &&
-  //                 widget.isScanMore == null
-  //             ? detailsPageActionWithDashboard(index)
-  //             : detailPageActionsWithoutDashboard(index: index),
-  //         onPressed: () async {
-  //           if (iconsName[index] == 'Share') {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '13',
-  //                 sessionId: widget.assessmentDetailPage == true
-  //                     ? widget.obj!.sessionId
-  //                     : '',
-  //                 description: widget.assessmentDetailPage == true
-  //                     ? 'Share Button pressed from Assessment History Detail Page'
-  //                     : 'Share Button pressed from Result Summary',
-  //                 operationResult: 'Success');
-
-  //             widget.shareLink != null && widget.shareLink!.isNotEmpty
-  //                 ? Share.share(widget.shareLink!)
-  //                 : print("no link ");
-  //           } else if (iconsName[index] == 'History') {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '15',
-  //                 description: 'History Assessment button pressed',
-  //                 operationResult: 'Success');
-
-  //             _showDataSavedPopup(
-  //                 historyAssessmentSection: true,
-  //                 title: 'Are you sure?',
-  //                 msg:
-  //                     'If you exit now, you will not be able to return to this page. Continue?',
-  //                 noActionText: 'No',
-  //                 yesActionText: 'Yes, Take Me There');
-  //           } else if ((iconName[index] == 'Sheet' ||
-  //                   iconName[index] == 'Dashboard') &&
-  //               dashboardState.value == '') {
-  //             if (Overrides.STANDALONE_GRADED_APP == true) {
-  //               if (widget.shareLink == null) {
-  //                 Utility.currentScreenSnackBar('Please Wait', null,
-  //                     marginFromBottom: 90);
-  //               } else {
-  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-  //               }
-
-  //               return;
-  //             }
-
-  //             if (widget.assessmentDetailPage == true &&
-  //                 widget.createdAsPremium == false) {
-  //               Utility.updateLogs(
-  //                   activityType: 'GRADED+',
-  //                   activityId: '14',
-  //                   description:
-  //                       'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-  //                   operationResult: 'Failed');
-  //               popupModal(
-  //                   title: 'Data Not Saved',
-  //                   message:
-  //                       'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-  //               Globals.scanMoreStudentInfoLength =
-  //                   await OcrUtility.getStudentInfoListLength(
-  //                           tableName: 'student_info') -
-  //                       1;
-  //             } else {
-  //               List list = await OcrUtility.getSortedStudentInfoList(
-  //                   tableName: 'student_info');
-
-  //               if (widget.isScanMore == true &&
-  //                   widget.assessmentListLength != null &&
-  //                   widget.assessmentListLength! < list.length) {
-  //                 Utility.updateLogs(
-  //                     activityType: 'GRADED+',
-  //                     activityId: '14',
-  //                     description:
-  //                         'Save to dashboard pressed in case for scan more',
-  //                     operationResult: 'Success');
-  //               } else {
-  //                 // Adding the non saved record of dashboard in the list
-  //                 List<StudentAssessmentInfo> _listRecord = [];
-
-  //                 if (widget.assessmentDetailPage! &&
-  //                     savedRecordCount != null &&
-  //                     historyRecordList.length != savedRecordCount!) {
-  //                   _listRecord = historyRecordList.sublist(
-  //                       savedRecordCount!, historyRecordList.length);
-  //                 } else {
-  //                   //
-  //                   _listRecord = historyRecordList;
-  //                 }
-  //               }
-  //             }
-
-  //             // }
-  //           } else if (dashboardState.value == 'Success') {
-  //             if (Overrides.STANDALONE_GRADED_APP == true) {
-  //               if (widget.shareLink == null) {
-  //                 Utility.currentScreenSnackBar('Please Wait', null,
-  //                     marginFromBottom: 90);
-  //               } else {
-  //                 await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-  //               }
-
-  //               return;
-  //             }
-  //             popupModal(
-  //                 title: 'Already Saved',
-  //                 message:
-  //                     'The data has already been saved to the data dashboard.');
-  //           }
-  //         }),
-  //   );
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
-  // Widget detailPageActionsWithoutDashboard({required int index}) {
-  //   if (Overrides.STANDALONE_GRADED_APP == true &&
-  //       iconsName[index] == 'Sheet') {
-  //     return Container(
-  //         height: 28,
-
-  //         // margin: EdgeInsets.only(right: 15, bottom: 1),
-  //         //padding: EdgeInsets.symmetric(vertical: 9),
-  //         child: SvgPicture.asset(Strings.googleSheetIcon));
-  //   } else {
-  //     return Icon(
-  //       IconData(
-  //           (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-  //                   dashboardState.value == 'Success'
-  //               ? 0xe877
-  //               : iconsList[index],
-  //           fontFamily: Overrides.kFontFam,
-  //           fontPackage: Overrides.kFontPkg),
-  //       size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-  //               dashboardState.value == ''
-  //           ? Globals.deviceType == 'phone'
-  //               ? 33
-  //               : 55
-  //           : Globals.deviceType == 'phone'
-  //               ? 33
-  //               : 48,
-  //       color: iconsName[index] == 'History'
-  //           ? AppTheme.kButtonbackColor
-  //           : iconsName[index] == 'Share'
-  //               ? AppTheme.kButtonColor
-  //               : (widget.assessmentDetailPage! &&
-  //                           index == 2 &&
-  //                           isAssessmentAlreadySaved == 'YES') ||
-  //                       (widget.assessmentDetailPage! &&
-  //                           index == 2 &&
-  //                           dashboardState.value == 'Success')
-  //                   ? Colors.green
-  //                   : index == 2 || (index == 3 && dashboardState.value == '')
-  //                       ? Theme.of(context).backgroundColor == Color(0xff000000)
-  //                           ? Colors.white
-  //                           : Colors.black
-  //                       : (widget.assessmentDetailPage!
-  //                                   ? index == 2
-  //                                   : index == 3) &&
-  //                               dashboardState.value == 'Success'
-  //                           ? Colors.green
-  //                           : AppTheme.kButtonColor,
-  //     );
-  //   }
-  // }
 
 //--------------------------------------------------------------------------------------------------------------------------
   void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
@@ -2102,44 +1867,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
 //--------------------------------------------------------------------------------------------------------------------------
-  // Widget _slidableDecorationWidget(
-  //     {required String label, required IconData icon}) {
-  //   final children = <Widget>[];
-
-  //   children.add(
-  //     Icon(icon),
-  //   );
-
-  //   children.add(
-  //     SizedBox(height: 4),
-  //   );
-
-  //   children.add(
-  //     TranslationWidget(
-  //         message: label,
-  //         fromLanguage: "en",
-  //         toLanguage: Globals.selectedLanguage,
-  //         builder: (translatedMessage) {
-  //           return Text(
-  //             translatedMessage,
-  //             overflow: TextOverflow.ellipsis,
-  //           );
-  //         }),
-  //   );
-
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       ...children.map(
-  //         (child) => Flexible(
-  //           child: child,
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
-//--------------------------------------------------------------------------------------------------------------------------
   updateAssessmentToDb() async {
     Utility.updateAssessmentToDb(
       studentInfoList: await OcrUtility.getSortedStudentInfoList(
@@ -2159,8 +1886,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 //--------------------------------------------------------------------------
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-    Utility.updateLogs(
+    PlusUtility.updateLogs(
         activityType: 'GRADED+',
+        userType: 'Teacher',
         activityId: '22',
         sessionId:
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',
@@ -2178,14 +1906,15 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 //--------------------------------------------------------------------------
 
     Fluttertoast.cancel();
+    print('Result Summery mcq updated         ${widget.isMcqSheet}');
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
-                isMcqSheet: widget.isMcqSheet,
-                selectedAnswer: widget.selectedAnswer,
+                isMcqSheet: isMcqSheet, // widget.isMcqSheet ?? false,
+                selectedAnswer: selectedAnswer, //widget.selectedAnswer,
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
@@ -2204,7 +1933,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 /*--------------------------------------------------------------------------------------------------------------------------*/
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
-      // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
+      // GoogleClassroomOverrides.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
       await _historystudentAssessmentInfoDb.clear();
       if (widget.historySecondTime == true) {
         widget.assessmentName = Globals.historyAssessmentName;
@@ -2220,15 +1949,15 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
 
       if (Overrides.STANDALONE_GRADED_APP) {
-        _ocrBloc.add(GetDashBoardStatus(
+        _ocrBloc.add(GetAssessmentAndSavedStudentResultSummaryForStandaloneApp(
             fileId: widget.fileId,
             assessmentObj:
-                GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+                GoogleClassroomOverrides.studentAssessmentAndClassroomObj));
       } else {
-        _ocrBloc.add(GetDashBoardStatusForStandardApp(
+        _ocrBloc.add(GetAssessmentAndSavedStudentResultSummaryForStandardApp(
             fileId: widget.fileId,
-            assessmentObj: GoogleClassroomGlobals
-                .studentAssessmentAndClassroomHistoryAssignmentForStandardApp));
+            assessmentObj: GoogleClassroomOverrides
+                .historyStudentResultSummaryForStandardApp));
       }
 
       // _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
@@ -2293,16 +2022,20 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Share': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Drive': Globals.googleDriveFolderPath ?? '',
+                  // 'Drive': Globals.googleDriveFolderPath ?? '',
                   'History': 'History',
                   'Dashboard': Globals.appSetting.dashboardUrlC == null
                       ? 'https://www.${Globals.schoolDbnC}.com/'
                       : Globals.appSetting.dashboardUrlC!, //'Dashboard',
-                  'Slides': Globals.googleSlidePresentationLink ?? '',
+                  'Slides': !widget.assessmentDetailPage!
+                      ? Globals.googleSlidePresentationLink ?? ''
+                      : OcrOverrides
+                              .gradedPlusHistoryAssignmentGooglePresentationLink ??
+                          "",
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Class': GoogleClassroomGlobals
+                  'Class': GoogleClassroomOverrides
                           .studentAssessmentAndClassroomObj.courseWorkURL ??
                       '',
                 },

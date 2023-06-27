@@ -82,7 +82,7 @@ class Globals {
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
   static int lastIndex = 0;
-  static String teacherEmailId = '';
+  static String userEmailId = '';
   static String teacherId = '';
   static String sessionId = '';
   // static bool isPremiumUser = false;
@@ -97,8 +97,8 @@ class Globals {
 
   static List gradeList = [];
   static bool isCameraPopup = true;
-  static String? googleDriveFolderId = '';
-  static String? googleDriveFolderPath;
+  // static String? googleDriveFolderId = '';
+  // static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
   static String? shareableLink;
   static String? pointPossible = '2';
@@ -115,6 +115,7 @@ class Globals {
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
   static String? googleSlidePresentationId;
+
   static String? googleSlidePresentationLink;
   static String selectedFilterValue = 'All';
   // static String historyAssessmentId = '';
@@ -126,5 +127,4 @@ class Globals {
       ''; //Used to manage the count increment only in case of id change
 
 //  static EventController scheduleController = EventController();
-
 }

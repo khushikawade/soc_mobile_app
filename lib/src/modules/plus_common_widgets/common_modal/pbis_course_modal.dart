@@ -113,6 +113,8 @@ class ClassroomProfile {
   int? helpful;
   @HiveField(8)
   String? courseName;
+  @HiveField(9)
+  String? courseId;
   ClassroomProfile(
       {this.id,
       this.name,
@@ -122,7 +124,8 @@ class ClassroomProfile {
       this.engaged,
       this.niceWork,
       this.helpful,
-      this.courseName});
+      this.courseName,
+      this.courseId});
 
   ClassroomProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -145,6 +148,7 @@ class ClassroomProfile {
     niceWork = 0;
     helpful = 0;
     courseName = '';
+    courseId = '';
   }
 
   Map<String, dynamic> toJson() {

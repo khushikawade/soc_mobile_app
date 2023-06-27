@@ -6,6 +6,7 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentPlusUtility {
   /* -------------------------------------------------------------------------- */
@@ -15,6 +16,18 @@ class StudentPlusUtility {
   static Future<List<dynamic>> getRecentStudentSearchData() async {
     LocalDatabase<StudentPlusSearchModel> _localDb =
         LocalDatabase(StudentPlusOverrides.studentInfoRecentList);
+
+    //Clear student_ Recent plus_details local data
+    SharedPreferences clearNewsCache = await SharedPreferences.getInstance();
+    final clearCacheResult = await clearNewsCache
+        .getBool('delete_local_recent_student_plus_details_cache');
+
+    if (clearCacheResult != true) {
+      await _localDb.clear();
+      await clearNewsCache.setBool(
+          'delete_local_recent_student_plus_details_cache', true);
+    }
+
     List<StudentPlusSearchModel>? _localData = await _localDb.getData();
     return _localData;
   }
@@ -153,7 +166,9 @@ class StudentPlusUtility {
       {required List<StudentPlusWorkModel> list}) {
     List<String> subjectList = [];
     for (var i = 0; i < list.length; i++) {
-      if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
+      if (!subjectList.contains(list[i].subjectC) &&
+          list[i].subjectC != null &&
+          list[i].subjectC != "") {
         subjectList.add(list[i].subjectC ?? '');
       }
     }
@@ -169,7 +184,7 @@ class StudentPlusUtility {
               "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
           list[i].subjectC != null &&
           (list[i].firstName != " " && list[i].lastName != " ") &&
-          (list[i].firstName != null && list[i].lastName != null)) {
+          (list[i].firstName != null || list[i].lastName != null)) {
         teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
       }
     }

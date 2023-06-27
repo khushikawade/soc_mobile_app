@@ -6,10 +6,12 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -78,6 +80,7 @@ class _StaffPageState extends State<StaffPage> {
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(99);
   final StudentPlusDetailsModel studentDetails = new StudentPlusDetailsModel();
+  String? actionName;
 
   @override
   void initState() {
@@ -116,10 +119,10 @@ class _StaffPageState extends State<StaffPage> {
             profile[3].toString().split('=')[1].replaceAll('#', ''),
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
+    //Save user profile to local
+    ////UPDATE CURRENT GOOGLE USER PROFILEly
+
+    UserGoogleProfile.updateUserProfile(_userInformation);
   }
 
   Widget _body(String key) => Stack(children: [
@@ -210,6 +213,32 @@ class _StaffPageState extends State<StaffPage> {
               },
               child: EmptyContainer()),
         ),
+        //Authorizing user email address with database
+        BlocListener<OcrBloc, OcrState>(
+          child: Container(),
+          bloc: _ocrBloc,
+          listener: (context, state) {
+            if (state is AuthorizedUserSuccess) {
+              Navigator.pop(context, false);
+              navigatorToScreen(actionName: actionName ?? '');
+            }
+            if (state is AuthorizedUserLoading) {
+              Utility.showLoadingDialog(
+                  context: context, isOCR: true, msg: "Please Wait");
+            }
+
+            if (state is AuthorizedUserError) {
+              Navigator.pop(context, false);
+              if (Globals.appSetting.enableGoogleSSO == "true") {
+                Authentication.signOut(context: context);
+                UserGoogleProfile.clearUserProfile();
+              }
+              Utility.currentScreenSnackBar(
+                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                  null);
+            }
+          },
+        )
         // Globals.appSetting.enableGraded == 'false'
         //     ? Container()
         //     : ocrSectionButton(),
@@ -280,11 +309,11 @@ class _StaffPageState extends State<StaffPage> {
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
     final clearCacheResult =
-        await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
+        await clearGoogleLoginLocalDb.getBool('delete_local_login_details1213');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
       await clearGoogleLoginLocalDb.setBool(
-          'delete_local_login_details12', true);
+          'delete_local_login_details1213', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -303,30 +332,26 @@ class _StaffPageState extends State<StaffPage> {
       }
       //Google Single Sign On
       else {
-        try {
-          User? user = await Authentication.signInWithGoogle();
-          if (user != null) {
-            if (user.email != null && user.email != '') {
-              navigatorToScreen(actionName: actionName);
-            } else {
-              Utility.currentScreenSnackBar(
-                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-                  null);
-            }
-          } else {}
-        } catch (e) {
-          
-          print(e);
+        User? user = await Authentication.signInWithGoogle();
+
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            _ocrBloc.add(AuthorizedUserWithDatabase(
+                email: user.email, isAuthorizedUser: true));
+            //navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
         }
       }
     } else {
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
-      Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      // DateTime currentDateTime = DateTime.now();
+      //Creating fresh sessionID
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
-      //    await _getLocalDb();
       navigatorToScreen(actionName: actionName);
     }
   }
@@ -339,16 +364,12 @@ class _StaffPageState extends State<StaffPage> {
     } else {
       if (actionName == 'GRADED+') {
         //Graded+ login activity
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'GRADED+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
+            userType: 'Teacher',
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
-            description: 'Graded+ Accessed(Login)',
-            operationResult: 'Success'));
+            description: 'Graded+ Accessed(Login)/Login Id:',
+            operationResult: 'Success');
 
         pushNewScreen(
           context,
@@ -359,16 +380,12 @@ class _StaffPageState extends State<StaffPage> {
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'PBIS+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
+            userType: 'Teacher',
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
-            description: 'PBIS+ Accessed(Login)',
-            operationResult: 'Success'));
+            description: 'PBIS+ Accessed(Login)/Login Id: ',
+            operationResult: 'Success');
 
         pushNewScreen(
           context,
@@ -376,16 +393,12 @@ class _StaffPageState extends State<StaffPage> {
           withNavBar: false,
         );
       } else if (actionName == 'STUDENT+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
+        PlusUtility.updateLogs(
             activityType: 'STUDENT+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
+            userType: 'Teacher',
             activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: "Premium",
-            dateTime: currentDateTime.toString(),
-            description: 'STUDENT+ Accessed(Login)',
-            operationResult: 'Success'));
+            description: 'STUDENT+ Accessed(Login)/Login Id: ',
+            operationResult: 'Success');
 
         pushNewScreen(
           context,
@@ -428,6 +441,7 @@ class _StaffPageState extends State<StaffPage> {
                           onTap: () async {
                             selectedIndex.value =
                                 StaffIconsList.staffIconsList.indexOf(element);
+                            actionName = element.iconName;
                             staffActionIconsOnTap(actionName: element.iconName);
                           },
                           child: Bouncing(
