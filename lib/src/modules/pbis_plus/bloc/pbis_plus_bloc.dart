@@ -370,18 +370,21 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
     if (event is PBISPlusResetInteractions) {
       try {
+        List<ClassroomCourse> LocalSelectedRecords =
+            List<ClassroomCourse>.from(event.selectedRecords);
+
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
         //REMOVE THE 'ALL' OBJECT FROM LIST IF EXISTS
-        if (event.selectedRecords.length > 0 &&
-            event.selectedRecords[0].name == 'All') {
-          event.selectedRecords.removeAt(0);
+        if (LocalSelectedRecords.length > 0 &&
+            LocalSelectedRecords[0].name == 'All') {
+          LocalSelectedRecords.removeAt(0);
         }
 
         var result = await resetPBISPlusInteractionInteractions(
           type: event.type,
-          selectedCourses: event.selectedRecords,
+          selectedCourses: LocalSelectedRecords,
           userProfile: userProfileLocalData[0],
         );
         if (result == true) {
@@ -390,6 +393,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISErrorState(error: result);
         }
       } catch (e) {
+        print(e);
         yield PBISErrorState(error: e.toString());
       }
     }
@@ -834,6 +838,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
       return response.statusCode;
     } catch (e) {
+      throw (e);
       return e.toString();
     }
   }

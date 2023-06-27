@@ -95,7 +95,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
     // Combine all the students from different courses into a single list.
     allStudents = await getClassroomStudents(
-        classroomCourses: widget.googleClassroomCourseworkList);
+        classroomCoursesList: widget.googleClassroomCourseworkList);
   }
 
   @override
@@ -610,13 +610,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   //this is for default  'ALL' selected
                   if (selectedStudentList?.isEmpty ?? true) {
                     selectedStudentList = getClassroomStudents(
-                        classroomCourses: widget.googleClassroomCourseworkList,
+                        classroomCoursesList:
+                            widget.googleClassroomCourseworkList,
                         isSubmitOnTap: true);
                   } else {
                     //this is for selected students
                     selectedStudentList = getAllStudentsForCourse(
                       selectedStudentList: selectedStudentList,
-                      classroomCourses: widget.googleClassroomCourseworkList,
+                      classroomCoursesList:
+                          widget.googleClassroomCourseworkList,
                     );
                   }
 
@@ -761,7 +763,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     classroomCourseworkList:
                         (sectionName == 'All Courses & Students' ||
                                 (selectedRecords?.isEmpty ?? true))
-                            ? widget.googleClassroomCourseworkList
+                            ? List<ClassroomCourse>.from(
+                                widget.googleClassroomCourseworkList)
                             : selectedRecords));
               }
               if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
@@ -866,13 +869,17 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       type: sectionName,
       selectedRecords: (sectionName == 'All Courses & Students' ||
               (selectedRecords?.isEmpty ?? true))
-          ? widget.googleClassroomCourseworkList
+          ? List<ClassroomCourse>.from(widget.googleClassroomCourseworkList)
           : selectedRecords,
     ));
   }
 
   List<ClassroomStudents> getClassroomStudents(
-      {required List<ClassroomCourse> classroomCourses, bool? isSubmitOnTap}) {
+      {required final List<ClassroomCourse> classroomCoursesList,
+      bool? isSubmitOnTap}) {
+    List<ClassroomCourse> classroomCourses =
+        List<ClassroomCourse>.from(classroomCoursesList);
+
     final uniqueStudents = <ClassroomStudents>[];
 
     for (final course in classroomCourses) {
@@ -910,8 +917,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     if (isSubmitOnTap != true) {
       uniqueStudents
           .removeWhere((element) => element.profile!.name!.fullName == 'All');
-      uniqueStudents.insert(
-          0, widget.googleClassroomCourseworkList[0].students![0]);
+      uniqueStudents.insert(0, classroomCourses[0].students![0]);
     }
     return uniqueStudents;
   }
@@ -958,7 +964,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
-                  _pageController.animateToPage(4,
+                  _pageController.animateToPage(5,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
                   _exportDataToSpreadSheet();
@@ -1000,7 +1006,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 //Used to add all courses data of single student if exist in multiple classes
   List<ClassroomStudents> getAllStudentsForCourse(
       {required List<ClassroomStudents> selectedStudentList,
-      required List<ClassroomCourse> classroomCourses}) {
+      required final List<ClassroomCourse> classroomCoursesList}) {
+    List<ClassroomCourse> classroomCourses =
+        List<ClassroomCourse>.from(classroomCoursesList);
+
     try {
       //add all student that contains same ids
       List<ClassroomStudents> newStudentList = [];
@@ -1135,7 +1144,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     //this is for selected students
                     selectedRecords = prepareStudentListByCourseToReset(
                       selectedStudentList: selectedStudentList,
-                      classroomCourses: widget.googleClassroomCourseworkList,
+                      classroomCoursesList:
+                          widget.googleClassroomCourseworkList,
                     );
                   }
 
@@ -1287,8 +1297,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   //Add all Selected student to a new list type class course
   List<ClassroomCourse> prepareStudentListByCourseToReset(
       {required List<ClassroomStudents> selectedStudentList,
-      required List<ClassroomCourse> classroomCourses}) {
+      required final List<ClassroomCourse> classroomCoursesList}) {
     try {
+      List<ClassroomCourse> classroomCourses =
+          List<ClassroomCourse>.from(classroomCoursesList);
       List<ClassroomCourse> newClassroomCourseList = [];
 
       for (var i = 0; i < classroomCourses.length; i++) {
