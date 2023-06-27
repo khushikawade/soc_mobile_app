@@ -73,14 +73,15 @@ class StudentPlusDetailsModelAdapter
       grade20_21: fields[52] as String?,
       grade21_22: fields[53] as String?,
       studentPhoto: fields[54] as String?,
-      googlePresentationUrl: fields[55] as String?,
+      studentGooglePresentationUrl: fields[55] as String?,
+      studentGooglePresentationId: fields[56] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusDetailsModel obj) {
     writer
-      ..writeByte(56)
+      ..writeByte(57)
       ..writeByte(0)
       ..write(obj.firstNameC)
       ..writeByte(1)
@@ -192,7 +193,9 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(54)
       ..write(obj.studentPhoto)
       ..writeByte(55)
-      ..write(obj.googlePresentationUrl);
+      ..write(obj.studentGooglePresentationUrl)
+      ..writeByte(56)
+      ..write(obj.studentGooglePresentationId);
   }
 
   @override
