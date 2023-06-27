@@ -191,7 +191,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             googleClassroomCourseList: _localData);
       }
     }
-
     if (event is GetPBISPlusAdditionalBehaviour) {
       try {
         print(
@@ -245,7 +244,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                     behaviourId: "0",
                   ))
               .toList();
-          _pbisPlusAdditionalBehaviourDB.clear();
+
           apiData.forEach((element) async {
             await _pbisPlusAdditionalBehaviourDB
                 .addData(element); // Pass 'element' instead of 'list'
@@ -320,10 +319,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                       behaviourId: "0",
                     ))
                 .toList();
-            // genralDataList.forEach((element) async {
-            //   await _pbisPlusGenricBehaviourDB
-            //       .addData(element); // Pass 'element' instead of 'list'
-            // });
+            genralDataList.forEach((element) async {
+              await _pbisPlusGenricBehaviourDB
+                  .addData(element); // Pass 'element' instead of 'list'
+            });
           }
         }
 
@@ -598,7 +597,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusStudentNotesError(error: "No data found");
       }
     }
-
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
@@ -839,27 +837,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         );
         if (result == true) {
           yield PBISPlusResetSuccess();
-        } else {
-          yield PBISErrorState(error: result);
-        }
-      } catch (e) {
-        yield PBISErrorState(error: e.toString());
-      }
-    }
-
-    if (event is GetPBISPlusAdditionalBehaviour) {
-      try {
-        List<ClassroomCourse> list = [];
-        yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
-        List<PbisPlusAdditionalBehaviourModal> result =
-            await getPBISPlusBehaviourAdditionalBehaviourList();
-
-        result.removeWhere((item) => item.activeStatusC == 'Hide');
-        result
-            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
-
-        if (result.isNotEmpty) {
-          yield PBISPlusAdditionalBehaviourSucess(behaviourList: result);
         } else {
           yield PBISErrorState(error: result);
         }
@@ -1347,13 +1324,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-<<<<<<< HEAD
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
-=======
-  /* -------------------------------------------------------------------------- */
-  /* ------------ Function to fetch list of Additional Behaviours ------------- */
-  /* -------------------------------------------------------------------------- */
->>>>>>> pbis_main
+
+  Future getPBISPBehaviourListData() async {
+    try {
+      print("--------------INSIDE --getPBISPBehaviourListData---");
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+      print("--------------response------ -${response.statusCode}--");
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviourList>(
+                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
+            .toList();
+
+        print(resp.length);
+        print(resp);
+        return resp;
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+//-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
 
   Future getPBISPlusBehaviourAdditionalBehaviourList() async {
     try {
@@ -1380,8 +1380,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
-}
-  //-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
+
+//-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
 
   Future<List<PBISPlusDefaultBehaviourModal>> getPBISDefaultBehaviour() async {
     try {
@@ -1411,7 +1411,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
-}
+
   Future<List<PBISPlusDefaultBehaviourModal>> getPBISCustomBehaviour() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
