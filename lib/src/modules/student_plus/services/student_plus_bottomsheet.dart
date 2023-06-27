@@ -34,10 +34,10 @@ class StudentPlusCommonBottomSheet {
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30))),
               height: Globals.deviceType == 'phone'
-              ?MediaQuery.of(context).size.width / 2 + 50 :
-              MediaQuery.of(context).size.width / 3,
-                  // ? MediaQuery.of(context).size.height * 0.35
-                  // : MediaQuery.of(context).size.height * 0.25,
+                  ? MediaQuery.of(context).size.width / 2 + 50
+                  : MediaQuery.of(context).size.width / 3,
+              // ? MediaQuery.of(context).size.height * 0.35
+              // : MediaQuery.of(context).size.height * 0.25,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

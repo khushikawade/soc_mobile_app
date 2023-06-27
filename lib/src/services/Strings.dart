@@ -67,4 +67,7 @@ class Strings {
     "pbis_sound/sound_6.wav",
     "pbis_sound/sound_7.wav"
   ];
+  static final String gradedApprovedDomains = 'graded_approved_domains';
+//---------------------------PBIS PLUS-------------------------------//
+static final String isCustomBehaviour = "isCustomBehaviour";
 }

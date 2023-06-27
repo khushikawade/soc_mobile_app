@@ -76,13 +76,15 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       calendarId: fields[56] as String?,
       calendarBannerImage: fields[57] as String?,
       calendarBannerColor: fields[58] as String?,
+      dashboardUrlC: fields[59] as String?,
+      enableGoogleSSO: fields[60] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(59)
+      ..writeByte(61)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -200,7 +202,11 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(57)
       ..write(obj.calendarBannerImage)
       ..writeByte(58)
-      ..write(obj.calendarBannerColor);
+      ..write(obj.calendarBannerColor)
+      ..writeByte(59)
+      ..write(obj.dashboardUrlC)
+      ..writeByte(60)
+      ..write(obj.enableGoogleSSO);
   }
 
   @override

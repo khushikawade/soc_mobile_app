@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -18,7 +18,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final PBISPlusSkills item;
+  final PBISPlusGenricBehaviourModal item;
   PBISPlusBloc? pbisPlusClassroomBloc;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
@@ -145,14 +145,15 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                               print(state);
                               if (state is PBISPlusSkillsDeleteLoading) {
                                 return _buildDeletebutton(true);
-                              } else if (state is PBISPlusSkillsSucess) {
+                              } else if (state
+                                  is PBISPlusDefaultBehaviourSucess) {
                                 return _buildDeletebutton(false);
                               } else if (state is PBISErrorState)
                                 return _buildDeletebutton(false);
                               return _buildDeletebutton(false);
                             },
                             listener: (context, state) async {
-                              if (state is PBISPlusSkillsSucess) {
+                              if (state is PBISPlusDefaultBehaviourSucess) {
                                 Utility.currentScreenSnackBar(
                                     "Successfully Deleted skills", null);
                                 Navigator.pop(context, true);
@@ -212,7 +213,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     // }
   }
 
-  Widget _buildIconWidget(PBISPlusSkills item) {
+  Widget _buildIconWidget(PBISPlusGenricBehaviourModal item) {
     return Container(
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor

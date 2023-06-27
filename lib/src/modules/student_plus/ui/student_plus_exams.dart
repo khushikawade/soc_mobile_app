@@ -3,20 +3,21 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
+
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
+
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -115,6 +116,25 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           shrinkWrap: true,
           children: [
             TabBar(
+              onTap: (i) {
+                print(i);
+                if (i == 0) {
+                  PlusUtility.updateLogs(
+                      activityType: 'STUDENT+',
+                      userType: 'Teacher',
+                      activityId: '50',
+                      description: 'Student+ MATH Screen',
+                      operationResult: 'Success');
+                }
+                if (i == 1) {
+                  PlusUtility.updateLogs(
+                      activityType: 'STUDENT+',
+                      userType: 'Teacher',
+                      activityId: '51',
+                      description: 'Student+ ELA Screen',
+                      operationResult: 'Success');
+                }
+              },
               indicatorSize: TabBarIndicatorSize.tab,
               labelColor: Theme.of(context)
                   .colorScheme

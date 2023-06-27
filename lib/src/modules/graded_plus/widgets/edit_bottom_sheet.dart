@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -639,8 +640,9 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 .toLowerCase()
                                 .replaceAll(" ", "_") ??
                             '');
-                    Utility.updateLogs(
-                       activityType: 'GRADED+',
+                    PlusUtility.updateLogs(
+                        activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: widget.isMcqSheet == true ? "30 " : '8',
                         description: editScoreOrAnserKeyLogMsg,
                         operationResult: 'Success');
@@ -924,8 +926,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                 return TextFormField(
                     onTap: () => readOnly == true
                         ? Utility.currentScreenSnackBar(
-                            'Read only $hintText' ?? "",
-                            null)
+                            'Read only $hintText' ?? "", null)
                         : print(''),
                     readOnly: readOnly ?? false,
                     maxLength: maxNineDigit == true &&

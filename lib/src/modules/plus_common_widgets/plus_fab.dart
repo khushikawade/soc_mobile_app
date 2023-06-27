@@ -4,7 +4,8 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class PlusCustomFloatingActionButton extends StatelessWidget {
-  const PlusCustomFloatingActionButton({Key? key, required this.onPressed})
+  Widget? icon;
+  PlusCustomFloatingActionButton({Key? key, required this.onPressed, this.icon})
       : super(key: key);
 
   final VoidCallback onPressed;
@@ -18,11 +19,12 @@ class PlusCustomFloatingActionButton extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: AppTheme.kButtonColor,
           onPressed: onPressed,
-          child: Icon(
-              IconData(0xe868,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: Theme.of(context).backgroundColor),
+          child: icon ??
+              Icon(
+                  IconData(0xe868,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: Theme.of(context).backgroundColor),
         ));
   }
 }

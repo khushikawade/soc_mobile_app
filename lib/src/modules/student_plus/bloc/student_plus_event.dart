@@ -46,7 +46,6 @@ class GetStudentPlusDetails extends StudentPlusEvent {
   String toString() => '$studentId';
 }
 
-
 /* ---------------- Event use to trigger student grade details --------------- */
 class FetchStudentGradesEvent extends StudentPlusEvent {
   final String? studentId;

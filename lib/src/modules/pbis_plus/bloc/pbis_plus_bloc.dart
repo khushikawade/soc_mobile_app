@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
@@ -16,7 +19,6 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
@@ -45,30 +47,37 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*----------------------------------------------------------------------------------------------*/
 
     if (event is PBISPlusImportRoster) {
+      String plusClassroomDBTableName = event.isGradedPlus == true
+          ? OcrOverrides.gradedPlusStandardClassroomDB
+          : PBISPlusOverrides.pbisPlusClassroomDB;
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
+        // LocalDatabase<ClassroomCourse> _localDb =
+        //     LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+            LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
-        LocalDatabase<PBISPlusSkills> _pbisPlusSkilllocalsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkills>? _pbisPlusSkillsLocalData =
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkilllocalsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsLocalData =
             await _pbisPlusSkilllocalsDB.getData();
         // await _pbisPlusSkilllocalsDB.clear();
         var list;
         if (_pbisPlusSkillsLocalData.isEmpty) {
           list = PBISPlusSkillsModalLocal.PBISPlusSkillLocalModallist.map(
-              (item) => PBISPlusSkills(
+              (item) => PBISPlusGenricBehaviourModal(
                     id: item.id,
                     activeStatusC: item.activeStatusC,
                     iconUrlC: item.iconUrlC,
                     name: item.name,
                     sortOrderC: item.sortOrderC,
                     counter: item.counter,
+                    behaviourId: "0",
                   )).toList();
         }
         // // print(list.runtimeType);
@@ -109,7 +118,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (_localData.isEmpty) {
           //Managing dummy response for shimmer loading
           var list = await _getShimmerData();
-          print(list);
           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
@@ -120,7 +128,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
-            refreshToken: userProfileLocalData[0].refreshToken);
+            refreshToken: userProfileLocalData[0].refreshToken,
+            isGradedPlus: event.isGradedPlus);
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
@@ -132,10 +141,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             yield PBISPlusInitialImportRosterSuccess(
                 googleClassroomCourseList: responseList[0]);
           }
-          //OLDER WAY TO GET THE INTERRACTION
-          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
-              await getPBISTotalInteractionByTeacher(
-                  teacherEmail: userProfileLocalData[0].userEmail!);
+
+          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
+          //Get PBISTotal interaction only if Section is PBIS+
+          if (event.isGradedPlus == false) {
+            pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+                teacherEmail: userProfileLocalData[0].userEmail!);
+          }
 
           // Merge Student Interaction with Google Classroom Rosters
           List<ClassroomCourse> classroomStudentProfile =
@@ -148,8 +160,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _localDb.addData(e);
           });
 
-          Utility.updateLogs(
-              activityType: 'PBIS+',
+          PlusUtility.updateLogs(
+              activityType: event.isGradedPlus == true ? 'GRADED+' : 'PBIS+',
+              userType: 'Teacher',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
               operationResult: 'Success');
@@ -167,7 +180,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         print(e);
 
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+            LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
         sort(obj: _localData);
         // _localDb.close();
@@ -177,18 +190,140 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             googleClassroomCourseList: _localData);
       }
     }
-    if (event is GetPBISPlusBehaviour) {
+
+    if (event is GetPBISPlusAdditionalBehaviour) {
       try {
-        yield PBISPlusSkillsLoading();
-        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkills>? _pbisPlusSkillsData =
+        print(
+            "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
+
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusGenricBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusGenricBehaviourDataList =
+            await _pbisPlusGenricBehaviourDB.getData();
+
+        LocalDatabase<PbisPlusAdditionalBehaviourList>
+            _pbisPlusAdditionalBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusAdditionalBehviourDB);
+        List<PbisPlusAdditionalBehaviourList>?
+            _pbisPlusAdditionalBehaviourDataList =
+            await _pbisPlusAdditionalBehaviourDB.getData();
+        yield GetPBISPlusAdditionalBehaviourLoading();
+        var genralDataList;
+        if (_pbisPlusAdditionalBehaviourDataList!.isNotEmpty) {
+          genralDataList = _pbisPlusAdditionalBehaviourDataList
+              .map((item) => PBISPlusGenricBehaviourModal(
+                    id: item.id.toString(),
+                    activeStatusC: "true",
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: 0,
+                    behaviourId: "0",
+                  ))
+              .toList();
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalbehaviourList: genralDataList);
+        }
+
+        List<PbisPlusAdditionalBehaviourList> apiData =
+            await getPBISPBehaviourListData();
+
+        apiData.removeWhere((item) => item.activeStatusC == 'Hide');
+        apiData
+            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
+
+        if (apiData!.isNotEmpty) {
+          genralDataList = _pbisPlusAdditionalBehaviourDataList
+              .map((item) => PBISPlusGenricBehaviourModal(
+                    id: item.id.toString(),
+                    activeStatusC: "true",
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: 0,
+                    behaviourId: "0",
+                  ))
+              .toList();
+
+          apiData.forEach((element) async {
+            await _pbisPlusAdditionalBehaviourDB
+                .addData(element); // Pass 'element' instead of 'list'
+          });
+        }
+
+        if (apiData.isNotEmpty) {
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalbehaviourList: genralDataList);
+        } else {
+          yield PBISPlusAdditionalBehaviourError(error: "No data Found");
+        }
+      } catch (e) {
+        yield PBISPlusAdditionalBehaviourError(error: e.toString());
+      }
+    }
+    if (event is GetPBISPlusDefaultBehaviour) {
+      try {
+        print(
+            "-----------------event is GetPBISPlusBehaviour---------------------------");
+        yield PBISPlusDefaultBehaviourLoading();
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
+
+        LocalDatabase<PBISPlusDefaultAndCustomBehaviourModal>
+            _pbisPlusdefaultBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusDefaultBehviourDB);
+        List<PBISPlusDefaultAndCustomBehaviourModal>?
+            _pbisPlusdefaultBehaviourDataList =
+            await _pbisPlusdefaultBehaviourDB.getData();
+
         // await _pbisPlusSkillsDB.clear();
         List<PBISPlusDefaultBehaviourModal> apidata;
         var list;
+
+        if (event.isCustom!) {
+          if (_pbisPlusdefaultBehaviourDataList[0].customList!.isNotEmpty) {
+            final genralDataList = _pbisPlusdefaultBehaviourDataList[0]
+                .customList!
+                .map((item) => PBISPlusGenricBehaviourModal(
+                      id: item.id.toString(),
+                      activeStatusC: "true",
+                      iconUrlC: item.iconUrl,
+                      name: item.name,
+                      sortOrderC: item.sortingOrder,
+                      counter: 0,
+                      behaviourId: "0",
+                    ))
+                .toList();
+            genralDataList.forEach((element) async {
+              await _pbisPlusSkillsDB
+                  .addData(element); // Pass 'element' instead of 'list'
+            });
+          }
+        } else {
+          if (_pbisPlusdefaultBehaviourDataList[0].defaultList!.isNotEmpty) {
+            final genralDataList = _pbisPlusdefaultBehaviourDataList[0]
+                .defaultList!
+                .map((item) => PBISPlusGenricBehaviourModal(
+                      id: item.id.toString(),
+                      activeStatusC: "true",
+                      iconUrlC: item.iconUrl,
+                      name: item.name,
+                      sortOrderC: item.sortingOrder,
+                      counter: 0,
+                      behaviourId: "0",
+                    ))
+                .toList();
+            genralDataList.forEach((element) async {
+              await _pbisPlusSkillsDB
+                  .addData(element); // Pass 'element' instead of 'list'
+            });
+          }
+        }
+
         if (_pbisPlusSkillsData.isNotEmpty) {
-          yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
         }
 
         if (event.isCustom!) {
@@ -196,31 +331,44 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         } else {
           apidata = await getPBISDefaultBehaviour();
         }
+
+        if (apidata.isEmpty) {
+          if (event.isCustom!) {
+            await _pbisPlusdefaultBehaviourDB.addData(
+              PBISPlusDefaultAndCustomBehaviourModal(customList: apidata),
+            );
+          } else {
+            await _pbisPlusdefaultBehaviourDB.addData(
+              PBISPlusDefaultAndCustomBehaviourModal(defaultList: apidata),
+            );
+          }
+        }
+
         list = apidata
-            .map((item) => PBISPlusSkills(
+            .map((item) => PBISPlusGenricBehaviourModal(
                   id: item.id.toString(),
                   activeStatusC: "true",
                   iconUrlC: item.iconUrl,
                   name: item.name,
                   sortOrderC: item.sortingOrder,
                   counter: 0,
+                  behaviourId: "0",
                 ))
             .toList();
         while (list.length < 6) {
           int newItemId = list.length + 1;
-          PBISPlusSkills newItem = PBISPlusSkills(
+          PBISPlusGenricBehaviourModal newItem = PBISPlusGenricBehaviourModal(
             id: newItemId.toString(),
             activeStatusC: "Show",
             iconUrlC: "assets/Pbis_plus/add_icon.svg",
             name: 'Add Skill',
             sortOrderC: newItemId.toString(),
             counter: 0,
+            behaviourId: "0",
           );
           list.add(newItem);
         }
 
-        LocalDatabase<PBISPlusHistoryModal> _localDb =
-            LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
         if (_pbisPlusSkillsData.isEmpty) {
           list.forEach((element) async {
             await _pbisPlusSkillsDB
@@ -242,21 +390,23 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
 
         if (check.isNotEmpty) {
-          yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
         } else {
-          yield PBISPlusSkillsError(error: "No data found");
+          yield PBISPlusDefaultBehaviourError(error: "No data found");
         }
       } catch (e) {
-        yield PBISPlusSkillsError(error: "No data found");
+        yield PBISPlusDefaultBehaviourError(error: "No data found");
       }
     }
 
     if (event is GetPBISSkillsUpdateName) {
       try {
-        yield PBISPlusSkillsUpdateLoading();
-        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkills>? _pbisPlusSkillsData =
+        print(
+            "-----------------event is GetPBISSkillsUpdateName---------------------------");
+        yield GetPBISSkillsUpdateNameLoading();
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
 
         if (event.item.id!.isNotEmpty &&
@@ -272,7 +422,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             itemToUpdate.name = event.newName;
             // Save the updated data back to the database
             await _pbisPlusSkillsDB.putAt(index, _pbisPlusSkillsData[index]);
-            yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
           } else {
             yield PBISPlusSkillsUpdateError();
           }
@@ -284,11 +435,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
     if (event is GetPBISSkillsUpdateList) {
       try {
-        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkills>? _pbisPlusSkillsData =
+        print(
+            "-----------------event is GetPBISSkillsUpdateList---------------------------");
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
-        yield PBISPlusSkillsUpdateLoading();
+        yield PBISPlusSkillsUpdateLoading(skillsList: _pbisPlusSkillsData);
         if (event.item.id!.isNotEmpty &&
             event.index != null &&
             _pbisPlusSkillsData != null &&
@@ -318,12 +471,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _pbisPlusSkillsData.forEach((element) async {
               await _pbisPlusSkillsDB.addData(element);
             });
-            yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
           } else {
-            yield PBISPlusSkillsListUpdateError();
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
           }
         } else {
-          yield PBISPlusSkillsListUpdateError();
+          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
         }
         // }
       } catch (e) {
@@ -334,10 +489,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
     if (event is GetPBISSkillsDeleteItem) {
       try {
+        print(
+            "-----------------event is GetPBISSkillsDeleteItem---------------------------");
         yield PBISPlusSkillsDeleteLoading();
-        LocalDatabase<PBISPlusSkills> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        List<PBISPlusSkills>? _pbisPlusSkillsData =
+        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
             await _pbisPlusSkillsDB.getData();
         if (event.item.id!.isNotEmpty && _pbisPlusSkillsData.isNotEmpty) {
           final int index = _pbisPlusSkillsData
@@ -354,13 +511,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   (int.parse(_pbisPlusSkillsData[i].sortOrderC!) - 1)
                       .toString();
             }
-            PBISPlusSkills newItem = PBISPlusSkills(
+            PBISPlusGenricBehaviourModal newItem = PBISPlusGenricBehaviourModal(
               id: "5",
               activeStatusC: "Show",
               iconUrlC: "assets/Pbis_plus/add_icon.svg",
               name: 'Add Skill',
               sortOrderC: _pbisPlusSkillsData.length.toString(),
               counter: 0,
+              behaviourId: "0",
             );
             // Add the new item at the end of the list
             _pbisPlusSkillsData.add(newItem);
@@ -373,7 +531,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   .addData(element); // Pass 'element' instead of 'list'
             });
 
-            yield PBISPlusSkillsSucess(skillsList: _pbisPlusSkillsData);
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
           } else {
             yield PBISPlusSkillsDeleteError();
           }
@@ -435,41 +594,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
-    /*-----No need ot use this event as this is already manage together with Import Roster event----*/
-    /*----------------------------------------------------------------------------------------------*/
-
-    // if (event is GetPBISTotalInteractionsByTeacher) {
-    //   List<UserInformation> userProfileLocalData =
-    //       await UserGoogleProfile.getUserProfile();
-
-    //   LocalDatabase<PBISPlusTotalInteractionByTeacherModal> _localDb =
-    //       LocalDatabase(PBISPlusOverrides.PBISPlusTotalInteractionByTeacherDB);
-    //   List<PBISPlusTotalInteractionByTeacherModal>? _localData =
-    //       await _localDb.getData();
-
-    //   if (_localData?.isNotEmpty ?? false) {
-    //     yield PBISPlusTotalInteractionByTeacherSuccess(
-    //         pbisTotalInteractionList: _localData);
-    //   } else {
-    //     yield PBISPlusLoading();
-    //   }
-
-    //   List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList =
-    //       await getPBISTotalInteractionByTeacher(
-    //           teacherEmail: userProfileLocalData[0].userEmail!);
-
-    //   await _localDb.clear();
-    //   pbisTotalInteractionList.forEach((element) async {
-    //     await _localDb.addData(element);
-    //   });
-
-    //   yield PBISPlusLoading();
-    //   yield PBISPlusTotalInteractionByTeacherSuccess(
-    //       pbisTotalInteractionList: pbisTotalInteractionList);
-    // }
-
-    /*----------------------------------------------------------------------------------------------*/
-    /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
 
     if (event is AddPBISInteraction) {
@@ -509,6 +633,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               userProfileLocalData[0].userName!.replaceAll('%20', ' '),
           "Status": "active"
         });
+
+        /*-------------------------User Activity Track START----------------------------*/
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            userType: 'Teacher',
+            activityId: '38',
+            description:
+                'User Interaction PBIS+ for student ${event.studentId}',
+            operationResult: 'Success');
+        /*-------------------------User Activity Track END----------------------------*/
 
         yield AddPBISInteractionSuccess(
           obj: data,
@@ -705,26 +839,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISErrorState(error: e.toString());
       }
     }
-
-    if (event is GetPBISPlusAdditionalBehaviour) {
-      try {
-        List<ClassroomCourse> list = [];
-        yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
-        List<PbisPlusBehaviourList> result = await getPBISPBehaviourListData();
-
-        result.removeWhere((item) => item.activeStatusC == 'Hide');
-        result
-            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
-
-        if (result.isNotEmpty) {
-          yield PBISPlusBehaviourSucess(behaviourList: result);
-        } else {
-          yield PBISErrorState(error: result);
-        }
-      } catch (e) {
-        yield PBISErrorState(error: e.toString());
-      }
-    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -732,7 +846,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*----------------------------------------------------------------------------------------------*/
 
   Future<List> importPBISClassroomRoster(
-      {required String? accessToken, required String? refreshToken}) async {
+      {required String? accessToken,
+      required String? refreshToken,
+      required bool? isGradedPlus}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
@@ -751,8 +867,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await googleClassroomBloc
-            .toRefreshAuthenticationToken(refreshToken!);
+        var result = await Authentication.refreshAuthenticationToken(
+            refreshToken: refreshToken ?? '');
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -760,7 +876,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
           List responseList = await importPBISClassroomRoster(
               accessToken: _userProfileLocalData[0].authorizationToken,
-              refreshToken: _userProfileLocalData[0].refreshToken);
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              isGradedPlus: isGradedPlus);
           return responseList;
         } else {
           List<ClassroomCourse> data = [];
@@ -771,8 +888,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLogs(
-          activityType: 'PBIS+',
+      PlusUtility.updateLogs(
+          activityType: isGradedPlus == true ? 'GRADED+' : 'PBIS+',
+          userType: 'Teacher',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',
           operationResult: 'failure');
@@ -830,6 +948,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
       {required String teacherEmail, int retry = 3}) async {
     try {
+      print(
+          "------------teacherEmail ------===========-${teacherEmail}==============----------------");
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
           headers: {
@@ -1097,14 +1217,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Reset_Date": currentDate,
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
-      //if user reset Course
-      if (type == "All Courses & Students" || type == "Courses") {
+      //if user reset Course //All Courses & Students||Select Students
+      if (type == PBISPlusOverrides.kresetOptionOnetitle ||
+          type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
-      } else if //if user reset student
-          (type == "Students") {
+      }
+      //Select Courses
+      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -1112,12 +1234,45 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
-            .join(
-                "', '"); // Surround the string with double quotes and  (parentheses)
+            .join("', '");
+        // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
-      print(body);
+      // Select Students by Course
+      else if (type == PBISPlusOverrides.kresetOptionFourtitle) {
+        List<Map<String, dynamic>> courseIdsAndStudentIds = [];
+        for (ClassroomCourse course in selectedCourses) {
+          // Create a map to store Classroom_Course_Id and Student_Id
+          Map<String, dynamic> classroomCourse = {
+            "Classroom_Course_Id": course.id,
+            "Student_Id": <String>[],
+          };
+          // Create a list to store student IDs //For every course index
+          List<String> studentIds = [];
+          // Iterate over each ClassroomStudents in course.students (handling null case with ?? [])
+          for (ClassroomStudents student in course.students ?? []) {
+            // Check if student.profile and student.profile.id are not null
+            if (student.profile?.id != null &&
+                student.profile!.id!.isNotEmpty) {
+              // Add student ID to the list only if id was not null and empty
+              studentIds.add(student.profile!.id!);
+            } else if (student.profile?.emailAddress != null &&
+                student.profile!.emailAddress!.isNotEmpty) {
+              //  Add student email to the list only if id was null or empty
+              studentIds.add(student.profile!.emailAddress!);
+            }
+          }
+          // Assign the list of student IDs to the "Student_Id" key in the classroomCourse map
+          classroomCourse["Student_Id"] = studentIds;
+          // Add the classroomCourse map to the list of courseIdsAndStudentIds
+
+          courseIdsAndStudentIds.add(classroomCourse);
+        }
+// Add the courseIdsAndStudentIds to the "Student_Details" key in the api body
+        body.addAll({"Student_Details": courseIdsAndStudentIds});
+      }
+
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
@@ -1178,13 +1333,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
       print("--------------response------ -${response.statusCode}--");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PbisPlusBehaviourList> resp = response.data['body']
-            .map<PbisPlusBehaviourList>(
-                (i) => PbisPlusBehaviourList.fromJson(i))
+        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviourList>(
+                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
             .toList();
 
         print(resp.length);
-
+        print(resp);
         return resp;
       }
       return [];

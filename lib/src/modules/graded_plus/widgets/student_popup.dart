@@ -56,19 +56,48 @@ class NonCourseGoogleClassroomStudentPopupState
       List<StudentAssessmentInfo> studentInfo =
           await widget.studentInfoDb.getData();
 
+//       int indexToRemoveFromStudentDB =
+//           studentInfo.indexWhere((e) => e.studentId == student.studentId);
+//       if (indexToRemoveFromStudentDB != -1) {
+//         // removing student from local db
+//         await widget.studentInfoDb.deleteAt(indexToRemoveFromStudentDB);
+//       }
+// // removing stuednt from present list
+//       notPresentStudentsInSelectedClass
+//           .removeWhere((s) => s.studentId == student.studentId);
+// //updating the valuenotifier with new values
+//       notPresentStudentsInSelectedClassValueNotifier.value =
+//           notPresentStudentsInSelectedClass;
+//       ;
+
+      // removing student from local db
       int indexToRemoveFromStudentDB =
           studentInfo.indexWhere((e) => e.studentId == student.studentId);
-      if (indexToRemoveFromStudentDB != -1) {
+
+      // removing stuednt from present list
+      int indexToRemoveFromCureentList = notPresentStudentsInSelectedClass
+          .indexWhere((e) => e.studentId == student.studentId);
+
+      if ((indexToRemoveFromCureentList != -1
+          //  &&
+          //         notPresentStudentsInSelectedClass.length > 1
+          ) &&
+          (indexToRemoveFromStudentDB != -1 && studentInfo.length > 1)) {
+        print(indexToRemoveFromCureentList);
         // removing student from local db
-        await widget.studentInfoDb.deleteAt(indexToRemoveFromStudentDB);
+        await widget.studentInfoDb.deleteAt(
+            indexToRemoveFromStudentDB); // removing stuednt from present list
+
+        notPresentStudentsInSelectedClass
+            .removeAt(indexToRemoveFromCureentList);
+      } else {
+        Utility.currentScreenSnackBar(
+            'Action Not Performed. Student List Cannot Be Empty.', null,
+            marginFromBottom: 90);
       }
-// removing stuednt from present list
-      notPresentStudentsInSelectedClass
-          .removeWhere((s) => s.studentId == student.studentId);
-//updating the valuenotifier with new values
+      // //updating the valuenotifier with new values
       notPresentStudentsInSelectedClassValueNotifier.value =
           notPresentStudentsInSelectedClass;
-      ;
     } catch (e) {
       //updating the valuenotifier with new values
       notPresentStudentsInSelectedClassValueNotifier.value =
@@ -187,11 +216,6 @@ class NonCourseGoogleClassroomStudentPopupState
                                         ? 1.5
                                         : 2.5,
                                     style: BorderStyle.solid)),
-                                // padding: MaterialStateProperty.all<
-                                //         EdgeInsetsGeometry>(
-                                //     EdgeInsets.all(Globals.deviceType == "phone"
-                                //         ? 5.0
-                                //         : 10.0)),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -244,6 +268,7 @@ class NonCourseGoogleClassroomStudentPopupState
     return [
       ElevatedButton(
         style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.kButtonColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
