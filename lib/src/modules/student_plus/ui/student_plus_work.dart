@@ -481,6 +481,15 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   _shareBottomSheetMenu() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+    if (userProfileInfoData[0].studentPlusGoogleDriveFolderId == null ||
+        userProfileInfoData[0].studentPlusGoogleDriveFolderId == "") {
+      Utility.currentScreenSnackBar('User Authentication Error', null);
+
+      return;
+    }
+
     List<ResultSummaryIcons> resultSummaryIconsModalList = [
       ResultSummaryIcons(
         title: 'Sync Presentation',
@@ -496,7 +505,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         ),
       );
     }
-
+    print(widget.studentDetails.studentGooglePresentationUrl);
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,

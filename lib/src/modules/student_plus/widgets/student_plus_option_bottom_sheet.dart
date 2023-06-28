@@ -266,7 +266,9 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
+          print("STATE $state");
           if (state is GoogleSlidesPresentationErrorState) {
+            print(state.errorMsg);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
@@ -280,7 +282,9 @@ class _GradedPlusResultOptionBottomSheetState
               Utility.currentScreenSnackBar(
                   state.errorMsg == 'NO_CONNECTION'
                       ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
+                      : state.errorMsg == "404"
+                          ? "Ahh! Looks like the Google Presentation moved to trash. Try again to create a new Google Presentation."
+                          : "Something Went Wrong. Please Try Again.",
                   null);
             }
           }
@@ -347,6 +351,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
+          print("STATE $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(
@@ -354,6 +359,7 @@ class _GradedPlusResultOptionBottomSheetState
                 null);
           }
           if (state is StudentPlusErrorReceived) {
+            print(state.err);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();

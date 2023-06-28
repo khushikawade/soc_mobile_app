@@ -47,7 +47,7 @@ class UserGoogleProfile {
       await _localDb.addData(_userInformation);
       // await _localDb.close();
 
-      // print("NEW authorizationToken : ${_userInformation.authorizationToken}");
+      print("NEW authorizationToken : ${_userInformation.authorizationToken}");
 
       print("user profile is successfully UDAPTED");
     } catch (e) {
