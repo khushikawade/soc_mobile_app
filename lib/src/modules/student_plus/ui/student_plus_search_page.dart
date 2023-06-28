@@ -288,8 +288,8 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                   } else {
                     StudentPlusUtility.addStudentInfoToLocalDb(
                         studentInfo: list[index]);
-                    _studentPlusBloc.add(
-                        GetStudentPlusDetails(studentId: list[index].id ?? ''));
+                    _studentPlusBloc.add(GetStudentPlusDetails(
+                        studentIdC: list[index].studentIDC ?? ''));
                   }
                 },
                 contentPadding: EdgeInsets.only(left: 20),
