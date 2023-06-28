@@ -109,21 +109,21 @@ class _StaffPageState extends State<StaffPage> {
     return true;
   }
 
-  Future<void> saveUserProfile(String profileData) async {
-    List<String> profile = profileData.split('+');
-    UserInformation _userInformation = UserInformation(
-        userName: profile[0].toString().split('=')[1],
-        userEmail: profile[1].toString().split('=')[1],
-        profilePicture: profile[2].toString().split('=')[1],
-        authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+  // Future<void> saveUserProfile(String profileData) async {
+  //   List<String> profile = profileData.split('+');
+  //   UserInformation _userInformation = UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to local
-    ////UPDATE CURRENT GOOGLE USER PROFILEly
+  //   //Save user profile to local
+  //   ////UPDATE CURRENT GOOGLE USER PROFILEly
 
-    UserGoogleProfile.updateUserProfile(_userInformation);
-  }
+  //   UserGoogleProfile.updateUserProfile(_userInformation);
+  // }
 
   Widget _body(String key) => Stack(children: [
         OfflineBuilder(
@@ -325,14 +325,14 @@ class _StaffPageState extends State<StaffPage> {
       //   //Google Manual Sign in
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
-            'Google Authentication', context, _scaffoldKey, '', actionName);
+            'Google Authentication', context, _scaffoldKey, '', actionName,userType: "Teacher");
         if (value == true) {
           navigatorToScreen(actionName: actionName);
         }
       }
       //Google Single Sign On
       else {
-        User? user = await Authentication.signInWithGoogle();
+        User? user = await Authentication.signInWithGoogle(userType: "Teacher");
 
         if (user != null) {
           if (user.email != null && user.email != '') {

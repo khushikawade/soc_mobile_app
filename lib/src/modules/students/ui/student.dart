@@ -56,7 +56,7 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? isErrorState = false;
-  OcrBloc _ocrBloc = new OcrBloc(); 
+  OcrBloc _ocrBloc = new OcrBloc();
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
   CalenderBloc _scheduleBloc = CalenderBloc();
@@ -130,12 +130,14 @@ class _StudentPageState extends State<StudentPage> {
         // Condition to check SSO login enable or not
         if (Globals.appSetting.enableGoogleSSO != "true") {
           var value = await GoogleLogin.launchURL(
-              'Google Authentication', context, _scaffoldKey, '', "STUDENT+");
+              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+              userType: 'Student');
           if (value == true) {
             navigateToStudentPlus();
           }
         } else {
-          User? user = await Authentication.signInWithGoogle();
+          User? user =
+              await Authentication.signInWithGoogle(userType: "Student");
           if (user != null) {
             if (user.email != null && user.email != '') {
               _ocrBloc.add(AuthorizedUserWithDatabase(
@@ -608,14 +610,13 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-
-    navigateToStudentPlus() async {
-     PlusUtility.updateLogs(
-            activityType: 'GRADED+',
-            userType: 'Student',
-            activityId: '2',
-            description: 'Student+ Accessed(Login)/Login Id:',
-            operationResult: 'Success');
+  navigateToStudentPlus() async {
+    PlusUtility.updateLogs(
+        activityType: 'GRADED+',
+        userType: 'Student',
+        activityId: '2',
+        description: 'Student+ Accessed(Login)/Login Id:',
+        operationResult: 'Success');
 
     pushNewScreen(
       context,
