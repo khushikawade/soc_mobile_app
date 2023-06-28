@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -109,54 +111,7 @@ class _StudentPageState extends State<StudentPage> {
 
     /* --------------------------- Condition to check Student Plus Section -------------------------- */
     if (obj.typeC != null && obj.typeC == 'Student+') {
-      Globals.lastIndex = Globals.controller!.index;
-
-      /* ---- Clear login local data base once because we added classroom scope --- */
-      SharedPreferences clearGoogleLoginLocalDb =
-          await SharedPreferences.getInstance();
-      final clearCacheResult = await clearGoogleLoginLocalDb
-          .getBool('delete_local_login_details1213');
-      if (clearCacheResult != true) {
-        await UserGoogleProfile.clearUserProfile();
-        await clearGoogleLoginLocalDb.setBool(
-            'delete_local_login_details1213', true);
-      }
-      /* ---- Clear login local data base once because we added classroom scope --- */
-
-      List<UserInformation> _profileData =
-          await UserGoogleProfile.getUserProfile();
-
-      if (_profileData.isEmpty) {
-        // Condition to check SSO login enable or not
-        if (Globals.appSetting.enableGoogleSSO != "true") {
-          var value = await GoogleLogin.launchURL(
-              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
-              userType: 'Student');
-          if (value == true) {
-            navigateToStudentPlus();
-          }
-        } else {
-          User? user =
-              await Authentication.signInWithGoogle(userType: "Student");
-          if (user != null) {
-            if (user.email != null && user.email != '') {
-              _ocrBloc.add(AuthorizedUserWithDatabase(
-                  email: user.email, isAuthorizedUser: true));
-              //navigatorToScreen(actionName: actionName);
-            } else {
-              Utility.currentScreenSnackBar(
-                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
-                  null);
-            }
-          }
-        }
-      } else {
-        // GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-        //Creating fresh sessionID
-        Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
-        navigateToStudentPlus();
-      }
-
+      studentPlusLogin();
       return;
     }
     // Schedule Ends
@@ -627,5 +582,95 @@ class _StudentPageState extends State<StudentPage> {
       ),
       withNavBar: false,
     );
+  }
+
+  popupModal({required String message}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message: message,
+                title: "Action Required",
+                confirmationOnPress: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "logout");
+                  await UserGoogleProfile.clearUserProfile();
+                  await GoogleClassroom.clearClassroomCourses();
+                  await Authentication.signOut(context: context);
+                  Utility.clearStudentInfo(tableName: 'student_info');
+                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  // Globals.googleDriveFolderId = null;
+                  PlusUtility.updateLogs(
+                      activityType: 'GRADED+',
+                      userType: 'Teacher',
+                      activityId: '3',
+                      description: 'User profile logout',
+                      operationResult: 'Success');
+                  Navigator.pop(context);
+                  studentPlusLogin();
+                },
+              );
+            }));
+  }
+ 
+
+
+  /* ---------------------------- Function call in case of student Plus --------------------------- */
+  Future studentPlusLogin() async {
+    Globals.lastIndex = Globals.controller!.index;
+
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details28JUNE', true);
+    }
+    /* ---- Clear login local data base once because we added classroom scope --- */
+
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (_profileData.isEmpty) {
+      // Condition to check SSO login enable or not
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+            userType: 'Student');
+        if (value == true) {
+          navigateToStudentPlus();
+        }
+      } else {
+        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            _ocrBloc.add(AuthorizedUserWithDatabase(
+                email: user.email, isAuthorizedUser: true));
+            //navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        }
+      }
+    } else {
+      // GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+      //Creating fresh sessionID
+      // Check user is login in other section or not
+      if (_profileData[0].userType != "Student") {
+        popupModal(message: "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
+        return;
+      }
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      navigateToStudentPlus();
+    }
   }
 }
