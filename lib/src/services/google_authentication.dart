@@ -233,7 +233,7 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   static Future<void> saveUserProfile(
       User user, GoogleSignInAuthentication googleSignInAuthentication) async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
 
     UserInformation _userInformation = UserInformation(
@@ -245,6 +245,7 @@ class Authentication {
         refreshToken: user.refreshToken ?? "");
 
     //Save user profile to locally
+    //UPDATE CURRENT GOOGLE USER PROFILE
     await UserGoogleProfile.updateUserProfile(_userInformation);
     // await _localDb.close();
   }

@@ -44,8 +44,9 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: body(),
+        resizeToAvoidBottomInset: true,
+         body: body(),
+       // bottomNavigationBar:  body(),
       ),
     );
   }
@@ -108,7 +109,8 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                 curve: Curves.ease,
                 duration: Duration(milliseconds: 200),
               ),
-              hideNavigationBar: OcrOverrides.gradedPlusNavBarIsHide.value);
+              hideNavigationBar: OcrOverrides.gradedPlusNavBarIsHide.value,
+              );
         });
   }
 

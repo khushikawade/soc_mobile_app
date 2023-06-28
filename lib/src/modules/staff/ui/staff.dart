@@ -119,10 +119,10 @@ class _StaffPageState extends State<StaffPage> {
             profile[3].toString().split('=')[1].replaceAll('#', ''),
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
+    //Save user profile to local
+    ////UPDATE CURRENT GOOGLE USER PROFILEly
+
+    UserGoogleProfile.updateUserProfile(_userInformation);
   }
 
   Widget _body(String key) => Stack(children: [
