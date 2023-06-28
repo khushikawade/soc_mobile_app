@@ -517,7 +517,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               return StudentPlusOptionBottomSheet(
                   studentDetails: widget.studentDetails,
                   resultSummaryIconsModalList: resultSummaryIconsModalList,
-                  height: MediaQuery.of(context).size.height * 0.25);
+                  height: MediaQuery.of(context).size.height * 0.35);
             },
           );
         });

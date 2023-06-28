@@ -63,7 +63,7 @@ class _StudentPageState extends State<StudentPage> {
   ScrollController _scrollController = ScrollController();
   CalenderBloc _scheduleBloc = CalenderBloc();
 
-  bool isCalenderEentCalledaAready = false;
+  bool isCalenderEventCalledAlready = false;
   @override
   void initState() {
     super.initState();
@@ -109,11 +109,13 @@ class _StudentPageState extends State<StudentPage> {
       return;
     }
 
-    /* --------------------------- Condition to check Student Plus Section -------------------------- */
+    /* --------------------------- START // Condition to check Student Plus Section -------------------------- */
     if (obj.typeC != null && obj.typeC == 'Student+') {
       studentPlusLogin();
       return;
     }
+    /* --------------------------- END -------------------------- */
+
     // Schedule Ends
 
     if (obj.appUrlC != null) {
@@ -550,14 +552,14 @@ class _StudentPageState extends State<StudentPage> {
               )),
     );
 
-    isCalenderEentCalledaAready = false;
+    isCalenderEventCalledAlready = false;
   }
 
   void _scheduleEvent(UserInformation studentProfile) {
-    if (isCalenderEentCalledaAready) {
+    if (isCalenderEventCalledAlready) {
       Utility.currentScreenSnackBar('Please wait..... ', null);
     } else {
-      isCalenderEentCalledaAready = true;
+      isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(
           studentProfile: studentProfile,
           pullToRefresh: false,
