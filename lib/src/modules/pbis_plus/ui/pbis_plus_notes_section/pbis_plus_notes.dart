@@ -46,6 +46,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   FocusNode searchFocusNode = new FocusNode();
+  final ValueNotifier<bool> showErrorInSearch = ValueNotifier<bool>(false);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<String> filterNotifier =
       ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
@@ -54,11 +55,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   // hide animated container
   final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
   final _deBouncer = Debouncer(milliseconds: 500);
-
+  List<PBISPlusStudentNotes>? mainList;
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(index: 0, item: "TTT"));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
 
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -107,7 +108,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               kLabelSpacing: _kLabelSpacing,
               focusNode: searchFocusNode,
               onTap: () {},
-              onItemChanged: () {});
+              onItemChanged: onItemChanged);
         });
   }
 
@@ -132,6 +133,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
           ),
         ]),
         searchBarWidget(),
+        validationMessageWidget(),
         SpacerWidget(_KVertcalSpace / 5),
         ValueListenableBuilder(
             valueListenable: filterNotifier,
@@ -142,20 +144,27 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                     print(state);
                     if (state is PBISPlusStudentNotesSucess) {
                       //---------------------return the filter list to UI-----------//
-                      return _listBuilder(state.studentNotes,
-                          isShimmerLoading: false);
+
+                      if (state.studentNotes.isNotEmpty) {
+                        mainList = state.studentNotes;
+                        return _listBuilder(state.studentNotes,
+                            isShimmerLoading: false);
+                      } else {
+                        return _noDataFoundWidget();
+                      }
                     } else if (state is PBISPlusStudentNotesShimmer) {
                       return _listBuilder(
                           List.generate(10, (index) => PBISPlusStudentNotes()),
                           isShimmerLoading: true);
                     } else if (state is PBISPlusStudentNotesError) {
                       return _noDataFoundWidget();
+                    } else if (state is PBISPlusStudentSearchSucess) {
+                      return _listBuilder(state.sortedList,
+                          isShimmerLoading: false);
                     }
 
                     //Managing shimmer loading in case of initial loading
-                    return _listBuilder(
-                        List.generate(10, (index) => PBISPlusStudentNotes()),
-                        isShimmerLoading: true);
+                    return _noDataFoundWidget();
                   },
                   listener: (context, state) {});
             }),
@@ -202,15 +211,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
 
   Widget _noDataFoundWidget() {
     return Center(
-      child: Container(
-        margin: EdgeInsets.all(8),
-        alignment: Alignment.center,
-        child: Text(
-          "No Data Found",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
-        ),
-      ),
-    );
+        child: RefreshIndicator(
+            color: AppTheme.kButtonColor,
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: NoDataFoundErrorWidget(
+              marginTop: 0,
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              errorMessage: 'No Data Found',
+            )));
   }
 
   Widget listTile(
@@ -254,7 +265,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                         backgroundColor: AppTheme.kButtonColor,
                       )),
                     ),
-                    imageUrl:
+                    imageUrl: obj.iconUrlC ??
                         "https://togbog-user-profiles.s3.ap-south-1.amazonaws.com/U-0026821-1685521725385.jpg",
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     imageBuilder: (context, imageProvider) => CircleAvatar(
@@ -267,7 +278,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               ? localSimmerWidget(height: 20, width: 30)
               : Utility.textWidget(
                   // textAlign: TextAlign.center,
-                  text: obj.studentName ?? '',
+                  text: obj.names!.fullName ?? '',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
@@ -279,10 +290,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               padding: const EdgeInsets.only(right: 12),
               child: Icon(
                 Icons.arrow_forward_ios_rounded,
-                size: Globals.deviceType == "phone" ? 16 : 24,
-                color: Color(0xff000000) == Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
+                size: Globals.deviceType == "phone" ? 12 : 20,
+                color: AppTheme.kPrimaryColor,
               ),
             ),
           ),
@@ -309,7 +318,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(index: 0, item: "TTT"));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
 
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -319,16 +328,43 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
 
   /* --------------- Things Perform on On changes in search bar --------------- */
   onItemChanged(String value) {
+    print(
+        "inside the onn itme change++++++++++++++=================================================== ---");
     _deBouncer.run(() {
-      if (_searchController.text.length >= 3) {
+      if (_searchController.text.length == 0) {
+        PBISPlusBlocInstance.add(
+            GetPBISPlusStudentNotes(oldItemList: mainList));
+        showErrorInSearch.value = false;
+      } else if (_searchController.text.length >= 3) {
+        showErrorInSearch.value = false;
         // PBISPlusBlocInstance.add(
         //     StudentPlusSearchEvent(keyword: _searchController.text));
       } else {
-        // isRecentList.value = true;
-        // showErrorInSearch.value = true;
+        showErrorInSearch.value = true;
       }
       setState(() {});
     });
+  }
+
+  /* ----------- Widget to show error related to maximum three digit ---------- */
+  Widget validationMessageWidget() {
+    return ValueListenableBuilder(
+        valueListenable: showErrorInSearch,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return showErrorInSearch.value == true
+              ? Container(
+                  padding: EdgeInsets.only(left: 24),
+                  child: Utility.textWidget(
+                      text: StudentPlusOverrides.errorMessageOnSearchPage,
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Colors.red)),
+                )
+              : SizedBox.shrink();
+        });
   }
 
 //------------------------------for filter call bottom sheet"-------------------//

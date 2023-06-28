@@ -141,10 +141,28 @@ class GetPBISSkillsUpdateList extends PBISPlusEvent {
 
 // ignore: must_be_immutable
 class GetPBISPlusStudentNotes extends PBISPlusEvent {
-  final String item;
-  int index;
-  GetPBISPlusStudentNotes({required this.item, required this.index});
+  List<PBISPlusStudentNotes>? oldItemList;
+  GetPBISPlusStudentNotes({
+    this.oldItemList,
+  });
 
   @override
-  List<Object> get props => [item, index];
+  List<Object> get props => [
+        oldItemList!,
+      ];
+}
+
+class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
+  final String searchKey;
+  final List<PBISPlusStudentNotes> studentNotes;
+  GetPBISPlusStudentNotesSearchEvent({
+    required this.searchKey,
+    required this.studentNotes,
+  });
+
+  @override
+  List<Object> get props => [
+        searchKey,
+        studentNotes,
+      ];
 }

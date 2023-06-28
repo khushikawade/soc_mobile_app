@@ -191,7 +191,6 @@ class PBISPlusStudentNotesShimmer extends PBISPlusState {
 
 class PBISPlusStudentNotesSucess extends PBISPlusState {
   final List<PBISPlusStudentNotes> studentNotes;
-
   PBISPlusStudentNotesSucess({required this.studentNotes});
   PBISPlusStudentNotesSucess copyWith({final studentNotes}) {
     return PBISPlusStudentNotesSucess(
@@ -225,6 +224,18 @@ class PBISPlusAdditionalBehaviourError extends PBISPlusState {
   PBISPlusAdditionalBehaviourError({
     this.error,
   });
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusStudentSearchSucess extends PBISPlusState {
+  final List<PBISPlusStudentNotes> sortedList;
+  PBISPlusStudentSearchSucess({required this.sortedList});
+  PBISPlusStudentSearchSucess copyWith({final studentNotes}) {
+    return PBISPlusStudentSearchSucess(
+        sortedList: studentNotes ?? this.sortedList);
+  }
+
   @override
   List<Object> get props => [];
 }

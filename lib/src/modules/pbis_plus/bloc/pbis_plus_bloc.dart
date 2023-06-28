@@ -122,6 +122,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
+          getFilteredStudentList(_localData);
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
@@ -187,6 +188,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         // _localDb.close();
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         // sort(obj: _localData);
+        getFilteredStudentList(_localData);
         yield PBISPlusImportRosterSuccess(
             googleClassroomCourseList: _localData);
       }
@@ -568,6 +570,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     if (event is GetPBISPlusStudentNotes) {
       try {
         yield PBISPlusStudentNotesShimmer();
+        if (event.oldItemList != null && event.oldItemList!.length > 0) {
+          PBISPlusStudentNotesSucess(studentNotes: event.oldItemList!);
+        }
+
         LocalDatabase<PBISPlusStudentNotes> _pbisPlusStudentNotesDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusStudentNotesDB);
         List<PBISPlusStudentNotes>? _pbisPlusStudentNoesDataList =
@@ -577,7 +583,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (_pbisPlusStudentNoesDataList.isEmpty) {
           list = PBISPlusStudentNotesLocal.PBISPlusLocalStudentNoteslist.map(
               (item) => PBISPlusStudentNotes(
-                    studentName: item.studentName,
+                    names: item.names,
                     iconUrlC: item.iconUrlC,
                     date: item.date,
                     notesComments: item.notesComments,
@@ -595,7 +601,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         // for (var item in check) {
         for (var data in check) {
           print('----------------------------');
-          print('StudentName: ${data.studentName}');
+          print('StudentName: ${data.names}');
           print('date: ${data.date}');
           print('Icon URL: ${data.iconUrlC}');
           print('Notes Comments: ${data.notesComments}');
@@ -612,6 +618,17 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusStudentNotesError(error: "No data found");
       }
     }
+
+    if (event is GetPBISPlusStudentNotesSearchEvent) {
+      try {
+        if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
+          // PBISPlusStudentSearchSucess(sortedList: );
+        }
+      } catch (e) {
+        yield PBISPlusStudentNotesError(error: "No data found");
+      }
+    }
+
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
@@ -1336,6 +1353,65 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  //------------FILTER THE STUDENT LIST FROM THE ROASTER DATA SAVE TO LOCAL DB------For NotesPage----///
+  Future getFilteredStudentList(
+      List<ClassroomCourse> allClassroomCourses) async {
+    try {
+      final uniqueStudents = <ClassroomStudents>[];
+      for (final course in allClassroomCourses) {
+        for (final student in course?.students ?? []) {
+          final isStudentUnique =
+              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
+          if (isStudentUnique) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+
+      uniqueStudents.sort((a, b) {
+        return a.profile!.name!.fullName!
+            .toLowerCase()
+            .compareTo(b.profile!.name!.fullName!.toLowerCase());
+      });
+
+      uniqueStudents.forEach((student) {
+        print('ID: ${student.profile!.id}');
+        print('Name: ${student.profile!.name!.fullName}');
+        print('Email: ${student.profile!.emailAddress}');
+        print('Photo URL: ${student.profile!.photoUrl}');
+        // Access and print other properties as needed
+        print('---');
+      });
+
+      LocalDatabase<PBISPlusStudentNotes> _pbisPlusStudentNotesDB =
+          LocalDatabase(PBISPlusOverrides.pbisPlusStudentNotesDB);
+      List<PBISPlusStudentNotes>? _pbisPlusStudentNotesDataList =
+          await _pbisPlusStudentNotesDB.getData();
+      var list;
+
+      list = uniqueStudents
+          .map((item) => PBISPlusStudentNotes(
+                names: StudentName(
+                    familyName: item.profile!.name!.familyName!,
+                    fullName: item.profile!.name!.fullName!,
+                    givenName: item.profile!.name!.givenName!),
+                iconUrlC: item.profile?.photoUrl!,
+                date: "25/june/2023",
+                notesComments:
+                    "ioehougfeiugewigwiufieuiciywuvicyvewiycviycviywveyveyvcyiwevcywdvcyuvwyvc",
+              ))
+          .toList();
+      await _pbisPlusStudentNotesDB.clear();
+      list.forEach((element) async {
+        await _pbisPlusStudentNotesDB
+            .addData(element); // Pass 'element' instead of 'list'
+      });
+    } catch (e) {
+      throw (e);
     }
   }
 

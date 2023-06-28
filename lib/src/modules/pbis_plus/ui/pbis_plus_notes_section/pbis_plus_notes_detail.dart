@@ -55,7 +55,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(index: 0, item: "TTT"));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
 
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -118,7 +118,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           Padding(
             padding: EdgeInsets.only(left: 4),
             child: FittedBox(
-              child: Text("${widget.item.studentName}'s" + " Notes",
+              child: Text("${widget.item.names!.fullName!}'s" + " Notes ",
                   textAlign: TextAlign.left,
                   style: Theme.of(context)
                       .textTheme
@@ -134,12 +134,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
               return BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
-                    print(state);
                     if (state is PBISPlusStudentNotesSucess) {
                       //---------------------return the filter list to UI-----------//
                       return _listBuilder(state.studentNotes,
                           isShimmerLoading: false);
-                    } else if (state is PBISPlusStudentNotesShimmer) {
+                    } else if (state is PBISPlusStudentNotesShimmer ||
+                        state is PBISPlusInitial) {
                       return _listBuilder(
                           List.generate(10, (index) => PBISPlusStudentNotes()),
                           isShimmerLoading: true);
@@ -148,9 +148,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                     }
 
                     //Managing shimmer loading in case of initial loading
-                    return _listBuilder(
-                        List.generate(10, (index) => PBISPlusStudentNotes()),
-                        isShimmerLoading: true);
+                    return _noDataFoundWidget();
                   },
                   listener: (context, state) {});
             }),
@@ -291,8 +289,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(index: 0, item: "TTT"));
-
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));

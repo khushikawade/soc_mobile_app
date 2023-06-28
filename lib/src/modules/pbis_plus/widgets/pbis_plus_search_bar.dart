@@ -152,6 +152,7 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
             width: 20,
           )),
       onTap: widget.onTap,
+      onChanged: widget.onItemChanged,
     );
   }
 }
