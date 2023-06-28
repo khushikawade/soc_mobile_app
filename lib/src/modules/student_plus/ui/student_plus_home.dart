@@ -1,17 +1,22 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusHome extends StatefulWidget {
   final StudentPlusDetailsModel studentPlusStudentInfo;
   final int index;
+  final String sectionType;
   const StudentPlusHome(
-      {Key? key, required this.studentPlusStudentInfo, required this.index})
+      {Key? key,
+      required this.studentPlusStudentInfo,
+      required this.index,
+      required this.sectionType})
       : super(key: key);
 
   @override
@@ -24,7 +29,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   // persistent tab controller use for navigate
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
-  // final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
 
   // list of bottom navigation bar icons
   List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
@@ -34,6 +39,10 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   void initState() {
     _controller.index = widget.index;
+    // Only call in case of Student Section
+    if (widget.sectionType == "Student") {
+      _studentPlusBloc.add(StudentPlusSearchByEmail());
+    }
     //_studentPlusBloc.add(GetStudentPlusDetails(studentId: widget.studentId));
     super.initState();
   }
@@ -45,7 +54,20 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: body());
+    return Scaffold(
+        body:widget.sectionType == "Student"
+            ? BlocBuilder<StudentPlusBloc, StudentPlusState>(
+                bloc: _studentPlusBloc,
+                builder: (context, state) {
+                  if (state is StudentPlusGetDetailsLoading) {
+                    return loaderWidget();
+                  } else if (state is StudentPlusSearchByEmailSuccess) {
+                    return body(studentPlusDetailsModel: state.obj);
+                  }
+                  return Container();
+                },
+              )
+            : body());
   }
 
   // widget  to show loader while fetching information
@@ -63,7 +85,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   }
 
   // widget show bottom navbar with different list
-  Widget body() {
+  Widget body({StudentPlusDetailsModel? studentPlusDetailsModel}) {
     return ValueListenableBuilder(
         valueListenable: refreshNavBar,
         child: Container(),
@@ -72,9 +94,12 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             context,
             controller: _controller,
             screens: StudentPlusBottomNavBar.buildScreens(
-              studentInfo: widget.studentPlusStudentInfo,
-              // index: widget.index
-            ),
+                studentInfo: widget.sectionType == "Student"
+                    ? studentPlusDetailsModel!
+                    : widget.studentPlusStudentInfo,
+                sectionType: widget.sectionType
+                // index: widget.index
+                ),
 
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
@@ -95,7 +120,9 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
               }
               // refreshNavBar.value = i;
             },
-            items: StudentPlusBottomNavBar.navBarsItems(context: context),
+            items: StudentPlusBottomNavBar.navBarsItems(
+                context: context,
+                sectionType: widget.sectionType),
             confineInSafeArea: true,
             backgroundColor: Theme.of(context).backgroundColor,
             handleAndroidBackButtonPress: true,
