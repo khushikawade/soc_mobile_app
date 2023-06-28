@@ -318,7 +318,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<StudentAssessmentInfo> assessmentDataList =
             List.unmodifiable(await event.studentInfoDb.getData());
-            
+
         for (var i = 0; i < assessmentDataList.length; i++) {
           if ((assessmentDataList[i].assessmentImage == null ||
                   assessmentDataList[i].assessmentImage!.isEmpty) &&
