@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -109,21 +111,21 @@ class _StaffPageState extends State<StaffPage> {
     return true;
   }
 
-  Future<void> saveUserProfile(String profileData) async {
-    List<String> profile = profileData.split('+');
-    UserInformation _userInformation = UserInformation(
-        userName: profile[0].toString().split('=')[1],
-        userEmail: profile[1].toString().split('=')[1],
-        profilePicture: profile[2].toString().split('=')[1],
-        authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+  // Future<void> saveUserProfile(String profileData) async {
+  //   List<String> profile = profileData.split('+');
+  //   UserInformation _userInformation = UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to local
-    ////UPDATE CURRENT GOOGLE USER PROFILEly
+  //   //Save user profile to local
+  //   ////UPDATE CURRENT GOOGLE USER PROFILEly
 
-    UserGoogleProfile.updateUserProfile(_userInformation);
-  }
+  //   UserGoogleProfile.updateUserProfile(_userInformation);
+  // }
 
   Widget _body(String key) => Stack(children: [
         OfflineBuilder(
@@ -308,12 +310,12 @@ class _StaffPageState extends State<StaffPage> {
     /* ---- Clear login local data base once because we added classroom scope --- */
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
-    final clearCacheResult =
-        await clearGoogleLoginLocalDb.getBool('delete_local_login_details1213');
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
       await clearGoogleLoginLocalDb.setBool(
-          'delete_local_login_details1213', true);
+          'delete_local_login_details28JUNE', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -325,14 +327,15 @@ class _StaffPageState extends State<StaffPage> {
       //   //Google Manual Sign in
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
-            'Google Authentication', context, _scaffoldKey, '', actionName);
+            'Google Authentication', context, _scaffoldKey, '', actionName,
+            userType: "Teacher");
         if (value == true) {
           navigatorToScreen(actionName: actionName);
         }
       }
       //Google Single Sign On
       else {
-        User? user = await Authentication.signInWithGoogle();
+        User? user = await Authentication.signInWithGoogle(userType: "Teacher");
 
         if (user != null) {
           if (user.email != null && user.email != '') {
@@ -347,6 +350,12 @@ class _StaffPageState extends State<StaffPage> {
         }
       }
     } else {
+      if (_profileData[0].userType != "Teacher") {
+        popupModal(
+            message:
+                "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
+        return;
+      }
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
       //Creating fresh sessionID
@@ -520,5 +529,40 @@ class _StaffPageState extends State<StaffPage> {
                     .toList(),
               ));
         });
+  }
+
+  // popUp in case of user login in another section
+
+  popupModal({required String message}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message: message,
+                title: "Action Required",
+                confirmationOnPress: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "logout");
+                  await UserGoogleProfile.clearUserProfile();
+                  await GoogleClassroom.clearClassroomCourses();
+                  await Authentication.signOut(context: context);
+                  Utility.clearStudentInfo(tableName: 'student_info');
+                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  // Globals.googleDriveFolderId = null;
+                  PlusUtility.updateLogs(
+                      activityType: 'GRADED+',
+                      userType: 'Teacher',
+                      activityId: '3',
+                      description: 'User profile logout',
+                      operationResult: 'Success');
+                  Navigator.pop(context);
+                  staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
+                },
+              );
+            }));
   }
 }
