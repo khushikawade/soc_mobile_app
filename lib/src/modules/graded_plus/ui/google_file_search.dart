@@ -1,8 +1,10 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -26,6 +28,7 @@ import '../../../services/utility.dart';
 import '../../google_classroom/services/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/model/recent_google_file.dart';
+import '../widgets/graded_plus_result_summary_action_bottom_sheet.dart';
 
 class GoogleFileSearchPage extends StatefulWidget {
   final ScrollController? scrollController;
@@ -283,80 +286,81 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
           ],
         ),
         child: ListTile(
-            leading: Container(
-              padding: EdgeInsets.only(top: 8),
-              //color: Colors.amber,
-              child: Icon(
-                  IconData(
-                      items[index].assessmentType == 'Multiple Choice'
-                          ? 0xe833
-                          : 0xe87c,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == 'phone'
-                      ? (items[index].assessmentType == 'Multiple Choice'
-                          ? 30
-                          : 28)
-                      : 38,
-                  color: AppTheme.kButtonColor),
-            ),
-            minLeadingWidth: 0,
-            title: TranslationWidget(
-              message: (items[index].title != null && items[index].title != ''
-                  ? '${items[index].title} '
-                  : 'Unknown'),
-              toLanguage: Globals.selectedLanguage,
-              fromLanguage: "en",
-              builder: (translatedMessage) => Text(
-                translatedMessage.toString(),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant),
-              ),
-            ),
-            subtitle: Utility.textWidget(
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(color: Colors.grey.shade500),
-                text: items[index].modifiedDate != null
-                    ? Utility.convertTimestampToDateFormat(
-                        DateTime.parse(items[index].modifiedDate!), "MM/dd/yy")
-                    : ""),
-            trailing: GestureDetector(
-              onTap: () {
-                PlusUtility.updateLogs(
-                    activityType: 'GRADED+',
-                    userType: 'Teacher',
-                    activityId: '13',
-                    sessionId: items[index].sessionId != ''
-                        ? items[index].sessionId
-                        : '',
-                    description:
-                        'Teacher tap on Share Button on assessment summery page',
-                    operationResult: 'Success');
-
-                if (items[index].webContentLink != null &&
-                    items[index].webContentLink != '') {
-                  Share.share(items[index].webContentLink!);
-                }
-              },
-              child: Icon(
-                IconData(0xe876,
+          leading: Container(
+            padding: EdgeInsets.only(top: 8),
+            //color: Colors.amber,
+            child: Icon(
+                IconData(
+                    items[index].assessmentType == 'Multiple Choice'
+                        ? 0xe833
+                        : 0xe87c,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xff111C20)
-                    : Color(0xffF7F8F9),
-                size: Globals.deviceType == 'phone' ? 28 : 38,
-              ),
+                size: Globals.deviceType == 'phone'
+                    ? (items[index].assessmentType == 'Multiple Choice'
+                        ? 30
+                        : 28)
+                    : 38,
+                color: AppTheme.kButtonColor),
+          ),
+          minLeadingWidth: 0,
+          title: TranslationWidget(
+            message: (items[index].title != null && items[index].title != ''
+                ? '${items[index].title} '
+                : 'Unknown'),
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant),
             ),
-            onTap: () async {
-              List<dynamic> recentDetailDbList =
-                  await getListData(Strings.googleRecentSearch);
-              List<dynamic> reversedRecentDetailDbList =
-                  new List.from(recentDetailDbList.reversed);
+          ),
+          // subtitle: Utility.textWidget(
+          //     context: context,
+          //     textTheme: Theme.of(context)
+          //         .textTheme
+          //         .subtitle2!
+          //         .copyWith(color: Colors.grey.shade500),
+          //     text: items[index].modifiedDate != null
+          //         ? Utility.convertTimestampToDateFormat(
+          //             DateTime.parse(items[index].modifiedDate!), "MM/dd/yy")
+          //         : ""),
+          // trailing: GestureDetector(
+          //   onTap: () {
+          //     PlusUtility.updateLogs(
+          //         activityType: 'GRADED+',
+          //         userType: 'Teacher',
+          //         activityId: '13',
+          //         sessionId: items[index].sessionId != ''
+          //             ? items[index].sessionId
+          //             : '',
+          //         description:
+          //             'Teacher tap on Share Button on assessment summery page',
+          //         operationResult: 'Success');
 
+          //     if (items[index].webContentLink != null &&
+          //         items[index].webContentLink != '') {
+          //       Share.share(items[index].webContentLink!);
+          //     }
+          //   },
+          //   child: Icon(
+          //     IconData(0xe876,
+          //         fontFamily: Overrides.kFontFam,
+          //         fontPackage: Overrides.kFontPkg),
+          //     color: Color(0xff000000) != Theme.of(context).backgroundColor
+          //         ? Color(0xff111C20)
+          //         : Color(0xffF7F8F9),
+          //     size: Globals.deviceType == 'phone' ? 28 : 38,
+          //   ),
+          // ),
+          onTap: () async {
+            List<dynamic> recentDetailDbList =
+                await getListData(Strings.googleRecentSearch);
+            List<dynamic> reversedRecentDetailDbList =
+                new List.from(recentDetailDbList.reversed);
+
+            if (Overrides.STANDALONE_GRADED_APP) {
               GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses();
 
@@ -368,27 +372,61 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                           reversedRecentDetailDbList[index].classroomCourseId,
                       courseWorkId: reversedRecentDetailDbList[index]
                           .classroomCourseWorkId);
+            } else {
+              GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp =
+                  ClassroomCourse();
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => GradedPlusResultsSummary(
-                          createdAsPremium: reversedRecentDetailDbList[index]
-                                      .isCreatedAsPremium
-                                      .toLowerCase() ==
-                                  'true'
-                              ? true
-                              : false as bool?,
-                          obj: reversedRecentDetailDbList[index],
-                          assessmentName:
-                              reversedRecentDetailDbList[index].title!,
-                          shareLink:
-                              reversedRecentDetailDbList[index].webContentLink,
-                          fileId: reversedRecentDetailDbList[index].fileId,
-                          assessmentDetailPage: true,
-                        )),
-              );
-            }),
+              GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp =
+                  await ClassroomCourse(
+                      assessmentCId:
+                          reversedRecentDetailDbList[index].assessmentId,
+                      id: reversedRecentDetailDbList[index].classroomCourseId,
+                      courseWorkId: reversedRecentDetailDbList[index]
+                          .classroomCourseWorkId,
+                      courseWorkURL: reversedRecentDetailDbList[index]
+                          .classroomCourseWorkUrl);
+            }
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => GradedPlusResultsSummary(
+                        createdAsPremium: reversedRecentDetailDbList[index]
+                                    .isCreatedAsPremium
+                                    .toLowerCase() ==
+                                'true'
+                            ? true
+                            : false as bool?,
+                        obj: reversedRecentDetailDbList[index],
+                        assessmentName:
+                            reversedRecentDetailDbList[index].title!,
+                        shareLink:
+                            reversedRecentDetailDbList[index].webContentLink,
+                        fileId: reversedRecentDetailDbList[index].fileId,
+                        assessmentDetailPage: true,
+                      )),
+            );
+          },
+
+          trailing: IconButton(
+            icon: Icon(
+                IconData(0xe868,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor),
+            onPressed: () async {
+              List<dynamic> recentDetailDbList =
+                  await getListData(Strings.googleRecentSearch);
+
+              List<dynamic> reversedRecentDetailDbList =
+                  new List.from(recentDetailDbList.reversed);
+              _saveAndShareBottomSheetMenu(
+                  assessment: reversedRecentDetailDbList[index]);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -507,7 +545,18 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                         data.modifiedDate!),
                                                     "MM/dd/yy")
                                             : ""),
-                                    trailing: trailingRowBuilder(element: data),
+                                    // trailing: trailingRowBuilder(element: data),
+                                    trailing: IconButton(
+                                      icon: Icon(
+                                          IconData(0xe868,
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          color: AppTheme.kButtonColor),
+                                      onPressed: () async {
+                                        _saveAndShareBottomSheetMenu(
+                                            assessment: data);
+                                      },
+                                    ),
 
                                     //  GestureDetector(
                                     //   onTap: () {
@@ -578,7 +627,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                   classroomCourseId:
                                                       data.classroomCourseId,
                                                   classroomCourseWorkId: data
-                                                      .classroomCourseWorkId);
+                                                      .classroomCourseWorkId,
+                                                  classroomCourseWorkUrl: data
+                                                      .classroomCourseWorkUrl);
 
                                           addtoDataBase(recentitem);
                                         }
@@ -877,53 +928,93 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
             ));
   }
 
-  Widget trailingRowBuilder({required HistoryAssessment element}) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      if (element.presentationLink != null &&
-          element.presentationLink!.isNotEmpty)
-        GestureDetector(
-            onTap: () {
-              PlusUtility.updateLogs(
-                  activityType: 'GRADED+',
-                  userType: 'Teacher',
-                  activityId: '31',
-                  sessionId: element.sessionId != null ? element.sessionId : '',
-                  description: 'Slide Icon Pressed - Google Search List',
-                  operationResult: 'Success');
+  // Widget trailingRowBuilder({required HistoryAssessment element}) {
+  //   return Row(mainAxisSize: MainAxisSize.min, children: [
+  //     if (element.presentationLink != null &&
+  //         element.presentationLink!.isNotEmpty)
+  //       GestureDetector(
+  //           onTap: () {
+  //             PlusUtility.updateLogs(
+  //                 activityType: 'GRADED+',
+  //                 userType: 'Teacher',
+  //                 activityId: '31',
+  //                 sessionId: element.sessionId != null ? element.sessionId : '',
+  //                 description: 'Slide Icon Pressed - Google Search List',
+  //                 operationResult: 'Success');
 
-              Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+  //             Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+  //           },
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(5.0),
+  //             child: SvgPicture.asset(
+  //               'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+  //               width: Globals.deviceType == "phone" ? 28 : 40,
+  //               height: Globals.deviceType == "phone" ? 28 : 40,
+  //             ),
+  //           )),
+  //     GestureDetector(
+  //       onTap: () {
+  //         PlusUtility.updateLogs(
+  //             activityType: 'GRADED+',
+  //             userType: 'Teacher',
+  //             activityId: '13',
+  //             sessionId: element.sessionId != null ? element.sessionId : '',
+  //             description: 'Teacher tap on Share Button - Google Search List',
+  //             operationResult: 'Success');
+
+  //         if (element.webContentLink != null && element.webContentLink != '') {
+  //           Share.share(element.webContentLink!);
+  //         }
+  //       },
+  //       child: Icon(
+  //         IconData(0xe876,
+  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  //         color: Color(0xff000000) != Theme.of(context).backgroundColor
+  //             ? Color(0xff111C20)
+  //             : Color(0xffF7F8F9),
+  //         size: Globals.deviceType == 'phone' ? 28 : 38,
+  //       ),
+  //     ),
+  //   ]);
+  // }
+
+  _saveAndShareBottomSheetMenu({required HistoryAssessment assessment}) {
+    showModalBottomSheet(
+
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return GradedPlusResultOptionBottomSheet(
+                assessmentDetailPage: false,
+                height: MediaQuery.of(context).size.height * 0.45,
+                //   getURlForResultSummaryIcons: getURlForBottomIcons,
+                // resultSummaryIconsOnTap: bottomIconsOnTap,
+                resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
+                    ? ResultSummaryIcons
+                        .standAloneHistoryResultSummaryIconsModalList
+                    : ResultSummaryIcons.resultSummaryIconsModalList,
+                // classroomUrlStatus: ValueNotifier<bool>(true),
+                allUrls: {
+                  'Share': assessment.webContentLink ?? '',
+                  //  'Drive': Globals.googleDriveFolderPath ?? '',
+                  'History': 'History',
+                  'Dashboard': 'Dashboard',
+                  'Slides': assessment.presentationLink ?? '',
+                  'Sheets': assessment.webContentLink ?? '',
+                  'Class': assessment.classroomCourseWorkUrl ?? '',
+                },
+              );
             },
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: SvgPicture.asset(
-                'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-                width: Globals.deviceType == "phone" ? 28 : 40,
-                height: Globals.deviceType == "phone" ? 28 : 40,
-              ),
-            )),
-      GestureDetector(
-        onTap: () {
-          PlusUtility.updateLogs(
-              activityType: 'GRADED+',
-              userType: 'Teacher',
-              activityId: '13',
-              sessionId: element.sessionId != null ? element.sessionId : '',
-              description: 'Teacher tap on Share Button - Google Search List',
-              operationResult: 'Success');
-
-          if (element.webContentLink != null && element.webContentLink != '') {
-            Share.share(element.webContentLink!);
-          }
-        },
-        child: Icon(
-          IconData(0xe876,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xff111C20)
-              : Color(0xffF7F8F9),
-          size: Globals.deviceType == 'phone' ? 28 : 38,
-        ),
-      ),
-    ]);
+          );
+        });
   }
 }

@@ -482,8 +482,7 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkId: list[index].classroomCourseWorkId,
                       courseWorkURL: list[index].classroomCourseWorkUrl);
             }
-print(GoogleClassroomOverrides
-                      .historyStudentResultSummaryForStandardApp.courseWorkURL);
+
             Navigator.push(
               context,
               MaterialPageRoute(
