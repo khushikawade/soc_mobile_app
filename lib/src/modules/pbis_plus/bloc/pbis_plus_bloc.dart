@@ -370,6 +370,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
     if (event is PBISPlusResetInteractions) {
       try {
+        //Save the event records in separate list to make sure not to change on runtime.
         List<ClassroomCourse> LocalSelectedRecords =
             List<ClassroomCourse>.from(event.selectedRecords);
 
