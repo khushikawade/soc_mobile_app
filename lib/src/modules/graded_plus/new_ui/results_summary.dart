@@ -2035,9 +2035,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Class': GoogleClassroomOverrides
-                          .studentAssessmentAndClassroomObj.courseWorkURL ??
-                      '',
+
+                  'Class': widget.assessmentDetailPage == true
+                      ? GoogleClassroomOverrides
+                              .recentStudentResultSummaryForStandardApp
+                              .courseWorkURL ??
+                          ''
+                      : GoogleClassroomOverrides
+                              .historyStudentResultSummaryForStandardApp
+                              .courseWorkURL ??
+                          '',
                 },
               );
             },

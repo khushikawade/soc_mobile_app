@@ -496,7 +496,12 @@ class GoogleClassroomBloc
 
           //---------------------------------------------------------------------------------------------------------------------------------------------
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
+
+print("1111111111111111111111111111111");
+
+
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
+
               if (event.isFromHistoryAssessmentScanMore == true) {
                 GoogleClassroomOverrides
                     .historyStudentResultSummaryForStandardApp
