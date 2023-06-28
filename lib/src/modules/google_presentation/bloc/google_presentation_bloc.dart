@@ -346,8 +346,6 @@ class GoogleSlidesPresentationBloc
           )
         ]);
 
-        print(countGooglePresentationSlideAndTrashStatus);
-
 /*--------------------------------------- If Google Presentation  is not Available ------------------------------------------------*/
 
         //if the api response return (404) the resource you are trying to access doesn't exist
@@ -357,8 +355,7 @@ class GoogleSlidesPresentationBloc
             (countGooglePresentationSlideAndTrashStatus[1][0] == true &&
                 countGooglePresentationSlideAndTrashStatus[1][1] == true)) {
 //   //if the api response return (404) the resource you are trying to access doesn't e
-          yield GoogleSlidesPresentationErrorState(
-              errorMsg: countGooglePresentationSlideAndTrashStatus[1][1]);
+          yield GoogleSlidesPresentationErrorState(errorMsg: "404");
         }
 
         /*--------------------------------------- If Google Presentation  is Available ------------------------------------------------*/
