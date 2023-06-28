@@ -113,12 +113,12 @@ class _GradedPlusSearchScreenPageState
       // Overrides.STANDALONE_GRADED_APP != true
       )
       ? [
-          'Google Sheet',
+          'Google Sheets',
           'Google Slides',
           'Google Classroom',
           '${Globals.schoolDbnC} Dashboard'
         ]
-      : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
+      : ['Google Sheets', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
   List<SubjectDetailList> searchList = [];
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
       LocalDatabase('student_info');
@@ -615,7 +615,8 @@ class _GradedPlusSearchScreenPageState
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is GoogleSlideCreated) {
@@ -652,7 +653,8 @@ class _GradedPlusSearchScreenPageState
                     : "Graded+",
                 name: Globals.assessmentName,
                 folderId:
-                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? ''));
+                    userProfileInfoData[0].gradedPlusGoogleDriveFolderId ??
+                        ''));
           }
 
           if (state is ShareLinkReceived) {
@@ -851,13 +853,13 @@ class _GradedPlusSearchScreenPageState
         Globals.googleExcelSheetId?.isEmpty == true) {
       // Check if question image exists
       if (widget.gradedPlusQueImage == null) {
-          List<UserInformation> userProfileInfoData =
-                await UserGoogleProfile.getUserProfile();
+        List<UserInformation> userProfileInfoData =
+            await UserGoogleProfile.getUserProfile();
         googleBloc.add(CreateExcelSheetToDrive(
           description:
               widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
           name: Globals.assessmentName,
-          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId??'',
+          folderId: userProfileInfoData[0].gradedPlusGoogleDriveFolderId ?? '',
         ));
       } else {
         googleBloc.add(QuestionImgToAwsBucket(

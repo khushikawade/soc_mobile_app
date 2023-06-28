@@ -64,7 +64,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               : Color(0xff111C20),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-      height: widget.height,
+      height: pageValue == 0 ? widget.height : widget.height * 1.5,
       // MediaQuery.of(context).orientation == Orientation.landscape
       //     ? MediaQuery.of(context).size.height * 0.82
       //     : Globals.deviceType == "phone"
