@@ -102,7 +102,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               },
               hintText: StudentPlusOverrides.searchHintText,
               isMainPage: false,
-              autoFocus: true,
+              autoFocus: false,
               controller: _searchController,
               kLabelSpacing: _kLabelSpacing,
               focusNode: searchFocusNode,
@@ -228,7 +228,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                 : Theme.of(context).colorScheme.background),
         child: ListTile(
           visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-          horizontalTitleGap: 20,
+          horizontalTitleGap: 24,
           minVerticalPadding: 20,
           contentPadding:
               EdgeInsets.only(top: 12.0, bottom: 12.0, left: 12, right: 16),
@@ -272,15 +272,18 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                   textTheme: Theme.of(context)
                       .textTheme
                       .headline2!
-                      .copyWith(fontWeight: FontWeight.bold)),
+                      .copyWith(fontWeight: FontWeight.w500)),
           trailing: ShimmerLoading(
             isLoading: isShimmerLoading,
-            child: Icon(
-              IconData(0xe09b,
-                  fontFamily: 'MaterialIcons', matchTextDirection: true),
-              color: Color(0xff000000) == Theme.of(context).backgroundColor
-                  ? Color(0xffF7F8F9)
-                  : Color(0xff111C20),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: Globals.deviceType == "phone" ? 16 : 24,
+                color: Color(0xff000000) == Theme.of(context).backgroundColor
+                    ? Color(0xffF7F8F9)
+                    : Color(0xff111C20),
+              ),
             ),
           ),
           onTap: (() {

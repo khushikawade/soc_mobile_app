@@ -70,97 +70,115 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   @override
   Widget build(BuildContext context) {
-    final AddNotes = Container(
-      color: Color(0xffF7F8F9),
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        ValueListenableBuilder(
-            valueListenable: maxLine,
-            builder: (context, value, _) => Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: 16, right: 16), // Adjust the padding as needed
-                    child: TextFormField(
-                      minLines: 1,
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                      controller: noteController,
-                      onChanged: (value) {
-                        isexpanded.value = true;
-                        if (noteController.text.isEmpty) {
-                          isexpanded.value = false;
-                        }
-                      },
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        filled: true,
-                        fillColor: Color(0xffF7F8F9),
-                        hintText: 'Add note',
-                        hintStyle: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(
-                                fontSize: 14,
-                                color: Color(0xff111C20),
-                                fontWeight: FontWeight.w400),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffF7F8F9),
-                          ),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffF7F8F9),
-                          ),
-                        ),
-                      ),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          fontSize: 14,
-                          color: Color(0xff111C20),
-                          fontWeight: FontWeight.w400),
-
-                      // validator: (value) {
-                      //   if (value == null || value == "")
-                      //     return "Please enter event title.";
-                      //   return null;
-                      // },
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                    )))),
-        ValueListenableBuilder(
-          valueListenable: isexpanded,
-          builder: (context, value, _) => isexpanded.value
-              ?
-              //  Container(
-              //     margin: EdgeInsets .symmetric(horizontal: 12, vertical: 8),
-              //     alignment: Alignment.bottomRight,
-              //     child:
-              Positioned(
-                  right: 0,
-                  child: CircularCustomButton(
-                    size: Size(MediaQuery.of(context).size.width * 0.29,
-                        MediaQuery.of(context).size.width / 10),
-                    borderColor: AppTheme.kButtonColor,
-                    textColor:
+    final AddNotes = Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            height: 0.1,
+            width: double.infinity,
+            color: Color(0xff000000) != Theme.of(context).backgroundColor
+                ? Color(0xff111C20)
+                : Color(0xffF7F8F9),
+          ),
+          ValueListenableBuilder(
+              valueListenable: maxLine,
+              builder: (context, value, _) => TextFormField(
+                    minLines: 1,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    controller: noteController,
+                    onChanged: (value) {
+                      isexpanded.value = true;
+                      if (noteController.text.isEmpty) {
+                        isexpanded.value = false;
+                      }
+                    },
+                    cursorColor:
                         Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
-                    text: "Done",
-                    onClick: () {
-                      isexpanded.value = false;
-                      noteController.clear();
-                      // Navigator.pop(context);
-                    },
-                    backgroundColor: AppTheme.kButtonColor,
-                    isBusy: false,
-                    buttonRadius: 64,
-                  ),
-                )
-              : SizedBox.shrink(),
-        )
-      ]),
-    );
+                    decoration: InputDecoration(
+                      // contentPadding:
+                      //     EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      filled: true,
+                      fillColor:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      // Color(0xffF7F8F9),
+                      hintText: 'Add note',
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(
+                              fontSize: 14,
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              fontWeight: FontWeight.w400),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
+                      ),
+
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
+                      ),
+                    ),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontSize: 14,
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                        fontWeight: FontWeight.w400),
+
+                    // validator: (value) {
+                    //   if (value == null || value == "")
+                    //     return "Please enter event title.";
+                    //   return null;
+                    // },
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.next,
+                  )),
+          ValueListenableBuilder(
+            valueListenable: isexpanded,
+            builder: (context, value, _) => isexpanded.value
+                ?
+                //  Container(
+                //     margin: EdgeInsets .symmetric(horizontal: 12, vertical: 8),
+                //     alignment: Alignment.bottomRight,
+                //     child:
+
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: FittedBox(
+                      child: CircularCustomButton(
+                        size: Size(MediaQuery.of(context).size.width * 0.26,
+                            MediaQuery.of(context).size.width / 10),
+                        borderColor: AppTheme.kButtonColor,
+                        textColor: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                        text: "Done",
+                        onClick: () {
+                          isexpanded.value = false;
+                          noteController.clear();
+                          // Navigator.pop(context);
+                        },
+                        backgroundColor: AppTheme.kButtonColor,
+                        isBusy: false,
+                        buttonRadius: 64,
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
+          )
+        ]);
 
     final ActionInteractionButtonsRowWise = GridView.builder(
       shrinkWrap: true,
@@ -215,7 +233,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
-            color: AppTheme.kButtonColor,
+            // color: AppTheme.kButtonColor,
             child: Column(
               children: [
                 SpacerWidget((widget.isFromStudentPlus == true &&
@@ -286,7 +304,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                               : MediaQuery.of(context).size.height * 0.4
                           : (widget.constraint <= 115)
                               ? isexpanded.value
-                                  ? MediaQuery.of(context).size.height * 0.61
+                                  ? MediaQuery.of(context).size.height * 0.58
                                   : MediaQuery.of(context).size.height * 0.51
                               : isexpanded.value
                                   ? MediaQuery.of(context).size.height * 0.57
@@ -308,8 +326,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           ? EdgeInsets.fromLTRB(16, 40, 16, 20)
                           : EdgeInsets.only(top: 45),
                       decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(6),
                         boxShadow: [
                           Color(0xff000000) == Theme.of(context).backgroundColor
                               ? widget.isFromDashboardPage == false
@@ -326,9 +343,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                       offset: Offset(0, 2),
                                       blurRadius: 10)
                               : BoxShadow(
-                                  color: Colors.black,
-                                  offset: Offset(0, 2),
-                                  blurRadius: 10),
+                                  color: Colors.transparent,
+                                  offset: Offset(0, 0),
+                                  blurRadius: 0),
                         ],
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -353,22 +370,20 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       )),
                 ),
                 Positioned(
-                    bottom: 0,
-                    child: widget.isFromStudentPlus!
-                        ? SizedBox.shrink()
-                        : Container(
-                            // color: Colors.red,
-                            alignment: Alignment.bottomCenter,
-                            margin: EdgeInsets.only(
-                              top: (widget.isFromStudentPlus == true &&
-                                      widget.constraint <= 552)
-                                  ? 8
-                                  : widget.constraint > 115
-                                      ? 15
-                                      : 0.0,
-                            ),
-                            width: MediaQuery.of(context).size.width * 1,
-                            child: AddNotes)),
+                    bottom: 5,
+                    child:
+                        widget.isFromStudentPlus! || widget.isFromDashboardPage!
+                            ? SizedBox.shrink()
+                            : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(12),
+                                    bottomRight: Radius.circular(12),
+                                  ),
+                                ),
+                                alignment: Alignment.bottomRight,
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: AddNotes)),
                 Positioned(
                   top: 0,
                   child: GestureDetector(

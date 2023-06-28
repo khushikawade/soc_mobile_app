@@ -73,8 +73,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         onWillPop: () async => false,
         child: Scaffold(
             key: _scaffoldKey,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            // appBar: PBISPlusUtility.pbisAppBar(
+            backgroundColor:
+                Colors.transparent, // appBar: PBISPlusUtility.pbisAppBar(
             //   context: context,
             //   titleIconData: widget.titleIconData,
             //   title: 'Class',
@@ -118,7 +118,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           Padding(
             padding: EdgeInsets.only(left: 4),
             child: FittedBox(
-              child: Text("${widget.item.studentName}" + " Notes",
+              child: Text("${widget.item.studentName}'s" + " Notes",
                   textAlign: TextAlign.left,
                   style: Theme.of(context)
                       .textTheme
@@ -216,7 +216,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 12),
+          horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 4),
       color: Theme.of(context).backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -224,14 +224,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           children: [
             SpacerWidget(24),
             Text(
-              "${obj.notesComments}",
+              "${obj.notesComments}  Sed euismod eros non ante lacinia condimentum. Pellentesque est lacus, rutrum ac arcu et, accumsan pharetra neque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc vel lectus rutrum, mollis dui ac, molestie neque. Quisque sit amet lacus vulputate, varius leo eu, elementum dui. Curabitur condimentum facilisis nisi, a pretium risus malesuada et. Mauris non leo",
               // "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisilorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
               textAlign: TextAlign.left,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color:
                         Color(0xff000000) == Theme.of(context).backgroundColor
                             ? Color(0xffFFFFFF)
-                            : Color(0xff000000),
+                            : Color(0xff162429),
                     fontSize: 12,
                   ),
             ),
@@ -248,8 +248,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     return Row(
       children: [
         _buildCardDateTime(item.date, true),
-        _buildCardDateTime(item.date, true),
-        _buildCardDateTime(item.date, false)
+        _buildCardDateTime("Monday", true),
+        _buildCardDateTime("10:30 PM", false)
       ],
     );
   }
@@ -264,7 +264,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffA6A6A6)
-                    : Color(0xff000000),
+                    : Color(0xff162429),
                 fontSize: 10,
                 fontWeight: FontWeight.w500),
           ),
