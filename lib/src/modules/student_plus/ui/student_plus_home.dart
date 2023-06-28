@@ -34,16 +34,15 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   // list of bottom navigation bar icons
   List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
 
-  // list of screen on navigation
-  List<Widget> _screens = [];
   @override
   void initState() {
     _controller.index = widget.index;
-    // Only call in case of Student Section
+
+    // Only call in case of Student Section to fetch student details
     if (widget.sectionType == "Student") {
       _studentPlusBloc.add(StudentPlusSearchByEmail());
     }
-    //_studentPlusBloc.add(GetStudentPlusDetails(studentId: widget.studentId));
+
     super.initState();
   }
 
@@ -55,7 +54,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:widget.sectionType == "Student"
+        body: widget.sectionType == "Student"
             ? BlocBuilder<StudentPlusBloc, StudentPlusState>(
                 bloc: _studentPlusBloc,
                 builder: (context, state) {
@@ -104,25 +103,11 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
               if (i == 5) {
-                // Navigator.of(context).pushAndRemoveUntil(
-                //     MaterialPageRoute(
-                //         builder: (context) => HomePage(index: 4
-                //             // widget.index,
-                //             )),
-                //     (_) => false);
-                // pushNewScreen(context,
-                //     screen: HomePage(
-                //       index: 4,
-                //     ),
-                //     withNavBar: false,
-                //     pageTransitionAnimation: PageTransitionAnimation.fade);
                 Navigator.of(context).popUntil((route) => route.isFirst);
               }
-              // refreshNavBar.value = i;
             },
             items: StudentPlusBottomNavBar.navBarsItems(
-                context: context,
-                sectionType: widget.sectionType),
+                context: context, sectionType: widget.sectionType),
             confineInSafeArea: true,
             backgroundColor: Theme.of(context).backgroundColor,
             handleAndroidBackButtonPress: true,

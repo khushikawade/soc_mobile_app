@@ -56,12 +56,12 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? isErrorState = false;
-  OcrBloc _ocrBloc = new OcrBloc(); 
+  OcrBloc _ocrBloc = new OcrBloc();
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
   CalenderBloc _scheduleBloc = CalenderBloc();
 
-  bool isCalenderEentCalledaAready = false;
+  bool isCalenderEventCalledAlready = false;
   @override
   void initState() {
     super.initState();
@@ -107,7 +107,7 @@ class _StudentPageState extends State<StudentPage> {
       return;
     }
 
-    /* --------------------------- Condition to check Student Plus Section -------------------------- */
+    /* --------------------------- START // Condition to check Student Plus Section -------------------------- */
     if (obj.typeC != null && obj.typeC == 'Student+') {
       Globals.lastIndex = Globals.controller!.index;
 
@@ -115,11 +115,12 @@ class _StudentPageState extends State<StudentPage> {
       SharedPreferences clearGoogleLoginLocalDb =
           await SharedPreferences.getInstance();
       final clearCacheResult = await clearGoogleLoginLocalDb
-          .getBool('delete_local_login_details1213');
+          .getBool('delete_local_google_login_student');
+
       if (clearCacheResult != true) {
         await UserGoogleProfile.clearUserProfile();
         await clearGoogleLoginLocalDb.setBool(
-            'delete_local_login_details1213', true);
+            'delete_local_google_login_student', true);
       }
       /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -149,7 +150,6 @@ class _StudentPageState extends State<StudentPage> {
           }
         }
       } else {
-        // GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
         //Creating fresh sessionID
         Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
         navigateToStudentPlus();
@@ -157,6 +157,8 @@ class _StudentPageState extends State<StudentPage> {
 
       return;
     }
+    /* --------------------------- END -------------------------- */
+
     // Schedule Ends
 
     if (obj.appUrlC != null) {
@@ -593,14 +595,14 @@ class _StudentPageState extends State<StudentPage> {
               )),
     );
 
-    isCalenderEentCalledaAready = false;
+    isCalenderEventCalledAlready = false;
   }
 
   void _scheduleEvent(UserInformation studentProfile) {
-    if (isCalenderEentCalledaAready) {
+    if (isCalenderEventCalledAlready) {
       Utility.currentScreenSnackBar('Please wait..... ', null);
     } else {
-      isCalenderEentCalledaAready = true;
+      isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(
           studentProfile: studentProfile,
           pullToRefresh: false,
@@ -608,14 +610,13 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-
-    navigateToStudentPlus() async {
-     PlusUtility.updateLogs(
-            activityType: 'GRADED+',
-            userType: 'Student',
-            activityId: '2',
-            description: 'Student+ Accessed(Login)/Login Id:',
-            operationResult: 'Success');
+  navigateToStudentPlus() async {
+    PlusUtility.updateLogs(
+        activityType: 'GRADED+',
+        userType: 'Student',
+        activityId: '2',
+        description: 'Student+ Accessed(Login)/Login Id:',
+        operationResult: 'Success');
 
     pushNewScreen(
       context,
