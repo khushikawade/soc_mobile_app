@@ -927,27 +927,27 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       List<ClassroomCourse> _googleClassroomCourseslocalData =
                           await _googleClassRoomlocalDbForStandardApp.getData();
 
-                      for (ClassroomCourse element
-                          in _googleClassroomCourseslocalData) {
-                        if (element.id == state.assessmentObj!.id) {
-                          //update the classroom course work id in GoogleClassroomOverrides obj
-                          element.courseWorkId =
-                              state.assessmentObj!.courseWorkId!;
+                      // for (ClassroomCourse element
+                      //     in _googleClassroomCourseslocalData) {
+                      //   if (element.id == state.assessmentObj!.id) {
+                      //     //update the classroom course work id in GoogleClassroomOverrides obj
+                      //     element.courseWorkId =
+                      //         state.assessmentObj!.courseWorkId!;
 
-                          GoogleClassroomOverrides
-                                  .historyStudentResultSummaryForStandardApp =
-                              element;
+                      //     GoogleClassroomOverrides
+                      //             .historyStudentResultSummaryForStandardApp =
+                      //         element;
 
-                          break;
-                        }
-                      }
+                      //     break;
+                      //   }
+                      // }
 
                       savedRecordCount = state.resultRecordCount;
-                      GoogleClassroomOverrides
-                              .historyStudentResultSummaryForStandardApp
-                              .assessmentCId =
-                          historyAssessmentId =
-                              state.assessmentObj!.assessmentCId;
+                      // GoogleClassroomOverrides
+                      //         .historyStudentResultSummaryForStandardApp
+                      //         .assessmentCId =
+
+                      historyAssessmentId = state.assessmentObj!.assessmentCId;
                     }
                   }
 
@@ -2036,7 +2036,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
 
-                  'Class': widget.assessmentDetailPage == true
+                  'Class': widget.assessmentDetailPage != true
                       ? GoogleClassroomOverrides
                               .recentStudentResultSummaryForStandardApp
                               .courseWorkURL ??

@@ -479,11 +479,11 @@ class _GradedPlusAssessmentSummaryState
                   await ClassroomCourse(
                       assessmentCId: list[index].assessmentId,
                       id: list[index].classroomCourseId,
-                      courseWorkId: list[index].classroomCourseWorkId);
+                      courseWorkId: list[index].classroomCourseWorkId,
+                      courseWorkURL: list[index].classroomCourseWorkUrl);
             }
-
-            print(GoogleClassroomOverrides
-                .historyStudentResultSummaryForStandardApp.courseWorkId);
+print(GoogleClassroomOverrides
+                      .historyStudentResultSummaryForStandardApp.courseWorkURL);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -676,9 +676,7 @@ class _GradedPlusAssessmentSummaryState
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',
                   'Sheets': assessment.webContentLink ?? '',
-                  'Class': GoogleClassroomOverrides
-                          .studentAssessmentAndClassroomObj.courseWorkURL ??
-                      '',
+                  'Class': assessment.classroomCourseWorkUrl ?? '',
                 },
               );
             },

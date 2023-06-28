@@ -1857,6 +1857,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _list[i].classroomCourseId = assessmentList[j].classroomCourseId;
               _list[i].classroomCourseWorkId =
                   assessmentList[j].classroomCourseWorkId;
+              _list[i].classroomCourseWorkUrl =
+                  assessmentList[j].classroomCourseWorUrl;
             }
           }
         }

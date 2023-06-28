@@ -496,12 +496,7 @@ class GoogleClassroomBloc
 
           //---------------------------------------------------------------------------------------------------------------------------------------------
           if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
-
-print("1111111111111111111111111111111");
-
-
             if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
-
               if (event.isFromHistoryAssessmentScanMore == true) {
                 GoogleClassroomOverrides
                     .historyStudentResultSummaryForStandardApp
@@ -518,6 +513,8 @@ print("1111111111111111111111111111111");
                 GoogleClassroomOverrides
                     .recentStudentResultSummaryForStandardApp
                     .courseWorkURL = obj.courseWorkURL;
+                print(GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL);
               }
             }
 
@@ -1002,7 +999,8 @@ print("1111111111111111111111111111111");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         GoogleClassroomCourseworkModal data =
             GoogleClassroomCourseworkModal.fromJson(response.data);
-
+        print("classrrom ur url --------");
+        print(data.courseWorkURL);
         //Call only in case of scan more
         if ((studentClassObj.id?.isEmpty ?? true) &&
             (isFromHistoryAssessmentScanMore == true)) {

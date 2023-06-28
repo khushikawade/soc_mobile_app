@@ -96,41 +96,47 @@ class _GradedPlusResultOptionBottomSheetState
   }
 
   Widget _listTileMenu({required ResultSummaryIcons element}) {
-    return ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        horizontalTitleGap: 20,
-        leading: Container(
-          height: 30,
-          width: 30,
-          //   color: Colors.amber,
-          padding: EdgeInsets.only(left: element.title != "Slides" ? 4 : 0),
-          child: SvgPicture.asset(
-            element.svgPath!,
-            // height: 30,
-            // width: 30,
-            // fit: BoxFit.fill,
-            color: element.title == "Dashboard"
-                ? Color(0xff000000) == Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20)
-                : null,
+    if (element.title == "Class") {
+      print(widget.allUrls[element.title]);
+      print("url on bottom shett");
+    }
+    return Opacity(
+      opacity: widget.allUrls[element.title] == null ||
+              widget.allUrls[element.title] == ''
+          ? 0.3
+          : 1.0,
+      child: ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          horizontalTitleGap: 20,
+          leading: Container(
+            height: 30,
+            width: 30,
+            padding: EdgeInsets.only(left: element.title != "Slides" ? 4 : 0),
+            child: SvgPicture.asset(
+              element.svgPath!,
+              color: element.title == "Dashboard"
+                  ? Color(0xff000000) == Theme.of(context).backgroundColor
+                      ? Color(0xffF7F8F9)
+                      : Color(0xff111C20)
+                  : null,
+            ),
           ),
-        ),
-        title: Utility.textWidget(
-            text: element.title!,
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline3!),
-        onTap: () {
-          // if (element.title == "Dashboard") {
-          //   Utility.launchUrlOnExternalBrowser(
-          //       "https://www.${Globals.schoolDbnC}.com/");
-          // } else {
-          bottomIconsOnTap(
-              title: element.title ?? '',
-              url: widget.allUrls[element.title] ?? '');
-          // }
-        });
+          title: Utility.textWidget(
+              text: element.title!,
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline3!),
+          onTap: () {
+            if (widget.allUrls[element.title] == null ||
+                widget.allUrls[element.title] == '') {
+              return;
+            }
+            bottomIconsOnTap(
+                title: element.title ?? '',
+                url: widget.allUrls[element.title] ?? '');
+            // }
+          }),
+    );
   }
 
   bottomIconsOnTap({required String title, required String url}) async {
