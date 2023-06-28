@@ -422,6 +422,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
 
               List<dynamic> reversedRecentDetailDbList =
                   new List.from(recentDetailDbList.reversed);
+
               _saveAndShareBottomSheetMenu(
                   assessment: reversedRecentDetailDbList[index]);
             },

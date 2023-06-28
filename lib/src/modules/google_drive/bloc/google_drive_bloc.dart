@@ -669,13 +669,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
         final clearCacheResult = await clearNewsCache
-            .getBool('delete_local_history_assessment_cache');
+            .getBool('delete_local_history_assessment_cache1');
 
         if (clearCacheResult != true) {
           await _localDb.close();
           _localData.clear();
           await clearNewsCache.setBool(
-              'delete_local_history_assessment_cache', true);
+              'delete_local_history_assessment_cache1', true);
         }
 
         //Sort the list as per the modified date

@@ -999,8 +999,7 @@ class GoogleClassroomBloc
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         GoogleClassroomCourseworkModal data =
             GoogleClassroomCourseworkModal.fromJson(response.data);
-        print("classrrom ur url --------");
-        print(data.courseWorkURL);
+
         //Call only in case of scan more
         if ((studentClassObj.id?.isEmpty ?? true) &&
             (isFromHistoryAssessmentScanMore == true)) {
