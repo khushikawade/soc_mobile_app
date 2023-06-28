@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -129,6 +130,7 @@ class _GradedPlusResultOptionBottomSheetState
         horizontalTitleGap: 20,
         leading: element.title == "Sync Presentation"
             ? Icon(Icons.sync,
+                size: 30,
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20))
@@ -200,13 +202,15 @@ class _GradedPlusResultOptionBottomSheetState
             ),
           ),
           widget?.title?.isNotEmpty ?? false
-              ? Utility.textWidget(
-                  context: context,
-                  text: widget.title!,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline5!
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
+              ? Column(
+                  children: [
+                    PlusScreenTitleWidget(
+                      kLabelSpacing: 8,
+                      text: widget.title!,
+                    ),
+                    SpacerWidget(10)
+                  ],
+                )
               : Container(),
           ...widget.resultSummaryIconsModalList.map(
               (ResultSummaryIcons element) => _listTileMenu(element: element)),
@@ -223,11 +227,11 @@ class _GradedPlusResultOptionBottomSheetState
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SpacerWidget(50),
+          // SpacerWidget(50),
           CircularProgressIndicator.adaptive(
             backgroundColor: AppTheme.kButtonColor,
           ),

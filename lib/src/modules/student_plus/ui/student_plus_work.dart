@@ -198,7 +198,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   teacherList: teacherList,
                   height: constraints.maxHeight < 750 &&
                           Globals.deviceType == "phone"
-                      ? MediaQuery.of(context).size.height * 0.4 //0.45
+                      ? MediaQuery.of(context).size.height * 0.45 //0.45
                       : Globals.deviceType == "phone"
                           ? MediaQuery.of(context).size.height * 0.42 //0.45
                           : MediaQuery.of(context).size.height * 0.25,
@@ -511,9 +511,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return StudentPlusOptionBottomSheet(
+                  title: 'Select Action',
                   studentDetails: widget.studentDetails,
                   resultSummaryIconsModalList: resultSummaryIconsModalList,
-                  height: MediaQuery.of(context).size.height * 0.25);
+                  height: MediaQuery.of(context).size.height * 0.35);
             },
           );
         });
