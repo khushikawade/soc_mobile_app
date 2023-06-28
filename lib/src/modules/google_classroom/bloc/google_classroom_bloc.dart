@@ -316,6 +316,11 @@ class GoogleClassroomBloc
     /*----------------------------------------------------------------*/
     if (event is CreatePBISClassroomCoursework) {
       try {
+        // //Just to save the event data to the local list to make sure data is not getting empty on continue hitting the classrroom
+        //copy the list in local to perform operation
+        List<ClassroomCourse> localCourseAndStudentList = [];
+        localCourseAndStudentList.addAll(event.courseAndStudentList);
+
         yield GoogleClassroomLoading();
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
@@ -328,7 +333,7 @@ class GoogleClassroomBloc
             teacherEmail: userProfileLocalData[0].userEmail ?? '',
             maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
             // studentProfileDetails: [],
-            courseAndStudentList: event.courseAndStudentList);
+            courseAndStudentList: localCourseAndStudentList);
 
         if (result[1] == '') {
           yield CreateClassroomCourseWorkSuccess();
