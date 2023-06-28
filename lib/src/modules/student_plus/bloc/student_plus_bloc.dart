@@ -204,6 +204,26 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
+     /* ----------------------------- Event to search student using Email ---------------------------- */
+    if (event is StudentPlusSearchByEmail) {
+      try {
+        yield StudentPlusGetDetailsLoading();
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+        List<StudentPlusDetailsModel> list = await getStudentPlusSearchByEmail(
+            studentEmail: _userProfileLocalData[0].userEmail ?? '');
+
+        yield StudentPlusSearchByEmailSuccess(
+          obj: list.length > 0
+              ? list[0]
+              : StudentPlusDetailsModel(
+                  emailC: _userProfileLocalData[0].userEmail,
+                  firstNameC: _userProfileLocalData[0].userName),
+        );
+      } catch (e) {
+        yield StudentPlusErrorReceived(err: e);
+      }
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -358,6 +378,29 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       }
     } catch (e) {
       return e.toString();
+    }
+  }
+
+
+   /* ---- Function to call search api through email --- */
+
+  Future getStudentPlusSearchByEmail({required String studentEmail}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentEmail/$studentEmail',
+          isCompleteUrl: true,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+          }); //change DBN to dynamic
+      if (response.statusCode == 200) {
+        return response.data["body"]
+            .map<StudentPlusDetailsModel>(
+                (i) => StudentPlusDetailsModel.fromJson(i))
+            .toList();
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 }
