@@ -1017,7 +1017,14 @@ class _GradedPlusSearchScreenPageState
             '',
         classroomCourseWorkId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-            ''));
+            '',
+        classroomCourseWorkUrl: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseWorkURL ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL ??
+                ''));
   }
 
   //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

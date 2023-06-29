@@ -194,7 +194,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             userType: 'Teacher',
             activityId: '38',
             description:
-                'User Interaction PBIS+ for student ${event.studentId}',
+                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 

@@ -2026,6 +2026,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 ''
             : GoogleClassroomOverrides
                     .recentStudentResultSummaryForStandardApp.courseWorkId ??
+                '',
+        classroomCourseWorkUrl: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseWorkURL ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL ??
                 ''));
   }
 }
