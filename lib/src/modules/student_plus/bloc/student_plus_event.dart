@@ -82,3 +82,26 @@ class StudentPlusSearchByEmail extends StudentPlusEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: }';
 }
+
+/* ---------------- Event use to trigger student grade details --------------- */
+class FetchStudentCourseWorkEvent extends StudentPlusEvent {
+  final String courseWorkId;
+  FetchStudentCourseWorkEvent({required this.courseWorkId});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+/* ---------------- Event use to trigger student work details --------------- */
+class FetchStudentGradesWithClassroomEvent extends StudentPlusEvent {
+  final String? studentId;
+  FetchStudentGradesWithClassroomEvent({
+    @required this.studentId,
+  });
+
+  @override
+  List<Object> get props => [studentId!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $studentId}';
+}

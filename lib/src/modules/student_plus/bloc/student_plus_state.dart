@@ -60,13 +60,31 @@ class StudentPlusInfoSuccess extends StudentPlusState {
   List<Object> get props => [];
 }
 
-/* ----------------------- state use to return student work ---------------------- */
+/* ----------------------- state use to return grade ---------------------- */
 class StudentPlusGradeSuccess extends StudentPlusState {
   final List<StudentPlusGradeModel> obj;
+  final List<StudentPlusCourseModel> courseList;
   final List<String> chipList;
-  StudentPlusGradeSuccess({required this.obj, required this.chipList});
+  StudentPlusGradeSuccess(
+      {required this.obj, required this.chipList, required this.courseList});
   StudentPlusGradeSuccess copyWith({final obj}) {
-    return StudentPlusGradeSuccess(obj: obj ?? this.obj, chipList: chipList);
+    return StudentPlusGradeSuccess(
+        obj: obj ?? this.obj, chipList: chipList, courseList: courseList);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+/* ----------------------- state use to return  Course student work ---------------------- */
+class StudentPlusCourseWorkSuccess extends StudentPlusState {
+  final List<StudentPlusCourseWorkModel> obj;
+
+  StudentPlusCourseWorkSuccess({
+    required this.obj,
+  });
+  StudentPlusCourseWorkSuccess copyWith({final obj}) {
+    return StudentPlusCourseWorkSuccess(obj: obj ?? this.obj);
   }
 
   @override
