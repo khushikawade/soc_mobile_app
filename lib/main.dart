@@ -22,7 +22,7 @@ import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -122,7 +122,7 @@ void main() async {
       ..registerAdapter(StudentPlusGradeModelAdapter())
       ..registerAdapter(PBISPlusGenricBehaviourModalAdapter())
       ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
-      ..registerAdapter(PBISPlusStudentNotesAdapter())
+      ..registerAdapter(PBISStudentNotesAdapter())
       ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter())
       ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter())
       ..registerAdapter(StudentNameAdapter());

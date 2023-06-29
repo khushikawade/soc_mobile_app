@@ -6,7 +6,9 @@ abstract class PBISPlusEvent extends Equatable {
 
 class PBISPlusImportRoster extends PBISPlusEvent {
   final bool isGradedPlus;
-  PBISPlusImportRoster({required this.isGradedPlus});
+  PBISPlusImportRoster({
+    required this.isGradedPlus,
+  });
   @override
   List<Object> get props => [];
 }
@@ -141,7 +143,7 @@ class GetPBISSkillsUpdateList extends PBISPlusEvent {
 
 // ignore: must_be_immutable
 class GetPBISPlusStudentNotes extends PBISPlusEvent {
-  List<PBISPlusStudentNotes>? oldItemList;
+  List<PBISPlusStudentList>? oldItemList;
   GetPBISPlusStudentNotes({
     this.oldItemList,
   });
@@ -154,7 +156,7 @@ class GetPBISPlusStudentNotes extends PBISPlusEvent {
 
 class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
   final String searchKey;
-  final List<PBISPlusStudentNotes> studentNotes;
+  final List<PBISPlusStudentList> studentNotes;
   GetPBISPlusStudentNotesSearchEvent({
     required this.searchKey,
     required this.studentNotes,
@@ -165,4 +167,18 @@ class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
         searchKey,
         studentNotes,
       ];
+}
+
+class GetPBISPlusStudentNotesList extends PBISPlusEvent {
+  final String studentId;
+  final String teacherid;
+  final String dbn;
+  GetPBISPlusStudentNotesList({
+    required this.studentId,
+    required this.teacherid,
+    required this.dbn,
+  });
+
+  @override
+  List<Object> get props => [studentId, teacherid, dbn];
 }

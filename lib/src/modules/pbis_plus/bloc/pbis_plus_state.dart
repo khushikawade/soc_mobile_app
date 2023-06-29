@@ -190,7 +190,7 @@ class PBISPlusStudentNotesShimmer extends PBISPlusState {
 }
 
 class PBISPlusStudentNotesSucess extends PBISPlusState {
-  final List<PBISPlusStudentNotes> studentNotes;
+  final List<PBISPlusStudentList> studentNotes;
   PBISPlusStudentNotesSucess({required this.studentNotes});
   PBISPlusStudentNotesSucess copyWith({final studentNotes}) {
     return PBISPlusStudentNotesSucess(
@@ -229,7 +229,7 @@ class PBISPlusAdditionalBehaviourError extends PBISPlusState {
 }
 
 class PBISPlusStudentSearchSucess extends PBISPlusState {
-  final List<PBISPlusStudentNotes> sortedList;
+  final List<PBISPlusStudentList> sortedList;
   PBISPlusStudentSearchSucess({required this.sortedList});
   PBISPlusStudentSearchSucess copyWith({final studentNotes}) {
     return PBISPlusStudentSearchSucess(
@@ -238,4 +238,44 @@ class PBISPlusStudentSearchSucess extends PBISPlusState {
 
   @override
   List<Object> get props => [];
+}
+
+class PBISPlusStudentSearchNoDataFound extends PBISPlusState {
+  final String error;
+  PBISPlusStudentSearchNoDataFound({required this.error});
+  PBISPlusStudentSearchNoDataFound copyWith({final error}) {
+    return PBISPlusStudentSearchNoDataFound(error: error ?? this.error);
+  }
+
+  @override
+  List<Object> get props => [error];
+}
+
+class GetPBISPlusStudentAllNotesListLoading extends PBISPlusState {
+  GetPBISPlusStudentAllNotesListLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class GetPBISPlusStudentAllNotesListSucess extends PBISPlusState {
+  final List<PBISStudentNotes> notesList;
+  GetPBISPlusStudentAllNotesListSucess({required this.notesList});
+  GetPBISPlusStudentAllNotesListSucess copyWith({final notesList}) {
+    return GetPBISPlusStudentAllNotesListSucess(
+        notesList: notesList ?? this.notesList);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetPBISPlusStudentAllNotesListError extends PBISPlusState {
+  final String error;
+  GetPBISPlusStudentAllNotesListError({required this.error});
+  GetPBISPlusStudentAllNotesListError copyWith({final error}) {
+    return GetPBISPlusStudentAllNotesListError(error: error ?? this.error);
+  }
+
+  @override
+  List<Object> get props => [error];
 }

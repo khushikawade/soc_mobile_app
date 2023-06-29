@@ -7,7 +7,9 @@ class PBISPlusOverrides {
       'PBISPlusAdditionalBehviour';
   static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
-  static final String pbisPlusStudentNotesDB = 'PBISPlus_student_notes';
+  static final String pbisPlusStudentListDB = 'PBISPlus_student_list';
+  static final String pbisPlusStudentNotesListtDB =
+      'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
   static final String pbisStudentInteractionDB = 'pbis_student_interaction';
