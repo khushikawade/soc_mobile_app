@@ -1423,7 +1423,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   fullName: item.profile!.name!.fullName!,
                   givenName: item.profile!.name!.givenName!),
               iconUrlC: item.profile?.photoUrl!,
-              studentId: "123",
+              studentId: item.profile?.id,
               notes: notes))
           .toList();
       await _pbisPlusStudentListDB.clear();
