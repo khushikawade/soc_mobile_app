@@ -221,6 +221,7 @@ class Authentication {
       await FirebaseAuth.instance.signOut();
       user = null;
     } catch (e) {
+      print('Sign Out Error:::::: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         Authentication.customSnackBar(
           content: 'Error signing out. Try again.',
@@ -304,7 +305,7 @@ class Authentication {
 
           // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
 
-          await   (updatedObj);
+          await (updatedObj);
 
           //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
