@@ -518,6 +518,8 @@ class GoogleClassroomBloc
                 GoogleClassroomOverrides
                     .recentStudentResultSummaryForStandardApp
                     .courseWorkURL = obj.courseWorkURL;
+                print(GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL);
               }
             }
 
