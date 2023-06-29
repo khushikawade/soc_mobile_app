@@ -768,7 +768,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       child: BlocListener<GoogleDriveBloc, GoogleDriveState>(
           bloc: googleDriveBloc,
           listener: (context, state) async {
-            if (state is GoogleSuccess) {
+            if (state is GoogleFolderCreated) {
               //In case of Folder Id received
               _createSpreadSheet();
             }

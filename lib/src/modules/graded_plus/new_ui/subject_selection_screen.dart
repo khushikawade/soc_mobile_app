@@ -1674,7 +1674,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         child: Container(),
         listener: (context, state) async {
           print("state is $state");
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             showDialogSetState!(() {
               assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             });
