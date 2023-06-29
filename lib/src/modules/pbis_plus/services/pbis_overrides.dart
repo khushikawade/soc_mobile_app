@@ -3,8 +3,8 @@ import 'package:Soc/src/globals.dart';
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
   static final String pbisPlusBehaviourGenricDB = 'PBISPlus_Behaviour_Genric';
-  static final String pbisPlusAdditionalBehviourDB =
-      'PBISPlusAdditionalBehviour';
+  // static final String pbisPlusAdditionalBehviourDB =
+  //     'PBISPlusAdditionalBehviour';
   static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
   static final String pbisPlusStudentNotesDB = 'PBISPlus_student_notes';
@@ -35,4 +35,9 @@ class PBISPlusOverrides {
   static const String kresetOptionTwotitle = 'Select Students';
   static const String kresetOptionThreetitle = 'Select Courses';
   static const String kresetOptionFourtitle = 'Select Students by Course';
+
+  static final String PbisPlusDefaultBehaviourLocalDbTable =
+      'pbisplus_default_behaviour_local_db_details';
+  static final String PbisPlusAdditionalBehaviourLocalDbTable =
+      'pbisplus_default_additional_behaviour_local_db_details';
 }

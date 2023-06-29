@@ -148,3 +148,10 @@ class GetPBISPlusStudentNotes extends PBISPlusEvent {
   @override
   List<Object> get props => [item, index];
 }
+
+class PBISPlusGetDefaultSchoolBehvaiour extends PBISPlusEvent {
+  PBISPlusGetDefaultSchoolBehvaiour();
+
+  @override
+  List<Object> get props => [];
+}

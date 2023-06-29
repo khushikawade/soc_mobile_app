@@ -3,6 +3,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
@@ -13,6 +14,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,14 +62,19 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   // ]);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  PBISPlusBloc pbisPlusAdditionalBehaviourBloc = PBISPlusBloc();
+  // PBISPlusBloc pbisPlusAdditionalBehaviourBloc = PBISPlusBloc();
 
   @override
   void initState() {
     super.initState();
-    pbisPlusAdditionalBehaviourBloc.add(GetPBISPlusAdditionalBehaviour());
-    pbisPlusClassroomBloc
-        .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
+
+    pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
+
+    // pbisPlusClassroomBloc
+    //     .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
+
+    pbisPlusClassroomBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
+
     getCustomValue();
   }
 
@@ -215,30 +222,36 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   ),
 
                   SpacerWidget(18),
+
                   BlocConsumer<PBISPlusBloc, PBISPlusState>(
                       bloc: pbisPlusClassroomBloc,
                       builder: (context, state) {
-                        print(state);
-                        if (state is PBISPlusDefaultBehaviourLoading) {
-                          print("-----------state is $state------------------");
+                        // if (state is PBISPlusDefaultBehaviourLoading) {
+                        //   print("-----------state is $state------------------");
+                        //   return _buildEditItemList(
+                        //       PBISPlusSkillsModalLocal
+                        //           .PBISPlusSkillLocalBehaviourlist,
+                        //       true);
+                        // } else if (state is PBISPlusSkillsUpdateLoading) {
+                        //   return _buildEditItemList(state.skillsList, false);
+                        // } else if (state is PBISPlusDefaultBehaviourSucess) {
+                        //   print("-----------state is $state------------------");
+                        //   // localskillsList.value = state.skillsList;
+                        //   if (state.skillsList.isNotEmpty) {
+                        //     return _buildEditItemList(state.skillsList, false);
+                        //   } else {
+                        //     return _buildEditItemList(state.skillsList, false);
+                        //   }
+                        // } else if (state is PBISPlusDefaultBehaviourError) {
+                        //   print("-----------state is $state------------------");
+                        //   return _noDataFoundWidget();
+                        // } else
+
+                        if (state is PBISPlusGetDefaultSchoolBehvaiourSuccess) {
                           return _buildEditItemList(
-                              PBISPlusSkillsModalLocal
-                                  .PBISPlusSkillLocalBehaviourlist,
-                              true);
-                        } else if (state is PBISPlusSkillsUpdateLoading) {
-                          return _buildEditItemList(state.skillsList, false);
-                        } else if (state is PBISPlusDefaultBehaviourSucess) {
-                          print("-----------state is $state------------------");
-                          // localskillsList.value = state.skillsList;
-                          if (state.skillsList.isNotEmpty) {
-                            return _buildEditItemList(state.skillsList, false);
-                          } else {
-                            return _buildEditItemList(state.skillsList, false);
-                          }
-                        } else if (state is PBISPlusDefaultBehaviourError) {
-                          print("-----------state is $state------------------");
-                          return _noDataFoundWidget();
+                              state.defaultSchoolBehaviourList, false);
                         }
+
                         return _noDataFoundWidget();
                       },
                       listener: (context, state) async {}
@@ -264,171 +277,158 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   }
 
   Widget _buildEditItemList(
-      List<PBISPlusGenricBehaviourModal> skillsList, bool loading) {
-    return DragTarget<PBISPlusGenricBehaviourModal>(
-        builder: (context, candidateData, rejectedData) {
-      return GridView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1.5,
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 4.0,
+      List<PBISPlusALLBehaviourModal> skillsList, bool loading) {
+    return IgnorePointer(
+      // ignoring: !isCustomBehaviour.value,
+      child: DragTarget<PBISPlusALLBehaviourModal>(
+          builder: (context, candidateData, rejectedData) {
+        return GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1.5,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
+            ),
+            // itemCount: 6,
+            itemCount: skillsList.length,
+            //  skillsList.length,
+            itemBuilder: (BuildContext context, int index) {
+              // final item = containerIcons.value[index];
+              final item = skillsList[index];
+              return DragTarget<PBISPlusALLBehaviourModal>(
+                  onWillAccept: (draggedData) {
+                    hoveredIconIndex.value =
+                        index; // Update the hovered icon index
+                    // print(hoveredIconIndex);
+                    return true;
+                  },
+                  onLeave: ((data) => print(
+                      "-----------------INSIDE ON LEAVE---------------------------")),
+                  onAccept: (draggedData) {
+                    // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
+                    //     index: hoveredIconIndex.value,
+                    //     item: draggedData,
+                    //     olditem: localskillsList.value));
+
+                    hoveredIconIndex.value = -1;
+                    changedIndex.value = -1;
+                  },
+                  builder: (context, candidateData, rejectedData) {
+                    return GestureDetector(
+                        onTap: () {
+                          if (skillsList[index].name != "Add Skill") {
+                            isEditMode.value = true;
+                            changedIndex.value = index;
+                          }
+                        },
+                        child: ValueListenableBuilder(
+                            valueListenable: changedIndex,
+                            builder: (context, value, _) =>
+                                ValueListenableBuilder(
+                                    valueListenable: isEditMode,
+                                    builder: (context, value, _) => index ==
+                                            changedIndex.value
+                                        ? _buildEditWidget(
+                                            item, index, pbisPlusClassroomBloc)
+                                        : ShimmerLoading(
+                                            isLoading: loading,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Draggable(
+                                                  data: item,
+                                                  child: Container(
+                                                    height: 40,
+                                                    width: 40,
+                                                    child: _buildIcons(
+                                                      item: item,
+                                                    ),
+                                                  ),
+                                                  feedback: Container(
+                                                    height: 40,
+                                                    width: 40,
+                                                    child: _buildIcons(
+                                                      item: item,
+                                                    ),
+                                                  ),
+                                                  childWhenDragging: Container(
+                                                    height: 40,
+                                                    width: 40,
+                                                    child: _buildIcons(
+                                                      item: item,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SpacerWidget(4),
+                                                Padding(
+                                                  padding: Globals.deviceType !=
+                                                          'phone'
+                                                      ? const EdgeInsets.only(
+                                                          top: 10, left: 10)
+                                                      : EdgeInsets.zero,
+                                                  child: Utility.textWidget(
+                                                      text:
+                                                          item.behaviorTitleC!,
+                                                      // item.dataList[0].name!,
+                                                      context: context,
+                                                      textTheme:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .bodyText1!
+                                                              .copyWith(
+                                                                  fontSize:
+                                                                      12)),
+                                                )
+                                              ],
+                                            ),
+                                          ))));
+                  });
+            });
+      }),
+    );
+  }
+
+  // Widget _buildIcons(String assestPath) {
+  //   return assestPath.contains('http://') || assestPath.contains('https://')
+  //       ? Image.network(
+  //           assestPath!,
+  //           fit: BoxFit.contain,
+  //         )
+  //       : SvgPicture.asset(
+  //           assestPath,
+  //           fit: BoxFit.contain,
+  //         );
+  // }
+
+  Widget _buildIcons({required PBISPlusALLBehaviourModal item}) {
+    return CachedNetworkImage(
+      imageUrl: item.pBISBehaviorIconURLC!,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
           ),
-          // itemCount: 6,
-          itemCount: skillsList.length,
-          //  skillsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            // final item = containerIcons.value[index];
-            final item = skillsList[index];
-            return DragTarget<PBISPlusGenricBehaviourModal>(
-                onWillAccept: (draggedData) {
-                  print(
-                      "-----------------INSIDE ON  onWillAccep---------------------------");
-                  hoveredIconIndex.value =
-                      index; // Update the hovered icon index
-                  print(hoveredIconIndex);
-                  return true;
-                },
-                onLeave: ((data) => print(
-                    "-----------------INSIDE ON LEAVE---------------------------")),
-                onAccept: (draggedData) {
-                  print(
-                      "-----------------INSIDE ON onAccept---------------------------");
-                  print(draggedData.name);
-                  pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                      index: hoveredIconIndex.value,
-                      item: draggedData,
-                      olditem: localskillsList.value));
-                  // print(isItemExist(draggedData));
-                  // if (isItemExist(draggedData) == false) {
-                  //   int count;
-                  //   count = getcount();
-                  //   if (count < 6) {
-                  //     if (hoveredIconIndex.value < count) {
-                  //       pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                  //           index: hoveredIconIndex.value, item: draggedData));
-                  //       // containerIcons.value[hoveredIconIndex.value] = draggedData;
-                  //       // skillsList[hoveredIconIndex.value] = draggedData;
-                  //     } else {
-                  //       pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                  //           index: count, item: draggedData));
-                  //       // containerIcons.value[count] = draggedData;
-                  //       // skillsList[count] = draggedData;
-                  //     }
-                  //   } else {
-                  //     pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                  //         index: count, item: draggedData));
-                  //     // containerIcons.value[hoveredIconIndex.value] =
-                  //     //     draggedData; // Change the hovered icon
-                  //     // skillsList[hoveredIconIndex.value] = draggedData;
-                  //   }
-
-                  hoveredIconIndex.value = -1;
-                  changedIndex.value = -1;
-                  // }
-                  // setState(() {
-                  //   print("-------state state");
-                  // });
-                },
-                builder: (context, candidateData, rejectedData) {
-                  return GestureDetector(
-                      onTap: () {
-                        // print(skillsList[index].dataList[0].name);
-                        // if (containerIcons.value[index].title != "Add Skill") {
-                        //   isEditMode.value = true;
-                        //   changedIndex.value = index;
-                        // }
-                        if (skillsList[index].name != "Add Skill") {
-                          isEditMode.value = true;
-                          changedIndex.value = index;
-                        }
-                      },
-                      child: ValueListenableBuilder(
-                          valueListenable: changedIndex,
-                          builder: (context, value, _) =>
-                              ValueListenableBuilder(
-                                  valueListenable: isEditMode,
-                                  builder: (context, value, _) => index ==
-                                          changedIndex.value
-                                      ? _buildEditWidget(
-                                          item, index, pbisPlusClassroomBloc)
-                                      : ShimmerLoading(
-                                          isLoading: loading,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Draggable(
-                                                data: item,
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: _buildIcons(
-                                                    item.iconUrlC!,
-                                                  ),
-                                                ),
-                                                feedback: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: _buildIcons(
-                                                    item.iconUrlC!,
-                                                  ),
-                                                ),
-                                                childWhenDragging: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: _buildIcons(
-                                                    item.iconUrlC!,
-                                                  ),
-                                                ),
-                                              ),
-                                              SpacerWidget(4),
-                                              Padding(
-                                                padding: Globals.deviceType !=
-                                                        'phone'
-                                                    ? const EdgeInsets.only(
-                                                        top: 10, left: 10)
-                                                    : EdgeInsets.zero,
-                                                child: Utility.textWidget(
-                                                    text: item.name!,
-                                                    // item.dataList[0].name!,
-                                                    context: context,
-                                                    textTheme: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1!
-                                                        .copyWith(
-                                                            fontSize: 12)),
-                                              )
-                                            ],
-                                          ),
-                                        ))));
-                });
-          });
-    });
+        ),
+      ),
+      placeholder: (context, url) => ShimmerLoading(
+        isLoading: true,
+        child: Container(),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+    );
   }
 
-  Widget _buildIcons(String assestPath) {
-    return assestPath.contains('http://') || assestPath.contains('https://')
-        ? Image.network(
-            assestPath!,
-            fit: BoxFit.contain,
-          )
-        : SvgPicture.asset(
-            assestPath,
-            fit: BoxFit.contain,
-          );
-  }
-
-  Widget _buildEditWidget(PBISPlusGenricBehaviourModal item, int index,
+  Widget _buildEditWidget(PBISPlusALLBehaviourModal item, int index,
       PBISPlusBloc pbisPlusClassroomBloc) {
     return GestureDetector(
       onTap: () async {
-        print(item.runtimeType);
-        await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
+        // await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
 
-        print("----------botton sheet ======== close=======----------------");
+        // print("----------botton sheet ======== close=======----------------");
         isEditMode.value = !isEditMode.value;
         changedIndex.value = -1;
         pbisPlusClassroomBloc.add(
@@ -494,41 +494,51 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ),
                       SpacerWidget(16),
                       BlocConsumer(
-                          bloc: pbisPlusAdditionalBehaviourBloc,
+                          bloc: pbisPlusClassroomBloc,
                           builder: (context, state) {
-                            print(
-                                "-----------state is $state------------------");
+                            print("EDITT SCREEN $state");
+                            // print(
+                            //     "-----------state is $state------------------");
 
-                            if (state
-                                is GetPBISPlusAdditionalBehaviourLoading) {
+                            // if (state
+                            //     is GetPBISPlusAdditionalBehaviourLoading) {
+                            //   print(
+                            //       "-----------state is $state------------------");
+                            //   return _buildBehaviourList(
+                            //       PBISPlusSkillsModalLocal
+                            //           .PBISPlusSkillLocalBehaviourlist,
+                            //       true);
+                            // } else if (state
+                            //     is PbisPlusAdditionalBehaviourSuccess) {
+                            //   print(
+                            //       "-----------state is $state------------------");
+                            //   if (state.additionalbehaviourList.isNotEmpty) {
+                            //     return _buildBehaviourList(
+                            //         PBISPlusSkillsModalLocal
+                            //             .PBISPlusSkillLocalBehaviourlist,
+                            //         false);
+                            //   } else {
+                            //     return _noDataFoundWidget();
+                            //   }
+                            // } else if (state
+                            //     is PBISPlusAdditionalBehaviourError) {
+                            //   print(
+                            //       "-----------state is $state------------------");
+                            //   return _noDataFoundWidget();
+                            // }
+                            // return _buildBehaviourList(
+                            //     PBISPlusSkillsModalLocal
+                            //         .PBISPlusSkillLocalBehaviourlist,
+                            //     false);
+
+                            if (state is PbisPlusAdditionalBehaviourSuccess) {
                               print(
                                   "-----------state is $state------------------");
+
                               return _buildBehaviourList(
-                                  PBISPlusSkillsModalLocal
-                                      .PBISPlusSkillLocalBehaviourlist,
-                                  true);
-                            } else if (state
-                                is PbisPlusAdditionalBehaviourSuccess) {
-                              print(
-                                  "-----------state is $state------------------");
-                              if (state.additionalbehaviourList.isNotEmpty) {
-                                return _buildBehaviourList(
-                                    PBISPlusSkillsModalLocal
-                                        .PBISPlusSkillLocalBehaviourlist,
-                                    false);
-                              } else {
-                                return _noDataFoundWidget();
-                              }
-                            } else if (state
-                                is PBISPlusAdditionalBehaviourError) {
-                              print(
-                                  "-----------state is $state------------------");
-                              return _noDataFoundWidget();
+                                  state.additionalbehaviourList, false);
                             }
-                            return _buildBehaviourList(
-                                PBISPlusSkillsModalLocal
-                                    .PBISPlusSkillLocalBehaviourlist,
-                                false);
+                            return _noDataFoundWidget();
                           },
                           listener: (context, state) async {}),
                       SpacerWidget(18),
@@ -540,7 +550,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   }
 
   Widget _buildBehaviourList(
-      List<PBISPlusGenricBehaviourModal> skillsList, bool loading) {
+      List<PBISPlusALLBehaviourModal> skillsList, bool loading) {
     return Expanded(
         child: ValueListenableBuilder(
             valueListenable: localskillsList,
@@ -565,25 +575,24 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     //         .PBISPlusSkillLocalBehaviourlist.length
                     //         .ceil(),
                     itemBuilder: (BuildContext context, int index) {
-                      PBISPlusGenricBehaviourModal item = skillsList[index % 6];
+                      PBISPlusALLBehaviourModal item = skillsList[index];
                       // PBISPlusSkillsModalLocal
                       //     .PBISPlusSkillLocalBehaviourlist[index % 6];
                       final isIconDisabled = IsItemExits(item);
-                      print(
-                          "-------isIconDisabled-------------${isIconDisabled}------------==${index}============------------");
+
                       return loading
                           ? ShimmerLoading(
                               isLoading: loading,
                               child: _buildNonDraggbleIcon(item, true))
                           : isIconDisabled
-                              ? _buildNonDraggbleIcon(item, isIconDisabled)
+                              ? _buildEditSkillIcon(item, isIconDisabled)
                               : _buildEditSkillIcon(item, isIconDisabled);
                     },
                   ),
                 )));
   }
 
-  bool IsItemExits(PBISPlusGenricBehaviourModal itemtoFind) {
+  bool IsItemExits(PBISPlusALLBehaviourModal itemtoFind) {
     try {
       final res = localskillsList.value
           .where((item) => itemtoFind.id == item.id)
@@ -594,8 +603,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     }
   }
 
-  Widget _buildNonDraggbleIcon(
-      PBISPlusGenricBehaviourModal item, isIconDisabled) {
+  Widget _buildNonDraggbleIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
     return Container(
       width: 40,
       height: 40,
@@ -616,77 +624,76 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: Center(
         child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Opacity(opacity: 0.1, child: _buildIcons(item.iconUrlC!))),
+            child: Opacity(opacity: 0.1, child: _buildIcons(item: item))),
       ),
     );
   }
 
-  Widget _buildEditSkillIcon(
-      PBISPlusGenricBehaviourModal item, isIconDisabled) {
+  Widget _buildEditSkillIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
     return GestureDetector(
-      onTap: () {
-        print(item.runtimeType);
-        Utility.doVibration();
-      },
-      child: Draggable(
-          data: item,
-          ignoringFeedbackPointer: !isIconDisabled,
-          child: Container(
-            width: 40,
-            height: 40,
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: 0,
-                  blurRadius: 1,
-                  offset: Offset(0, 0),
+        onTap: () {
+          // print(item.runtimeType);
+          // Utility.doVibration();
+        },
+        child: Draggable<PBISPlusALLBehaviourModal>(
+            data: item,
+            //  ignoringFeedbackPointer: !isIconDisabled,
+            child: Container(
+              width: 40,
+              height: 40,
+              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    spreadRadius: 0,
+                    blurRadius: 1,
+                    offset: Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isIconDisabled
+                      ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
+                      : _buildIcons(item: item),
                 ),
-              ],
-            ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: isIconDisabled
-                    ? Opacity(opacity: 0.2, child: _buildIcons(item.iconUrlC!))
-                    : _buildIcons(item.iconUrlC!),
               ),
             ),
-          ),
-          feedback:
-              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!),
-          childWhenDragging:
-              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!)),
-    );
+            feedback: _buildIcons(item: item),
+            // isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item),
+            childWhenDragging: _buildIcons(item: item))
+        // isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item)),
+        );
   }
 
-  _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
-          PBISPlusBloc pbisPlusClassroomBloc) =>
-      showModalBottomSheet(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          isScrollControlled: true,
-          isDismissible: true,
-          enableDrag: true,
-          backgroundColor: Colors.transparent,
-          elevation: 10,
-          context: context,
-          builder: (BuildContext context) {
-            return LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              return PBISPlusEditSkillsBottomSheet(
-                pbisPlusClassroomBloc: pbisPlusClassroomBloc,
-                index: index,
-                constraints: constraints,
-                // containerIcons: containerIcons,
-                item: item,
-                height: MediaQuery.of(context).size.height * 0.35,
-              );
-            });
-          });
+  // _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
+  //         PBISPlusBloc pbisPlusClassroomBloc) =>
+  //     showModalBottomSheet(
+  //         clipBehavior: Clip.antiAliasWithSaveLayer,
+  //         isScrollControlled: true,
+  //         isDismissible: true,
+  //         enableDrag: true,
+  //         backgroundColor: Colors.transparent,
+  //         elevation: 10,
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return LayoutBuilder(
+  //               builder: (BuildContext context, BoxConstraints constraints) {
+  //             return PBISPlusEditSkillsBottomSheet(
+  //               pbisPlusClassroomBloc: pbisPlusClassroomBloc,
+  //               index: index,
+  //               constraints: constraints,
+  //               // containerIcons: containerIcons,
+  //               item: item,
+  //               height: MediaQuery.of(context).size.height * 0.35,
+  //             );
+  //           });
+  //         });
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*-----------------------------------------------Main Method---------------------------------------------------- */

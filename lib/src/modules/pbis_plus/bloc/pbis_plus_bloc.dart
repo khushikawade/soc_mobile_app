@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -192,74 +193,102 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
     if (event is GetPBISPlusAdditionalBehaviour) {
+      // try {
+      //   print(
+      //       "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
+
+      //   LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusGenricBehaviourDB =
+      //       LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+      //   List<PBISPlusGenricBehaviourModal>? _pbisPlusGenricBehaviourDataList =
+      //       await _pbisPlusGenricBehaviourDB.getData();
+
+      //   LocalDatabase<PbisPlusAdditionalBehaviourList>
+      //       _pbisPlusAdditionalBehaviourDB =
+      //       LocalDatabase(PBISPlusOverrides.pbisPlusAdditionalBehviourDB);
+      //   List<PbisPlusAdditionalBehaviourList>?
+      //       _pbisPlusAdditionalBehaviourDataList =
+      //       await _pbisPlusAdditionalBehaviourDB.getData();
+      //   yield GetPBISPlusAdditionalBehaviourLoading();
+      //   var genralDataList;
+      //   if (_pbisPlusAdditionalBehaviourDataList!.isNotEmpty) {
+      //     genralDataList = _pbisPlusAdditionalBehaviourDataList
+      //         .map((item) => PBISPlusGenricBehaviourModal(
+      //               id: item.id.toString(),
+      //               activeStatusC: "true",
+      //               iconUrlC: item.iconUrlC,
+      //               name: item.name,
+      //               sortOrderC: item.sortOrderC,
+      //               counter: 0,
+      //               behaviourId: "0",
+      //             ))
+      //         .toList();
+      //     yield PbisPlusAdditionalBehaviourSuccess(
+      //         additionalbehaviourList: genralDataList);
+      //   }
+
+      //   List<PbisPlusAdditionalBehaviourList> apiData =
+      //       await getPBISPBehaviourListData();
+
+      //   apiData.removeWhere((item) => item.activeStatusC == 'Hide');
+      //   apiData
+      //       .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
+
+      //   if (apiData!.isNotEmpty) {
+      //     genralDataList = apiData
+      //         .map((item) => PBISPlusGenricBehaviourModal(
+      //               id: item.id.toString(),
+      //               activeStatusC: "true",
+      //               iconUrlC: item.iconUrlC,
+      //               name: item.name,
+      //               sortOrderC: item.sortOrderC,
+      //               counter: 0,
+      //               behaviourId: "0",
+      //             ))
+      //         .toList();
+
+      //     apiData.forEach((element) async {
+      //       await _pbisPlusAdditionalBehaviourDB
+      //           .addData(element); // Pass 'element' instead of 'list'
+      //     });
+      //   }
+      //   List<PbisPlusAdditionalBehaviourList> _check =
+      //       await _pbisPlusAdditionalBehaviourDB.getData();
+
+      //   print(_check);
+      //   if (apiData.isNotEmpty) {
+      //     yield PbisPlusAdditionalBehaviourSuccess(
+      //         additionalbehaviourList: genralDataList);
+      //   } else {
+      //     yield PBISPlusAdditionalBehaviourError(error: "No data Found");
+      //   }
+      // } catch (e) {
+      //   yield PBISPlusAdditionalBehaviourError(error: e.toString());
+      // }
+      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusAdditionalBehaviourLocalDbTable);
+
+      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+
       try {
         print(
             "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
 
-        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusGenricBehaviourDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
-        List<PBISPlusGenricBehaviourModal>? _pbisPlusGenricBehaviourDataList =
-            await _pbisPlusGenricBehaviourDB.getData();
-
-        LocalDatabase<PbisPlusAdditionalBehaviourList>
-            _pbisPlusAdditionalBehaviourDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusAdditionalBehviourDB);
-        List<PbisPlusAdditionalBehaviourList>?
-            _pbisPlusAdditionalBehaviourDataList =
-            await _pbisPlusAdditionalBehaviourDB.getData();
-        yield GetPBISPlusAdditionalBehaviourLoading();
-        var genralDataList;
-        if (_pbisPlusAdditionalBehaviourDataList!.isNotEmpty) {
-          genralDataList = _pbisPlusAdditionalBehaviourDataList
-              .map((item) => PBISPlusGenricBehaviourModal(
-                    id: item.id.toString(),
-                    activeStatusC: "true",
-                    iconUrlC: item.iconUrlC,
-                    name: item.name,
-                    sortOrderC: item.sortOrderC,
-                    counter: 0,
-                    behaviourId: "0",
-                  ))
-              .toList();
-          yield PbisPlusAdditionalBehaviourSuccess(
-              additionalbehaviourList: genralDataList);
-        }
-
-        List<PbisPlusAdditionalBehaviourList> apiData =
-            await getPBISPBehaviourListData();
-
-        apiData.removeWhere((item) => item.activeStatusC == 'Hide');
-        apiData
-            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
-
-        if (apiData!.isNotEmpty) {
-          genralDataList = apiData
-              .map((item) => PBISPlusGenricBehaviourModal(
-                    id: item.id.toString(),
-                    activeStatusC: "true",
-                    iconUrlC: item.iconUrlC,
-                    name: item.name,
-                    sortOrderC: item.sortOrderC,
-                    counter: 0,
-                    behaviourId: "0",
-                  ))
-              .toList();
-
-          apiData.forEach((element) async {
-            await _pbisPlusAdditionalBehaviourDB
-                .addData(element); // Pass 'element' instead of 'list'
-          });
-        }
-        List<PbisPlusAdditionalBehaviourList> _check =
-            await _pbisPlusAdditionalBehaviourDB.getData();
-
-        print(_check);
-        if (apiData.isNotEmpty) {
-          yield PbisPlusAdditionalBehaviourSuccess(
-              additionalbehaviourList: genralDataList);
+        if (_localData.isEmpty) {
+          yield PBISPlusLoading();
         } else {
-          yield PBISPlusAdditionalBehaviourError(error: "No data Found");
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalbehaviourList: _localData);
         }
+
+        List<PBISPlusALLBehaviourModal> list =
+            await getPBISPAdditionalBehaviour();
+
+        await _localDb.clear();
+
+        list.forEach((PBISPlusALLBehaviourModal e) {
+          _localDb.addData(e);
+        });
+        //  yield PbisPlusAdditionalBehaviourSuccess(additionalbehaviourList: list);
       } catch (e) {
         yield PBISPlusAdditionalBehaviourError(error: e.toString());
       }
@@ -859,6 +888,34 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISErrorState(error: e.toString());
       }
     }
+
+    if (event is PBISPlusGetDefaultSchoolBehvaiour) {
+      LocalDatabase<PBISPlusALLBehaviourModal> _localDb =
+          LocalDatabase(PBISPlusOverrides.PbisPlusDefaultBehaviourLocalDbTable);
+      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+      try {
+        if (_localData.isEmpty) {
+          yield PBISPlusLoading();
+        } else {
+          yield PBISPlusGetDefaultSchoolBehvaiourSuccess(
+              defaultSchoolBehaviourList: _localData);
+        }
+
+        List<PBISPlusALLBehaviourModal> list =
+            await GetDefaultSchoolBehvaiour();
+
+        print(list);
+        await _localDb.clear();
+
+        list.forEach((PBISPlusALLBehaviourModal e) {
+          _localDb.addData(e);
+        });
+      } catch (e) {
+        throw (e);
+        // yield PBISPlusGetDefaultSchoolBehvaiourSuccess(
+        //     defaultSchoolBehaviourList: _localData);
+      }
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -1341,9 +1398,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
 
-  Future getPBISPBehaviourListData() async {
+  Future<List<PBISPlusALLBehaviourModal>> getPBISPAdditionalBehaviour() async {
     try {
-      print("--------------INSIDE --getPBISPBehaviourListData---");
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
           headers: {
@@ -1351,15 +1407,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           isCompleteUrl: true);
-      print("--------------response------ -${response.statusCode}--");
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
-            .map<PbisPlusAdditionalBehaviourList>(
-                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
+        List<PBISPlusALLBehaviourModal> resp = response.data['body']
+            .map<PBISPlusALLBehaviourModal>((i) =>
+                PBISPlusALLBehaviourModal.fromJsonForAdditionalBehaviour(i))
             .toList();
 
-        print(resp.length);
-        print(resp);
         return resp;
       }
       return [];
@@ -1451,6 +1505,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
         return listData;
       }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<PBISPlusALLBehaviourModal>> GetDefaultSchoolBehvaiour() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/PBIS_School_Behavior__c/"Mobile_App__c" = \'${Overrides.SCHOOL_ID}\'',
+          isCompleteUrl: true);
+      if (response.statusCode == 200) {
+        print("GetDefaultSchoolBehvaiour recived");
+
+        List<PBISPlusALLBehaviourModal> _list = response.data['body']
+            .map<PBISPlusALLBehaviourModal>(
+                (i) => PBISPlusALLBehaviourModal.fromJson(i))
+            .toList();
+
+        return _list;
+      }
+
       return [];
     } catch (e) {
       throw (e);

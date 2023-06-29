@@ -2,6 +2,7 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -27,12 +28,15 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   List<PersistentBottomNavBarItem> PBISPlusPersistentBottomNavBarItems = [];
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
+  PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+
   @override
   void initState() {
     super.initState();
     pBISPlusPersistentTabController = PersistentTabController(initialIndex: 0);
 
     _checkDriveFolderExistsOrNot();
+    pBISPlusGetDefaultSchoolBehvaiour();
   }
 
   @override
@@ -130,6 +134,10 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   void backOnTap() {
     //To go back to the staff screen of standard app
     Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  void pBISPlusGetDefaultSchoolBehvaiour() {
+    pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
   }
 
   //  void backOnTap() {

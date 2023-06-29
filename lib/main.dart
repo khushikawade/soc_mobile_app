@@ -50,6 +50,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
 import 'src/modules/graded_plus/new_ui/camera_screen.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
@@ -124,7 +125,8 @@ void main() async {
       ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
       ..registerAdapter(PBISPlusStudentNotesAdapter())
       ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter())
-      ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter());
+      ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter())
+      ..registerAdapter(PBISPlusALLBehaviourModalAdapter());
     // ..registerAdapter(PBISPlusSkillsModalAdapter())
 
     // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())

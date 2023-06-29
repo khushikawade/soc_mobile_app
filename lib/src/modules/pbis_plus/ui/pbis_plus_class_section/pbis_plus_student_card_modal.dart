@@ -1,5 +1,6 @@
 // // ignore_for_file: must_be_immutable
 
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -16,6 +17,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusStudentCardModal extends StatefulWidget {
@@ -57,9 +59,13 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   final TextEditingController noteController = TextEditingController();
 
   ValueNotifier<bool> isexpanded = ValueNotifier<bool>(false);
+
+  PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+
   @override
   void initState() {
     super.initState();
+    pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
   }
 
   @override
@@ -162,51 +168,56 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       ]),
     );
 
-    final ActionInteractionButtonsRowWise = GridView.builder(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: widget.isFromDashboardPage!
-            ? 1.1
-            : 0.9, // Adjust this value to change item aspect ratio
-        crossAxisSpacing: 4.0, // Adjust the spacing between items horizontally
-        mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
-      ),
-      itemCount: PBISPlusActionInteractionModalNew
-              .PBISPlusActionInteractionIconsNew.length -
-          3,
-      itemBuilder: (BuildContext context, int index) {
-        final iconData = PBISPlusActionInteractionModalNew
-            .PBISPlusActionInteractionIconsNew[index];
-        return Container(
-          height: 18,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: PBISPlusActionInteractionButton(
-              size: widget.isFromDashboardPage! ? 36 : 64,
-              isShowCircle: true,
-              onValueUpdate: (updatedStudentValueNotifier) {
-                widget.classroomCourseId = widget.classroomCourseId;
-                widget.onValueUpdate(
-                    updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                widget.studentValueNotifier =
-                    updatedStudentValueNotifier; // Used on current screen to update the value
-                valueChange.value = !valueChange
-                    .value; // Update the changes on bool change detect
+    Widget ActionInteractionButtonsRowWise = BlocBuilder(
+        bloc: pBISPlusBloc,
+        builder: (contxt, state) {
+          if (state is PBISPlusGetDefaultSchoolBehvaiourSuccess) {
+            return GridView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: widget.isFromDashboardPage!
+                    ? 1.1
+                    : 0.9, // Adjust this value to change item aspect ratio
+                crossAxisSpacing:
+                    4.0, // Adjust the spacing between items horizontally
+                mainAxisSpacing:
+                    4.0, // Adjust the spacing between items vertically
+              ),
+              itemCount: state.defaultSchoolBehaviourList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 18,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: PBISPlusActionInteractionButton(
+                      size: widget.isFromDashboardPage! ? 36 : 64,
+                      isShowCircle: true,
+                      onValueUpdate: (updatedStudentValueNotifier) {
+                        widget.classroomCourseId = widget.classroomCourseId;
+                        widget.onValueUpdate(
+                            updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+                        widget.studentValueNotifier =
+                            updatedStudentValueNotifier; // Used on current screen to update the value
+                        valueChange.value = !valueChange
+                            .value; // Update the changes on bool change detect
+                      },
+                      isLoading: widget.isLoading,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      iconData: state.defaultSchoolBehaviourList[index],
+                      classroomCourseId: widget.classroomCourseId,
+                      scaffoldKey: widget.scaffoldKey,
+                    ),
+                  ),
+                );
               },
-              isLoading: widget.isLoading,
-              isFromStudentPlus: widget.isFromStudentPlus,
-              studentValueNotifier: widget.studentValueNotifier,
-              iconData: iconData,
-              classroomCourseId: widget.classroomCourseId,
-              scaffoldKey: widget.scaffoldKey,
-            ),
-          ),
-        );
-      },
-    );
+            );
+          }
+          return Container();
+        });
 
     final pbisStudentDetailWidget = Container(
       child: Column(
