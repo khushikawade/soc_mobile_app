@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -350,11 +352,14 @@ class GoogleSlidesPresentationBloc
 
         //if the api response return (404) the resource you are trying to access doesn't exist
         // so then create one google presentation
-        if ((countGooglePresentationSlideAndTrashStatus[0][0] == true &&
-                countGooglePresentationSlideAndTrashStatus[1][1] == '404') ||
+        if (( //Checking count API status
+                countGooglePresentationSlideAndTrashStatus[0][0] == true &&
+                    countGooglePresentationSlideAndTrashStatus[1][1] ==
+                        '404') ||
+            //Checking trash API status
             (countGooglePresentationSlideAndTrashStatus[1][0] == true &&
                 countGooglePresentationSlideAndTrashStatus[1][1] == true)) {
-//   //if the api response return (404) the resource you are trying to access doesn't e
+          //if the api response return (404) the resource you are trying to access doesn't e
           yield GoogleSlidesPresentationErrorState(errorMsg: "404");
         }
 
@@ -382,6 +387,7 @@ class GoogleSlidesPresentationBloc
 
               yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                   studentDetails: event.studentDetails,
+                  //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
                   isSaveStudentGooglePresentationWorkOnDataBase:
                       countGooglePresentationSlideAndTrashStatus[0][1] == 0);
             } else {
@@ -391,11 +397,13 @@ class GoogleSlidesPresentationBloc
             }
           }
           //---------------------------
+          // If
           else if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
-              countGooglePresentationSlideAndTrashStatus[0][1]! >
+              countGooglePresentationSlideAndTrashStatus[0][1] >
                   event.allRecords.length) {
             yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
+                //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
                 isSaveStudentGooglePresentationWorkOnDataBase:
                     isSaveStudentGooglePresentationWorkOnDataBase);
           }
@@ -516,6 +524,7 @@ class GoogleSlidesPresentationBloc
           (response.data['statusCode'] == 500 &&
               response.data['body']['message'].contains('404'))) {
         //if the api response return (404) the resource you are trying to access doesn't exist
+        //Returning true to confirm API returns success but the file we are checking not exist/not found
         return [true, '404'];
       } else if (retry > 0) {
         // var result = await googleDriveBloc
@@ -623,19 +632,17 @@ class GoogleSlidesPresentationBloc
 
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
-      print(
-          "checkGooglePresentationInTrashed API $response.data['statusCode']");
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body'];
-        print(data);
         bool? isTrashed = data['trashed'];
-        print(isTrashed);
 
         return [true, isTrashed == true ? true : data['webViewLink']];
       } else if (response.statusCode == 200 ||
           (response.data['statusCode'] == 500 &&
               response.data['body']['message'].contains('404'))) {
         //if the api response return (404) the resource you are trying to access doesn't exist
+        //Returning true to confirm API returns success but the file we are checking not exist/not found
         return [true, '404'];
       } else if (retry > 0) {
         var result = await Authentication.refreshToken();
