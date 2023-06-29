@@ -318,6 +318,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<StudentAssessmentInfo> assessmentDataList =
             List.unmodifiable(await event.studentInfoDb.getData());
+
         for (var i = 0; i < assessmentDataList.length; i++) {
           if ((assessmentDataList[i].assessmentImage == null ||
                   assessmentDataList[i].assessmentImage!.isEmpty) &&
@@ -2101,6 +2102,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               userEmail: _userProfileLocalData[0].userEmail,
               profilePicture: _userProfileLocalData[0].profilePicture,
               refreshToken: _userProfileLocalData[0].refreshToken,
+              userType:_userProfileLocalData[0].userType ,
               authorizationToken: newToken["access_token"]);
 
           // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);

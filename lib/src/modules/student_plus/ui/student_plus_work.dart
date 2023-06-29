@@ -18,6 +18,7 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -34,9 +35,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  StudentPlusDetailsModel studentDetails;
-
-  StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  final StudentPlusDetailsModel studentDetails;
+  final String sectionType;
+  const StudentPlusWorkScreen(
+      {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
 
   @override
@@ -123,25 +125,27 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   ],
                 ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                StudentPlusInfoSearchBar(
-                  hintText:
-                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                  isMainPage: false,
-                  autoFocus: false,
-                  onTap: () {
-                    pushNewScreen(
-                      context,
-                      screen: StudentPlusSearchScreen(
-                          fromStudentPlusDetailPage: true,
-                          index: 2,
-                          studentDetails: widget.studentDetails),
-                      withNavBar: false,
-                    );
-                  },
-                  controller: _controller,
-                  kLabelSpacing: _kLabelSpacing,
-                  focusNode: myFocusNode,
-                ),
+                widget.sectionType == "Student"
+                    ? Container()
+                    : StudentPlusInfoSearchBar(
+                        hintText:
+                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                        isMainPage: false,
+                        autoFocus: false,
+                        onTap: () {
+                          pushNewScreen(
+                            context,
+                            screen: StudentPlusSearchScreen(
+                                fromStudentPlusDetailPage: true,
+                                index: 2,
+                                studentDetails: widget.studentDetails),
+                            withNavBar: false,
+                          );
+                        },
+                        controller: _controller,
+                        kLabelSpacing: _kLabelSpacing,
+                        focusNode: myFocusNode,
+                      ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 listViewWidget(),
                 SpacerWidget(20)
@@ -150,7 +154,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           ),
           floatingActionButton: fab(),
         ),
-        // googleSlidesPresentationBlocListener(),
+        //googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
       ],
     );
@@ -497,7 +501,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       );
     }
 
-    final result = await showModalBottomSheet(
+    showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -513,15 +517,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               return StudentPlusOptionBottomSheet(
                   studentDetails: widget.studentDetails,
                   resultSummaryIconsModalList: resultSummaryIconsModalList,
-                  height: MediaQuery.of(context).size.height * 0.25);
+                  height: MediaQuery.of(context).size.height * 0.35);
             },
           );
         });
-
-    if (result != null) {
-      //UPDATE THE CURRENT STUDENT DETAILS TO LOCAL VARIABLE WITH PRESENTATION URL AND ID
-      widget.studentDetails = result;
-    }
   }
 
   // BlocListener googleSlidesPresentationBlocListener() {
@@ -530,18 +529,22 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   //       bloc: googleSlidesPresentationBloc,
   //       child: Container(),
   //       listener: (context, state) async {
-  //         // if (state is GetGooglePresentationURLSuccess) {
-  //         //   Navigator.pop(context, false);
-  //         //   widget.studentDetails.studentgooglePresentationUrl =
-  //         //       state.googlePresentationFileUrl;
+  //         if (state is GetGooglePresentationURLSuccess) {
+  //           Navigator.pop(context, false);
+  //           widget.studentDetails.googlePresentationUrl =
+  //               state.googlePresentationFileUrl;
 
-  //         //   _shareBottomSheetMenu();
-  //         // }
+  //           _shareBottomSheetMenu();
+  //         }
 
   //         if (state is GoogleSlidesPresentationErrorState) {
   //           Navigator.pop(context, false);
   //           if (state.errorMsg == 'ReAuthentication is required') {
-
+  //             // await Utility.refreshAuthenticationToken(
+  //             //     isNavigator: false,
+  //             //     errorMsg: state.errorMsg!,
+  //             //     context: context,
+  //             //     scaffoldKey: scaffoldKey);
   //             await Authentication.reAuthenticationRequired(
   //                 context: context,
   //                 errorMessage: state.errorMsg!,

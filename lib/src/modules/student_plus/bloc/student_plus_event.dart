@@ -69,3 +69,16 @@ class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
   @override
   List<Object> get props => [studentDetails!];
 }
+
+
+ 
+ /* ------------------------ Event use to trigger student search by email ------------------------ */
+class StudentPlusSearchByEmail extends StudentPlusEvent {
+  StudentPlusSearchByEmail();
+
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: }';
+}

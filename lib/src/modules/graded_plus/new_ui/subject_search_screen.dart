@@ -113,12 +113,12 @@ class _GradedPlusSearchScreenPageState
       // Overrides.STANDALONE_GRADED_APP != true
       )
       ? [
-          'Google Sheet',
+          'Google Sheets',
           'Google Slides',
           'Google Classroom',
           '${Globals.schoolDbnC} Dashboard'
         ]
-      : ['Google Sheet', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
+      : ['Google Sheets', 'Google Slides', '${Globals.schoolDbnC} Dashboard'];
   List<SubjectDetailList> searchList = [];
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
       LocalDatabase('student_info');

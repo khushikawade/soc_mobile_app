@@ -63,7 +63,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets / 1.5,
+      padding: MediaQuery.of(context).viewInsets ,
       controller: ModalScrollController.of(context),
       child: Container(
         height: widget.sheetHeight != null
@@ -263,9 +263,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                margin: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
-                    ? EdgeInsets.only(bottom: 100)
-                    : null,
+                // margin: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
+                //     ? EdgeInsets.only(bottom: 100)
+                //     : null,
                 child: FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {
