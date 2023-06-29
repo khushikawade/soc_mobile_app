@@ -675,7 +675,7 @@ class _GradedPlusSearchScreenPageState
         child: Container(),
         listener: (context, state) async {
           print("state is $state");
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 userType: 'Teacher',

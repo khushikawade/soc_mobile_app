@@ -533,7 +533,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             //       context: context, isOCR: true);
                             // }
 
-                            if (state is GoogleSuccess) {
+                            if (state is GoogleFolderCreated) {
                               if (Overrides.STANDALONE_GRADED_APP) {
                                 _googleClassroomBloc.add(
                                     CreateClassRoomCourseWork(

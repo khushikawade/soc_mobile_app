@@ -751,7 +751,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             listener: (context, state) async {
               print("UI STATE------------GOOGLE STATE $state");
 
-              if (state is GoogleSuccess) {
+              if (state is GoogleFolderCreated) {
                 //In case of Folder Id received
                 _exportDataToSpreadSheet();
               }

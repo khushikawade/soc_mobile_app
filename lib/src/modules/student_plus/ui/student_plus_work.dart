@@ -568,7 +568,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           print("On student work ------------$state---------");
 
           //Checking Google Folder State
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             Navigator.of(context).pop();
 
             _shareBottomSheetMenu();

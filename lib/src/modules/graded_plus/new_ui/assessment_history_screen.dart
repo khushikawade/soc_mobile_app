@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
-import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
