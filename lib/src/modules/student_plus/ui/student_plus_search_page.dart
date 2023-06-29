@@ -214,6 +214,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (context) => StudentPlusHome(
+                        sectionType: "Staff",
                         studentPlusStudentInfo: state.obj,
                         index: widget.index,
                       )),
