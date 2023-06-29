@@ -288,7 +288,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         list.forEach((PBISPlusALLBehaviourModal e) {
           _localDb.addData(e);
         });
-        //  yield PbisPlusAdditionalBehaviourSuccess(additionalbehaviourList: list);
+        yield PbisPlusAdditionalBehaviourSuccess(additionalbehaviourList: list);
       } catch (e) {
         yield PBISPlusAdditionalBehaviourError(error: e.toString());
       }

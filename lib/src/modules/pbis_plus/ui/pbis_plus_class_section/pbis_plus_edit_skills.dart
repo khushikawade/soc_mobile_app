@@ -63,12 +63,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // PBISPlusBloc pbisPlusAdditionalBehaviourBloc = PBISPlusBloc();
-
+  PBISPlusBloc pbisPlusClassroomBloc2 = PBISPlusBloc();
   @override
   void initState() {
     super.initState();
 
-    pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
+    pbisPlusClassroomBloc2.add(GetPBISPlusAdditionalBehaviour());
 
     // pbisPlusClassroomBloc
     //     .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
@@ -279,7 +279,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   Widget _buildEditItemList(
       List<PBISPlusALLBehaviourModal> skillsList, bool loading) {
     return IgnorePointer(
-      // ignoring: !isCustomBehaviour.value,
+      ignoring: !isCustomBehaviour.value,
       child: DragTarget<PBISPlusALLBehaviourModal>(
           builder: (context, candidateData, rejectedData) {
         return GridView.builder(
@@ -494,7 +494,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ),
                       SpacerWidget(16),
                       BlocConsumer(
-                          bloc: pbisPlusClassroomBloc,
+                          bloc: pbisPlusClassroomBloc2,
                           builder: (context, state) {
                             print("EDITT SCREEN $state");
                             // print(
@@ -570,16 +570,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                           4.0, // Adjust the spacing between items vertically
                     ),
                     itemCount: skillsList.length,
-                    // 3 *
-                    //     PBISPlusSkillsModalLocal
-                    //         .PBISPlusSkillLocalBehaviourlist.length
-                    //         .ceil(),
                     itemBuilder: (BuildContext context, int index) {
                       PBISPlusALLBehaviourModal item = skillsList[index];
-                      // PBISPlusSkillsModalLocal
-                      //     .PBISPlusSkillLocalBehaviourlist[index % 6];
                       final isIconDisabled = IsItemExits(item);
-
                       return loading
                           ? ShimmerLoading(
                               isLoading: loading,
@@ -631,44 +624,45 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 
   Widget _buildEditSkillIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
     return GestureDetector(
-        onTap: () {
-          // print(item.runtimeType);
-          // Utility.doVibration();
-        },
-        child: Draggable<PBISPlusALLBehaviourModal>(
-            data: item,
-            //  ignoringFeedbackPointer: !isIconDisabled,
-            child: Container(
-              width: 40,
-              height: 40,
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    spreadRadius: 0,
-                    blurRadius: 1,
-                    offset: Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: isIconDisabled
-                      ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
-                      : _buildIcons(item: item),
+      onTap: () {
+        // print(item.runtimeType);
+        // Utility.doVibration();
+      },
+      child: Draggable<PBISPlusALLBehaviourModal>(
+          data: item,
+          ignoringFeedbackPointer: !isIconDisabled,
+          child: Container(
+            width: 40,
+            height: 40,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            padding: EdgeInsets.all(8),
+
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 0),
                 ),
+              ],
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: isIconDisabled
+                    ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
+                    : _buildIcons(item: item),
               ),
             ),
-            feedback: _buildIcons(item: item),
-            // isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item),
-            childWhenDragging: _buildIcons(item: item))
-        // isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item)),
-        );
+          ),
+          feedback:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item),
+          childWhenDragging:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item: item)),
+    );
   }
 
   // _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
