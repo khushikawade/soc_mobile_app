@@ -22,8 +22,10 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusGradesPage extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
+  final String sectionType;
 
-  const StudentPlusGradesPage({Key? key, required this.studentDetails})
+  const StudentPlusGradesPage(
+      {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
 
   @override
@@ -39,8 +41,8 @@ class individual extends State<StudentPlusGradesPage> {
 
   @override
   void initState() {
-    _studentPlusBloc.add(
-        FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC));
+    _studentPlusBloc.add(FetchStudentGradesEvent(
+        studentId: widget.studentDetails.studentIdC ?? ''));
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_grades_screen");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -82,28 +84,31 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                StudentPlusInfoSearchBar(
-                  hintText:
-                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                  onTap: () async {
-                    var result = await pushNewScreen(context,
-                        screen: StudentPlusSearchScreen(
-                            fromStudentPlusDetailPage: true,
-                            index: 3,
-                            studentDetails: widget.studentDetails),
-                        withNavBar: false,
-                        pageTransitionAnimation: PageTransitionAnimation.fade);
-                    if (result == true) {
-                      Utility.closeKeyboard(context);
-                    }
-                  },
-                  isMainPage: false,
-                  autoFocus: false,
-                  controller: _controller,
-                  kLabelSpacing: _kLabelSpacing,
-                  focusNode: myFocusNode,
-                  onItemChanged: null,
-                ),
+                widget.sectionType == "Student"
+                    ? Container()
+                    : StudentPlusInfoSearchBar(
+                        hintText:
+                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                        onTap: () async {
+                          var result = await pushNewScreen(context,
+                              screen: StudentPlusSearchScreen(
+                                  fromStudentPlusDetailPage: true,
+                                  index: 3,
+                                  studentDetails: widget.studentDetails),
+                              withNavBar: false,
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.fade);
+                          if (result == true) {
+                            Utility.closeKeyboard(context);
+                          }
+                        },
+                        isMainPage: false,
+                        autoFocus: false,
+                        controller: _controller,
+                        kLabelSpacing: _kLabelSpacing,
+                        focusNode: myFocusNode,
+                        onItemChanged: null,
+                      ),
 
                 //       GradesWidget()
                 BlocConsumer<StudentPlusBloc, StudentPlusState>(
