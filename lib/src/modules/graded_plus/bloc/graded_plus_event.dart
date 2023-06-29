@@ -153,7 +153,7 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final bool isMcqSheet;
   final String classroomCourseId;
   final String classroomCourseWorkId;
-
+  final String classroomCourseWorkUrl;
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
       required this.rubricScore,
@@ -172,7 +172,8 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
       required this.assessmentQueImage,
       required this.isMcqSheet,
       required this.classroomCourseId,
-      required this.classroomCourseWorkId});
+      required this.classroomCourseWorkId,
+      required this.classroomCourseWorkUrl});
 
   @override
   List<Object> get props => [];
