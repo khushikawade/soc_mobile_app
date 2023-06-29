@@ -553,7 +553,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId == null ||
             _userProfileLocalData[0].gradedPlusGoogleDriveFolderId == "") {
           bool result = await googleDriveBlocMethods.getAndUpdateFolderDetails(
-              folderName: "event.folderName" ?? '');
+              folderName: "SOLVED GRADED+" );
           if (result == false) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
             return;
