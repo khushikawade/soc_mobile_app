@@ -130,7 +130,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     }
   }
 
-  Widget _buildSearchbar() {
+  Widget _buildSearchBar() {
     return SizedBox(
       height: 65,
       child: Container(
@@ -359,7 +359,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                 await getListData(Strings.googleRecentSearch);
             List<dynamic> reversedRecentDetailDbList =
                 new List.from(recentDetailDbList.reversed);
-
+            //For GRADED+ Standalone
             if (Overrides.STANDALONE_GRADED_APP) {
               GoogleClassroomOverrides.studentAssessmentAndClassroomObj =
                   GoogleClassroomCourses();
@@ -372,7 +372,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                           reversedRecentDetailDbList[index].classroomCourseId,
                       courseWorkId: reversedRecentDetailDbList[index]
                           .classroomCourseWorkId);
-            } else {
+            }
+            //For Standard App
+            else {
               GoogleClassroomOverrides
                       .historyStudentResultSummaryForStandardApp =
                   ClassroomCourse();
@@ -432,7 +434,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     );
   }
 
-  Widget _buildissuggestionList() {
+  Widget _buildSuggestionList() {
     return BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
         bloc: googleBloc,
         builder: (BuildContext context, GoogleDriveState state) {
@@ -864,9 +866,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                       ],
                     ),
                     SpacerWidget(_kLabelSpacing / 2),
-                    _buildSearchbar(),
+                    _buildSearchBar(),
                     issuggestionList
-                        ? _buildissuggestionList()
+                        ? _buildSuggestionList()
                         : SizedBox(height: 0),
                     SpacerWidget(_kLabelSpacing / 2),
                     issuggestionList == false

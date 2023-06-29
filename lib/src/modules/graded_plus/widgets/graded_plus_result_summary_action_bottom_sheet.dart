@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -96,10 +98,6 @@ class _GradedPlusResultOptionBottomSheetState
   }
 
   Widget _listTileMenu({required ResultSummaryIcons element}) {
-    if (element.title == "Class") {
-      print(widget.allUrls[element.title]);
-      print("url on bottom shett");
-    }
     return Opacity(
       opacity: widget.allUrls[element.title] == null ||
               widget.allUrls[element.title] == ''
@@ -134,7 +132,6 @@ class _GradedPlusResultOptionBottomSheetState
             bottomIconsOnTap(
                 title: element.title ?? '',
                 url: widget.allUrls[element.title] ?? '');
-            // }
           }),
     );
   }
