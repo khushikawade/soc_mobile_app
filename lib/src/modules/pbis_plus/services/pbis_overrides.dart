@@ -40,4 +40,6 @@ class PBISPlusOverrides {
       'pbisplus_default_behaviour_local_db_details';
   static final String PbisPlusAdditionalBehaviourLocalDbTable =
       'pbisplus_default_additional_behaviour_local_db_details';
+  static final String PbisPlusTeacherCustomBehaviourLocalDbTable =
+      'pbisplus_teacher_custom_behaviour_local_db_details';
 }

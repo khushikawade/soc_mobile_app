@@ -238,3 +238,13 @@ class PBISPlusGetDefaultSchoolBehvaiourSuccess extends PBISPlusState {
   @override
   List<Object> get props => [defaultSchoolBehaviourList];
 }
+
+class PBISPlusGetTeacherCustomBehvaiourSuccess extends PBISPlusState {
+  final List<PBISPlusALLBehaviourModal> teacherCustomBehaviourList;
+
+  PBISPlusGetTeacherCustomBehvaiourSuccess(
+      {required this.teacherCustomBehaviourList});
+
+  @override
+  List<Object> get props => [teacherCustomBehaviourList];
+}

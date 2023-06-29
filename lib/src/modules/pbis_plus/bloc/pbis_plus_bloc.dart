@@ -921,6 +921,40 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         //     defaultSchoolBehaviourList: _localData);
       }
     }
+
+    if (event is PBISPlusGetTeacherCustomBehvaiour) {
+      LocalDatabase<PBISPlusALLBehaviourModal> teacherCustomBehaviourDb =
+          LocalDatabase(
+              PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+      List<PBISPlusALLBehaviourModal>? teacherCustomBehaviourData =
+          await teacherCustomBehaviourDb.getData();
+      try {
+        if (teacherCustomBehaviourData.isEmpty) {
+          LocalDatabase<PBISPlusALLBehaviourModal> defaultBehaviourLocalDb =
+              LocalDatabase(
+                  PBISPlusOverrides.PbisPlusDefaultBehaviourLocalDbTable);
+
+          List<PBISPlusALLBehaviourModal>? defaultBehaviourLocalData =
+              await defaultBehaviourLocalDb.getData();
+
+          defaultBehaviourLocalData.removeRange(
+              defaultBehaviourLocalData.length - 2,
+              defaultBehaviourLocalData.length);
+
+          defaultBehaviourLocalData.forEach((element) async {
+            await teacherCustomBehaviourDb.addData(element);
+          });
+
+          yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+              teacherCustomBehaviourList: defaultBehaviourLocalData);
+        } else {
+          yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+              teacherCustomBehaviourList: teacherCustomBehaviourData);
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
