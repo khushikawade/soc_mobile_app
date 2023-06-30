@@ -1396,8 +1396,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
       List<PBISPlusStudentList>? _pbisPlusStudentNotesDataList =
           await _pbisPlusStudentListDB.getData();
-      var list;
-
+      List<PBISPlusStudentList> list;
       list = uniqueStudents
           .map((item) => PBISPlusStudentList(
               email: item.profile!.emailAddress!,
@@ -1417,7 +1416,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       print(
           "----------unique sudent ==================================================================================================  saved on db -------------------- ");
       var dataList = await _pbisPlusStudentListDB.getData();
-
       dataList.forEach((student) {
         print('ID: ${student.studentId}');
         print('Name: ${student.names?.fullName!}');

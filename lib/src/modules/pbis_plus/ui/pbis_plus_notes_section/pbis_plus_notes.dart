@@ -120,7 +120,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
 
   Widget body(BuildContext context) {
     return Column(
-      // physics: NeverScrollableScrollPhysics(),
       children: [
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -151,7 +150,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                         "------------state return on the UI-------- ===-${state}-----------");
                     print(state);
                     if (state is PBISPlusStudentListSucess) {
-                      //---------------------return the filter list to UI-----------//
                       if (state.studentNotes.isNotEmpty) {
                         mainList = state.studentNotes;
                         return _listBuilder(state.studentNotes,
@@ -217,25 +215,10 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
 
   Widget _buildListItem(
       List<PBISPlusStudentList> studentNotesList, bool isShimmerLoading) {
-    return
-
-        // Expanded(
-        //   child: ListView.builder(
-        //     // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        //     // controller: _scrollcontroller,
-        //     shrinkWrap: true,
-        //     physics: isShimmerLoading
-        //         ? NeverScrollableScrollPhysics()
-        //         : BouncingScrollPhysics(),
-        //     padding: EdgeInsets.only(
-        //       bottom: 40,
-        //     ),
-        //     scrollDirection: Axis.vertical,
-        //     itemBuilder: (BuildContext context, int index) {
-        //       return
-        ListView.builder(
+    return ListView.builder(
       shrinkWrap: true,
       itemCount: studentNotesList.length,
+      padding: EdgeInsets.only(bottom: 40),
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         return listTile(studentNotesList[index], index, isShimmerLoading);
@@ -331,17 +314,20 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
             ),
           ),
           onTap: (() {
+            print("-----------school dbn c--------");
             print(Globals.schoolDbnC);
+            print("-----------teacherId--------");
             print(Globals.teacherId);
+            print("-----------SCHOOL_ID--------");
             print(Overrides.SCHOOL_ID);
             // print(obj.)
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //       builder: (context) => PBISPlusNotesDetailPage(
-            //             item: obj,
-            //             pBISPlusBlocInstance: PBISPlusBlocInstance,
-            //           )),
-            // );
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => PBISPlusNotesDetailPage(
+                        item: obj,
+                        pBISPlusBlocInstance: PBISPlusBlocInstance,
+                      )),
+            );
 
             /*-------------------------User Activity Track START----------------------------*/
             // FirebaseAnalyticsService.addCustomAnalyticsEvent(
