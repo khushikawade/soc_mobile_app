@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -34,6 +36,7 @@ class _StudentPlusGradesDetailPageState
   ScrollController _scrollController = ScrollController();
   List<StudentPlusCourseWorkModel> paginationList = [];
   String? nextPageToken = '';
+
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(_scrollListener);
@@ -50,12 +53,7 @@ class _StudentPlusGradesDetailPageState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: StudentPlusAppBar(
-            titleIconCode: 0xe883,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
-          ),
+          appBar: StudentPlusAppBar(titleIconCode: 0xe883),
           body: Container(
             padding: EdgeInsets.symmetric(
                 horizontal: StudentPlusOverrides.kSymmetricPadding),
@@ -63,22 +61,13 @@ class _StudentPlusGradesDetailPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 PlusScreenTitleWidget(
                     kLabelSpacing: _kLabelSpacing,
                     text: widget.studentPlusCourseModel.name ?? '',
                     backButton: true),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 HeaderTitle(),
-                gradesListSectionWidget(),
-
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesChipListWidget(), // widget to grades chip List
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // SpacerWidget(_kLabelSpacing / 2),
-                // HeaderTitle(), // widget to show header of list
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesListSectionWidget() // widget to show grades class wise
+                gradesListSectionWidget()
               ],
             ),
           ),
@@ -104,8 +93,9 @@ class _StudentPlusGradesDetailPageState
           if (state.obj.length > 0) {
             paginationList = [];
             paginationList.addAll(state.obj);
-            nextPageToken =
-                state.nextPageToken == '' ? null : state.nextPageToken;  // null define no next page
+            nextPageToken = state.nextPageToken == ''
+                ? null
+                : state.nextPageToken; // null define no next page
           }
           return paginationList.length > 0
               ? Expanded(
@@ -141,20 +131,6 @@ class _StudentPlusGradesDetailPageState
         }
       },
     );
-    // return updatedList.length > 0 || courseList.length > 0
-    //     ?
-
-    // : Container(
-    //     height: MediaQuery.of(context).size.height * 0.5,
-    //     child: NoDataFoundErrorWidget(
-    //       marginTop: MediaQuery.of(context).size.height * 0.1,
-    //       errorMessage: StudentPlusOverrides.gradesErrorMessage,
-    //       isResultNotFoundMsg: false,
-    //       isNews: false,
-    //       isEvents: false,
-    //       isSearchpage: true,
-    //     ),
-    //   );
   }
 
   /* ------------------- widget to show title of grades list ------------------ */
@@ -183,7 +159,7 @@ class _StudentPlusGradesDetailPageState
             child: Container(
                 child: ListTile(
               leading: Utility.textWidget(
-                  text: "Assessment",
+                  text: "Assignment",
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
@@ -268,21 +244,7 @@ class _StudentPlusGradesDetailPageState
                       .textTheme
                       .subtitle1!
                       .copyWith(color: Colors.grey)),
-              // leading: Container(
-              //   width: MediaQuery.of(context).size.width * 0.6,
-              //   child: Utility.textWidget(
-              //       text: studentPlusGradeModel.schoolSubjectC ?? '-',
-              //       maxLines: 2,
-              //       context: context,
-              //       textTheme: Theme.of(context).textTheme.headline2!),
-              // ),
               trailing: Container(
-                // padding: EdgeInsets.symmetric(
-                //     vertical: _kLabelSpacing / 4, horizontal: _kLabelSpacing / 2),
-                // decoration: BoxDecoration(
-                //   color: AppTheme.kButtonColor,
-                //   borderRadius: BorderRadius.circular(20.0),
-                // ),
                 child: Utility.textWidget(
                     text: studentPlusCourseWorkModel
                                     .studentWorkSubmission !=
@@ -304,7 +266,6 @@ class _StudentPlusGradesDetailPageState
           );
   }
 
-
 /* ---------- 'localDb' use to manage pagination in case to data showing from local db ---------- */
   _scrollListener() {
     if (_scrollController.position.atEdge &&
@@ -312,7 +273,7 @@ class _StudentPlusGradesDetailPageState
         nextPageToken != null &&
         nextPageToken != 'localDb') {
       // print("updating new list ");
-      _studentPlusBloc.add(UpdateStudentCourseWorkEvent(
+      _studentPlusBloc.add(GetStudentCourseWorkListByPaginationEvent(
           courseWorkId: widget.studentPlusCourseModel.id ?? '',
           nextPageToken: nextPageToken,
           oldList: paginationList));

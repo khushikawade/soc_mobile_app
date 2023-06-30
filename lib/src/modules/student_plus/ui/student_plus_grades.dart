@@ -332,7 +332,7 @@ class individual extends State<StudentPlusGradesPage> {
             text: studentPlusCourseModel.section == null ||
                     studentPlusCourseModel.room == null
                 ? "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString())}"
-                : "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString()) ?? ''} || ${studentPlusCourseModel.section} || ${studentPlusCourseModel.room}",
+                : "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString()) ?? ''} | ${studentPlusCourseModel.section} | ${studentPlusCourseModel.room}",
             context: context,
             textTheme: Theme.of(context)
                 .textTheme

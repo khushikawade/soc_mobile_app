@@ -194,10 +194,8 @@ class StudentPlusUtility {
     return teacherList;
   }
 
-
-
   /* ----------------------------- Widget to show all CaughtUp message ---------------------------- */
-  static Widget allCaughtUp({required BuildContext context}) { 
+  static Widget allCaughtUp({required BuildContext context}) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -283,7 +281,7 @@ class StudentPlusUtility {
                 SpacerWidget(10),
                 Utility.textWidget(
                     context: context,
-                    text: 'You\'ve seen all Classroom Assessment.',
+                    text: 'You\'ve seen all Classroom Assignment.',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,

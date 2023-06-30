@@ -92,11 +92,14 @@ class FetchStudentCourseWorkEvent extends StudentPlusEvent {
 }
 
 /* ---------------- Event use to trigger update current student grade details --------------- */
-class UpdateStudentCourseWorkEvent extends StudentPlusEvent {
+class GetStudentCourseWorkListByPaginationEvent extends StudentPlusEvent {
   final String courseWorkId;
   final String? nextPageToken;
-  final List<StudentPlusCourseWorkModel> oldList; 
-  UpdateStudentCourseWorkEvent({required this.courseWorkId,required this.nextPageToken,required this.oldList});
+  final List<StudentPlusCourseWorkModel> oldList;
+  GetStudentCourseWorkListByPaginationEvent(
+      {required this.courseWorkId,
+      required this.nextPageToken,
+      required this.oldList});
   @override
   List<Object> get props => [];
   @override
