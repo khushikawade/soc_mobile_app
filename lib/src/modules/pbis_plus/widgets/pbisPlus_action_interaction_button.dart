@@ -50,7 +50,7 @@ class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
   final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
-  AudioPlayer? soundEffectPlayer;
+  // AudioPlayer? soundEffectPlayer;
   // void updateState(bool isLiked) {
   //   if (_isOffline) {
   //     Utility.currentScreenSnackBar("No Internet Connection", null);

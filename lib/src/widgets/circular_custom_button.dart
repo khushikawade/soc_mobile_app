@@ -1,22 +1,25 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
-class CircularCustomButton extends StatelessWidget {
+class CustomCircularButton extends StatelessWidget {
   Color? backgroundColor;
   Color? borderColor;
   Color? textColor;
   String? text;
   Function? onClick;
-  Enum? buttonType;
-  Enum? buttonSize;
+  // Enum? buttonType;
+  // Enum? buttonSize;
   EdgeInsets? padding;
   Size? size;
   bool? isBusy;
-  dynamic model;
+  // dynamic model;
   double? buttonRadius;
   TextStyle? style;
-  CircularCustomButton({
+
+  CustomCircularButton({
     Key? key,
     Color? borderColor,
     required Color? textColor,
@@ -57,38 +60,35 @@ class CircularCustomButton extends StatelessWidget {
     return Padding(
         padding: padding!,
         child: ElevatedButton(
-          onPressed: () {
-            onClick!();
-          },
-          style: ElevatedButton.styleFrom(
-              foregroundColor: AppTheme.kButtonColor,
-              minimumSize: size,
-              backgroundColor: backgroundColor,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(buttonRadius!),
-                  side: BorderSide(color: borderColor!)),
-              enableFeedback: false,
-              animationDuration: Duration.zero,
-              fixedSize: const Size(0, 20)),
-          child: isBusy!
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                      height: 14,
-                      width: 14,
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator.adaptive(
-                        backgroundColor: AppTheme.kButtonColor,
-                      )),
-                )
-              : Text((text!),
-                  textAlign: TextAlign.center,
-                  style: style ??
-                      Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: textColor, fontSize: 12)),
-        ));
+            onPressed: () {
+              onClick!();
+            },
+            style: ElevatedButton.styleFrom(
+                foregroundColor: AppTheme.kButtonColor,
+                minimumSize: size,
+                backgroundColor: backgroundColor,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(buttonRadius!),
+                    side: BorderSide(color: borderColor!)),
+                enableFeedback: false,
+                animationDuration: Duration.zero,
+                fixedSize: const Size(0, 20)),
+            child: isBusy!
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        height: 14,
+                        width: 14,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator.adaptive(
+                            backgroundColor: AppTheme.kButtonColor)))
+                : Text((text!),
+                    textAlign: TextAlign.center,
+                    style: style ??
+                        Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: textColor, fontSize: 12))));
   }
 }

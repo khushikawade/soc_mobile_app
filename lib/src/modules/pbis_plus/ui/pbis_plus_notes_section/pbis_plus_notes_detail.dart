@@ -2,28 +2,16 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_search_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
   final PBISPlusStudentList item;
@@ -55,7 +43,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(studentNotesList: null));
 
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -73,20 +61,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         onWillPop: () async => false,
         child: Scaffold(
             key: _scaffoldKey,
-            backgroundColor:
-                Colors.transparent, // appBar: PBISPlusUtility.pbisAppBar(
-            //   context: context,
-            //   titleIconData: widget.titleIconData,
-            //   title: 'Class',
-            //   scaffoldKey: _scaffoldKey,
-            // ),
+            backgroundColor: Colors.transparent,
             extendBody: true,
             body: body(context)),
       )
     ]);
   }
 
-  Widget _buildbackIcon() {
+  Widget _buildBackIcon() {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
@@ -111,22 +93,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
       physics: NeverScrollableScrollPhysics(),
       children: [
         SpacerWidget(24),
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
-          _buildbackIcon(),
-          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 20),
-          Padding(
-            padding: EdgeInsets.only(left: 4),
+        _buildBackIcon(),
+        // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 20),
+        Padding(
+            padding: EdgeInsets.only(left: 22),
             child: FittedBox(
-              child: Text("${widget.item.names!.fullName!}'s" + " Notes ",
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .copyWith(fontSize: 28, fontWeight: FontWeight.w600)),
-            ),
-          ),
-        ]),
+                child: Text("${widget.item.names!.fullName!}'s" + " Notes",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontSize: 28, fontWeight: FontWeight.w600)))),
         SpacerWidget(_KVertcalSpace / 5),
         ValueListenableBuilder(
             valueListenable: filterNotifier,
@@ -138,7 +115,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                       //---------------------return the filter list to UI-----------//
                       return _listBuilder(state.studentNotes,
                           isShimmerLoading: false);
-                    } else if (state is PBISPlusStudentNotesShimmer ||
+                    } else if (state is PBISPlusLoading ||
                         state is PBISPlusInitial) {
                       return _listBuilder(
                           List.generate(10, (index) => PBISPlusStudentList()),
@@ -289,7 +266,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(studentNotesList: null));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
