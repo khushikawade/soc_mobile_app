@@ -95,12 +95,14 @@ class PBISPlusClassRoomShimmerLoading extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PbisPlusAdditionalBehaviourSuccess extends PBISPlusState {
+class PBISPlusGetPBISPlusAdditionalBehaviourSuccess extends PBISPlusState {
   final List<PBISPlusALLBehaviourModal> additionalbehaviourList;
 
-  PbisPlusAdditionalBehaviourSuccess({required this.additionalbehaviourList});
-  PbisPlusAdditionalBehaviourSuccess copyWith({final additionalbehaviourList}) {
-    return PbisPlusAdditionalBehaviourSuccess(
+  PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
+      {required this.additionalbehaviourList});
+  PBISPlusGetPBISPlusAdditionalBehaviourSuccess copyWith(
+      {final additionalbehaviourList}) {
+    return PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
         additionalbehaviourList:
             additionalbehaviourList ?? this.additionalbehaviourList);
   }
@@ -247,4 +249,13 @@ class PBISPlusGetTeacherCustomBehvaiourSuccess extends PBISPlusState {
 
   @override
   List<Object> get props => [teacherCustomBehaviourList];
+}
+
+class PBISPlusBehvaiourLoading extends PBISPlusState {
+  final List<PBISPlusALLBehaviourModal> demoBehaviourData;
+
+  PBISPlusBehvaiourLoading({required this.demoBehaviourData});
+
+  @override
+  List<Object> get props => [demoBehaviourData];
 }

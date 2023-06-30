@@ -168,6 +168,32 @@ class PBISPlusALLBehaviourModal {
     ownerId = json['OwnerId'] ?? '';
   }
 
+  PBISPlusALLBehaviourModal.fromJsonForTeacherCustomBehaviour(
+      Map<String, dynamic> json) {
+    id = json['Id'].toString() ?? '';
+    activeStatusC = json['Active_Status__c'] ?? "";
+    behaviorTitleC = json['Name'] ?? '';
+    mobileAppC = json['Mobile_App__c'] ?? '';
+    pBISBehaviorIconURLC = json['Icon_URL'] ?? "";
+    name = json['Name'] ?? "";
+    pBISSoundC = json['PBIS_Sound__c'] ?? '';
+    pBISBehaviorSortOrderC = json['Sorting_Order'] ?? '';
+    createdById = json['CreatedAt'] ?? '';
+    lastModifiedById = json['UpdatedAt'] ?? '';
+    ownerId = json['OwnerId'] ?? '';
+  }
+
+  // {
+  //           "Id": 25,
+  //           "Name": "Behaviour-3",
+  //           "Icon_URL": "https://cdn-icons-png.flaticon.com/512/6565/6565893.png",
+  //           "Sorting_Order": "1",
+  //           "Teacher_Id": "0034W00003AwJSfQAN",
+  //           "Default": "false",
+  //           "CreatedAt": "2023-06-27T06:44:07.859Z",
+  //           "UpdatedAt": "2023-06-29T14:17:45.486Z"
+  //       },
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['Id'] = this.id;
@@ -183,4 +209,91 @@ class PBISPlusALLBehaviourModal {
     data['OwnerId'] = this.ownerId;
     return data;
   }
+
+  static List<PBISPlusALLBehaviourModal> demoBehaviourData = [
+    PBISPlusALLBehaviourModal(
+      id: '1',
+      activeStatusC: 'Active',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'Mobile',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-apply-96.png',
+      name: 'Name',
+      pBISSoundC: 'Sound',
+      pBISBehaviorSortOrderC: 'Sort Order',
+      createdById: 'Created',
+      lastModifiedById: 'Modified',
+      ownerId: 'Owner',
+    ),
+    PBISPlusALLBehaviourModal(
+      id: '2',
+      activeStatusC: 'Inactive',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'App',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-airpods-pro-max-96.png',
+      name: 'Object',
+      pBISSoundC: 'Audio',
+      pBISBehaviorSortOrderC: 'Order',
+      createdById: 'Creator',
+      lastModifiedById: 'Updater',
+      ownerId: 'Owner',
+    ),
+    PBISPlusALLBehaviourModal(
+      id: '3',
+      activeStatusC: 'Active',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'Mobile',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-car-96.png',
+      name: 'Name',
+      pBISSoundC: 'Sound',
+      pBISBehaviorSortOrderC: 'Sort Order',
+      createdById: 'Created',
+      lastModifiedById: 'Modified',
+      ownerId: 'Owner',
+    ),
+    PBISPlusALLBehaviourModal(
+      id: '4',
+      activeStatusC: 'Active',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'Mobile',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-folded-hands-light-skin-tone-96.png',
+      name: 'Name',
+      pBISSoundC: 'Sound',
+      pBISBehaviorSortOrderC: 'Sort Order',
+      createdById: 'Created',
+      lastModifiedById: 'Modified',
+      ownerId: 'Owner',
+    ),
+    PBISPlusALLBehaviourModal(
+      id: '5',
+      activeStatusC: 'Active',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'Mobile',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-feedback-96.png',
+      name: 'Name',
+      pBISSoundC: 'Sound',
+      pBISBehaviorSortOrderC: 'Sort Order',
+      createdById: 'Created',
+      lastModifiedById: 'Modified',
+      ownerId: 'Owner',
+    ),
+    PBISPlusALLBehaviourModal(
+      id: '6',
+      activeStatusC: 'Active',
+      behaviorTitleC: 'Title',
+      mobileAppC: 'Mobile',
+      pBISBehaviorIconURLC:
+          'https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-defend-family-96.png',
+      name: 'Name',
+      pBISSoundC: 'Sound',
+      pBISBehaviorSortOrderC: 'Sort Order',
+      createdById: 'Created',
+      lastModifiedById: 'Modified',
+      ownerId: 'Owner',
+    ),
+  ];
 }

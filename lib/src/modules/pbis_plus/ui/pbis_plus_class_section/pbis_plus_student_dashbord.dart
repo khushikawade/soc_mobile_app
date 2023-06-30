@@ -172,7 +172,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       scaffoldKey: widget.scaffoldKey,
                       studentValueNotifier: widget.studentValueNotifier,
                       isFromStudentPlus: widget.isFromStudentPlus,
-                      classroomCourseId: widget.classroomCourseId!);
+                      classroomCourseId: widget.classroomCourseId ?? '');
                 } else {
                   // In case of student email not found in STUDENT+ Module
                   List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
@@ -191,7 +191,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       scaffoldKey: widget.scaffoldKey,
                       studentValueNotifier: widget.studentValueNotifier,
                       isFromStudentPlus: widget.isFromStudentPlus,
-                      classroomCourseId: widget.classroomCourseId!);
+                      classroomCourseId: widget.classroomCourseId ?? '');
                 }
               }),
         ),

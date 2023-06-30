@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
@@ -27,7 +28,7 @@ import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusGenricBehaviourModal? item;
+  PBISPlusALLBehaviourModal? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
@@ -119,7 +120,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         ));
   }
 
-  Widget EditAndDeleteIcon(PBISPlusGenricBehaviourModal? dataList) {
+  Widget EditAndDeleteIcon(PBISPlusALLBehaviourModal? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -209,9 +210,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   showPopup(
       {required String message,
       required String? title,
-      PBISPlusGenricBehaviourModal? item,
+      PBISPlusALLBehaviourModal? item,
       PBISPlusBloc? pbisPlusClassroomBloc}) async {
-    final res = await Navigator.of(context).push(HeroDialogRoute(
+    var res = await Navigator.of(context).push(HeroDialogRoute(
         builder: (context) => PBISPlusCommonPopup(
               pbisPlusClassroomBloc: pbisPlusClassroomBloc,
               item: item!,
@@ -229,12 +230,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   .headline1!
                   .copyWith(fontWeight: FontWeight.bold),
             )));
-    if (res) {
+    if (res == true) {
       Navigator.pop(context);
     }
   }
 
-  Widget _buildNextbutton(PBISPlusGenricBehaviourModal dataList) {
+  Widget _buildNextbutton(PBISPlusALLBehaviourModal dataList) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
@@ -262,7 +263,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  Widget _buildEditNameWidget(PBISPlusGenricBehaviourModal? dataList) {
+  Widget _buildEditNameWidget(PBISPlusALLBehaviourModal? dataList) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

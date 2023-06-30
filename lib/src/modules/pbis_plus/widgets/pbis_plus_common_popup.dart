@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,7 +21,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final PBISPlusGenricBehaviourModal item;
+  final PBISPlusALLBehaviourModal item;
   PBISPlusBloc? pbisPlusClassroomBloc;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
@@ -213,27 +216,45 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     // }
   }
 
-  Widget _buildIcons(String assestPath) {
-    return assestPath.contains('http://') || assestPath.contains('https://')
-        ? Container(
-            height: 24,
-            width: 24,
-            child: Image.network(
-              assestPath!,
-              fit: BoxFit.contain,
-            ),
-          )
-        : Container(
-            height: 24,
-            width: 24,
-            child: SvgPicture.asset(
-              assestPath,
-              fit: BoxFit.contain,
-            ),
-          );
+  // Widget _buildIcons(String assestPath) {
+  //   return assestPath.contains('http://') || assestPath.contains('https://')
+  //       ? Container(
+  //           height: 24,
+  //           width: 24,
+  //           child: Image.network(
+  //             assestPath!,
+  //             fit: BoxFit.contain,
+  //           ),
+  //         )
+  //       : Container(
+  //           height: 24,
+  //           width: 24,
+  //           child: SvgPicture.asset(
+  //             assestPath,
+  //             fit: BoxFit.contain,
+  //           ),
+  //         );
+  // }
+  Widget _buildIcons({required PBISPlusALLBehaviourModal item}) {
+    return CachedNetworkImage(
+      imageUrl: item.pBISBehaviorIconURLC!,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      placeholder: (context, url) => ShimmerLoading(
+        isLoading: true,
+        child: Container(),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.person),
+    );
   }
 
-  Widget _buildIconWidget(PBISPlusGenricBehaviourModal item) {
+  Widget _buildIconWidget(PBISPlusALLBehaviourModal item) {
     return Container(
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -244,6 +265,6 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
         child: CircleAvatar(
             radius: 42.0,
             backgroundColor: Colors.transparent,
-            child: _buildIcons(item.iconUrlC!)));
+            child: _buildIcons(item: item)));
   }
 }

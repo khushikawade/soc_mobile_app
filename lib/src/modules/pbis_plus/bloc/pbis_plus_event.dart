@@ -101,14 +101,14 @@ class GetPBISPlusDefaultBehaviour extends PBISPlusEvent {
   List<bool> get props => [isCustom!];
 }
 
-class GetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
-  GetPBISPlusAdditionalBehaviour();
+class PBISPlusGetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
+  PBISPlusGetPBISPlusAdditionalBehaviour();
   @override
   List<Object> get props => [];
 }
 
 class GetPBISSkillsUpdateName extends PBISPlusEvent {
-  final PBISPlusGenricBehaviourModal item;
+  final PBISPlusALLBehaviourModal item;
   final String newName;
 
   GetPBISSkillsUpdateName({required this.item, required this.newName});
@@ -118,7 +118,7 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
 }
 
 class GetPBISSkillsDeleteItem extends PBISPlusEvent {
-  final PBISPlusGenricBehaviourModal item;
+  final PBISPlusALLBehaviourModal item;
 
   GetPBISSkillsDeleteItem({
     required this.item,

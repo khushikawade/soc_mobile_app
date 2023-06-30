@@ -78,12 +78,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   void initState() {
     super.initState();
 
-    pbisPlusClassroomBloc2.add(GetPBISPlusAdditionalBehaviour());
-
     // pbisPlusClassroomBloc
     //     .add(GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
 
     pbisPlusClassroomBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
+    pbisPlusClassroomBloc2.add(PBISPlusGetPBISPlusAdditionalBehaviour());
     pbisPlusClassroomBloc3.add(PBISPlusGetTeacherCustomBehvaiour());
     getCustomValue();
   }
@@ -261,8 +260,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         //   return _noDataFoundWidget();
                         // } else
 
-                        print(
-                            "isCustomBehaviour.value ${isCustomBehaviour.value}");
+                        print("state ------------- $state");
                         if (state is PBISPlusGetDefaultSchoolBehvaiourSuccess) {
                           return _buildEditItemList(
                               state.defaultSchoolBehaviourList, false);
@@ -278,6 +276,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                     teacherCustomBehaviourList.value, false);
                               });
                         }
+                        if (state is PBISPlusBehvaiourLoading) {
+                          return _buildEditItemList(
+                              state.demoBehaviourData, true);
+                        }
+
                         return _noDataFoundWidget();
                       },
                       listener: (context, state) async {
@@ -390,24 +393,27 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                                   ),
                                                 ),
                                                 SpacerWidget(4),
-                                                Padding(
-                                                  padding: Globals.deviceType !=
-                                                          'phone'
-                                                      ? const EdgeInsets.only(
-                                                          top: 10, left: 10)
-                                                      : EdgeInsets.zero,
-                                                  child: Utility.textWidget(
-                                                      text:
-                                                          item.behaviorTitleC!,
-                                                      // item.dataList[0].name!,
-                                                      context: context,
-                                                      textTheme:
-                                                          Theme.of(context)
-                                                              .textTheme
-                                                              .bodyText1!
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      12)),
+                                                ShimmerLoading(
+                                                  isLoading: loading,
+                                                  child: Padding(
+                                                    padding: Globals
+                                                                .deviceType !=
+                                                            'phone'
+                                                        ? const EdgeInsets.only(
+                                                            top: 10, left: 10)
+                                                        : EdgeInsets.zero,
+                                                    child: Utility.textWidget(
+                                                        text: item
+                                                            .behaviorTitleC!,
+                                                        context: context,
+                                                        textTheme:
+                                                            Theme.of(context)
+                                                                .textTheme
+                                                                .bodyText1!
+                                                                .copyWith(
+                                                                    fontSize:
+                                                                        12)),
+                                                  ),
                                                 )
                                               ],
                                             ),
@@ -445,7 +451,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         isLoading: true,
         child: Container(),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => Icon(Icons.person),
     );
   }
 
@@ -453,7 +459,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       PBISPlusBloc pbisPlusClassroomBloc) {
     return GestureDetector(
       onTap: () async {
-        // await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
+        await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
 
         // print("----------botton sheet ======== close=======----------------");
         isEditMode.value = !isEditMode.value;
@@ -523,7 +529,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       BlocConsumer(
                           bloc: pbisPlusClassroomBloc2,
                           builder: (context, state) {
-                            print("EDITT SCREEN $state");
+                            print("additionalbehaviourList $state");
                             // print(
                             //     "-----------state is $state------------------");
 
@@ -558,26 +564,27 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             //         .PBISPlusSkillLocalBehaviourlist,
                             //     false);
 
-                            if (state is PbisPlusAdditionalBehaviourSuccess) {
+                            if (state
+                                    is PBISPlusGetPBISPlusAdditionalBehaviourSuccess &&
+                                state.additionalbehaviourList.isNotEmpty) {
+                              additionalbehaviourList.value =
+                                  state.additionalbehaviourList;
+
                               return ValueListenableBuilder(
                                   valueListenable: additionalbehaviourList,
                                   builder: (context, value, _) {
-                                    additionalbehaviourList.value =
-                                        state.additionalbehaviourList;
                                     return _buildBehaviourList(
                                         additionalbehaviourList.value, false);
                                   });
                             }
+
+                            if (state is PBISPlusBehvaiourLoading) {
+                              return _buildBehaviourList(
+                                  state.demoBehaviourData, true);
+                            }
                             return _noDataFoundWidget();
                           },
-                          listener: (context, state) async {
-                            // if (state is PbisPlusAdditionalBehaviourSuccess) {
-                            //   additionalbehaviourList.value =
-                            //       state.additionalbehaviourList;
-
-                            //   print(additionalbehaviourList.value);
-                            // }
-                          }),
+                          listener: (context, state) async {}),
                       SpacerWidget(18),
                     ],
                   ),
@@ -736,29 +743,29 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         );
   }
 
-  // _modalBottomSheetMenu(PBISPlusGenricBehaviourModal item, int index,
-  //         PBISPlusBloc pbisPlusClassroomBloc) =>
-  //     showModalBottomSheet(
-  //         clipBehavior: Clip.antiAliasWithSaveLayer,
-  //         isScrollControlled: true,
-  //         isDismissible: true,
-  //         enableDrag: true,
-  //         backgroundColor: Colors.transparent,
-  //         elevation: 10,
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return LayoutBuilder(
-  //               builder: (BuildContext context, BoxConstraints constraints) {
-  //             return PBISPlusEditSkillsBottomSheet(
-  //               pbisPlusClassroomBloc: pbisPlusClassroomBloc,
-  //               index: index,
-  //               constraints: constraints,
-  //               // containerIcons: containerIcons,
-  //               item: item,
-  //               height: MediaQuery.of(context).size.height * 0.35,
-  //             );
-  //           });
-  //         });
+  _modalBottomSheetMenu(PBISPlusALLBehaviourModal item, int index,
+          PBISPlusBloc pbisPlusClassroomBloc) =>
+      showModalBottomSheet(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          isScrollControlled: true,
+          isDismissible: true,
+          enableDrag: true,
+          backgroundColor: Colors.transparent,
+          elevation: 10,
+          context: context,
+          builder: (BuildContext context) {
+            return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return PBISPlusEditSkillsBottomSheet(
+                pbisPlusClassroomBloc: pbisPlusClassroomBloc,
+                index: index,
+                constraints: constraints,
+                // containerIcons: containerIcons,
+                item: item,
+                height: MediaQuery.of(context).size.height * 0.35,
+              );
+            });
+          });
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*-----------------------------------------------Main Method---------------------------------------------------- */
@@ -781,8 +788,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
 
     await teacherCustomBehaviourDb.clear();
-    teacherCustomBehaviourList.value.forEach((element) async {
-      await teacherCustomBehaviourDb.addData(element);
-    });
+    // teacherCustomBehaviourList.value.forEach((element) async {
+    //   await teacherCustomBehaviourDb.addData(element);
+    // });
   }
 }
