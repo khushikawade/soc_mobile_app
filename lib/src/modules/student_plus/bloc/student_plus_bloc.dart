@@ -331,10 +331,10 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
     if (event is SaveStudentGooglePresentationWorkEvent) {
       try {
-        //update the student google Presentation Url
-        event.studentDetails.studentGooglePresentationUrl =
-            StudentPlusOverrides.studentPlusGooglePresentationBaseUrl +
-                (event.studentDetails.studentGooglePresentationId ?? '');
+        // //update the student google Presentation Url
+        // event.studentDetails.studentGooglePresentationUrl =
+        //     StudentPlusOverrides.studentPlusGooglePresentationBaseUrl +
+        //         (event.studentDetails.studentGooglePresentationId ?? '');
 
         var isStudentGooglePresentationWorkSaved =
             await saveStudentGooglePresentationWorkDetails(

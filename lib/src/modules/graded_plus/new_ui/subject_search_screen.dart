@@ -675,7 +675,7 @@ class _GradedPlusSearchScreenPageState
         child: Container(),
         listener: (context, state) async {
           print("state is $state");
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             PlusUtility.updateLogs(
                 activityType: 'GRADED+',
                 userType: 'Teacher',
@@ -1017,7 +1017,14 @@ class _GradedPlusSearchScreenPageState
             '',
         classroomCourseWorkId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseWorkId ??
-            ''));
+            '',
+        classroomCourseWorkUrl: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseWorkURL ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL ??
+                ''));
   }
 
   //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
