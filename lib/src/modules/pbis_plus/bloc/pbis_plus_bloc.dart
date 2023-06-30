@@ -840,7 +840,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       return response.statusCode;
     } catch (e) {
       throw (e);
-      return e.toString();
     }
   }
 
