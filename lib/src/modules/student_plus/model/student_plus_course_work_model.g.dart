@@ -9,7 +9,7 @@ part of 'student_plus_course_work_model.dart';
 class StudentPlusCourseWorkModelAdapter
     extends TypeAdapter<StudentPlusCourseWorkModel> {
   @override
-  final int typeId = 44;
+  final int typeId = 51;
 
   @override
   StudentPlusCourseWorkModel read(BinaryReader reader) {
@@ -83,7 +83,7 @@ class StudentPlusCourseWorkModelAdapter
 
 class StudentWorkSubmissionAdapter extends TypeAdapter<StudentWorkSubmission> {
   @override
-  final int typeId = 45;
+  final int typeId = 53;
 
   @override
   StudentWorkSubmission read(BinaryReader reader) {
@@ -218,7 +218,7 @@ class AttachmentAdapter extends TypeAdapter<Attachment> {
 
 class LinkAdapter extends TypeAdapter<Link> {
   @override
-  final int typeId = 48;
+  final int typeId = 52;
 
   @override
   Link read(BinaryReader reader) {

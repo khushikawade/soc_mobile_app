@@ -128,6 +128,10 @@ void main() async {
           ..registerAdapter(AssignmentSubmissionAdapter())
           ..registerAdapter(AttachmentAdapter())
           ..registerAdapter(LinkAdapter())
+          ..registerAdapter(PBISPlusGenericBehaviourModalAdapter())
+          ..registerAdapter(PBISPlusStudentListAdapter())
+          ..registerAdapter(StudentNameAdapter())
+          ..registerAdapter(PBISStudentNotesAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

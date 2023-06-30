@@ -294,42 +294,49 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   },
                   child: ValueListenableBuilder(
                       valueListenable: changedIndex,
-                      builder: (context, value, _) => index ==
-                              changedIndex.value
-                          ?
-                          //To show edit icon on selected behaviour
-                          _buildEditWidget(item, index, pbisCustomBehaviourBloc)
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                  Draggable(
-                                      data: item,
-                                      child: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: _buildIcons(item.iconUrlC!)),
-                                      feedback: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: _buildIcons(item.iconUrlC!)),
-                                      childWhenDragging: Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: _buildIcons(item.iconUrlC!))),
-                                  SpacerWidget(4),
-                                  Padding(
-                                      padding: Globals.deviceType != 'phone'
-                                          ? const EdgeInsets.only(
-                                              top: 10, left: 10)
-                                          : EdgeInsets.zero,
-                                      child: Utility.textWidget(
-                                          text: item.name!,
-                                          context: context,
-                                          textTheme: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(fontSize: 12)))
-                                ])));
+                      builder: (context, value, _) => ValueListenableBuilder(
+                          valueListenable: isCustomBehaviour,
+                          builder: (context, value, _) => index ==
+                                      changedIndex.value &&
+                                  isCustomBehaviour.value
+                              ?
+                              //To show edit icon on selected behaviour
+                              _buildEditWidget(
+                                  item, index, pbisCustomBehaviourBloc)
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                      Draggable(
+                                          data: item,
+                                          child: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child:
+                                                  _buildIcons(item.iconUrlC!)),
+                                          feedback: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child:
+                                                  _buildIcons(item.iconUrlC!)),
+                                          childWhenDragging: Container(
+                                              height: 40,
+                                              width: 40,
+                                              child:
+                                                  _buildIcons(item.iconUrlC!))),
+                                      SpacerWidget(4),
+                                      Padding(
+                                          padding: Globals.deviceType != 'phone'
+                                              ? const EdgeInsets.only(
+                                                  top: 10, left: 10)
+                                              : EdgeInsets.zero,
+                                          child: Utility.textWidget(
+                                              text: item.name!,
+                                              context: context,
+                                              textTheme: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(fontSize: 12)))
+                                    ]))));
             });
           });
     });

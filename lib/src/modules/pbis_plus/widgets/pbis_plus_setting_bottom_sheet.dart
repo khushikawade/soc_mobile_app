@@ -328,7 +328,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
             case 'Edit Behaviour':
               sectionName = 'Behaviour';
-              // Navigator.pop(context);
+              Navigator.pop(context);
               pushNewScreen(
                 context,
                 screen: PBISPlusEditSkills(),
