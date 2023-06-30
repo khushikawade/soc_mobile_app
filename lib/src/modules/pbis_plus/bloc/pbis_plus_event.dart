@@ -6,7 +6,9 @@ abstract class PBISPlusEvent extends Equatable {
 
 class PBISPlusImportRoster extends PBISPlusEvent {
   final bool isGradedPlus;
-  PBISPlusImportRoster({required this.isGradedPlus});
+  PBISPlusImportRoster({
+    required this.isGradedPlus,
+  });
   @override
   List<Object> get props => [];
 }
@@ -92,8 +94,84 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
   List<Object> get props => [];
 }
 
+class GetPBISPlusCustomBehaviour extends PBISPlusEvent {
+  GetPBISPlusCustomBehaviour();
+  @override
+  List<bool> get props => [];
+}
+
 class GetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
   GetPBISPlusAdditionalBehaviour();
   @override
   List<Object> get props => [];
+}
+
+class GetPBISSkillsUpdateName extends PBISPlusEvent {
+  final PBISPlusGenericBehaviourModal item;
+  final String newName;
+
+  GetPBISSkillsUpdateName({required this.item, required this.newName});
+
+  @override
+  List<Object> get props => [item, newName];
+}
+
+class DeletePBISBehavior extends PBISPlusEvent {
+  final PBISPlusGenericBehaviourModal item;
+
+  DeletePBISBehavior({required this.item});
+
+  @override
+  List<Object> get props => [item];
+}
+
+class UpdatePBISBehavior extends PBISPlusEvent {
+  final PBISPlusGenericBehaviourModal item;
+  final List<PBISPlusGenericBehaviourModal> olditem;
+  int index;
+  UpdatePBISBehavior(
+      {required this.item, required this.index, required this.olditem});
+
+  @override
+  List<Object> get props => [item, index, olditem];
+}
+
+// ignore: must_be_immutable
+class GetPBISPlusStudentNotes extends PBISPlusEvent {
+  List<PBISPlusStudentList>? studentNotesList;
+  GetPBISPlusStudentNotes({
+    this.studentNotesList,
+  });
+
+  @override
+  List<Object> get props => [studentNotesList!];
+}
+
+class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
+  final String searchKey;
+  final List<PBISPlusStudentList> studentNotes;
+  GetPBISPlusStudentNotesSearchEvent({
+    required this.searchKey,
+    required this.studentNotes,
+  });
+
+  @override
+  List<Object> get props => [
+        searchKey,
+        studentNotes,
+      ];
+}
+
+class GetPBISPlusStudentNotesList extends PBISPlusEvent {
+  final String studentId;
+  final String teacherid;
+  final String dbn;
+  GetPBISPlusStudentNotesList({
+    required this.studentId,
+    required this.teacherid,
+    required this.dbn,
+  });
+
+  @override
+  List<Object> get props => [studentId, teacherid, dbn];
 }

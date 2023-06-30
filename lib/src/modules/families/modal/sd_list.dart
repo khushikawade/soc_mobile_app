@@ -62,7 +62,7 @@ class SDlist {
       imageUrlC: json['Image_URL__c'] as String?,
       id: json['Id'] as String?,
       name: Utility.utf8convert(json['Name__c'] ?? ''),
-      descriptionC: Utility.utf8convert(json['Description__c']?? ''),
+      descriptionC: Utility.utf8convert(json['Description__c'] ?? ''),
       emailC: json['Email__c'] as String?,
       sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
       phoneC: json['Phone__c'] as String?,

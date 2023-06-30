@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
@@ -19,10 +24,8 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 part 'pbis_plus_event.dart';
 part 'pbis_plus_state.dart';
 
@@ -58,6 +61,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
+        LocalDatabase<PBISPlusGenericBehaviourModal> _pbisPlusSkilllocalsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsLocalData =
+            await _pbisPlusSkilllocalsDB.getData();
+        // await _pbisPlusSkilllocalsDB.clear();
+
         //Clear Roster local data to manage loading issue
         SharedPreferences clearRosterCache =
             await SharedPreferences.getInstance();
@@ -76,12 +85,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
+          await getFilteredStudentList(_localData);
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        // LocalDatabase<ClassroomCourse> _pbisPlusSkillsDB =
-        //     LocalDatabase(PBISPlusOverrides.pbisPlusSkillsDB);
-        // List<ClassroomCourse>? _pbisPlusSkillsData = await _localDb.getData();
 
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
@@ -127,6 +134,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
           yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
           sort(obj: classroomStudentProfile);
+          await getFilteredStudentList(_localData);
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: classroomStudentProfile);
         } else {
@@ -142,11 +150,391 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<ClassroomCourse>? _localData = await _localDb.getData();
         sort(obj: _localData);
         // _localDb.close();
-
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         // sort(obj: _localData);
+        await getFilteredStudentList(_localData);
         yield PBISPlusImportRosterSuccess(
             googleClassroomCourseList: _localData);
+      }
+    }
+    if (event is GetPBISPlusAdditionalBehaviour) {
+      try {
+        print(
+            "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
+
+        LocalDatabase<PBISPlusGenericBehaviourModal>
+            _pbisPlusGenricBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusGenricBehaviourDataList =
+            await _pbisPlusGenricBehaviourDB.getData();
+
+        LocalDatabase<PbisPlusAdditionalBehaviourList>
+            _pbisPlusAdditionalBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusAdditionalBehviourDB);
+        List<PbisPlusAdditionalBehaviourList>?
+            _pbisPlusAdditionalBehaviourDataList =
+            await _pbisPlusAdditionalBehaviourDB.getData();
+        yield PBISPlusLoading();
+        var genralDataList;
+        if (_pbisPlusAdditionalBehaviourDataList!.isNotEmpty) {
+          genralDataList = _pbisPlusAdditionalBehaviourDataList
+              .map((item) => PBISPlusGenericBehaviourModal(
+                    id: item.id.toString(),
+                    activeStatusC: "true",
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: 0,
+                    behaviourId: "0",
+                  ))
+              .toList();
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalBehaviourList: genralDataList);
+        }
+
+        List<PbisPlusAdditionalBehaviourList> apiData =
+            await getPBISPBehaviourListData();
+
+        apiData.removeWhere((item) => item.activeStatusC == 'Hide');
+        apiData
+            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
+
+        if (apiData!.isNotEmpty) {
+          genralDataList = apiData
+              .map((item) => PBISPlusGenericBehaviourModal(
+                    id: item.id.toString(),
+                    activeStatusC: "true",
+                    iconUrlC: item.iconUrlC,
+                    name: item.name,
+                    sortOrderC: item.sortOrderC,
+                    counter: 0,
+                    behaviourId: "0",
+                  ))
+              .toList();
+
+          apiData.forEach((element) async {
+            await _pbisPlusAdditionalBehaviourDB
+                .addData(element); // Pass 'element' instead of 'list'
+          });
+        }
+        List<PbisPlusAdditionalBehaviourList> _check =
+            await _pbisPlusAdditionalBehaviourDB.getData();
+
+        print(_check);
+        if (apiData.isNotEmpty) {
+          yield PbisPlusAdditionalBehaviourSuccess(
+              additionalBehaviourList: genralDataList);
+        } else {
+          yield PBISPlusAdditionalBehaviourError(error: "No data Found");
+        }
+      } catch (e) {
+        yield PBISPlusAdditionalBehaviourError(error: e.toString());
+      }
+    }
+
+    if (event is GetPBISPlusCustomBehaviour) {
+      try {
+        yield PBISPlusLoading();
+
+        LocalDatabase<PBISPlusGenericBehaviourModal>
+            _pbisPlusGenricBehaviourDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusGenricBehaviourDataList =
+            await _pbisPlusGenricBehaviourDB.getData();
+
+        // LocalDatabase<PBISPlusDefaultAndCustomBehaviourModal>
+        //     _pbisPlusdefaultBehaviourDB =
+        //     LocalDatabase(PBISPlusOverrides.pbisPlusDefaultBehviourDB);
+        // List<PBISPlusDefaultAndCustomBehaviourModal>?
+        //     _pbisPlusdefaultBehaviourDataList =
+        //     await _pbisPlusdefaultBehaviourDB.getData();
+
+        // await _pbisPlusSkillsDB.clear();
+
+        // List<PBISPlusGenericBehaviourModal> genralDataList = [];
+        // var list;
+
+        // if (_pbisPlusdefaultBehaviourDataList != null &&
+        //     _pbisPlusdefaultBehaviourDataList.isNotEmpty &&
+        //     _pbisPlusdefaultBehaviourDataList.length > 0) {
+        //   genralDataList = _pbisPlusdefaultBehaviourDataList[0]
+        //       .customList!
+        //       .map((item) => PBISPlusGenericBehaviourModal(
+        //             id: item.id.toString(),
+        //             activeStatusC: "true",
+        //             iconUrlC: item.iconUrl,
+        //             name: item.name,
+        //             sortOrderC: item.sortingOrder,
+        //             counter: 0,
+        //             behaviourId: "${item.id}",
+        //           ))
+        //       .toList();
+        //   _pbisPlusGenricBehaviourDB.clear();
+        //   genralDataList.forEach((element) async {
+        //     await _pbisPlusGenricBehaviourDB
+        //         .addData(element); // Pass 'element' instead of 'list'
+        //   });
+        // }
+
+        // if (genralDataList != null && genralDataList.isNotEmpty) {
+        //   yield PBISPlusDefaultBehaviourSucess(skillsList: genralDataList);
+        // }
+
+        List<PBISPlusGenericBehaviourModal> apiData =
+            await getPBISCustomBehaviour();
+
+        // var list = apiData
+        //     .map((item) => PBISPlusGenericBehaviourModal(
+        //           id: item.id.toString(),
+        //           activeStatusC: "true",
+        //           iconUrlC: item.iconUrlC,
+        //           name: item.name,
+        //           sortOrderC: item.sortOrderC,
+        //           counter: 0,
+        //           behaviourId: "0",
+        //         ))
+        //     .toList();
+
+        //Adding placeholder
+        while (apiData.length < 6) {
+          int newItemId = apiData.length + 1;
+          PBISPlusGenericBehaviourModal newItem = PBISPlusGenericBehaviourModal(
+            id: newItemId.toString(),
+            activeStatusC: "Show",
+            iconUrlC: "assets/Pbis_plus/add_icon.svg",
+            name: 'Add Skill',
+            sortOrderC: newItemId.toString(),
+            counter: 0,
+            behaviourId: "0",
+          );
+
+          apiData.add(newItem);
+        }
+        // if (apiData != null && apiData.isNotEmpty) {
+        await _pbisPlusGenricBehaviourDB.clear();
+
+        apiData.forEach((PBISPlusGenericBehaviourModal e) {
+          _pbisPlusGenricBehaviourDB.addData(e);
+        });
+        // }
+
+        yield PBISPlusDefaultBehaviourSucess(skillsList: apiData);
+      } catch (e) {
+        yield PBISPlusDefaultBehaviourError(error: "No data found");
+      }
+    }
+
+    if (event is GetPBISSkillsUpdateName) {
+      try {
+        yield PBISPlusLoading();
+
+        LocalDatabase<PBISPlusGenericBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsData =
+            await _pbisPlusSkillsDB.getData();
+
+        if (_pbisPlusSkillsData.isNotEmpty) {
+          //Checking index in local database
+          final int index = _pbisPlusSkillsData
+              .indexWhere((item) => item.id == event.item.id);
+
+          if (index != null) {
+            // Update the name of the item
+            event.item.name = event.newName;
+            // Save the updated data back to the database
+            await _pbisPlusSkillsDB.putAt(index, event.item);
+
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
+          } else {
+            yield PBISPlusSkillsUpdateError();
+          }
+        }
+      } catch (e) {
+        yield PBISPlusSkillsUpdateError();
+      }
+    }
+
+    if (event is UpdatePBISBehavior) {
+      try {
+        LocalDatabase<PBISPlusGenericBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        //List also contains placeholders //Add skill placeholder
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsData =
+            await _pbisPlusSkillsDB.getData();
+
+        yield PBISPlusLoading();
+
+        if (event.item.id!.isNotEmpty &&
+            event.index != null &&
+            _pbisPlusSkillsData != null &&
+            _pbisPlusSkillsData.isNotEmpty &&
+            event.index < _pbisPlusSkillsData.length) {
+          //Check if the selected additional icon already exits
+          bool itemExists = _pbisPlusSkillsData
+              .any((item) => item.iconUrlC == event.item.iconUrlC);
+
+          if (!itemExists) {
+            //Check count of total number of existing behavior
+            int count = _pbisPlusSkillsData
+                .where((item) => item.name != "Add Skill")
+                .length;
+
+            // if (count < 6) {
+            //Check if updating the behaviour or adding a new behaviour
+            if (event.index < count) {
+              //Updating existing behaviour
+              _pbisPlusSkillsData.removeAt(event.index);
+              _pbisPlusSkillsData.insert(event.index, event.item);
+            } else {
+              //Adding new behaviour //Adding the behavior always to the 1st empty placeholder
+              _pbisPlusSkillsData.removeAt(count);
+              _pbisPlusSkillsData.insert(count, event.item);
+            }
+            // } else {
+            //   _pbisPlusSkillsData.removeAt(event.index);
+            //   _pbisPlusSkillsData.insert(event.index, event.item);
+            // }
+
+            //Updating local db with latest chnages
+            await _pbisPlusSkillsDB.clear();
+            _pbisPlusSkillsData.forEach((element) async {
+              await _pbisPlusSkillsDB.addData(element);
+            });
+
+            //Return success state
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
+          } else {
+            yield PBISPlusDefaultBehaviourSucess(
+                skillsList: _pbisPlusSkillsData);
+          }
+        } else {
+          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
+        }
+        // }
+      } catch (e) {
+        print(e);
+        yield PBISPlusSkillsListUpdateError();
+      }
+    }
+
+    if (event is DeletePBISBehavior) {
+      try {
+        yield PBISPlusLoading();
+
+        LocalDatabase<PBISPlusGenericBehaviourModal> _pbisPlusSkillsDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+        List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsData =
+            await _pbisPlusSkillsDB.getData();
+
+        final int index =
+            _pbisPlusSkillsData.indexWhere((item) => item.id == event.item.id);
+
+        // final itemToUpdate = _pbisPlusSkillsData.firstWhere(
+        //   (item) => item.id == event.item.id,
+        // );
+        if (index != null) {
+          // Update the name of the item
+          _pbisPlusSkillsData.removeAt(index);
+          // Shift the remaining items
+          // for (int i = index + 1; i < _pbisPlusSkillsData.length; i++) {
+          //   _pbisPlusSkillsData[i].sortOrderC =
+          //       (int.parse(_pbisPlusSkillsData[i].sortOrderC!) - 1).toString();
+          // }
+
+          //Adding placeholder in place of delete item
+          PBISPlusGenericBehaviourModal newItem = PBISPlusGenericBehaviourModal(
+              id: "5",
+              activeStatusC: "Show",
+              iconUrlC: "assets/Pbis_plus/add_icon.svg",
+              name: 'Add Skill',
+              sortOrderC: _pbisPlusSkillsData.length.toString(),
+              counter: 0,
+              behaviourId: "0");
+
+          // Add the new item at the end of the list
+          _pbisPlusSkillsData.add(newItem);
+
+          await _pbisPlusSkillsDB.clear();
+          _pbisPlusSkillsData.forEach((element) async {
+            await _pbisPlusSkillsDB.addData(element);
+            // Pass 'element' instead of 'list'
+          });
+
+          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
+        } else {
+          yield PBISPlusSkillsDeleteError();
+        }
+      } catch (e) {
+        yield PBISPlusSkillsDeleteError();
+      }
+    }
+
+    if (event is GetPBISPlusStudentNotes) {
+      try {
+        yield PBISPlusLoading();
+
+        if (event.studentNotesList != null &&
+            event.studentNotesList!.length > 0) {
+          PBISPlusStudentNotesSucess(studentNotes: event.studentNotesList!);
+        }
+
+        LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+        List<PBISPlusStudentList>? _pbisPlusStudentNoesDataList =
+            await _pbisPlusStudentListDB.getData();
+        // await _pbisPlusSkillsDB.clear();
+        var list;
+
+        if (_pbisPlusStudentNoesDataList.isEmpty) {
+          list = PBISPlusStudentNotesLocal.PBISPlusLocalStudentNoteslist.map(
+              (item) => PBISPlusStudentList(
+                    names: item.names,
+                    iconUrlC: item.iconUrlC,
+                    studentId: item.studentId,
+                    notes: item.notes,
+                  )).toList();
+        }
+
+        if (_pbisPlusStudentNoesDataList.isEmpty) {
+          list.forEach((element) async {
+            await _pbisPlusStudentListDB
+                .addData(element); // Pass 'element' instead of 'list'
+          });
+        }
+        _pbisPlusStudentNoesDataList = await _pbisPlusStudentListDB.getData();
+        final check = await _pbisPlusStudentListDB.getData();
+        // for (var item in check) {
+
+        // }
+        if (check.isNotEmpty) {
+          yield PBISPlusStudentNotesSucess(
+              studentNotes: _pbisPlusStudentNoesDataList);
+        } else {
+          yield PBISPlusStudentNotesError(error: "No data found");
+        }
+      } catch (e) {
+        yield PBISPlusStudentNotesError(error: "No data found");
+      }
+    }
+
+    if (event is GetPBISPlusStudentNotesSearchEvent) {
+      try {
+        print("----------GetPBISPlusStudentNotesSearchEvent=================");
+        yield PBISPlusLoading();
+        if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
+          final searchedList =
+              await searchNotesList(event.studentNotes, event.searchKey);
+
+          if (searchedList.isNotEmpty && searchedList.length > 0) {
+            yield PBISPlusStudentSearchSucess(sortedList: searchedList);
+          } else {
+            yield PBISPlusStudentSearchNoDataFound(error: "No result found");
+          }
+        }
+      } catch (e) {
+        yield PBISPlusStudentNotesError(error: "No data found");
       }
     }
 
@@ -403,24 +791,58 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is GetPBISPlusAdditionalBehaviour) {
+    if (event is GetPBISPlusStudentNotesList) {
       try {
-        List<ClassroomCourse> list = [];
-        yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
-        List<PbisPlusAdditionalBehaviourModal> result =
-            await getPBISPlusBehaviourAdditionalBehaviourList();
+        LocalDatabase<PBISStudentNotes> _pbisPlusStudentNotesListDB =
+            LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+        List<PBISStudentNotes>? _pbisPlusStudentNotesList =
+            await _pbisPlusStudentNotesListDB.getData();
+        yield PBISPlusLoading();
 
-        result.removeWhere((item) => item.activeStatusC == 'Hide');
-        result
-            .sort((a, b) => (a.sortOrderC ?? '').compareTo(b.sortOrderC ?? ''));
+        var list;
+        PBISStudentNotes notes = PBISStudentNotes(
+            date: "25/05/2023",
+            time: "10:30 PM",
+            weekday: "Monday",
+            id: 123,
+            notes:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+            schoolAppC: "1221",
+            studentEmail: "ashwin@gmail.com,",
+            studentName: "adldl",
+            teacherC: "121454");
+        if (_pbisPlusStudentNotesList.isEmpty) {
+          list = PBISPlusStudentNotesLocal.PBISPlusLocalStudentNoteslist.map(
+              (item) => PBISPlusStudentList(
+                  names: item.names,
+                  iconUrlC: item.iconUrlC,
+                  studentId: "123",
+                  notes: notes)).toList();
+        }
 
-        if (result.isNotEmpty) {
-          yield PBISPlusAdditionalBehaviourSucess(behaviourList: result);
+        if (_pbisPlusStudentNotesList.isEmpty) {
+          list.forEach((element) async {
+            await _pbisPlusStudentNotesListDB
+                .addData(element); // Pass 'element' instead of 'list'
+          });
+        }
+        _pbisPlusStudentNotesList = await _pbisPlusStudentNotesListDB.getData();
+        final check = await _pbisPlusStudentNotesListDB.getData();
+        // for (var item in check) {
+
+        // }
+
+        List<PBISStudentNotes>? apidata = await getPBIStudentNotesData();
+
+        //  apidata.map((e) => null);
+
+        if (apidata != null && apidata.isNotEmpty && apidata.length > 0) {
+          yield GetPBISPlusStudentAllNotesListSucess(notesList: apidata!);
         } else {
-          yield PBISErrorState(error: result);
+          yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
         }
       } catch (e) {
-        yield PBISErrorState(error: e.toString());
+        yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
       }
     }
   }
@@ -532,6 +954,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
       {required String teacherEmail, int retry = 3}) async {
     try {
+      print(
+          "------------teacherEmail ------===========-${teacherEmail}==============----------------");
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
           headers: {
@@ -589,6 +1013,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                     pbisTotalInteractionList[k].classroomCourseId &&
                 classroomCourseList[i].students![j].profile!.id ==
                     pbisTotalInteractionList[k].studentId) {
+              //TODOPBIS:
+              // classroomCourse.students![j].profile!.behaviour1!.counter =
+              //     pbisTotalInteractionList[k].engaged;
+              // classroomCourse.students![j].profile!.behaviour2!.counter =
+              //     pbisTotalInteractionList[k].niceWork;
+              // classroomCourse.students![j].profile!.behaviour3!.counter =
+              //     pbisTotalInteractionList[k].helpful;
               classroomCourse.students![j].profile!.engaged =
                   pbisTotalInteractionList[k].engaged;
               classroomCourse.students![j].profile!.niceWork =
@@ -596,7 +1027,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               classroomCourse.students![j].profile!.helpful =
                   pbisTotalInteractionList[k].helpful;
               interactionCountsFound = true;
-
+              // print(classroomCourse.students![j].profile!.studentInteraction);
               break;
             }
           }
@@ -606,6 +1037,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (!interactionCountsFound) {
           // If no interaction counts were found, set all counts to 0
           for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
+            //TODOPBIS::
+            // classroomCourse.students![j].profile!.behaviour1?.counter = 0;
+            // classroomCourse.students![j].profile!.behaviour2?.counter = 0;
+            // classroomCourse.students![j].profile!.behaviour3?.counter = 0;
             classroomCourse.students![j].profile!.engaged = 0;
             classroomCourse.students![j].profile!.niceWork = 0;
             classroomCourse.students![j].profile!.helpful = 0;
@@ -890,9 +1325,104 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-  /* -------------------------------------------------------------------------- */
-  /* ------------ Function to fetch list of Additional Behaviours ------------- */
-  /* -------------------------------------------------------------------------- */
+  //------------FILTER THE STUDENT LIST FROM THE ROASTER DATA SAVE TO LOCAL DB------For NotesPage----///
+  Future<List<PBISPlusStudentList>> getFilteredStudentList(
+      List<ClassroomCourse> allClassroomCourses) async {
+    try {
+      final uniqueStudents = <ClassroomStudents>[];
+      for (final course in allClassroomCourses) {
+        for (final student in course?.students ?? []) {
+          final isStudentUnique =
+              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
+          if (isStudentUnique) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+
+      uniqueStudents.sort((a, b) {
+        return a.profile!.name!.fullName!
+            .toLowerCase()
+            .compareTo(b.profile!.name!.fullName!.toLowerCase());
+      });
+
+      uniqueStudents.forEach((student) {
+        print('ID: ${student.profile!.id}');
+        print('Name: ${student.profile!.name!.fullName}');
+        print('Email: ${student.profile!.emailAddress}');
+        print('Photo URL: ${student.profile!.photoUrl}');
+        // Access and print other properties as needed
+        print('---');
+      });
+
+      LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
+          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+      List<PBISPlusStudentList>? _pbisPlusStudentNotesDataList =
+          await _pbisPlusStudentListDB.getData();
+      var list;
+      PBISStudentNotes notes = PBISStudentNotes(
+          date: "25/05/2023",
+          time: "10:30 PM",
+          weekday: "Monday",
+          id: 123,
+          notes:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+          schoolAppC: "1221",
+          studentEmail: "ashwin@gmail.com,",
+          studentName: "adldl",
+          teacherC: "121454");
+      list = uniqueStudents
+          .map((item) => PBISPlusStudentList(
+              names: StudentName(
+                  familyName: item.profile!.name!.familyName!,
+                  fullName: item.profile!.name!.fullName!,
+                  givenName: item.profile!.name!.givenName!),
+              iconUrlC: item.profile?.photoUrl!,
+              studentId: item.profile?.id,
+              notes: notes))
+          .toList();
+      await _pbisPlusStudentListDB.clear();
+      list.forEach((element) async {
+        await _pbisPlusStudentListDB
+            .addData(element); // Pass 'element' instead of 'list'
+      });
+      return list;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+//-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
+
+  Future getPBISPBehaviourListData() async {
+    try {
+      print("--------------INSIDE --getPBISPBehaviourListData---");
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+      print("--------------response------ -${response.statusCode}--");
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviourList>(
+                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
+            .toList();
+
+        print(resp.length);
+        print(resp);
+        return resp;
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+//-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
 
   Future getPBISPlusBehaviourAdditionalBehaviourList() async {
     try {
@@ -905,11 +1435,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PbisPlusAdditionalBehaviourModal> resp = response.data['body']
-            .map<PbisPlusAdditionalBehaviourModal>(
-                (i) => PbisPlusAdditionalBehaviourModal.fromJson(i))
+        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviourList>(
+                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
             .toList();
 
+        print(resp.length);
+        print(resp);
         return resp;
       }
       return [];
@@ -917,4 +1449,107 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
+
+//-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
+
+  // Future<List<PBISPlusDefaultBehaviourModal>> getPBISDefaultBehaviour() async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-behaviour/teacher/0034W00003AwJSfQAN/default',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         isCompleteUrl: true);
+
+  //     if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //       List<PBISPlusDefaultBehaviourModal> listData = response.data['body']
+  //           .map<PBISPlusDefaultBehaviourModal>(
+  //               (i) => PBISPlusDefaultBehaviourModal.fromJson(i))
+  //           .toList();
+  //       // for (var behaviour in listData) {
+  //       //   print('------getPBISDefaultBehaviour--------------');
+  //       //   print('Name: ${behaviour.name}');
+  //       //   print('Behaviour ID: ${behaviour.behaviourId}');
+  //       //   print('--------------------');
+  //       // }
+  //       return listData;
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  Future<List<PBISPlusGenericBehaviourModal>> getPBISCustomBehaviour() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/0034W00003AwJSfQAN',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PBISPlusGenericBehaviourModal> listData = response.data['body']
+            .map<PBISPlusGenericBehaviourModal>(
+                (i) => PBISPlusGenericBehaviourModal.fromJson(i))
+            .toList();
+        // for (var behaviour in listData) {
+        //   print('--------getPBISCustomBehaviour------------');
+        //   print('Name: ${behaviour.name}');
+        //   print('Behaviour ID: ${behaviour.behaviourId}');
+        //   // Print additional information as needed
+        //   print('--------------------');
+        // }
+        return listData;
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  //============-----------------------------------------GET STUDENT ALL NOTES -----------------//
+  Future<List<PBISStudentNotes>> getPBIStudentNotesData(
+      {String teacher_id = "0034W00003AwJSfQAN",
+      String student_id = "456",
+      String school_dbn = "07X151"}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacher_id/student/$student_id?dbn=$school_dbn',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PBISStudentNotes> listData = response.data['body']
+            .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
+            .toList();
+
+        return listData;
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+}
+
+List<PBISPlusStudentList> searchNotesList(
+    List<PBISPlusStudentList> notesList, String keyword) {
+  List<PBISPlusStudentList> searchResults = [];
+
+  for (var note in notesList) {
+    if (note.names != null && note.names!.fullName != null) {
+      if (note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase())) {
+        searchResults.add(note);
+      }
+    }
+  }
+
+  return searchResults;
 }

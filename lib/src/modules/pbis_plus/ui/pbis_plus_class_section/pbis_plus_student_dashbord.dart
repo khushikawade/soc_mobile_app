@@ -281,7 +281,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       helpful = helpful + (pbisHistoryData[i].helpful ?? 0);
       niceWork = niceWork + (pbisHistoryData[i].niceWork ?? 0);
     }
-
+    // TODOPBIS:
+    // widget.studentValueNotifier.value.profile!.behaviour1!.counter = engaged;
+    // widget.studentValueNotifier.value.profile!.behaviour2!.counter = helpful;
+    // widget.studentValueNotifier.value.profile!.behaviour3!.counter = niceWork;
     widget.studentValueNotifier.value.profile!.engaged = engaged;
     widget.studentValueNotifier.value.profile!.helpful = helpful;
     widget.studentValueNotifier.value.profile!.niceWork = niceWork;
@@ -325,8 +328,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             color: Colors.white,
           ),
         ),
-        columns: PBISPlusDataTableModal.PBISPlusDataTableHeadingRawNew.map(
-            (PBISPlusDataTableModal item) {
+        columns: PBISPlusDataTableModalNew.PBISPlusDataTableHeadingRawNew.map(
+            (PBISPlusDataTableModalNew item) {
           return buildDataColumn(item, list);
         }).toList(),
         rows: List<DataRow>.generate(
@@ -336,7 +339,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   /*--------------------------------------------buildDataColumn---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
-  DataColumn buildDataColumn(PBISPlusDataTableModal item,
+  DataColumn buildDataColumn(PBISPlusDataTableModalNew item,
           List<PBISPlusTotalInteractionModal> list) =>
       DataColumn(
           label: Column(

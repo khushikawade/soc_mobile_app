@@ -28,8 +28,10 @@ import 'user_profile.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Utility {
+  final player = AudioCache();
   static bool? isOldUser = false;
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
@@ -81,6 +83,18 @@ class Utility {
     } catch (e) {
       return null;
     }
+  }
+
+  static playSound(String audioPath) {
+    try {
+      AudioPlayer().play(AssetSource("pbis_sound/sound1.wav"));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static doVibration() async {
+    HapticFeedback.vibrate();
   }
 
   static String convertTimestampToDateFormat(
@@ -1011,5 +1025,23 @@ class Utility {
     return Color(0xff000000) != Theme.of(context).backgroundColor
         ? Color(0xffF7F8F9)
         : Color(0xff111C20);
+  }
+
+  static getTimefromUtc(String utcdatetimeString, String cas) {
+    try {
+      if (utcdatetimeString != null && utcdatetimeString.isNotEmpty) {
+        DateTime datetime = DateTime.parse(utcdatetimeString).toLocal();
+        switch (cas) {
+          case 'D':
+            return DateFormat('dd/MM/yyyy').format(datetime); //Date: 28/06/2023
+          case 'T':
+            return DateFormat.jm().format(datetime); //Time: 9:27 AM
+          case 'WD':
+            return DateFormat.EEEE().format(datetime); // e.g., Wednesday
+        }
+      }
+    } catch (e) {
+      return utcdatetimeString;
+    }
   }
 }

@@ -58,5 +58,16 @@ class Strings {
       "last_news_id"; // to maintain news id for showing red indicator
   static final String studentInfoDbName = "student_info";
   static final String historyStudentInfoDbName = "history_student_info";
+  static final List<String> soundPath = [
+    "pbis_sound/sound_1.wav",
+    "pbis_sound/sound_2.wav",
+    "pbis_sound/sound_3.wav",
+    "pbis_sound/sound_4.wav",
+    "pbis_sound/sound_5.wav",
+    "pbis_sound/sound_6.wav",
+    "pbis_sound/sound_7.wav"
+  ];
   static final String gradedApprovedDomains = 'graded_approved_domains';
+//---------------------------PBIS PLUS-------------------------------//
+static final String isCustomBehaviour = "isCustomBehaviour";
 }

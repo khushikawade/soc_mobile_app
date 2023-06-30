@@ -19,7 +19,10 @@ import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_skill_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -80,47 +83,54 @@ void main() async {
     final appDocumentDirectory =
         await path_provider.getApplicationDocumentsDirectory();
     Hive
-          ..init(appDocumentDirectory.path)
-          ..registerAdapter(RecentAdapter())
-          ..registerAdapter(AttributesAdapter())
-          ..registerAdapter(SharedListAdapter())
-          ..registerAdapter(SDlistAdapter())
-          ..registerAdapter(SchoolDirectoryListAdapter())
-          ..registerAdapter(StudentAppAdapter())
-          ..registerAdapter(NotificationListAdapter())
-          ..registerAdapter(ItemAdapter())
-          ..registerAdapter(AppSettingAdapter())
-          ..registerAdapter(CalendarEventListAdapter())
-          ..registerAdapter(CustomSettingAdapter())
-          ..registerAdapter(UserInformationAdapter())
-          ..registerAdapter(SubjectDetailListAdapter())
-          ..registerAdapter(HistoryAssessmentAdapter())
-          ..registerAdapter(CustomRubricModalAdapter())
-          ..registerAdapter(TranslationModalAdapter())
-          ..registerAdapter(StudentAssessmentInfoAdapter())
-          ..registerAdapter(StateListObjectAdapter())
-          ..registerAdapter(GoogleClassroomCoursesAdapter())
-          ..registerAdapter(ScheduleAdapter())
-          ..registerAdapter(BlackoutDateAdapter())
-          ..registerAdapter(StudentDetailsModalAdapter())
-          ..registerAdapter(RecentGoogleFileSearchAdapter())
-          ..registerAdapter(CalendarBannerImageModalAdapter())
-          ..registerAdapter(RubricPdfModalAdapter())
-          ..registerAdapter(StudentPlusDetailsModelAdapter())
-          ..registerAdapter(StudentPlusWorkModelAdapter())
-          ..registerAdapter(ClassroomCourseAdapter())
-          ..registerAdapter(ClassroomStudentsAdapter())
-          ..registerAdapter(ClassroomProfileNameAdapter())
-          ..registerAdapter(ClassroomProfileAdapter())
-          ..registerAdapter(ClassroomPermissionsAdapter())
-          ..registerAdapter(PBISPlusHistoryModalAdapter())
-          ..registerAdapter(PBISPlusTotalInteractionModalAdapter())
-          ..registerAdapter(StudentPlusSearchModelAdapter())
-          ..registerAdapter(StudentPlusGradeModelAdapter())
-        // ..registerAdapter(PBISPlusSkillsModalAdapter())
+      ..init(appDocumentDirectory.path)
+      ..registerAdapter(RecentAdapter())
+      ..registerAdapter(AttributesAdapter())
+      ..registerAdapter(SharedListAdapter())
+      ..registerAdapter(SDlistAdapter())
+      ..registerAdapter(SchoolDirectoryListAdapter())
+      ..registerAdapter(StudentAppAdapter())
+      ..registerAdapter(NotificationListAdapter())
+      ..registerAdapter(ItemAdapter())
+      ..registerAdapter(AppSettingAdapter())
+      ..registerAdapter(CalendarEventListAdapter())
+      ..registerAdapter(CustomSettingAdapter())
+      ..registerAdapter(UserInformationAdapter())
+      ..registerAdapter(SubjectDetailListAdapter())
+      ..registerAdapter(HistoryAssessmentAdapter())
+      ..registerAdapter(CustomRubricModalAdapter())
+      ..registerAdapter(TranslationModalAdapter())
+      ..registerAdapter(StudentAssessmentInfoAdapter())
+      ..registerAdapter(StateListObjectAdapter())
+      ..registerAdapter(GoogleClassroomCoursesAdapter())
+      ..registerAdapter(ScheduleAdapter())
+      ..registerAdapter(BlackoutDateAdapter())
+      ..registerAdapter(StudentDetailsModalAdapter())
+      ..registerAdapter(RecentGoogleFileSearchAdapter())
+      ..registerAdapter(CalendarBannerImageModalAdapter())
+      ..registerAdapter(RubricPdfModalAdapter())
+      ..registerAdapter(StudentPlusDetailsModelAdapter())
+      ..registerAdapter(StudentPlusWorkModelAdapter())
+      ..registerAdapter(ClassroomCourseAdapter())
+      ..registerAdapter(ClassroomStudentsAdapter())
+      ..registerAdapter(ClassroomProfileNameAdapter())
+      ..registerAdapter(ClassroomProfileAdapter())
+      ..registerAdapter(ClassroomPermissionsAdapter())
+      ..registerAdapter(PBISPlusHistoryModalAdapter())
+      ..registerAdapter(PBISPlusTotalInteractionModalAdapter())
+      ..registerAdapter(StudentPlusSearchModelAdapter())
+      ..registerAdapter(StudentPlusGradeModelAdapter())
+      ..registerAdapter(PBISPlusGenericBehaviourModalAdapter())
+      // ..registerAdapter(PBISPlusDefaultBehaviourModalAdapter())
+      ..registerAdapter(PBISStudentNotesAdapter())
+      // ..registerAdapter(PBISPlusDefaultAndCustomBehaviourModalAdapter())
+      ..registerAdapter(PbisPlusAdditionalBehaviourListAdapter())
+      ..registerAdapter(PBISPlusStudentListAdapter())
+      ..registerAdapter(StudentNameAdapter());
+    // ..registerAdapter(PBISPlusSkillsModalAdapter())
 
-        // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
-        ;
+    // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
+    ;
   }
   clearTheme();
   await disableDarkMode();

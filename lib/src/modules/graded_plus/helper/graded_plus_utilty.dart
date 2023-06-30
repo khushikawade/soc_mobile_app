@@ -640,12 +640,9 @@ class OcrUtility {
   }
 }
 
-
-
 /*------------------------------------------------------------------------------------------------*/
 /*----------------------------getResultSummaryCardDetailsAndBarSize-------------------------------*/
 /*------------------------------------------------------------------------------------------------*/
-
 
 //   static Future<List<ResultSummeryDetailModel>>
 //       getResultSummaryCardDetailsAndBarSize(

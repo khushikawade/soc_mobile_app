@@ -9,7 +9,6 @@ import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_behaviour.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -1055,16 +1054,23 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             for (ClassroomStudents studentInCourse in course.students!) {
               if (studentInCourse.profile?.id == student.profile?.id) {
                 ClassroomStudents newStudent = ClassroomStudents(
+                  //TODOPBIS:  excel sheet
                   profile: ClassroomProfile(
                     courseName: course.name,
                     emailAddress: studentInCourse.profile?.emailAddress,
-                    engaged: studentInCourse.profile?.engaged,
-                    helpful: studentInCourse.profile?.helpful,
                     id: studentInCourse.profile?.id,
                     name: studentInCourse.profile?.name,
-                    niceWork: studentInCourse.profile?.niceWork,
                     permissions: studentInCourse.profile?.permissions,
                     photoUrl: studentInCourse.profile?.photoUrl,
+                    engaged: studentInCourse.profile?.engaged,
+                    helpful: studentInCourse.profile?.helpful,
+                    niceWork: studentInCourse.profile?.niceWork,
+                    // behaviour1: studentInCourse.profile?.behaviour1,
+                    // behaviour2: studentInCourse.profile?.behaviour2,
+                    // behaviour3: studentInCourse.profile?.behaviour3,
+                    // behaviour4: studentInCourse.profile?.behaviour4,
+                    // behaviour5: studentInCourse.profile?.behaviour5,
+                    // behaviour6: studentInCourse.profile?.behaviour6,
                   ),
                 );
 

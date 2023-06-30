@@ -44,7 +44,6 @@ class NoDataFoundErrorWidget extends StatelessWidget {
             return Container(
               height: MediaQuery.of(context).size.height * 0.8,
               child: ListView(
-               
                 children: [
                   Container(
                       margin: EdgeInsets.only(

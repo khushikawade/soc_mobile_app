@@ -108,7 +108,9 @@ dependencies:
   visibility_detector: ^0.3.3 #Used to get the feed view by user - View Interaction
   fl_chart: ^0.61.0 #Used to create graphs and charts / Used in Student+
   pdf: ^3.0.1 #Used in PBIS+ psf generation and customization
-  screenshot: ^1.3.0 #used to take screenshot / Used in PBIS+
+  screenshot: ^1.3.0
+  audioplayers: ^3.0.1
+  # screenshot: ^1.3.0 #used to take screenshot / Used in PBIS+
   uuid: ^3.0.7 #Used to generate unique ids / Used to generate user logs session_Id
 
 dev_dependencies:
@@ -119,6 +121,7 @@ dev_dependencies:
 
 dependency_overrides:
   webview_flutter: ^3.0.4
+  # modal_bottom_sheet: ^3.0.0-pre
 
 flutter_icons:
   image_path: "assets/images/appicon.png"
@@ -141,6 +144,8 @@ flutter:
     - assets/ocr_result_section_bottom_button_icons/
     - lib/src/modules/pbis_plus/bloc/
     - assets/Pbis_plus/
+    - assets/pbis_sound/sound1.wav
+
     # - assets/pbis_plus_asset/
   # An image asset can refer to one or more resolution-specific "finaliants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

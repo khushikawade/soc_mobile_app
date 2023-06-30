@@ -1,8 +1,9 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -10,9 +11,14 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Soc/src/services/Strings.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
   PBISPlusEditSkills({
@@ -27,72 +33,101 @@ class PBISPlusEditSkills extends StatefulWidget {
 }
 
 class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
-  ValueNotifier<int> hoveredIconIndex = ValueNotifier<int>(-1);
-
+  // ValueNotifier<int> hoveredIconIndex = ValueNotifier<int>(-1);
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
-  ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
+  // ValueNotifier<bool> isEditMode = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isCustomBehaviour = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
-
-  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
-
-  static final addSkill = PBISPlusActionInteractionModal(
-    imagePath: "assets/Pbis_plus/add_icon.svg",
-    title: 'Add Skill',
-    color: Colors.red,
-  );
-
-  ValueNotifier<List<PBISPlusActionInteractionModal>> behaviourIcons =
-      ValueNotifier<List<PBISPlusActionInteractionModal>>([
-    PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[0],
-    PBISPlusActionInteractionModal.pbisPlusActionInteractionIconsNew[1],
-    addSkill,
-    addSkill,
-    addSkill,
-    addSkill
-  ]);
-  int totalCurrentBehaviours = -1;
+  // bool tooglevalue = false;
+  PBISPlusBloc pbisCustomBehaviourBloc = PBISPlusBloc();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pbisPlusAdditionalBehaviourBloc = PBISPlusBloc();
 
   @override
   void initState() {
     super.initState();
-    pbisPlusClassroomBloc.add(GetPBISPlusAdditionalBehaviour());
+    pbisPlusAdditionalBehaviourBloc.add(GetPBISPlusAdditionalBehaviour());
+    pbisCustomBehaviourBloc.add(GetPBISPlusCustomBehaviour());
+    getCustomValue();
   }
 
-  getCount() {
-    totalCurrentBehaviours =
-        behaviourIcons.value.where((item) => item.title != "Add Skill").length;
-    return totalCurrentBehaviours;
+  void getCustomValue() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final storedValue = pref.getBool(Strings.isCustomBehaviour);
+      if (storedValue != null) {
+        isCustomBehaviour.value = storedValue;
+      }
+    } catch (e) {}
   }
 
-//Check if item exist
-  bool isItemExist(data) {
-    if (behaviourIcons.value.isNotEmpty) {
-      final result =
-          behaviourIcons.value.where((item) => item.title == data.title);
-      return result.isNotEmpty;
-    }
-    return false;
+  void setToggleValue({bool? value}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setBool(Strings.isCustomBehaviour, value ?? isCustomBehaviour.value);
+    } catch (e) {}
   }
+
+  ValueNotifier<List<PBISPlusGenericBehaviourModal>> localskillsList =
+      ValueNotifier<List<PBISPlusGenericBehaviourModal>>([]);
 
   Widget body(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SpacerWidget(18),
-        _buildBackIcon(),
-        _buildHeader(),
-        SpacerWidget(18),
-        _buildAdditionalBehaviour(),
-        SpacerWidget(48),
-      ],
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SpacerWidget(18),
+          _buildIconBar(),
+          buildTargetBehaviorWidget(),
+          SpacerWidget(18),
+          _buildAdditionalBehaviourWidget(),
+          SpacerWidget(48)
+        ]);
+  }
+
+  Widget _buildToggleButton() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ValueListenableBuilder(
+          valueListenable: isCustomBehaviour,
+          builder: (context, value, _) => Transform.scale(
+                transformHitTests: false,
+                scale: 0.8, // Adjust the scale factor as needed
+                child: CupertinoSwitch(
+                  value: isCustomBehaviour.value,
+                  onChanged: (value) {
+                    isCustomBehaviour.value = value;
+                    setToggleValue(value: value);
+                  },
+                  trackColor:
+                      Color(0xff000000) == Theme.of(context).backgroundColor
+                          ? AppTheme.klistTilePrimaryLight.withOpacity(0.1)
+                          : Color(0xff000000).withOpacity(0.5),
+                  thumbColor: isCustomBehaviour.value
+                      ? AppTheme.GreenColor
+                      : AppTheme.klistTilePrimaryLight,
+                  activeColor:
+                      Color(0xff000000) == Theme.of(context).backgroundColor
+                          ? Color(0xff000000).withOpacity(0.8)
+                          : Color(0xff000000).withOpacity(0.1),
+                ),
+              )),
     );
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
-/*--------------------------------------------------_buildBackIcon---------------------------------------------- */
+/*------------------------------------------------_buildIconBar------------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  Widget _buildIconBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [_buildBackIcon(), _buildToggleButton()],
+    );
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*------------------------------------------------_buildBackIcon------------------------------------------------ */
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildBackIcon() {
     return IconButton(
@@ -128,176 +163,206 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*--------------------------------------------------_buildHeader------------------------------------------------ */
 /*-------------------------------------------------------------------------------------------------------------- */
-  Widget _buildHeader() {
-    return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05),
-        color: Theme.of(context).backgroundColor,
-        child: Column(children: [
-          Container(
-              width: MediaQuery.of(context).size.height * 0.80,
-              decoration: BoxDecoration(
-                color: AppTheme.kButtonColor,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8.0),
-                  topLeft: Radius.circular(8.0),
-                ),
+  Widget buildTargetBehaviorWidget() {
+    return ValueListenableBuilder(
+        valueListenable: isCustomBehaviour,
+        builder: (context, value, _) => Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              padding: EdgeInsets.all(16),
-              child: Text("Edit Behaviours",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline5!.copyWith(
-                      color:
-                          Color(0xff000000) == Theme.of(context).backgroundColor
+              margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              color: Theme.of(context).backgroundColor,
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.height * 0.80,
+                    decoration: BoxDecoration(
+                      color: AppTheme.kButtonColor,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8.0),
+                        topLeft: Radius.circular(8.0),
+                      ),
+                    ),
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      // toogle.value ? "Edit Behaviour" : "Default Behaviour",
+                      isCustomBehaviour.value
+                          ? "Teacher Behaviour"
+                          : "School Behaviour",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5!.copyWith(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
                               ? Color(0xffFFFFFF)
                               : Color(0xff000000),
-                      fontWeight: FontWeight.bold))),
-          SpacerWidget(18),
-          additionalBehaviourList()
-        ]));
-  }
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
 
-/*-------------------------------------------------------------------------------------------------------------- */
-/*------------------------------------------additionalBehaviourList--------------------------------------------- */
-/*-------------------------------------------------------------------------------------------------------------- */
-  Widget additionalBehaviourList() {
-    return Container(
-        child: DragTarget<PBISPlusActionInteractionModal>(
-            builder: (context, candidateData, rejectedData) {
-              return GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.5,
-                  // Adjust this value to change item aspect ratio
-                  crossAxisSpacing: 4.0,
-                  // Adjust the spacing between items horizontally
-                  mainAxisSpacing: 4.0,
-                  // Adjust the spacing between items vertically
-                ),
-                itemCount: (PBISPlusActionInteractionModal
-                    .pbisPlusActionInteractionIconsNew.length),
-                itemBuilder: (BuildContext context, int index) {
-                  final item = behaviourIcons.value[index];
-                  totalCurrentBehaviours = index;
-                  return GestureDetector(
-                      onTap: () {
-                        isEditMode.value = true;
-                        changedIndex.value = index;
+                  SpacerWidget(18),
+                  BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                      bloc: pbisCustomBehaviourBloc,
+                      builder: (context, state) {
+                        print(state);
+                        if (state is PBISPlusLoading) {
+                          return ShimmerLoading(
+                              child: _buildCurrentBehaviourList(
+                                  PBISPlusSkillsModalLocal
+                                      .PBISPlusSkillLocalBehaviourlist,
+                                  true),
+                              isLoading: true);
+                        }
+                        //else if (state is PBISPlusSkillsUpdateLoading) {
+                        //   return _buildCurrentBehaviourList(
+                        //       state.skillsList, false);
+                        // }
+                        else if (state is PBISPlusDefaultBehaviourSucess) {
+                          return _buildCurrentBehaviourList(
+                              state.skillsList, false);
+                        } else if (state is PBISPlusDefaultBehaviourError) {
+                          return _noDataFoundWidget();
+                        }
+                        return Container();
                       },
-                      child: ValueListenableBuilder(
-                          valueListenable: changedIndex,
-                          builder: (context, value, _) =>
-                              ValueListenableBuilder(
-                                valueListenable: isEditMode,
-                                builder: (context, value, _) => index ==
-                                        changedIndex.value
-                                    ? _buildEditWidget(item)
-                                    : Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Draggable(
-                                              data: item,
-                                              child: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: SvgPicture.asset(
-                                                      item.imagePath,
-                                                      fit: BoxFit.contain)),
-                                              feedback: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: SvgPicture.asset(
-                                                      item.imagePath,
-                                                      fit: BoxFit.contain)),
-                                              childWhenDragging: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: SvgPicture.asset(
-                                                      item.imagePath,
-                                                      fit: BoxFit.contain))),
-                                          SpacerWidget(4),
-                                          Padding(
-                                            padding:
-                                                Globals.deviceType != 'phone'
-                                                    ? const EdgeInsets.only(
-                                                        top: 10, left: 10)
-                                                    : EdgeInsets.zero,
-                                            child: Utility.textWidget(
-                                                text: item.title,
-                                                context: context,
-                                                textTheme: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1!
-                                                    .copyWith(fontSize: 12)),
-                                          )
-                                        ],
-                                      ),
-                              )));
-                },
-              );
-            },
-            onWillAccept: (PBISPlusActionInteractionModal? iconData) {
-              return true;
-            },
-            onAccept: (PBISPlusActionInteractionModal? iconData) {
-              print(iconData?.title);
-              if (behaviourIcons.value.contains(iconData)) {
-              } else {
-                behaviourIcons.value[totalCurrentBehaviours!] = iconData!;
-                changedIndex.value = -1;
-              }
-              setState(() {});
-            },
-            onAcceptWithDetails:
-                (DragTargetDetails<PBISPlusActionInteractionModal> details) {
-              final item = details.data;
-            },
-            onMove: (details) {},
-            onLeave: (PBISPlusActionInteractionModal? iconData) {
-              print("INSIDE THE ON LEAVE ");
-            }));
+                      listener: (context, state) async {}
+                      //_buildEditSkillCards()
+                      ),
+                  // _buildEditItemList(containerIcons),
+                ],
+              ),
+            ));
   }
 
-  // Widget _buildaddSkillsWidget() {
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: <Widget>[
-  //       Container(
-  //         height: 40,
-  //         width: 40,
-  //         child: SvgPicture.asset(
-  //           "assets/Pbis_plus/add_icon.svg",
-  //           fit: BoxFit.contain,
-  //         ),
-  //       ),
-  //       SpacerWidget(4),
-  //       Padding(
-  //         padding: Globals.deviceType != 'phone'
-  //             ? const EdgeInsets.only(top: 10, left: 10)
-  //             : EdgeInsets.zero,
-  //         child: Utility.textWidget(
-  //             text: "Add Skills",
-  //             context: context,
-  //             textTheme: Theme.of(context)
-  //                 .textTheme
-  //                 .bodyText1!
-  //                 .copyWith(fontSize: 12)),
-  //       )
-  //     ],
-  //   );
-  // }
+  Widget _noDataFoundWidget() {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.all(8),
+        alignment: Alignment.center,
+        child: Text(
+          "No Skills Found",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
+        ),
+      ),
+    );
+  }
 
-  Widget _buildEditWidget(PBISPlusActionInteractionModal item) {
+  Widget _buildCurrentBehaviourList(
+      List<PBISPlusGenericBehaviourModal> skillsList, bool loading) {
+    return DragTarget<PBISPlusGenericBehaviourModal>(
+        builder: (context, candidateData, rejectedData) {
+      return GridView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1.5,
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+          ),
+          // itemCount: 6,
+          itemCount: skillsList.length,
+          //  skillsList.length,
+          itemBuilder: (BuildContext context, int index) {
+            // final item = containerIcons.value[index];
+            final item = skillsList[index];
+            return DragTarget<PBISPlusGenericBehaviourModal>(
+                onWillAccept: (draggedData) {
+              // hoveredIconIndex.value = index; // Update the hovered icon index
+              // print(hoveredIconIndex);
+              return true;
+            }, onAccept: (draggedData) {
+              //update behaviour in db
+              ////TODO: API CALL PENDING
+              pbisCustomBehaviourBloc.add(UpdatePBISBehavior(
+                  index: index,
+                  item: draggedData,
+                  olditem: localskillsList.value));
+
+              // hoveredIconIndex.value = -1;
+              //Reset the update value if already any index value exist
+              changedIndex.value = -1;
+            }, builder: (context, candidateData, rejectedData) {
+              return GestureDetector(
+                  onTap: () {
+                    if (skillsList[index].name != "Add Skill") {
+                      // isEditMode.value = true;
+                      changedIndex.value = index;
+                    }
+                  },
+                  child: ValueListenableBuilder(
+                      valueListenable: changedIndex,
+                      builder: (context, value, _) => index ==
+                              changedIndex.value
+                          ?
+                          //To show edit icon on selected behaviour
+                          _buildEditWidget(item, index, pbisCustomBehaviourBloc)
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                  Draggable(
+                                      data: item,
+                                      child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          child: _buildIcons(item.iconUrlC!)),
+                                      feedback: Container(
+                                          height: 40,
+                                          width: 40,
+                                          child: _buildIcons(item.iconUrlC!)),
+                                      childWhenDragging: Container(
+                                          height: 40,
+                                          width: 40,
+                                          child: _buildIcons(item.iconUrlC!))),
+                                  SpacerWidget(4),
+                                  Padding(
+                                      padding: Globals.deviceType != 'phone'
+                                          ? const EdgeInsets.only(
+                                              top: 10, left: 10)
+                                          : EdgeInsets.zero,
+                                      child: Utility.textWidget(
+                                          text: item.name!,
+                                          context: context,
+                                          textTheme: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(fontSize: 12)))
+                                ])));
+            });
+          });
+    });
+  }
+
+  Widget _buildIcons(String assestPath) {
+    return assestPath.contains('http://') || assestPath.contains('https://')
+        ? Image.network(
+            assestPath!,
+            fit: BoxFit.contain,
+          )
+        : SvgPicture.asset(
+            assestPath,
+            fit: BoxFit.contain,
+          );
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*---------------------------------------------------_buildEditWidget------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  Widget _buildEditWidget(PBISPlusGenericBehaviourModal item, int index,
+      PBISPlusBloc pbisPlusClassroomBloc) {
     return GestureDetector(
       onTap: () async {
-        await _modalBottomSheetMenu(item);
+        await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
+
+        // isEditMode.value = !isEditMode.value;
         changedIndex.value = -1;
+
+        //COMMENTED BY JYOTSNA
+        // pbisPlusClassroomBloc.add(
+        //     GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
+        pbisCustomBehaviourBloc.add(GetPBISPlusCustomBehaviour());
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -333,137 +398,189 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------_buildAdditionalBehaviour------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-  Widget _buildAdditionalBehaviour() {
-    return Expanded(
-        child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            margin: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05),
-            color: Theme.of(context).backgroundColor,
-            child: Column(
-                // physics: NeverScrollableScrollPhysics(),
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 16),
-                    child: Text(
-                      "Additional Behaviors",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(),
-                    ),
+  Widget _buildAdditionalBehaviourWidget() {
+    return ValueListenableBuilder(
+        valueListenable: isCustomBehaviour,
+        builder: (context, value, _) => isCustomBehaviour.value
+            ? Expanded(
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
-                  SpacerWidget(16),
-                  Expanded(
-                      child: ValueListenableBuilder(
-                          valueListenable: behaviourIcons,
-                          builder: (context, value, _) => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: GridView.builder(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  physics: BouncingScrollPhysics(),
-                                  // physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    childAspectRatio:
-                                        0.9, // Adjust this value to change item aspect ratio
-                                    crossAxisSpacing:
-                                        0.0, // Adjust the spacing between items horizontally
-                                    mainAxisSpacing:
-                                        4.0, // Adjust the spacing between items vertically
-                                  ),
-                                  itemCount: 3 *
-                                      PBISPlusActionInteractionModal
-                                          .pbisPlusActionInteractionIconsNew
-                                          .length
-                                          .ceil(),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final item = PBISPlusActionInteractionModal
-                                            .pbisPlusActionInteractionIconsNew[
-                                        index % 6];
-                                    final isIconDisabled =
-                                        behaviourIcons.value.contains(item);
-                                    return isIconDisabled
-                                        ? _buildAdditionalBehaviourNonDraggableIcons(
-                                            item, isIconDisabled)
-                                        : _buildAdditionalBehaviourDraggableIcons(
-                                            item, isIconDisabled);
-                                  })))),
-                  SpacerWidget(18)
-                ])));
+                  margin: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
+                  color: Theme.of(context).backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, left: 16),
+                        child: Text(
+                          "Additional Behaviors",
+                          textAlign: TextAlign.center,
+                          style:
+                              Theme.of(context).textTheme.headline1!.copyWith(),
+                        ),
+                      ),
+                      SpacerWidget(16),
+                      BlocConsumer(
+                          bloc: pbisPlusAdditionalBehaviourBloc,
+                          builder: (context, state) {
+                            if (state is PBISPlusLoading) {
+                              return ShimmerLoading(
+                                  isLoading: true,
+                                  child: _buildAdditionalBehaviourList(
+                                      PBISPlusSkillsModalLocal
+                                          .PBISPlusSkillLocalBehaviourlist,
+                                      true));
+                            } else if (state
+                                is PbisPlusAdditionalBehaviourSuccess) {
+                              if (state.additionalBehaviourList.isNotEmpty) {
+                                return _buildAdditionalBehaviourList(
+                                    PBISPlusSkillsModalLocal
+                                        .PBISPlusSkillLocalBehaviourlist,
+                                    false);
+                              } else {
+                                return _noDataFoundWidget();
+                              }
+                            } else if (state
+                                is PBISPlusAdditionalBehaviourError) {
+                              return _noDataFoundWidget();
+                            }
+                            return Container();
+                          },
+                          listener: (context, state) async {}),
+                      SpacerWidget(18),
+                    ],
+                  ),
+                ),
+              )
+            : SizedBox.shrink());
   }
 
-/*---------------------------------------------------------------------------------------------------------------*/
-/*------------------------------------_buildAdditionalBehaviourNonDraggableIcons---------------------------------*/
-/*---------------------------------------------------------------------------------------------------------------*/
-  Widget _buildAdditionalBehaviourNonDraggableIcons(item, isIconDisabled) {
-    return Container(
-        width: 40,
-        height: 40,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: 0,
-                  blurRadius: 1,
-                  offset: Offset(0, 0))
-            ]),
-        child: Center(
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Opacity(
-                    opacity: 0.2, child: SvgPicture.asset(item.imagePath)))));
+  Widget _buildAdditionalBehaviourList(
+      List<PBISPlusGenericBehaviourModal> skillsList, bool loading) {
+    return Expanded(
+        child: ValueListenableBuilder(
+            valueListenable: localskillsList,
+            builder: (context, value, _) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: GridView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    physics: BouncingScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      childAspectRatio: 0.9,
+                      // Adjust this value to change item aspect ratio
+                      crossAxisSpacing: 0.0,
+                      // Adjust the spacing between items horizontally
+                      mainAxisSpacing: 4.0,
+                      // Adjust the spacing between items vertically
+                    ),
+                    itemCount: skillsList.length,
+                    // 3 *
+                    //     PBISPlusSkillsModalLocal
+                    //         .PBISPlusSkillLocalBehaviourlist.length
+                    //         .ceil(),
+                    itemBuilder: (BuildContext context, int index) {
+                      PBISPlusGenericBehaviourModal item =
+                          skillsList[index % 6];
+                      // PBISPlusSkillsModalLocal
+                      //     .PBISPlusSkillLocalBehaviourlist[index % 6];
+                      final isIconDisabled = IsItemExits(item);
+
+                      return _buildAdditionalBehaviourIcon(
+                          item, isIconDisabled);
+                    }))));
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
-/*----------------------------------------_buildAdditionalBehaviourIcons---------------------------------------- */
+/*------------------------------------------_buildAdditionalBehaviour------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-  Widget _buildAdditionalBehaviourDraggableIcons(item, isIconDisabled) {
-    return Draggable(
-      data: item,
-      ignoringFeedbackPointer: !isIconDisabled,
-      child: Container(
-          width: 40,
-          height: 40,
-          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
+//Used to check IF additional icon is already in use or not
+  bool IsItemExits(PBISPlusGenericBehaviourModal itemtoFind) {
+    try {
+      final res = localskillsList.value
+          .where((item) => itemtoFind.id == item.id)
+          .isNotEmpty;
+      return res;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Widget _buildNonDraggbleIcon(
+  //     PBISPlusGenericBehaviourModal item, isIconDisabled) {
+  //   return Container(
+  //     width: 40,
+  //     height: 40,
+  //     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+  //     padding: EdgeInsets.all(8),
+  //     decoration: BoxDecoration(
+  //       color: Theme.of(context).backgroundColor,
+  //       borderRadius: BorderRadius.circular(8),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.4),
+  //           spreadRadius: 0,
+  //           blurRadius: 1,
+  //           offset: Offset(0, 0),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Center(
+  //       child: Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Opacity(opacity: 0.1, child: _buildIcons(item.iconUrlC!))),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildAdditionalBehaviourIcon(
+      PBISPlusGenericBehaviourModal item, isIconDisabled) {
+    return GestureDetector(
+      onTap: () {
+        Utility.doVibration();
+      },
+      child: Draggable(
+          data: item,
+          ignoringFeedbackPointer: !isIconDisabled,
+          child: Container(
+            width: 40,
+            height: 40,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    spreadRadius: 0,
-                    blurRadius: 1,
-                    offset: Offset(0, 0))
-              ]),
-          child: Center(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: Center(
               child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: isIconDisabled
-                      ? Opacity(
-                          opacity: 0.2, child: SvgPicture.asset(item.imagePath))
-                      : SvgPicture.asset(item.imagePath)))),
-      feedback:
-          isIconDisabled ? SizedBox.shrink() : SvgPicture.asset(item.imagePath),
-      childWhenDragging:
-          isIconDisabled ? SizedBox.shrink() : SvgPicture.asset(item.imagePath),
+                padding: const EdgeInsets.all(8.0),
+                child: isIconDisabled
+                    ? Opacity(opacity: 0.2, child: _buildIcons(item.iconUrlC!))
+                    : _buildIcons(item.iconUrlC!),
+              ),
+            ),
+          ),
+          feedback:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!),
+          childWhenDragging:
+              isIconDisabled ? SizedBox.shrink() : _buildIcons(item.iconUrlC!)),
     );
   }
 
-/*-------------------------------------------------------------------------------------------------------------- */
-/*-------------------------------------------_modalBottomSheetMenu---------------------------------------------- */
-/*-------------------------------------------------------------------------------------------------------------- */
-  _modalBottomSheetMenu(PBISPlusActionInteractionModal item) =>
+  _modalBottomSheetMenu(PBISPlusGenericBehaviourModal item, int index,
+          PBISPlusBloc pbisPlusClassroomBloc) =>
       showModalBottomSheet(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           isScrollControlled: true,
@@ -476,7 +593,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             return LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                behaviourIcons: behaviourIcons,
+                pbisPlusClassroomBloc: pbisPlusClassroomBloc,
+                index: index,
+                constraints: constraints,
+                // containerIcons: containerIcons,
                 item: item,
                 height: MediaQuery.of(context).size.height * 0.35,
               );

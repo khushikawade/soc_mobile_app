@@ -1,23 +1,29 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PBISPlusCommonPopup extends StatefulWidget {
+class PBISPlusDeleteBehaviorPopup extends StatefulWidget {
   final Orientation? orientation;
   final BuildContext? context;
   final String? message;
   final String? title;
   final TextStyle? titleStyle;
   final Color? backgroundColor;
-  final PBISPlusActionInteractionModal item;
-  final ValueNotifier<List<PBISPlusActionInteractionModal>>? behaviourIcons;
-  PBISPlusCommonPopup({
+  final PBISPlusGenericBehaviourModal item;
+  PBISPlusBloc? pbisPlusClassroomBloc;
+  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  PBISPlusDeleteBehaviorPopup({
     Key? key,
     required this.orientation,
     required this.context,
@@ -26,14 +32,19 @@ class PBISPlusCommonPopup extends StatefulWidget {
     required this.titleStyle,
     required this.backgroundColor,
     required this.item,
-    required this.behaviourIcons,
+    required this.containerIcons,
+    required this.pbisPlusClassroomBloc,
   }) : super(key: key);
 
   @override
-  State<PBISPlusCommonPopup> createState() => _PBISPlusCommonPopupState();
+  State<PBISPlusDeleteBehaviorPopup> createState() =>
+      _PBISPlusDeleteBehaviorPopupState();
 }
 
-class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
+class _PBISPlusDeleteBehaviorPopupState
+    extends State<PBISPlusDeleteBehaviorPopup> {
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+
   @override
   void dispose() {
     super.dispose();
@@ -47,28 +58,13 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
-        child: contentBox(context));
+        child: body());
   }
 
-  bool replaceItems(String title) {
-    try {
-      int index = widget.behaviourIcons!.value
-          .indexWhere((item) => item.title == title);
-      if (index != -1) {
-        widget.behaviourIcons!.value[index] = PBISPlusActionInteractionModal(
-            imagePath: "assets/Pbis_plus/add_icon.svg",
-            title: 'Add Skill',
-            color: Colors.red);
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  contentBox(context) {
-    return Stack(children: <Widget>[
-      Container(
+  Widget body() {
+    return Stack(
+      children: <Widget>[
+        Container(
           height: MediaQuery.of(context).size.height * 0.26,
           padding: EdgeInsets.only(left: 16, top: 54, right: 16, bottom: 16),
           margin: EdgeInsets.only(top: 54),
@@ -94,94 +90,125 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                     color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
               ]),
           child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SpacerWidget(MediaQuery.of(context).size.height / 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text("Are you sure you want to delete this item?",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(fontSize: 16)),
-                ),
-                SpacerWidget(MediaQuery.of(context).size.height / 40),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CircularCustomButton(
-                            size: Size(MediaQuery.of(context).size.width * 0.29,
-                                MediaQuery.of(context).size.width / 10),
-                            text: "Cancel",
-                            onClick: () {
-                              Navigator.pop(context!);
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SpacerWidget(MediaQuery.of(context).size.height / 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text("Are you sure you want to delete this item?",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(fontSize: 16)),
+              ),
+              SpacerWidget(MediaQuery.of(context).size.height / 60),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CustomCircularButton(
+                          size: Size(MediaQuery.of(context).size.width * 0.29,
+                              MediaQuery.of(context).size.width / 10),
+                          text: "Cancel",
+                          onClick: () {
+                            Navigator.pop(context);
+                          },
+                          backgroundColor: AppTheme.kButtonColor,
+                          isBusy: false,
+                          textColor: Color(0xffF7F8F9),
+                          buttonRadius: 64,
+                        ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.height / 40),
+                        BlocConsumer(
+                            bloc: pbisPlusClassroomBloc,
+                            builder: (context, state) {
+                              if (state is PBISPlusLoading) {
+                                return _buildDeleteButton(true);
+                              }
+                              return _buildDeleteButton(false);
                             },
-                            backgroundColor: AppTheme.kButtonColor,
-                            isBusy: false,
-                            buttonRadius: 64,
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.height / 40),
-                          CircularCustomButton(
-                              borderColor: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                              text: "Delete",
-                              textColor: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                              onClick: () async {
-                                _handleDeleteItem();
-                              },
-                              backgroundColor: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xffF7F8F9)
-                                  : Color(0xff111C20),
-                              isBusy: false,
-                              size: Size(
-                                  MediaQuery.of(context).size.width * 0.29,
-                                  MediaQuery.of(context).size.width / 10),
-                              buttonRadius: 64)
-                        ]))
-              ])),
-      Positioned(
-          top: 0, left: 16, right: 16, child: _buildIconWidget(widget.item))
-    ]);
+                            listener: (context, state) async {
+                              if (state is PBISPlusDefaultBehaviourSucess) {
+                                Utility.currentScreenSnackBar(
+                                    "Successfully Deleted skills", null);
+                                Navigator.pop(context, true);
+                              } else if (state is PBISPlusSkillsDeleteError) {
+                                Utility.currentScreenSnackBar(
+                                    "Please try again later. Unable to delete the skills.",
+                                    null);
+                                Navigator.pop(context, true);
+                              }
+                            }
+                            //_buildEditSkillCards()
+                            ),
+                      ])),
+            ],
+          ),
+        ),
+        Positioned(
+            top: 0,
+            left: 16,
+            right: 16,
+            child: _showDeleteIconWidget(widget.item))
+      ],
+    );
+  }
+
+  Widget _buildDeleteButton(bool isBusy) {
+    return CustomCircularButton(
+      borderColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xff111C20)
+          : Color(0xffF7F8F9),
+      text: "Delete",
+      textColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xff111C20)
+          : Color(0xffF7F8F9),
+      onClick: () async {
+        _handleDeleteItem();
+      },
+      backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xffF7F8F9)
+          : Color(0xff111C20),
+      isBusy: isBusy,
+      size: Size(MediaQuery.of(context).size.width * 0.29,
+          MediaQuery.of(context).size.width / 10),
+      buttonRadius: 64,
+    );
   }
 
   void _handleDeleteItem() async {
-    bool res = await replaceItems(widget.item.title);
-    if (res) {
-      Utility.currentScreenSnackBar("Behaviour deleted successfully", null);
-      Navigator.pop(context);
-    } else {
-      Utility.currentScreenSnackBar(
-          "Failed to delete selected behaviour. Please try again.", null);
-      Navigator.pop(context);
-    }
+    pbisPlusClassroomBloc.add(DeletePBISBehavior(item: widget.item));
   }
 
-  Widget _buildIconWidget(PBISPlusActionInteractionModal item) {
+  Widget _showDeleteIconWidget(PBISPlusGenericBehaviourModal item) {
     return Container(
         decoration: BoxDecoration(
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xffF7F8F9)
-              : Color(0xff111C20),
-          shape: BoxShape.circle,
-        ),
+            color: Color(0xff000000) != Theme.of(context).backgroundColor
+                ? Color(0xffF7F8F9)
+                : Color(0xff111C20),
+            shape: BoxShape.circle),
         child: CircleAvatar(
             radius: 42.0,
             backgroundColor: Colors.transparent,
-            child: SvgPicture.asset(
-              item.imagePath,
-            )));
+            child: item.iconUrlC!.contains('http')
+                ? Container(
+                    height: 24,
+                    width: 24,
+                    child: Image.network(
+                      item.iconUrlC!,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                : Container(
+                    height: 24,
+                    width: 24,
+                    child: SvgPicture.asset(item.iconUrlC!,
+                        fit: BoxFit.contain))));
   }
 }

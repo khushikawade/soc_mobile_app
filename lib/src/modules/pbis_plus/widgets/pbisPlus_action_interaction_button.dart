@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/modules/schedule/modal/contweek.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -8,10 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:like_button/like_button.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 // ignore: must_be_immutable
 class PBISPlusActionInteractionButton extends StatefulWidget {
-  final PBISPlusActionInteractionModal iconData;
+  final PBISPlusActionInteractionModalNew iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final bool?
       isFromStudentPlus; // to check it is from pbis plus or student plus
@@ -47,6 +50,22 @@ class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
   final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
+  // AudioPlayer? soundEffectPlayer;
+  // void updateState(bool isLiked) {
+  //   if (_isOffline) {
+  //     Utility.currentScreenSnackBar("No Internet Connection", null);
+  //   }
+  //   _showMessage.value = true;
+  //   Future.delayed(Duration(seconds: 1), () {
+  //     _showMessage.value = false;
+  //   });
+
+  //   /// send your request here
+  //   // final bool success = await sendRequest();
+
+  //   /// if failed, you can do nothing
+  //   // return success? !isLiked:isLiked;
+  // }
 
   bool _isOffline = false;
 
@@ -183,6 +202,8 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
+    Utility.playSound(Strings.soundPath[0]);
+
     if (_isOffline) {
       Utility.currentScreenSnackBar("No Internet Connection", null);
       return isLiked;
@@ -201,20 +222,21 @@ class PBISPlusActionInteractionButtonState
     });
 
     if (widget.iconData.title == 'Engaged') {
-      widget.studentValueNotifier.value.profile!.engaged =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.engaged
-              : widget.studentValueNotifier.value.profile!.engaged! + 1;
-    } else if (widget.iconData.title == 'Nice Work') {
-      widget.studentValueNotifier.value.profile!.niceWork =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.niceWork
-              : widget.studentValueNotifier.value.profile!.niceWork! + 1;
-    } else {
-      widget.studentValueNotifier.value.profile!.helpful =
-          widget.isFromStudentPlus == true
-              ? widget.studentValueNotifier.value.profile!.helpful
-              : widget.studentValueNotifier.value.profile!.helpful! + 1;
+      // TODOPBIS:
+      //   widget.studentValueNotifier.value.profile!.behaviour1?.counter =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.engaged
+      //           : widget.studentValueNotifier.value.profile!.engaged! + 1;
+      // } else if (widget.iconData.title == 'Nice Work') {
+      //   widget.studentValueNotifier.value.profile!.niceWork =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.niceWork
+      //           : widget.studentValueNotifier.value.profile!.niceWork! + 1;
+      // } else {
+      //   widget.studentValueNotifier.value.profile!.helpful =
+      //       widget.isFromStudentPlus == true
+      //           ? widget.studentValueNotifier.value.profile!.helpful
+      //           : widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
 
     onTapDetect.value =
@@ -241,12 +263,14 @@ class PBISPlusActionInteractionButtonState
   _getCounts() {
     String title = widget.iconData.title;
     var map = {
+      //TODOPBIS:
       'Engaged': widget.studentValueNotifier.value.profile!.engaged,
       'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
       'Participation': ++participation.value,
       'Collaboration': ++collaboration.value,
       'Listening': ++listening.value,
+
       // widget.studentValueNotifier.value.profile!.niceWork,
       // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };

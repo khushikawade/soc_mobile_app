@@ -2,8 +2,14 @@ import 'package:Soc/src/globals.dart';
 
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
-  static final String pbisPlusSkillsDB = 'PBISPlus_skills';
+  static final String pbisPlusBehaviourGenricDB = 'PBISPlus_Behaviour_Genric';
+  static final String pbisPlusAdditionalBehviourDB =
+      'PBISPlusAdditionalBehviour';
+  static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
+  static final String pbisPlusStudentListDB = 'PBISPlus_student_list';
+  static final String pbisPlusStudentNotesListtDB =
+      'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
   static final String pbisStudentInteractionDB = 'pbis_student_interaction';
@@ -25,7 +31,6 @@ class PBISPlusOverrides {
 
   // static String pbisPlusGoogleDriveFolderId = '';
   // static String pbisPlusGoogleDriveFolderPath = '';
-
 
 //for reseting bottom sheet items titles
   static const String kresetOptionOnetitle = 'All Courses & Students';
