@@ -12,13 +12,15 @@ class PBISPlusStudentList extends HiveObject {
   String? iconUrlC;
   @HiveField(3)
   PBISStudentNotes? notes;
+  @HiveField(4)
+  String? email;
 
   PBISPlusStudentList({
     this.studentId,
     this.names,
     this.iconUrlC,
     this.notes,
-    // this.date,
+    this.email,
   });
 
   PBISPlusStudentList.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class PBISPlusStudentList extends HiveObject {
     iconUrlC = json['iconUrlC'].toString().contains('http')
         ? json['iconUrlC']
         : 'https:' + json['iconUrlC'] ?? '';
+    email = json['email'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -39,7 +42,7 @@ class PBISPlusStudentList extends HiveObject {
     data['studentName'] = this.names;
     data['notes'] = this.notes;
     data['iconUrlC'] = this.iconUrlC;
-    // data['date'] = this.date;
+    data['email'] = this.email;
     return data;
   }
 }
@@ -92,15 +95,15 @@ class PBISStudentNotes {
   String? weekday;
 
   PBISStudentNotes({
-    required this.id,
-    required this.studentName,
-    required this.studentEmail,
-    required this.teacherC,
-    required this.schoolAppC,
-    required this.notes,
-    required this.date,
-    required this.time,
-    required this.weekday,
+    this.id,
+    this.studentName,
+    this.studentEmail,
+    this.teacherC,
+    this.schoolAppC,
+    this.notes,
+    this.date,
+    this.time,
+    this.weekday,
   });
 
   factory PBISStudentNotes.fromJson(Map<String, dynamic> json) =>

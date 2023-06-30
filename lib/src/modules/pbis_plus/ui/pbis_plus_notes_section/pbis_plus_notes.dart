@@ -57,12 +57,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
   final _deBouncer = Debouncer(milliseconds: 500);
   List<PBISPlusStudentList>? mainList;
-  final ScrollController _scrollcontroller = ScrollController();
   @override
   void initState() {
     super.initState();
     searchFocusNode.unfocus();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
+    PBISPlusBlocInstance.add(GetPBISPlusStudentList(oldItemList: null));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "pbis_plus_history_screen");
@@ -151,7 +150,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                     print(
                         "------------state return on the UI-------- ===-${state}-----------");
                     print(state);
-                    if (state is PBISPlusStudentNotesSucess) {
+                    if (state is PBISPlusStudentListSucess) {
                       //---------------------return the filter list to UI-----------//
                       if (state.studentNotes.isNotEmpty) {
                         mainList = state.studentNotes;
@@ -160,7 +159,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                       } else {
                         return _noDataFoundWidget();
                       }
-                    } else if (state is PBISPlusStudentNotesShimmer ||
+                    } else if (state is PBISPlusStudentListShimmer ||
                         state is PBISPlusInitial ||
                         state is PBISPlusImportRosterSuccess) {
                       return _listBuilder(
@@ -172,7 +171,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                           isShimmerLoading: false);
                     } else if (state is PBISPlusStudentSearchNoDataFound) {
                       return _noDataFoundWidget();
-                    } else if (state is PBISPlusStudentNotesError) {
+                    } else if (state is PBISPlusStudentListError) {
                       return _noDataFoundWidget();
                     }
                     //Managing shimmer loading in case of initial loading
@@ -183,7 +182,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                   listener: (context, state) {
                     if (state is PBISPlusImportRosterSuccess) {
                       PBISPlusBlocInstance.add(
-                          GetPBISPlusStudentNotes(oldItemList: null));
+                          GetPBISPlusStudentList(oldItemList: null));
                     }
                   });
             }),
@@ -256,7 +255,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                 isResultNotFoundMsg: false,
                 isNews: false,
                 isEvents: false,
-                errorMessage: 'No Data Found',
+                errorMessage: 'No Student Found',
               ))),
     );
   }
@@ -333,13 +332,16 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
           ),
           onTap: (() {
             print(Globals.schoolDbnC);
+            print(Globals.teacherId);
+            print(Overrides.SCHOOL_ID);
             // print(obj.)
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => PBISPlusNotesDetailPage(
-                        item: obj,
-                      )),
-            );
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //       builder: (context) => PBISPlusNotesDetailPage(
+            //             item: obj,
+            //             pBISPlusBlocInstance: PBISPlusBlocInstance,
+            //           )),
+            // );
 
             /*-------------------------User Activity Track START----------------------------*/
             // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -375,8 +377,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
         "inside the onn itme change++++++++++++++=================================================== ---");
     _deBouncer.run(() {
       if (_searchController.text.isEmpty) {
-        PBISPlusBlocInstance.add(
-            GetPBISPlusStudentNotes(oldItemList: mainList));
+        PBISPlusBlocInstance.add(GetPBISPlusStudentList(oldItemList: mainList));
         showErrorInSearch.value = false;
       } else if (_searchController.text.length >= 3) {
         showErrorInSearch.value = false;

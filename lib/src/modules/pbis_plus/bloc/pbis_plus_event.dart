@@ -142,9 +142,9 @@ class GetPBISSkillsUpdateList extends PBISPlusEvent {
 }
 
 // ignore: must_be_immutable
-class GetPBISPlusStudentNotes extends PBISPlusEvent {
+class GetPBISPlusStudentList extends PBISPlusEvent {
   List<PBISPlusStudentList>? oldItemList;
-  GetPBISPlusStudentNotes({
+  GetPBISPlusStudentList({
     this.oldItemList,
   });
 
@@ -182,3 +182,19 @@ class GetPBISPlusStudentNotesList extends PBISPlusEvent {
   @override
   List<Object> get props => [studentId, teacherid, dbn];
 }
+
+// class AddPBISPlusStudentNotesList extends PBISPlusEvent {
+//   final String studentId;
+//   final String studentName;
+//   final String studentEmail;
+//   final String studentEmail;
+//   final String studentEmail;
+//   GetPBISPlusStudentNotesList({
+//     required this.studentId,
+//     required this.teacherid,
+//     required this.dbn,
+//   });
+
+//   @override
+//   List<Object> get props => [studentId, teacherid, dbn];
+// }

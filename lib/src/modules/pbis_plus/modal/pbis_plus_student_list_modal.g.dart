@@ -21,13 +21,14 @@ class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
       names: fields[1] as StudentName?,
       iconUrlC: fields[2] as String?,
       notes: fields[3] as PBISStudentNotes?,
+      email: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PBISPlusStudentList obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.studentId)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
       ..writeByte(2)
       ..write(obj.iconUrlC)
       ..writeByte(3)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(4)
+      ..write(obj.email);
   }
 
   @override

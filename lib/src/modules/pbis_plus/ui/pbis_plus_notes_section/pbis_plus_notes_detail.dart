@@ -2,16 +2,9 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_search_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -26,10 +19,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
+  PBISPlusBloc? pBISPlusBlocInstance;
+
   final PBISPlusStudentList item;
 
   PBISPlusNotesDetailPage({
     Key? key,
+    required this.pBISPlusBlocInstance,
     required this.item,
   }) : super(key: key);
 
@@ -41,21 +37,23 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   static const double _KVertcalSpace = 60.0;
   // used for space between the widgets
   static const double _kLabelSpacing = 20.0;
-  PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
+
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   FocusNode searchFocusNode = new FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<String> filterNotifier =
       ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
-  // search text editing controller
-  final _searchController = TextEditingController();
   // hide animated container
   final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
-
+  PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
+    PBISPlusBlocInstance!.add(GetPBISPlusStudentNotesList(
+        dbn: Globals.schoolDbnC!,
+        studentId: widget.item.studentId!,
+        teacherid: Globals.teacherId));
+        
 
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -75,11 +73,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             key: _scaffoldKey,
             backgroundColor:
                 Colors.transparent, // appBar: PBISPlusUtility.pbisAppBar(
-            //   context: context,
-            //   titleIconData: widget.titleIconData,
-            //   title: 'Class',
-            //   scaffoldKey: _scaffoldKey,
-            // ),
             extendBody: true,
             body: body(context)),
       )
@@ -134,21 +127,26 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
               return BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
-                    if (state is PBISPlusStudentNotesSucess) {
+                    if (state is GetPBISPlusStudentAllNotesListSucess) {
                       //---------------------return the filter list to UI-----------//
-                      return _listBuilder(state.studentNotes,
+                      return _listBuilder(state.notesList,
                           isShimmerLoading: false);
-                    } else if (state is PBISPlusStudentNotesShimmer ||
+                    } else if (state is GetPBISPlusStudentNotesLoading ||
                         state is PBISPlusInitial) {
                       return _listBuilder(
-                          List.generate(10, (index) => PBISPlusStudentList()),
+                          List.generate(
+                            10,
+                            (index) => PBISStudentNotes(),
+                          ),
                           isShimmerLoading: true);
-                    } else if (state is PBISPlusStudentNotesError) {
+                    } else if (state is GetPBISPlusStudentAllNotesListError) {
                       return _noDataFoundWidget();
                     }
 
                     //Managing shimmer loading in case of initial loading
-                    return _noDataFoundWidget();
+                    return _listBuilder(
+                        List.generate(10, (index) => PBISStudentNotes()),
+                        isShimmerLoading: true);
                   },
                   listener: (context, state) {});
             }),
@@ -156,7 +154,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     );
   }
 
-  Widget _listBuilder(List<PBISPlusStudentList> studentNotesList,
+  Widget _listBuilder(List<PBISStudentNotes> studentNotesList,
       {required final bool isShimmerLoading}) {
     return studentNotesList.length > 0
         ? Container(
@@ -194,21 +192,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
 
-  Widget _noDataFoundWidget() {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.all(8),
-        alignment: Alignment.center,
-        child: Text(
-          "No Data Found",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard(
-      PBISPlusStudentList obj, index, final bool isShimmerLoading) {
+  Widget _buildCard(PBISStudentNotes obj, index, final bool isShimmerLoading) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -221,20 +205,24 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         child: Column(
           children: [
             SpacerWidget(24),
-            Text(
-              "${obj.notes!.notes ?? ""}  Sed euismod eros non ante lacinia condimentum. Pellentesque est lacus, rutrum ac arcu et, accumsan pharetra neque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc vel lectus rutrum, mollis dui ac, molestie neque. Quisque sit amet lacus vulputate, varius leo eu, elementum dui. Curabitur condimentum facilisis nisi, a pretium risus malesuada et. Mauris non leo",
-              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisilorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-              textAlign: TextAlign.left,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color:
-                        Color(0xff000000) == Theme.of(context).backgroundColor
-                            ? Color(0xffFFFFFF)
-                            : Color(0xff162429),
-                    fontSize: 12,
+            isShimmerLoading
+                ? localSimmerWidget(
+                    height: MediaQuery.of(context).size.width * 0.3,
+                    width: MediaQuery.of(context).size.width * 0.9)
+                : Text(
+                    "${obj.notes ?? ""}  Sed euismod eros non ante lacinia condimentum. Pellentesque est lacus, rutrum ac arcu et, accumsan pharetra neque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc vel lectus rutrum, mollis dui ac, molestie neque. Quisque sit amet lacus vulputate, varius leo eu, elementum dui. Curabitur condimentum facilisis nisi, a pretium risus malesuada et. Mauris non leo",
+                    // "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisilorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff162429),
+                          fontSize: 12,
+                        ),
                   ),
-            ),
             SpacerWidget(24),
-            _buildDateList(obj),
+            _buildDateList(obj, isShimmerLoading),
             SpacerWidget(24),
           ],
         ),
@@ -242,32 +230,50 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     );
   }
 
-  Widget _buildDateList(PBISPlusStudentList item) {
+  Widget _buildDateList(PBISStudentNotes item, bool isShimmerLoading) {
     return Row(
       children: [
-        _buildCardDateTime(item.notes!.date ?? "", true),
-        _buildCardDateTime("Monday", true),
-        _buildCardDateTime("10:30 PM", false)
+        _buildCardDateTime(item.date ?? "", true, isShimmerLoading),
+        _buildCardDateTime(item.weekday ?? "", true, isShimmerLoading),
+        _buildCardDateTime(item.time ?? "", false, isShimmerLoading)
       ],
     );
   }
 
-  Widget _buildCardDateTime(item, bool isShowDivider) {
+  Widget _buildCardDateTime(item, bool isShowDivider, bool isShimmerLoading) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            "$item",
-            textAlign: TextAlign.left,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                color: Color(0xff000000) == Theme.of(context).backgroundColor
-                    ? Color(0xffA6A6A6)
-                    : Color(0xff162429),
-                fontSize: 10,
-                fontWeight: FontWeight.w500),
-          ),
+          isShimmerLoading
+              ? localSimmerWidget(height: 15, width: 48)
+              : Text(
+                  "$item",
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color:
+                          Color(0xff000000) == Theme.of(context).backgroundColor
+                              ? Color(0xffA6A6A6)
+                              : Color(0xff162429),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500),
+                ),
           isShowDivider ? _buildVerticalDivider() : SizedBox.shrink()
         ]);
+  }
+
+  Widget _noDataFoundWidget() {
+    return Center(
+        child: RefreshIndicator(
+            color: AppTheme.kButtonColor,
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: NoDataFoundErrorWidget(
+              marginTop: MediaQuery.of(context).size.height / 4,
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              errorMessage: 'No Notes Found',
+            )));
   }
 
   Widget _buildVerticalDivider() {
@@ -289,7 +295,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(oldItemList: null));
+    // widget.pBISPlusBlocInstance!
+    //     .add(GetPBISPlusStudentNotes(oldItemList: null));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
@@ -300,15 +307,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 
   Widget localSimmerWidget({required double height, required double width}) {
     return ShimmerLoading(
-      isLoading: true,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: AppTheme.kShimmerBaseColor!,
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    );
+        isLoading: true,
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: AppTheme.kShimmerBaseColor!,
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ));
   }
 }

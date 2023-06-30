@@ -183,17 +183,17 @@ class PBISPlusSkillsListUpdateError extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusStudentNotesShimmer extends PBISPlusState {
-  PBISPlusStudentNotesShimmer();
+class PBISPlusStudentListShimmer extends PBISPlusState {
+  PBISPlusStudentListShimmer();
   @override
   List<Object> get props => [];
 }
 
-class PBISPlusStudentNotesSucess extends PBISPlusState {
+class PBISPlusStudentListSucess extends PBISPlusState {
   final List<PBISPlusStudentList> studentNotes;
-  PBISPlusStudentNotesSucess({required this.studentNotes});
-  PBISPlusStudentNotesSucess copyWith({final studentNotes}) {
-    return PBISPlusStudentNotesSucess(
+  PBISPlusStudentListSucess({required this.studentNotes});
+  PBISPlusStudentListSucess copyWith({final studentNotes}) {
+    return PBISPlusStudentListSucess(
         studentNotes: studentNotes ?? this.studentNotes);
   }
 
@@ -201,12 +201,12 @@ class PBISPlusStudentNotesSucess extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusStudentNotesError extends PBISPlusState {
+class PBISPlusStudentListError extends PBISPlusState {
   final error;
 
-  PBISPlusStudentNotesError({required this.error});
-  PBISPlusStudentNotesError copyWith({final error}) {
-    return PBISPlusStudentNotesError(error: error ?? this.error);
+  PBISPlusStudentListError({required this.error});
+  PBISPlusStudentListError copyWith({final error}) {
+    return PBISPlusStudentListError(error: error ?? this.error);
   }
 
   @override
@@ -251,8 +251,8 @@ class PBISPlusStudentSearchNoDataFound extends PBISPlusState {
   List<Object> get props => [error];
 }
 
-class GetPBISPlusStudentAllNotesListLoading extends PBISPlusState {
-  GetPBISPlusStudentAllNotesListLoading();
+class GetPBISPlusStudentNotesLoading extends PBISPlusState {
+  GetPBISPlusStudentNotesLoading();
   @override
   List<Object> get props => [];
 }
