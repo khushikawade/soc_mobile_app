@@ -66,6 +66,7 @@ class StudentPlusCreateStudentWorkGooglePresentationSuccess
 class StudentPlusUpdateStudentWorkGooglePresentationSuccess
     extends GoogleSlidesPresentationState {
   final StudentPlusDetailsModel studentDetails;
+  //isSaveStudentGooglePresentationWorkOnDataBase //Require to manage API call on UI to either(true) need to save or not(false)
   final bool isSaveStudentGooglePresentationWorkOnDataBase;
   StudentPlusUpdateStudentWorkGooglePresentationSuccess(
       {required this.studentDetails,

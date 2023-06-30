@@ -24,7 +24,8 @@ class AssessmentDetails {
       this.createdAsPremium,
       this.assessmentType,
       this.classroomCourseId,
-      this.classroomCourseWorkId});
+      this.classroomCourseWorkId,
+      this.classroomCourseWorUrl});
   @HiveField(0)
   String? name;
   @HiveField(1)
@@ -65,6 +66,8 @@ class AssessmentDetails {
   String? classroomCourseId;
   @HiveField(19)
   String? classroomCourseWorkId;
+  @HiveField(20)
+  String? classroomCourseWorUrl;
 
   factory AssessmentDetails.fromRawJson(String str) =>
       AssessmentDetails.fromJson(json.decode(str));
@@ -92,7 +95,8 @@ class AssessmentDetails {
           createdAsPremium: json["Created_As_Premium"] ?? "false",
           assessmentType: json["Assessment_Type"] ?? 'Constructed Response',
           classroomCourseId: json['Classroom_Course_Id'] ?? '',
-          classroomCourseWorkId: json['Classroom_Course_Work_Id'] ?? '');
+          classroomCourseWorkId: json['Classroom_Course_Work_Id'] ?? '',
+          classroomCourseWorUrl: json['Classroom_Coursework_URL'] ?? '');
 
   Map<String, dynamic> toJson() => {
         "Date__c": dateC == null ? null : dateC,
@@ -111,6 +115,7 @@ class AssessmentDetails {
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
         "Created_As_Premium": createdAsPremium,
-        "Assessment_Type": assessmentType
+        "Assessment_Type": assessmentType,
+        "Classroom_Coursework_URL": classroomCourseWorUrl
       };
 }

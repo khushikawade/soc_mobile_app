@@ -76,27 +76,27 @@ class ExcelSheetCreated extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class GoogleFolderCreated extends GoogleDriveState {
-  final obj;
-  GoogleFolderCreated({
-    this.obj,
-  });
-  GoogleFolderCreated copyWith({
-    final obj,
-  }) {
-    return GoogleFolderCreated(
-      obj: obj ?? this.obj,
-    );
-  }
+// class GoogleFolderCreated extends GoogleDriveState {
+//   final obj;
+//   GoogleFolderCreated({
+//     this.obj,
+//   });
+//   GoogleFolderCreated copyWith({
+//     final obj,
+//   }) {
+//     return GoogleFolderCreated(
+//       obj: obj ?? this.obj,
+//     );
+//   }
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 // ignore: must_be_immutable
-class GoogleSuccess extends GoogleDriveState {
+class GoogleFolderCreated extends GoogleDriveState {
   bool? fromGradedPlusAssessmentSection;
-  GoogleSuccess({this.fromGradedPlusAssessmentSection});
+  GoogleFolderCreated({this.fromGradedPlusAssessmentSection});
   @override
   List<Object> get props => [];
 }

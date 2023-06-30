@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -232,91 +234,185 @@ class GoogleSlidesPresentationBloc
 /*---------------------------------------Student Plus Update Slides To GooglePresentation------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
+    // if (event is StudentPlusUpdateGooglePresentationForStudent) {
+    //     try {
+    //       bool isSaveStudentGooglePresentationWorkOnDataBase = false;
+
+    //       List<UserInformation> userProfileLocalData =
+    //           await UserGoogleProfile.getUserProfile();
+
+    //       //Count the number of slide already exist to the Google Presentation
+    //       List countGooglePresentationSlide =
+    //           await getSlidesCountFromGooglePresentation(
+    //         presentationFileId:
+    //             event.studentDetails.studentGooglePresentationId ?? '',
+    //         userProfile: userProfileLocalData[0],
+    //       );
+
+    //       //if the api response return (404) the resource you are trying to access doesn't exist
+    //       // so then create one google presentation
+    //       if (countGooglePresentationSlide[0] == false &&
+    //           countGooglePresentationSlide[1] == 404) {
+    //         //GET STUDENT PRESENTAION FILE NAME
+    //         String studentGooglePresentationFileName =
+    //             GooglePresentationBlocMethods
+    //                 .createStudentGooglePresentationFileName(
+    //                     event.studentDetails);
+
+    //         //CREATE STUDENT PRESENTAION FILE
+    //         List GooglePresentationCreateResponse =
+    //             await googleDriveBloc.createPresentationOnDrive(
+    //                 name: studentGooglePresentationFileName,
+    //                 folderId:
+    //                     userProfileLocalData[0].studentPlusGoogleDriveFolderId ??
+    //                         '',
+    //                 accessToken: userProfileLocalData[0].authorizationToken,
+    //                 refreshToken: userProfileLocalData[0].refreshToken,
+    //                 excelSheetId: '',
+    //                 isMcqSheet: false);
+
+    //         //Return Google presentation if once presentation created
+    //         if (GooglePresentationCreateResponse[0] == true) {
+    //           event.studentDetails.studentGooglePresentationId =
+    //               GooglePresentationCreateResponse[1];
+    //           countGooglePresentationSlide[1] = 0;
+    //           countGooglePresentationSlide[0] = true;
+    //           isSaveStudentGooglePresentationWorkOnDataBase = true;
+    //         }
+    //       } else {
+    //         isSaveStudentGooglePresentationWorkOnDataBase =
+    //             countGooglePresentationSlide[1] == 0;
+    //       }
+
+    //       //Compare Google Presentation slide count with the Student work count
+    //       if (countGooglePresentationSlide[0] == true &&
+    //           countGooglePresentationSlide[1] <= event.allRecords.length) {
+    //         List updatedPresentationResponse =
+    //             await updateNewSlidesToGooglePresentation(
+    //                 presentationId:
+    //                     event.studentDetails.studentGooglePresentationId ?? '',
+    //                 studentDetails: event.studentDetails,
+    //                 allRecords: event.allRecords,
+    //                 numberOfSlidesAlreadyAvailable:
+    //                     countGooglePresentationSlide[1],
+    //                 userProfile: userProfileLocalData[0]);
+
+    //         if (updatedPresentationResponse[0] == true) {
+    //           yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
+    //               studentDetails: event.studentDetails,
+    //               isSaveStudentGooglePresentationWorkOnDataBase:
+    //                   isSaveStudentGooglePresentationWorkOnDataBase);
+    //         } else {
+    //           yield GoogleSlidesPresentationErrorState(
+    //               errorMsg: countGooglePresentationSlide[1].toString());
+    //         }
+    //       }
+    //       //---------------------------
+    //       else if (countGooglePresentationSlide[0] == true &&
+    //           countGooglePresentationSlide[1]! > event.allRecords.length) {
+    //         yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
+    //             studentDetails: event.studentDetails,
+    //             isSaveStudentGooglePresentationWorkOnDataBase:
+    //                 isSaveStudentGooglePresentationWorkOnDataBase);
+    //       }
+    //       //---------------------------
+    //       else {
+    //         yield GoogleSlidesPresentationErrorState(
+    //             errorMsg: countGooglePresentationSlide[1].toString());
+    //       }
+    //     } catch (e) {
+    //       print(e);
+    //       yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
+    //     }
+    //   }
+
     if (event is StudentPlusUpdateGooglePresentationForStudent) {
       try {
         bool isSaveStudentGooglePresentationWorkOnDataBase = false;
-
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        //Count the number of slide already exist to the Google Presentation
-        List countGooglePresentationSlide =
-            await getSlidesCountFromGooglePresentation(
-          presentationFileId:
-              event.studentDetails.studentGooglePresentationId ?? '',
-          userProfile: userProfileLocalData[0],
-        );
+        List<dynamic> countGooglePresentationSlideAndTrashStatus =
+            await Future.wait([
+          // //Count the number of slide already exist to the Google Presentation
+          getSlidesCountFromGooglePresentation(
+            presentationFileId:
+                event.studentDetails.studentGooglePresentationId ?? '',
+            userProfile: userProfileLocalData[0],
+          ),
+          // TO verify the current google presentation is not deleted or not in  trash bin
+          checkGooglePresentationInTrashed(
+            presentationFileId:
+                event.studentDetails.studentGooglePresentationId ?? '',
+            userProfile: userProfileLocalData[0],
+          )
+        ]);
+
+/*--------------------------------------- If Google Presentation  is not Available ------------------------------------------------*/
 
         //if the api response return (404) the resource you are trying to access doesn't exist
         // so then create one google presentation
-        if (countGooglePresentationSlide[0] == false &&
-            countGooglePresentationSlide[1] == 404) {
-          //GET STUDENT PRESENTAION FILE NAME
-          String studentGooglePresentationFileName =
-              GooglePresentationBlocMethods
-                  .createStudentGooglePresentationFileName(
-                      event.studentDetails);
-
-          //CREATE STUDENT PRESENTAION FILE
-          List GooglePresentationCreateResponse =
-              await googleDriveBloc.createPresentationOnDrive(
-                  name: studentGooglePresentationFileName,
-                  folderId:
-                      userProfileLocalData[0].studentPlusGoogleDriveFolderId ??
-                          '',
-                  accessToken: userProfileLocalData[0].authorizationToken,
-                  refreshToken: userProfileLocalData[0].refreshToken,
-                  excelSheetId: '',
-                  isMcqSheet: false);
-
-          //Return Google presentation if once presentation created
-          if (GooglePresentationCreateResponse[0] == true) {
-            event.studentDetails.studentGooglePresentationId =
-                GooglePresentationCreateResponse[1];
-            countGooglePresentationSlide[1] = 0;
-            countGooglePresentationSlide[0] = true;
-            isSaveStudentGooglePresentationWorkOnDataBase = true;
-          }
-        } else {
-          isSaveStudentGooglePresentationWorkOnDataBase =
-              countGooglePresentationSlide[1] == 0;
+        if (( //Checking count API status
+                countGooglePresentationSlideAndTrashStatus[0][0] == true &&
+                    countGooglePresentationSlideAndTrashStatus[1][1] ==
+                        '404') ||
+            //Checking trash API status
+            (countGooglePresentationSlideAndTrashStatus[1][0] == true &&
+                countGooglePresentationSlideAndTrashStatus[1][1] == true)) {
+          //if the api response return (404) the resource you are trying to access doesn't e
+          yield GoogleSlidesPresentationErrorState(errorMsg: "404");
         }
 
-        //Compare Google Presentation slide count with the Student work count
-        if (countGooglePresentationSlide[0] == true &&
-            countGooglePresentationSlide[1] <= event.allRecords.length) {
-          List updatedPresentationResponse =
-              await updateNewSlidesToGooglePresentation(
-                  presentationId:
-                      event.studentDetails.studentGooglePresentationId ?? '',
-                  studentDetails: event.studentDetails,
-                  allRecords: event.allRecords,
-                  numberOfSlidesAlreadyAvailable:
-                      countGooglePresentationSlide[1],
-                  userProfile: userProfileLocalData[0]);
+        /*--------------------------------------- If Google Presentation  is Available ------------------------------------------------*/
 
-          if (updatedPresentationResponse[0] == true) {
+        else {
+          //Compare Google Presentation slide count with the Student work count
+          if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
+              countGooglePresentationSlideAndTrashStatus[0][1] <=
+                  event.allRecords.length) {
+            List updatedPresentationResponse =
+                await updateNewSlidesToGooglePresentation(
+                    presentationId:
+                        event.studentDetails.studentGooglePresentationId ?? '',
+                    studentDetails: event.studentDetails,
+                    allRecords: event.allRecords,
+                    numberOfSlidesAlreadyAvailable:
+                        countGooglePresentationSlideAndTrashStatus[0][1],
+                    userProfile: userProfileLocalData[0]);
+
+            if (updatedPresentationResponse[0] == true) {
+              //update the Presentation link on studentDetails
+              event.studentDetails.studentGooglePresentationUrl =
+                  countGooglePresentationSlideAndTrashStatus[1][1];
+
+              yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
+                  studentDetails: event.studentDetails,
+                  //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
+                  isSaveStudentGooglePresentationWorkOnDataBase:
+                      countGooglePresentationSlideAndTrashStatus[0][1] == 0);
+            } else {
+              yield GoogleSlidesPresentationErrorState(
+                  errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
+                      .toString());
+            }
+          }
+          //---------------------------
+          // If
+          else if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
+              countGooglePresentationSlideAndTrashStatus[0][1] >
+                  event.allRecords.length) {
             yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
+                //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
                 isSaveStudentGooglePresentationWorkOnDataBase:
                     isSaveStudentGooglePresentationWorkOnDataBase);
-          } else {
-            yield GoogleSlidesPresentationErrorState(
-                errorMsg: countGooglePresentationSlide[1].toString());
           }
-        }
-        //---------------------------
-        else if (countGooglePresentationSlide[0] == true &&
-            countGooglePresentationSlide[1]! > event.allRecords.length) {
-          yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
-              studentDetails: event.studentDetails,
-              isSaveStudentGooglePresentationWorkOnDataBase:
-                  isSaveStudentGooglePresentationWorkOnDataBase);
-        }
-        //---------------------------
-        else {
-          yield GoogleSlidesPresentationErrorState(
-              errorMsg: countGooglePresentationSlide[1].toString());
+          //---------------------------
+          else {
+            yield GoogleSlidesPresentationErrorState(
+                errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
+                    .toString());
+          }
         }
       } catch (e) {
         print(e);
@@ -416,14 +512,20 @@ class GoogleSlidesPresentationBloc
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
 
+      print(
+          "getSlidesCountFromGooglePresentation API $response.data['statusCode']");
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['slides'];
 
         var slideCount = data != null ? data.length : 0;
         return [true, slideCount];
-      } else if (response.statusCode == 404) {
+      } else if (response.statusCode == 200 ||
+          (response.data['statusCode'] == 500 &&
+              response.data['body']['message'].contains('404'))) {
         //if the api response return (404) the resource you are trying to access doesn't exist
-        return [false, response.statusCode];
+        //Returning true to confirm API returns success but the file we are checking not exist/not found
+        return [true, '404'];
       } else if (retry > 0) {
         // var result = await googleDriveBloc
         //     .toRefreshAuthenticationToken(userProfile.refreshToken!);
@@ -510,6 +612,58 @@ class GoogleSlidesPresentationBloc
       }
 
       return [false, response.statusCode];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List> checkGooglePresentationInTrashed(
+      {required final String presentationFileId,
+      required final UserInformation? userProfile,
+      int retry = 3}) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ${userProfile!.authorizationToken}'
+      };
+
+      String api =
+          "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$presentationFileId?fields=trashed,webViewLink";
+
+      final ResponseModel response = await _dbServices.getApiNew(api,
+          headers: headers, isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        var data = response.data['body'];
+        bool? isTrashed = data['trashed'];
+
+        return [true, isTrashed == true ? true : data['webViewLink']];
+      } else if (response.statusCode == 200 ||
+          (response.data['statusCode'] == 500 &&
+              response.data['body']['message'].contains('404'))) {
+        //if the api response return (404) the resource you are trying to access doesn't exist
+        //Returning true to confirm API returns success but the file we are checking not exist/not found
+        return [true, '404'];
+      } else if (retry > 0) {
+        var result = await Authentication.refreshToken();
+
+        if (result != null && result != '') {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await checkGooglePresentationInTrashed(
+              presentationFileId: presentationFileId,
+              userProfile: _userProfileLocalData[0],
+              retry: retry - 1);
+        } else {
+          return [false, 'ReAuthentication is required'];
+        }
+      }
+      return [
+        false,
+        response.statusCode == 200
+            ? response.data['statusCode']
+            : response.statusCode
+      ];
     } catch (e) {
       throw (e);
     }

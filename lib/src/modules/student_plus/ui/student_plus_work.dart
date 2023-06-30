@@ -18,6 +18,7 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -34,9 +35,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  StudentPlusDetailsModel studentDetails;
-
-  StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  final StudentPlusDetailsModel studentDetails;
+  final String sectionType;
+  const StudentPlusWorkScreen(
+      {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
 
   @override
@@ -123,25 +125,27 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   ],
                 ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                StudentPlusInfoSearchBar(
-                  hintText:
-                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                  isMainPage: false,
-                  autoFocus: false,
-                  onTap: () {
-                    pushNewScreen(
-                      context,
-                      screen: StudentPlusSearchScreen(
-                          fromStudentPlusDetailPage: true,
-                          index: 2,
-                          studentDetails: widget.studentDetails),
-                      withNavBar: false,
-                    );
-                  },
-                  controller: _controller,
-                  kLabelSpacing: _kLabelSpacing,
-                  focusNode: myFocusNode,
-                ),
+                widget.sectionType == "Student"
+                    ? Container()
+                    : StudentPlusInfoSearchBar(
+                        hintText:
+                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                        isMainPage: false,
+                        autoFocus: false,
+                        onTap: () {
+                          pushNewScreen(
+                            context,
+                            screen: StudentPlusSearchScreen(
+                                fromStudentPlusDetailPage: true,
+                                index: 2,
+                                studentDetails: widget.studentDetails),
+                            withNavBar: false,
+                          );
+                        },
+                        controller: _controller,
+                        kLabelSpacing: _kLabelSpacing,
+                        focusNode: myFocusNode,
+                      ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 listViewWidget(),
                 SpacerWidget(20)
@@ -150,7 +154,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           ),
           floatingActionButton: fab(),
         ),
-        // googleSlidesPresentationBlocListener(),
+        //googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
       ],
     );
@@ -481,6 +485,15 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   _shareBottomSheetMenu() async {
+    // List<UserInformation> userProfileInfoData =
+    //     await UserGoogleProfile.getUserProfile();
+    // //For extra safety, We have already verified if folder exist or not
+    // if (userProfileInfoData[0].studentPlusGoogleDriveFolderId == null ||
+    //     userProfileInfoData[0].studentPlusGoogleDriveFolderId == "") {
+    //   Utility.currentScreenSnackBar('User Authentication Error', null);
+    //   return;
+    // }
+
     List<ResultSummaryIcons> resultSummaryIconsModalList = [
       ResultSummaryIcons(
         title: 'Sync Presentation',
@@ -496,7 +509,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         ),
       );
     }
-
+    // print(widget.studentDetails.studentGooglePresentationUrl);
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -513,49 +526,11 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               return StudentPlusOptionBottomSheet(
                   studentDetails: widget.studentDetails,
                   resultSummaryIconsModalList: resultSummaryIconsModalList,
-                  height: MediaQuery.of(context).size.height * 0.25);
+                  height: MediaQuery.of(context).size.height * 0.35);
             },
           );
         });
-
-    if (result != null) {
-      //UPDATE THE CURRENT STUDENT DETAILS TO LOCAL VARIABLE WITH PRESENTATION URL AND ID
-      widget.studentDetails = result;
-    }
   }
-
-  // BlocListener googleSlidesPresentationBlocListener() {
-  //   return BlocListener<GoogleSlidesPresentationBloc,
-  //           GoogleSlidesPresentationState>(
-  //       bloc: googleSlidesPresentationBloc,
-  //       child: Container(),
-  //       listener: (context, state) async {
-  //         // if (state is GetGooglePresentationURLSuccess) {
-  //         //   Navigator.pop(context, false);
-  //         //   widget.studentDetails.studentgooglePresentationUrl =
-  //         //       state.googlePresentationFileUrl;
-
-  //         //   _shareBottomSheetMenu();
-  //         // }
-
-  //         if (state is GoogleSlidesPresentationErrorState) {
-  //           Navigator.pop(context, false);
-  //           if (state.errorMsg == 'ReAuthentication is required') {
-
-  //             await Authentication.reAuthenticationRequired(
-  //                 context: context,
-  //                 errorMessage: state.errorMsg!,
-  //                 scaffoldKey: scaffoldKey);
-  //           } else {
-  //             Utility.currentScreenSnackBar(
-  //                 state.errorMsg == 'NO_CONNECTION'
-  //                     ? 'No Internet Connection'
-  //                     : "Something Went Wrong. Please Try Again.",
-  //                 null);
-  //           }
-  //         }
-  //       });
-  // }
 
   BlocListener googleDriveBlocListener() {
     return BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -565,7 +540,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           print("On student work ------------$state---------");
 
           //Checking Google Folder State
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             Navigator.of(context).pop();
 
             _shareBottomSheetMenu();

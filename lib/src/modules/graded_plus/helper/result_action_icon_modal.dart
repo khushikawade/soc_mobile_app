@@ -22,6 +22,10 @@ class ResultSummaryIcons {
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
     ResultSummaryIcons(
+      title: 'Class',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+    ),
+    ResultSummaryIcons(
       title: 'Dashboard',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
     ),

@@ -635,7 +635,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             userType: 'Teacher',
             activityId: '38',
             description:
-                'User Interaction PBIS+ for student ${event.studentId}',
+                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
@@ -811,18 +811,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
     if (event is PBISPlusResetInteractions) {
       try {
+        //Save the event records in separate list to make sure not to change on runtime.
+        List<ClassroomCourse> LocalSelectedRecords =
+            List<ClassroomCourse>.from(event.selectedRecords);
+
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
         //REMOVE THE 'ALL' OBJECT FROM LIST IF EXISTS
-        if (event.selectedRecords.length > 0 &&
-            event.selectedRecords[0].name == 'All') {
-          event.selectedRecords.removeAt(0);
+        if (LocalSelectedRecords.length > 0 &&
+            LocalSelectedRecords[0].name == 'All') {
+          LocalSelectedRecords.removeAt(0);
         }
 
         var result = await resetPBISPlusInteractionInteractions(
           type: event.type,
-          selectedCourses: event.selectedRecords,
+          selectedCourses: LocalSelectedRecords,
           userProfile: userProfileLocalData[0],
         );
         if (result == true) {
@@ -831,6 +835,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISErrorState(error: result);
         }
       } catch (e) {
+        print(e);
         yield PBISErrorState(error: e.toString());
       }
     }
@@ -1343,7 +1348,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
       return response.statusCode;
     } catch (e) {
-      return e.toString();
+      throw (e);
     }
   }
 

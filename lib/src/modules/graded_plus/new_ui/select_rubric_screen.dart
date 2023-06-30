@@ -261,7 +261,7 @@ class _GradedPlusConstructedResponseState
               //     _beforenavigateOnCameraSection();
               //   }
               // }
-              if (state is GoogleSuccess) {
+              if (state is GoogleFolderCreated) {
                 List<UserInformation> userProfileInfoData =
                     await UserGoogleProfile.getUserProfile();
 

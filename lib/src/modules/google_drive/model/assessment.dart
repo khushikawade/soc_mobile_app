@@ -32,6 +32,8 @@ class HistoryAssessment {
   String? classroomCourseId;
   @HiveField(13)
   String? classroomCourseWorkId;
+  @HiveField(14)
+  String? classroomCourseWorkUrl;
   HistoryAssessment(
       {this.title,
       this.description,
@@ -46,7 +48,8 @@ class HistoryAssessment {
       this.presentationLink,
       this.assessmentType,
       this.classroomCourseId,
-      this.classroomCourseWorkId});
+      this.classroomCourseWorkId,
+      this.classroomCourseWorkUrl});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
