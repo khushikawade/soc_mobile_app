@@ -25,6 +25,8 @@ import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
@@ -115,6 +117,12 @@ void main() async {
           ..registerAdapter(PBISPlusTotalInteractionModalAdapter())
           ..registerAdapter(StudentPlusSearchModelAdapter())
           ..registerAdapter(StudentPlusGradeModelAdapter())
+          ..registerAdapter(StudentPlusCourseModelAdapter())
+          ..registerAdapter(StudentPlusCourseWorkModelAdapter())
+          ..registerAdapter(StudentWorkSubmissionAdapter())
+          ..registerAdapter(AssignmentSubmissionAdapter())
+          ..registerAdapter(AttachmentAdapter())
+          ..registerAdapter(LinkAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

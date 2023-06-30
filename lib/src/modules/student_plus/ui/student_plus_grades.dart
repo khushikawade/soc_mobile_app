@@ -2,14 +2,14 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_grades_details.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -23,7 +23,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 class StudentPlusGradesPage extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
   final String sectionType;
-
   const StudentPlusGradesPage(
       {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
@@ -41,8 +40,11 @@ class individual extends State<StudentPlusGradesPage> {
 
   @override
   void initState() {
-    _studentPlusBloc.add(FetchStudentGradesEvent(
-        studentId: widget.studentDetails.studentIdC ?? ''));
+    _studentPlusBloc.add(widget.sectionType == 'Staff'
+        ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
+        : FetchStudentGradesWithClassroomEvent(
+            studentId: widget.studentDetails.studentIdC));
+    // : FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC));
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_grades_screen");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -129,9 +131,11 @@ class individual extends State<StudentPlusGradesPage> {
                             backgroundColor: AppTheme.kButtonColor,
                           ));
                     } else if (state is StudentPlusGradeSuccess) {
-                      return state.obj.length > 0
+                      return state.obj.length > 0 || state.courseList.length > 0
                           ? GradesWidget(
-                              chipList: state.chipList, obj: state.obj)
+                              chipList: state.chipList,
+                              obj: state.obj,
+                              courseList: state.courseList)
                           : Expanded(
                               child: NoDataFoundErrorWidget(
                                 errorMessage:
@@ -148,14 +152,6 @@ class individual extends State<StudentPlusGradesPage> {
                     }
                   },
                 ),
-
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesChipListWidget(), // widget to grades chip List
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // SpacerWidget(_kLabelSpacing / 2),
-                // HeaderTitle(), // widget to show header of list
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesListSectionWidget() // widget to show grades class wise
               ],
             ),
           ),
@@ -164,20 +160,35 @@ class individual extends State<StudentPlusGradesPage> {
     );
   }
 
-  Widget GradesWidget(
-      {required List<StudentPlusGradeModel> obj,
-      required List<String> chipList}) {
-    return Column(
-      // shrinkWrap: true,
-      children: [
-        SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-        gradesChipListWidget(chipList: chipList), // widget to grades chip List
-        SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-        SpacerWidget(_kLabelSpacing / 2),
-        HeaderTitle(), // widget to show header of list
-        SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-        gradesListSectionWidget(list: obj) // widget to show grades class wise
-      ],
+  Widget GradesWidget({
+    required List<StudentPlusGradeModel> obj,
+    required List<String> chipList,
+    required List<StudentPlusCourseModel> courseList,
+  }) {
+    return ValueListenableBuilder(
+      valueListenable: selectedValue,
+      builder: (context, value, child) {
+        return Container(
+          height: widget.sectionType == "Student"
+              ? MediaQuery.of(context).size.height * 0.75
+              : MediaQuery.of(context).size.height * 0.62,
+          child: Column(
+            // shrinkWrap: true,
+            children: [
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              gradesChipListWidget(
+                  chipList: chipList), // widget to grades chip List
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              SpacerWidget(_kLabelSpacing / 2),
+              HeaderTitle(), // widget to show header of list
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              gradesListSectionWidget(
+                  list: obj,
+                  courseList: courseList) // widget to show grades class wise
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -199,84 +210,135 @@ class individual extends State<StudentPlusGradesPage> {
 
   /* ---------------- Widget to show individual chips of grades ---------------- */
   Widget gradesChip({required String chipValue}) {
-    return ValueListenableBuilder(
-        valueListenable: selectedValue,
-        child: Container(),
-        builder: (BuildContext context, dynamic value, Widget? child) {
-          return GestureDetector(
-            onTap: () {
-              selectedValue.value = chipValue;
-            },
-            child: Bouncing(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                margin: EdgeInsets.only(left: 5),
-                decoration: BoxDecoration(
-                  boxShadow: [],
-                  color: //Colors.transparent,
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xffF7F8F9)
-                          : Color(0xff111C20),
-                  border: Border.all(
-                      color: selectedValue.value == chipValue
-                          ? AppTheme.kSelectedColor
-                          : Colors.grey),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                    child: Utility.textWidget(
-                        text: chipValue == '1'
-                            ? 'First'
-                            : chipValue == '2'
-                                ? 'Second'
-                                : chipValue == '3'
-                                    ? 'Third'
-                                    : chipValue == '4'
-                                        ? 'Forth'
-                                        : chipValue,
-                        context: context,
-                        textTheme: Theme.of(context).textTheme.headline4)),
-              ),
-            ),
-          );
-        });
+    return GestureDetector(
+      onTap: () {
+        selectedValue.value = chipValue;
+      },
+      child: Bouncing(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          margin: EdgeInsets.only(left: 5),
+          decoration: BoxDecoration(
+            boxShadow: [],
+            color: //Colors.transparent,
+                Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xffF7F8F9)
+                    : Color(0xff111C20),
+            border: Border.all(
+                color: selectedValue.value == chipValue
+                    ? AppTheme.kSelectedColor
+                    : Colors.grey),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+              child: Utility.textWidget(
+                  text: chipValue == '1'
+                      ? 'First'
+                      : chipValue == '2'
+                          ? 'Second'
+                          : chipValue == '3'
+                              ? 'Third'
+                              : chipValue == '4'
+                                  ? 'Forth'
+                                  : chipValue,
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline4)),
+        ),
+      ),
+    );
   }
 
   /* ---------- Widget to show vertical list of class and grade list ---------- */
-  Widget gradesListSectionWidget({required List<StudentPlusGradeModel> list}) {
-    return ValueListenableBuilder(
-      valueListenable: selectedValue,
-      builder: (context, value, child) {
-        List<StudentPlusGradeModel> updatedList = [];
-        for (var i = 0; i < list.length; i++) {
-          if (list[i].markingPeriodC == selectedValue.value) {
-            updatedList.add(list[i]);
-          }
-        }
+  Widget gradesListSectionWidget(
+      {required List<StudentPlusGradeModel> list,
+      required List<StudentPlusCourseModel> courseList}) {
+    List<StudentPlusGradeModel> updatedList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].markingPeriodC == selectedValue.value) {
+        //selectedValue.value
+        updatedList.add(list[i]);
+      }
+    }
+    return updatedList.length > 0 || courseList.length > 0
+        ? Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
+              scrollDirection: Axis.vertical,
+              itemCount: selectedValue.value == "Current"
+                  ? courseList.length
+                  : updatedList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return selectedValue.value == "Current"
+                    ? _buildCurrentList(
+                        index: index, studentPlusCourseModel: courseList[index])
+                    : _buildList(
+                        index: index,
+                        studentPlusGradeModel: updatedList[index]);
+              },
+            ),
+          )
+        : Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: NoDataFoundErrorWidget(
+              marginTop: MediaQuery.of(context).size.height * 0.1,
+              errorMessage: StudentPlusOverrides.gradesErrorMessage,
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              isSearchpage: true,
+            ),
+          );
+  }
 
-        return updatedList.length > 0
-            ? ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
-                scrollDirection: Axis.vertical,
-                itemCount: updatedList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildList(
-                      index: index, studentPlusGradeModel: updatedList[index]);
-                },
-              )
-            : Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: NoDataFoundErrorWidget(
-                  marginTop: MediaQuery.of(context).size.height * 0.1,
-                  errorMessage: StudentPlusOverrides.gradesErrorMessage,
-                  isResultNotFoundMsg: false,
-                  isNews: false,
-                  isEvents: false,
-                  isSearchpage: true,
-                ),
-              );
-      },
+  /* ----------------------------- widget used to build current widget ---------------------------- */
+
+  Widget _buildCurrentList(
+      {required int index,
+      required StudentPlusCourseModel studentPlusCourseModel}) {
+    return Container(
+      // height: 54,
+      padding: EdgeInsets.symmetric(
+        horizontal: 5,
+      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                  ? AppTheme.klistTilePrimaryDark
+                  : AppTheme
+                      .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.background == Color(0xff000000)
+                  ? AppTheme.klistTileSecoandryDark
+                  : AppTheme
+                      .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
+          ),
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StudentPlusGradesDetailPage(
+                        studentPlusCourseModel: studentPlusCourseModel,
+                      )));
+        },
+        contentPadding: EdgeInsets.symmetric(horizontal: 5),
+        minLeadingWidth: 0,
+        title: Utility.textWidget(
+            text: studentPlusCourseModel.name ?? '',
+            context: context,
+            textTheme: Theme.of(context).textTheme.headline2),
+        subtitle: Utility.textWidget(
+            text: studentPlusCourseModel.section == null ||
+                    studentPlusCourseModel.room == null
+                ? "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString())}"
+                : "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString()) ?? ''} | ${studentPlusCourseModel.section} | ${studentPlusCourseModel.room}",
+            context: context,
+            textTheme: Theme.of(context)
+                .textTheme
+                .subtitle1!
+                .copyWith(color: Colors.grey)),
+      ),
     );
   }
 
@@ -355,14 +417,18 @@ class individual extends State<StudentPlusGradesPage> {
             child: Container(
                 child: ListTile(
               leading: Utility.textWidget(
-                  text: StudentPlusOverrides.gradesTitleLeft,
+                  text: selectedValue.value == "Current"
+                      ? "Course"
+                      : StudentPlusOverrides.gradesTitleLeft,
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
                       .headline2!
                       .copyWith(fontWeight: FontWeight.bold)),
               trailing: Utility.textWidget(
-                  text: StudentPlusOverrides.gradesTitleRight,
+                  text: selectedValue.value == "Current"
+                      ? "Average"
+                      : StudentPlusOverrides.gradesTitleRight,
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
@@ -374,11 +440,4 @@ class individual extends State<StudentPlusGradesPage> {
       ),
     );
   }
-
-  List<String> gradeList = ['First', 'Second', 'Third', 'Fourth'];
-  List<StudentPlusInfoModel> gradeDataList = [
-    StudentPlusInfoModel(label: "Math", value: "62"),
-    StudentPlusInfoModel(label: "Science", value: "95"),
-    StudentPlusInfoModel(label: "ELA", value: "78"),
-  ];
 }
