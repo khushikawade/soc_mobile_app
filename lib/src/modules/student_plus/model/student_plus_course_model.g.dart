@@ -32,13 +32,15 @@ class StudentPlusCourseModelAdapter
       teacherFolder: fields[11] as TeacherFolder?,
       guardiansEnabled: fields[12] as bool?,
       calendarId: fields[13] as String?,
+      room: fields[15] as String?,
+      section: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusCourseModel obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -66,7 +68,11 @@ class StudentPlusCourseModelAdapter
       ..writeByte(12)
       ..write(obj.guardiansEnabled)
       ..writeByte(13)
-      ..write(obj.calendarId);
+      ..write(obj.calendarId)
+      ..writeByte(14)
+      ..write(obj.section)
+      ..writeByte(15)
+      ..write(obj.room);
   }
 
   @override

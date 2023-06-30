@@ -201,15 +201,15 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         List<StudentPlusCourseModel>? _localCourseData =
             await _localCourseDb.getData();
 
-        if (_localData.isEmpty && _localCourseData.isEmpty) {
-          yield StudentPlusLoading();
-        } else {
-          yield StudentPlusGradeSuccess(
-              obj: _localData,
-              chipList:
-                  getChipsList(list: _localData, fromStudentSection: true),
-              courseList: _localCourseData);
-        }
+        // if (_localData.isEmpty && _localCourseData.isEmpty) {
+        //   yield StudentPlusLoading();
+        // } else {
+        //   yield StudentPlusGradeSuccess(
+        //       obj: _localData,
+        //       chipList:
+        //           getChipsList(list: _localData, fromStudentSection: true),
+        //       courseList: _localCourseData);
+        // }
 
         List gradeList = await Future.wait([
           getStudentGradesDetails(studentId: event.studentId ?? ''),
@@ -219,7 +219,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         ]);
 
         List<StudentPlusGradeModel> list =
-            gradeList[0].length == 0 ? [] : gradeList[0];
+            gradeList[0] == null || gradeList[0].length == 0
+                ? []
+                : gradeList[0];
         List<StudentPlusCourseModel> studentCourseList = gradeList[1];
         await _localDb.clear();
         await _localCourseDb.clear();
@@ -227,8 +229,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         list.forEach((StudentPlusGradeModel e) {
           _localDb.addData(e);
         });
-        _localCourseData.forEach((StudentPlusCourseModel e) {
-          _localCourseDb.addData(e);
+        studentCourseList.forEach((StudentPlusCourseModel e) async {
+          await _localCourseDb.addData(e);
         });
         yield StudentPlusLoading();
         yield StudentPlusGradeSuccess(
@@ -264,7 +266,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     //     }
     //   }
 
-    // Event to get course work detail by course id  Google classroom
+    /* --------------- Event to get course work detail by course id  Google classroom --------------- */
     if (event is FetchStudentCourseWorkEvent) {
       try {
         List<UserInformation> userProfileLocalData =
@@ -279,25 +281,22 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           yield StudentPlusLoading();
         } else {
           yield StudentPlusCourseWorkSuccess(
-            obj: _localData,
-          );
+              obj: _localData, nextPageToken: 'localDb');
         }
 
         //yield StudentPlusLoading();
-        List<StudentPlusCourseWorkModel> list =
-            await getStudentCourseWorkDetails(
-                courseId: event.courseWorkId,
-                accessToken: userProfileLocalData[0].authorizationToken ?? '');
-
+        List list = await getStudentCourseWorkDetails(
+            courseId: event.courseWorkId,
+            accessToken: userProfileLocalData[0].authorizationToken ?? '');
+        List<StudentPlusCourseWorkModel> studentPlusCourseWorkModel = list[1];
         await _localDb.clear();
         // list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-        list.forEach((StudentPlusCourseWorkModel e) {
+        studentPlusCourseWorkModel.forEach((StudentPlusCourseWorkModel e) {
           _localDb.addData(e);
         });
-
+        yield StudentPlusDemoLoading();
         yield StudentPlusCourseWorkSuccess(
-          obj: list,
-        );
+            obj: studentPlusCourseWorkModel, nextPageToken: list[0]);
       } catch (e) {
         LocalDatabase<StudentPlusCourseWorkModel> _localDb = LocalDatabase(
             "${StudentPlusOverrides.studentGradeList}_${event.courseWorkId}");
@@ -305,9 +304,28 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         List<StudentPlusCourseWorkModel>? _localData = await _localDb.getData();
 
         // _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+        yield StudentPlusCourseWorkSuccess(obj: _localData, nextPageToken: '');
+      }
+    }
+
+    /* --------------- Event to get course work detail by course id  Google classroom --------------- */
+    if (event is UpdateStudentCourseWorkEvent) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        List list = await getStudentCourseWorkDetails(
+            courseId: event.courseWorkId,
+            accessToken: userProfileLocalData[0].authorizationToken ?? '',
+            nextPageToken: event.nextPageToken);
+        List<StudentPlusCourseWorkModel> studentPlusCourseWorkModel = [];
+        studentPlusCourseWorkModel.addAll(event.oldList);
+        studentPlusCourseWorkModel.addAll(list[1]);
+        yield StudentPlusDemoLoading();
         yield StudentPlusCourseWorkSuccess(
-          obj: _localData,
-        );
+            obj: studentPlusCourseWorkModel, nextPageToken: list[0]);
+      } catch (e) {
+        throw (e);
       }
     }
 
@@ -587,23 +605,29 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
   /* ------------------ Function to call get student Course work api ------------------ */
   Future getStudentCourseWorkDetails(
-      {required String courseId, required String accessToken}) async {
+      {required String courseId,
+      required String accessToken,
+      String? nextPageToken}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-        'https://classroom.googleapis.com/v1/courses/$courseId/courseWork',
-        isCompleteUrl: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $accessToken'
-        },
-      );
+          'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10',
+          isCompleteUrl: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+            'G_AuthToken': '$accessToken',
+            'G_RefreshToken': '$accessToken',
+            'nextPageToken': nextPageToken ?? ''
+          });
       if (response.statusCode == 200) {
-        List<StudentPlusCourseWorkModel> list = response.data["courseWork"]
+        List<StudentPlusCourseWorkModel> list = response.data["data"]
             .map<StudentPlusCourseWorkModel>(
                 (i) => StudentPlusCourseWorkModel.fromJson(i))
             .toList();
-
-        return list;
+        String nextPageToken = response.data.containsKey('nextPageToken')
+            ? response.data["nextPageToken"]
+            : '';
+        return [nextPageToken, list];
       }
     } catch (e) {
       throw (e);

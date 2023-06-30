@@ -70,9 +70,7 @@ class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
   List<Object> get props => [studentDetails!];
 }
 
-
- 
- /* ------------------------ Event use to trigger student search by email ------------------------ */
+/* ------------------------ Event use to trigger student search by email ------------------------ */
 class StudentPlusSearchByEmail extends StudentPlusEvent {
   StudentPlusSearchByEmail();
 
@@ -83,7 +81,7 @@ class StudentPlusSearchByEmail extends StudentPlusEvent {
   String toString() => 'GlobalSearchEvent { keyword: }';
 }
 
-/* ---------------- Event use to trigger student grade details --------------- */
+/* ---------------- Event use to trigger student current grade details --------------- */
 class FetchStudentCourseWorkEvent extends StudentPlusEvent {
   final String courseWorkId;
   FetchStudentCourseWorkEvent({required this.courseWorkId});
@@ -92,6 +90,19 @@ class FetchStudentCourseWorkEvent extends StudentPlusEvent {
   @override
   String toString() => '';
 }
+
+/* ---------------- Event use to trigger update current student grade details --------------- */
+class UpdateStudentCourseWorkEvent extends StudentPlusEvent {
+  final String courseWorkId;
+  final String? nextPageToken;
+  final List<StudentPlusCourseWorkModel> oldList; 
+  UpdateStudentCourseWorkEvent({required this.courseWorkId,required this.nextPageToken,required this.oldList});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
 /* ---------------- Event use to trigger student work details --------------- */
 class FetchStudentGradesWithClassroomEvent extends StudentPlusEvent {
   final String? studentId;

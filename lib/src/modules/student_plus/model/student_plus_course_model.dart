@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 part 'student_plus_course_model.g.dart';
+
 @HiveType(typeId: 43)
 class StudentPlusCourseModel {
   @HiveField(0)
@@ -36,25 +37,30 @@ class StudentPlusCourseModel {
   final bool? guardiansEnabled;
   @HiveField(13)
   final String? calendarId;
+  @HiveField(14)
+  final String? section;
+  @HiveField(15)
+  final String? room;
   final GradebookSettings? gradebookSettings;
 
-  StudentPlusCourseModel({
-    this.id,
-    this.name,
-    this.descriptionHeading,
-    this.ownerId,
-    this.creationTime,
-    this.updateTime,
-    this.enrollmentCode,
-    this.courseState,
-    this.alternateLink,
-    this.teacherGroupEmail,
-    this.courseGroupEmail,
-    this.teacherFolder,
-    this.guardiansEnabled,
-    this.calendarId,
-    this.gradebookSettings,
-  });
+  StudentPlusCourseModel(
+      {this.id,
+      this.name,
+      this.descriptionHeading,
+      this.ownerId,
+      this.creationTime,
+      this.updateTime,
+      this.enrollmentCode,
+      this.courseState,
+      this.alternateLink,
+      this.teacherGroupEmail,
+      this.courseGroupEmail,
+      this.teacherFolder,
+      this.guardiansEnabled,
+      this.calendarId,
+      this.gradebookSettings,
+      this.room,
+      this.section});
 
   factory StudentPlusCourseModel.fromRawJson(String str) =>
       StudentPlusCourseModel.fromJson(json.decode(str));
@@ -65,7 +71,9 @@ class StudentPlusCourseModel {
       StudentPlusCourseModel(
         id: json["id"],
         name: json["name"],
+        section: json["section"],
         descriptionHeading: json["descriptionHeading"],
+        room: json["room"],
         ownerId: json["ownerId"],
         creationTime: json["creationTime"] == null
             ? null
@@ -91,7 +99,9 @@ class StudentPlusCourseModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
+        "section": section,
         "descriptionHeading": descriptionHeading,
+        "room": room,
         "ownerId": ownerId,
         "creationTime": creationTime?.toIso8601String(),
         "updateTime": updateTime?.toIso8601String(),
