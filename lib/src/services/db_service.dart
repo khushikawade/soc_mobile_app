@@ -219,4 +219,31 @@ class DbServices {
       }
     }
   }
+
+  deleteApi(api) async {
+    try {
+      final response = await httpClient.delete(
+        Uri.parse(api),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res = await getApi(
+            api,
+          );
+          return _res;
+        }
+        return ResponseModel(statusCode: response.statusCode, data: null);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
 }

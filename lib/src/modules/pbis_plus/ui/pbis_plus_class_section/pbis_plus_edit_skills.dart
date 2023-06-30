@@ -6,7 +6,9 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -162,7 +164,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   Widget _buildbackIcon() {
     return IconButton(
         onPressed: () {
-          updateTeacherCustomBehvaiour();
+          //   updateTeacherCustomBehvaiour();
 
           Navigator.pop(context);
         },
@@ -269,11 +271,35 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         if (state is PBISPlusGetTeacherCustomBehvaiourSuccess) {
                           teacherCustomBehaviourList.value =
                               state.teacherCustomBehaviourList;
+
                           return ValueListenableBuilder(
                               valueListenable: teacherCustomBehaviourList,
                               builder: (context, value, _) {
+                                print("-------------BEG=FORE------");
+
+                                print(teacherCustomBehaviourList.value.length);
+
+                                List<PBISPlusALLBehaviourModal>
+                                    currentTeacherCustomBehaviourList = [];
+                                currentTeacherCustomBehaviourList
+                                    .addAll(teacherCustomBehaviourList.value);
+
+                                if (currentTeacherCustomBehaviourList.length <
+                                    6) {
+                                  do {
+                                    currentTeacherCustomBehaviourList.add(
+                                        PBISPlusALLBehaviourModal(
+                                            behaviorTitleC: "Add behaviour",
+                                            pBISBehaviorIconURLC:
+                                                "assets/Pbis_plus/add_icon.svg"));
+                                  } while (
+                                      currentTeacherCustomBehaviourList.length <
+                                          6);
+                                }
+                                print("-------------AFTER------");
+                                print(teacherCustomBehaviourList.value.length);
                                 return _buildEditItemList(
-                                    teacherCustomBehaviourList.value, false);
+                                    currentTeacherCustomBehaviourList, false);
                               });
                         }
                         if (state is PBISPlusBehvaiourLoading) {
@@ -334,31 +360,34 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               final item = skillsList[index];
               return DragTarget<PBISPlusALLBehaviourModal>(
                   onWillAccept: (draggedData) {
+                    print(index);
+                    print("hover the -------------");
                     hoveredIconIndex.value =
                         index; // Update the hovered icon index
-                    // print(hoveredIconIndex);
+
                     return true;
                   },
                   onLeave: ((data) => print(
                       "-----------------INSIDE ON LEAVE---------------------------")),
                   onAccept: (draggedData) {
                     print("-----------------onAccept-----------------");
-                    print(teacherCustomBehaviourList.value.length < 6);
+
                     if (!skillsList.contains(draggedData) &&
                         teacherCustomBehaviourList.value.length < 6) {
                       print("added new skill");
-                      setState(() {
-                        teacherCustomBehaviourList.value.add(draggedData);
-                        additionalbehaviourList.value.remove(draggedData);
-                      });
+
+                      teacherCustomBehaviourList.value.add(draggedData);
+                      additionalbehaviourList.value.remove(draggedData);
+
+                      pbisPlusClassroomBloc
+                          .add(PBISPlusAddTeacherCustomBehvaiour(
+                        index: hoveredIconIndex.value,
+                        behvaiour: draggedData,
+                        // oldbehvaiour: localskillsList.value
+                      ));
                     } else {
                       print("already exists this skill");
                     }
-
-                    // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateList(
-                    //     index: hoveredIconIndex.value,
-                    //     item: draggedData,
-                    //     olditem: localskillsList.value));
 
                     // hoveredIconIndex.value = -1;
                     // changedIndex.value = -1;
@@ -437,35 +466,49 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   // }
 
   Widget _buildIcons({required PBISPlusALLBehaviourModal item}) {
-    return CachedNetworkImage(
-      imageUrl: item.pBISBehaviorIconURLC!,
-      imageBuilder: (context, imageProvider) => Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: imageProvider,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      placeholder: (context, url) => ShimmerLoading(
-        isLoading: true,
-        child: Container(),
-      ),
-      errorWidget: (context, url, error) => Icon(Icons.person),
-    );
+    return item.behaviorTitleC == "Add behaviour"
+        ? SvgPicture.asset(
+            item.pBISBehaviorIconURLC!,
+            fit: BoxFit.contain,
+          )
+        : CachedNetworkImage(
+            imageUrl: item.pBISBehaviorIconURLC!,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => ShimmerLoading(
+              isLoading: true,
+              child: Container(),
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.person),
+          );
   }
 
   Widget _buildEditWidget(PBISPlusALLBehaviourModal item, int index,
       PBISPlusBloc pbisPlusClassroomBloc) {
     return GestureDetector(
       onTap: () async {
-        await _modalBottomSheetMenu(item, index, pbisPlusClassroomBloc);
+        await _modalBottomSheetMenu(
+          item,
+          index,
+          pbisPlusClassroomBloc,
+          () {
+            Navigator.pop(context);
+            showPopup(
+                message: "Are you sure you want to delete this item",
+                title: "",
+                item: item);
+          },
+        );
 
         // print("----------botton sheet ======== close=======----------------");
         isEditMode.value = !isEditMode.value;
         changedIndex.value = -1;
-        pbisPlusClassroomBloc.add(
-            GetPBISPlusDefaultBehaviour(isCustom: isCustomBehaviour.value));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -642,31 +685,31 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     }
   }
 
-  Widget _buildNonDraggbleIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
-    return Container(
-      width: 40,
-      height: 40,
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.4),
-            spreadRadius: 0,
-            blurRadius: 1,
-            offset: Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Opacity(opacity: 0.1, child: _buildIcons(item: item))),
-      ),
-    );
-  }
+  // Widget _buildNonDraggbleIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
+  //   return Container(
+  //     width: 40,
+  //     height: 40,
+  //     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+  //     padding: EdgeInsets.all(8),
+  //     decoration: BoxDecoration(
+  //       color: Theme.of(context).backgroundColor,
+  //       borderRadius: BorderRadius.circular(8),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.4),
+  //           spreadRadius: 0,
+  //           blurRadius: 1,
+  //           offset: Offset(0, 0),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Center(
+  //       child: Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Opacity(opacity: 0.1, child: _buildIcons(item: item))),
+  //     ),
+  //   );
+  // }
 
   Widget _buildEditSkillIcon(PBISPlusALLBehaviourModal item, isIconDisabled) {
     return GestureDetector(
@@ -744,7 +787,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   }
 
   _modalBottomSheetMenu(PBISPlusALLBehaviourModal item, int index,
-          PBISPlusBloc pbisPlusClassroomBloc) =>
+          PBISPlusBloc pbisPlusBloc, final VoidCallback onDelete) =>
       showModalBottomSheet(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           isScrollControlled: true,
@@ -757,12 +800,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             return LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                pbisPlusClassroomBloc: pbisPlusClassroomBloc,
+                pbisPlusBloc: pbisPlusBloc,
                 index: index,
                 constraints: constraints,
                 // containerIcons: containerIcons,
                 item: item,
                 height: MediaQuery.of(context).size.height * 0.35,
+                onDelete: onDelete,
               );
             });
           });
@@ -782,14 +826,43 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     ]);
   }
 
-  Future<void> updateTeacherCustomBehvaiour() async {
-    LocalDatabase<PBISPlusALLBehaviourModal> teacherCustomBehaviourDb =
-        LocalDatabase(
-            PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+  // Future<void> updateTeacherCustomBehvaiour() async {
+  //   LocalDatabase<PBISPlusALLBehaviourModal> teacherCustomBehaviourDb =
+  //       LocalDatabase(
+  //           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
 
-    await teacherCustomBehaviourDb.clear();
-    // teacherCustomBehaviourList.value.forEach((element) async {
-    //   await teacherCustomBehaviourDb.addData(element);
-    // });
+  //   await teacherCustomBehaviourDb.clear();
+  //   // teacherCustomBehaviourList.value.forEach((element) async {
+  //   //   await teacherCustomBehaviourDb.addData(element);
+  //   // });
+  // }
+
+  showPopup(
+      {required String message,
+      required String? title,
+      PBISPlusALLBehaviourModal? item,
+      PBISPlusBloc? pbisPlusClassroomBloc}) async {
+    var isDeleteTapped = await Navigator.of(context).push(HeroDialogRoute(
+        builder: (context) => PBISPlusCommonPopup(
+              // pbisPlusBloc: pbisPlusClassroomBloc,
+              item: item!,
+              // containerIcons: widget.containerIcons,
+              backgroundColor:
+                  Theme.of(context).colorScheme.background == Color(0xff000000)
+                      ? Color(0xff162429)
+                      : null,
+              orientation: MediaQuery.of(context).orientation,
+              context: context,
+              message: message,
+              title: '',
+              titleStyle: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )));
+    if (isDeleteTapped == true) {
+      pbisPlusClassroomBloc3.add(PBISPlusGetTeacherCustomBehvaiour());
+      // Navigator.pop(context);
+    }
   }
 }

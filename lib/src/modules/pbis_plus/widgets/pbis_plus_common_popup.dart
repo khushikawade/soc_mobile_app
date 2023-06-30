@@ -13,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PBISPlusCommonPopup extends StatefulWidget {
   final Orientation? orientation;
@@ -22,8 +23,8 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final TextStyle? titleStyle;
   final Color? backgroundColor;
   final PBISPlusALLBehaviourModal item;
-  PBISPlusBloc? pbisPlusClassroomBloc;
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  // PBISPlusBloc? pbisPlusBloc;
+  // ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   PBISPlusCommonPopup({
     Key? key,
     required this.orientation,
@@ -33,8 +34,8 @@ class PBISPlusCommonPopup extends StatefulWidget {
     required this.titleStyle,
     required this.backgroundColor,
     required this.item,
-    required this.containerIcons,
-    required this.pbisPlusClassroomBloc,
+    // required this.containerIcons,
+    // required this.pbisPlusBloc,
   }) : super(key: key);
 
   @override
@@ -47,7 +48,7 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     super.dispose();
   }
 
-  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+  PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -61,22 +62,22 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     );
   }
 
-  bool replaceItems(String title) {
-    try {
-      int index = widget.containerIcons!.value
-          .indexWhere((item) => item.title == title);
-      if (index != -1) {
-        widget.containerIcons!.value[index] = PBISPlusActionInteractionModalNew(
-          imagePath: "assets/Pbis_plus/add_icon.svg",
-          title: 'Add Skill',
-          color: Colors.red,
-        );
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  // bool replaceItems(String title) {
+  //   try {
+  //     int index = widget.containerIcons!.value
+  //         .indexWhere((item) => item.title == title);
+  //     if (index != -1) {
+  //       widget.containerIcons!.value[index] = PBISPlusActionInteractionModalNew(
+  //         imagePath: "assets/Pbis_plus/add_icon.svg",
+  //         title: 'Add Skill',
+  //         color: Colors.red,
+  //       );
+  //     }
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Widget contentBox() {
     return Stack(
@@ -142,35 +143,62 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                         ),
                         SizedBox(
                             width: MediaQuery.of(context).size.height / 40),
-                        BlocConsumer(
-                            bloc: pbisPlusClassroomBloc,
-                            builder: (context, state) {
-                              print(state);
-                              if (state is PBISPlusSkillsDeleteLoading) {
-                                return _buildDeletebutton(true);
-                              } else if (state
-                                  is PBISPlusDefaultBehaviourSucess) {
-                                return _buildDeletebutton(false);
-                              } else if (state is PBISErrorState)
-                                return _buildDeletebutton(false);
-                              return _buildDeletebutton(false);
-                            },
-                            listener: (context, state) async {
-                              if (state is PBISPlusDefaultBehaviourSucess) {
-                                Utility.currentScreenSnackBar(
-                                    "Successfully Deleted skills", null);
-                                Navigator.pop(context, true);
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                              } else if (state is PBISPlusSkillsDeleteError) {
-                                Utility.currentScreenSnackBar(
-                                    "Please try again later. Unable to delete the skills.",
-                                    null);
-                                Navigator.pop(context, true);
-                              }
-                            }
-                            //_buildEditSkillCards()
-                            ),
+
+                        CircularCustomButton(
+                          borderColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
+                          text: "Delete",
+                          textColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
+                          onClick: () {
+                            pbisPlusBloc.add(
+                                PBISPlusDeleteTeacherCustomBehvaiour(
+                                    behvaiour: widget.item));
+                            Navigator.pop(context, true);
+                          },
+                          backgroundColor: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                          isBusy: false,
+                          size: Size(MediaQuery.of(context).size.width * 0.29,
+                              MediaQuery.of(context).size.width / 10),
+                          buttonRadius: 64,
+                        ),
+
+                        // BlocConsumer(
+                        //     bloc: pbisPlusBloc,
+                        //     builder: (context, state) {
+                        //       print(state);
+                        //       if (state is PBISPlusSkillsDeleteLoading) {
+                        //         return _buildDeletebutton(true);
+                        //       } else if (state
+                        //           is PBISPlusDefaultBehaviourSucess) {
+                        //         return _buildDeletebutton(false);
+                        //       } else if (state is PBISErrorState)
+                        //         return _buildDeletebutton(false);
+                        //       return _buildDeletebutton(false);
+                        //     },
+                        //     listener: (context, state) async {
+                        //       if (state is PBISPlusDefaultBehaviourSucess) {
+                        //         Utility.currentScreenSnackBar(
+                        //             "Successfully Deleted skills", null);
+                        //         Navigator.pop(context, true);
+                        //         FocusScope.of(context)
+                        //             .requestFocus(FocusNode());
+                        //       } else if (state is PBISPlusSkillsDeleteError) {
+                        //         Utility.currentScreenSnackBar(
+                        //             "Please try again later. Unable to delete the skills.",
+                        //             null);
+                        //         Navigator.pop(context, true);
+                        //       }
+                        //     }
+                        //     //_buildEditSkillCards()
+                        //     ),
                       ])),
             ],
           ),
@@ -204,53 +232,41 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   }
 
   void _handleDeleteItem() async {
-    pbisPlusClassroomBloc.add(GetPBISSkillsDeleteItem(item: widget.item));
-    // bool res = await replaceItems(widget.item.title);
-    // if (res) {
-    //   Utility.currentScreenSnackBar("Skills deleted successfully.", null);
-    //   Navigator.pop(context);
-    // } else {
-    //   Utility.currentScreenSnackBar(
-    //       "Failed to delete skills. Please try again.", null);
-    //   Navigator.pop(context);
-    // }
+    pbisPlusBloc
+        .add(PBISPlusDeleteTeacherCustomBehvaiour(behvaiour: widget.item));
   }
 
-  // Widget _buildIcons(String assestPath) {
-  //   return assestPath.contains('http://') || assestPath.contains('https://')
-  //       ? Container(
-  //           height: 24,
-  //           width: 24,
-  //           child: Image.network(
-  //             assestPath!,
-  //             fit: BoxFit.contain,
-  //           ),
-  //         )
-  //       : Container(
-  //           height: 24,
-  //           width: 24,
-  //           child: SvgPicture.asset(
-  //             assestPath,
-  //             fit: BoxFit.contain,
-  //           ),
-  //         );
-  // }
   Widget _buildIcons({required PBISPlusALLBehaviourModal item}) {
     return CachedNetworkImage(
+      imageBuilder: (context, imageProvider) => CircleAvatar(
+          radius: 30,
+          backgroundImage: imageProvider,
+          backgroundColor: Colors.transparent),
       imageUrl: item.pBISBehaviorIconURLC!,
-      imageBuilder: (context, imageProvider) => Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: imageProvider,
-            fit: BoxFit.cover,
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          // padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.grey[300]!,
+              width: 0.5,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.person,
+              // size: profilePictureSize,
+              color: Colors.grey[300]!,
+            ),
           ),
         ),
       ),
-      placeholder: (context, url) => ShimmerLoading(
-        isLoading: true,
-        child: Container(),
-      ),
-      errorWidget: (context, url, error) => Icon(Icons.person),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 

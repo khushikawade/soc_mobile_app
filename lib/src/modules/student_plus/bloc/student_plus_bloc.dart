@@ -204,7 +204,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
-     /* ----------------------------- Event to search student using Email ---------------------------- */
+    /* ----------------------------- Event to search student using Email ---------------------------- */
     if (event is StudentPlusSearchByEmail) {
       try {
         yield StudentPlusGetDetailsLoading();
@@ -381,8 +381,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-
-   /* ---- Function to call search api through email --- */
+  /* ---- Function to call search api through email --- */
 
   Future getStudentPlusSearchByEmail({required String studentEmail}) async {
     try {

@@ -486,114 +486,136 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is GetPBISSkillsUpdateList) {
-      try {
-        print(
-            "-----------------event is GetPBISSkillsUpdateList---------------------------");
-        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
-        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
-            await _pbisPlusSkillsDB.getData();
-        yield PBISPlusSkillsUpdateLoading(skillsList: _pbisPlusSkillsData);
-        if (event.item.id!.isNotEmpty &&
-            event.index != null &&
-            _pbisPlusSkillsData != null &&
-            _pbisPlusSkillsData.isNotEmpty &&
-            event.index < _pbisPlusSkillsData.length) {
-          //Check the Item already exits
-          bool itemExists =
-              _pbisPlusSkillsData.any((item) => item.name == event.item.name);
+    // if (event is GetPBISSkillsUpdateList) {
+    //   try {
+    //     print(
+    //         "-----------------event is GetPBISSkillsUpdateList---------------------------");
+    //     LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+    //         LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+    //     List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
+    //         await _pbisPlusSkillsDB.getData();
+    //     yield PBISPlusSkillsUpdateLoading(skillsList: _pbisPlusSkillsData);
+    
+    //     if (event.item.id!.isNotEmpty &&
+    //         event.index != null &&
+    //         _pbisPlusSkillsData != null &&
+    //         _pbisPlusSkillsData.isNotEmpty &&
+    //         event.index < _pbisPlusSkillsData.length) {
+    //       //Check the Item already exits
+    //       bool itemExists =
+    //           _pbisPlusSkillsData.any((item) => item.name == event.item.name);
 
-          if (!itemExists) {
-            int count = _pbisPlusSkillsData
-                .where((item) => item.name != "Add Skill")
-                .length;
-            if (count < 6) {
-              if (event.index < count) {
-                _pbisPlusSkillsData.removeAt(event.index);
-                _pbisPlusSkillsData.insert(event.index, event.item);
-              } else {
-                _pbisPlusSkillsData.removeAt(count);
-                _pbisPlusSkillsData.insert(count, event.item);
-              }
-            } else {
-              _pbisPlusSkillsData.removeAt(event.index);
-              _pbisPlusSkillsData.insert(event.index, event.item);
-            }
-            await _pbisPlusSkillsDB.clear();
-            _pbisPlusSkillsData.forEach((element) async {
-              await _pbisPlusSkillsDB.addData(element);
-            });
-            yield PBISPlusDefaultBehaviourSucess(
-                skillsList: _pbisPlusSkillsData);
-          } else {
-            yield PBISPlusDefaultBehaviourSucess(
-                skillsList: _pbisPlusSkillsData);
+    //       if (!itemExists) {
+    //         int count = _pbisPlusSkillsData
+    //             .where((item) => item.name != "Add Skill")
+    //             .length;
+    //         if (count < 6) {
+    //           if (event.index < count) {
+    //             _pbisPlusSkillsData.removeAt(event.index);
+    //             _pbisPlusSkillsData.insert(event.index, event.item);
+    //           } else {
+    //             _pbisPlusSkillsData.removeAt(count);
+    //             _pbisPlusSkillsData.insert(count, event.item);
+    //           }
+    //         } else {
+    //           _pbisPlusSkillsData.removeAt(event.index);
+    //           _pbisPlusSkillsData.insert(event.index, event.item);
+    //         }
+    //         await _pbisPlusSkillsDB.clear();
+    //         _pbisPlusSkillsData.forEach((element) async {
+    //           await _pbisPlusSkillsDB.addData(element);
+    //         });
+    //         yield PBISPlusDefaultBehaviourSucess(
+    //             skillsList: _pbisPlusSkillsData);
+    //       } else {
+    //         yield PBISPlusDefaultBehaviourSucess(
+    //             skillsList: _pbisPlusSkillsData);
+    //       }
+    //     } else {
+    //       yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
+    //     }
+    //     // }
+    //   } catch (e) {
+    //     print(e);
+    //     yield PBISPlusSkillsListUpdateError();
+    //   }
+    // }
+
+    // if (event is GetPBISSkillsDeleteItem) {
+    //   try {
+    //     print(
+    //         "-----------------event is GetPBISSkillsDeleteItem---------------------------");
+    //     yield PBISPlusSkillsDeleteLoading();
+    //     LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
+    //         LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
+    //     List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
+    //         await _pbisPlusSkillsDB.getData();
+    //     if (event.item.id!.isNotEmpty && _pbisPlusSkillsData.isNotEmpty) {
+    //       final int index = _pbisPlusSkillsData
+    //           .indexWhere((item) => item.id == event.item.id);
+    //       final itemToUpdate = _pbisPlusSkillsData.firstWhere(
+    //         (item) => item.id == event.item.id,
+    //       );
+    //       if (index != -1) {
+    //         // Update the name of the item
+    //         _pbisPlusSkillsData.removeAt(index);
+    //         // Shift the remaining items
+    //         for (int i = index + 1; i < _pbisPlusSkillsData.length; i++) {
+    //           _pbisPlusSkillsData[i].sortOrderC =
+    //               (int.parse(_pbisPlusSkillsData[i].sortOrderC!) - 1)
+    //                   .toString();
+    //         }
+    //         PBISPlusGenricBehaviourModal newItem = PBISPlusGenricBehaviourModal(
+    //           id: "5",
+    //           activeStatusC: "Show",
+    //           iconUrlC: "assets/Pbis_plus/add_icon.svg",
+    //           name: 'Add Skill',
+    //           sortOrderC: _pbisPlusSkillsData.length.toString(),
+    //           counter: 0,
+    //           behaviourId: "0",
+    //         );
+    //         // Add the new item at the end of the list
+    //         _pbisPlusSkillsData.add(newItem);
+
+    //         final check = await _pbisPlusSkillsDB.getData();
+
+    //         await _pbisPlusSkillsDB.clear();
+    //         _pbisPlusSkillsData.forEach((element) async {
+    //           await _pbisPlusSkillsDB
+    //               .addData(element); // Pass 'element' instead of 'list'
+    //         });
+
+    //         yield PBISPlusDefaultBehaviourSucess(
+    //             skillsList: _pbisPlusSkillsData);
+    //       } else {
+    //         yield PBISPlusSkillsDeleteError();
+    //       }
+    //     } else {
+    //       yield PBISPlusSkillsDeleteError();
+    //     }
+    //   } catch (e) {
+    //     yield PBISPlusSkillsDeleteError();
+    //   }
+    // }
+
+    if (event is PBISPlusDeleteTeacherCustomBehvaiour) {
+      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+      try {
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].id == event.behvaiour.id) {
+            print(
+                "---------------------------behvaiour deleted from Teacher Custom Behaviour LocalDb db");
+            await _localDb.deleteAt(i);
+            break;
           }
-        } else {
-          yield PBISPlusDefaultBehaviourSucess(skillsList: _pbisPlusSkillsData);
         }
-        // }
+
+        var result = await deleteTeacherCustomBehvaiour(
+            behaviour: event.behvaiour, teacherId: Globals.teacherId ?? '');
       } catch (e) {
         print(e);
-        yield PBISPlusSkillsListUpdateError();
-      }
-    }
-
-    if (event is GetPBISSkillsDeleteItem) {
-      try {
-        print(
-            "-----------------event is GetPBISSkillsDeleteItem---------------------------");
-        yield PBISPlusSkillsDeleteLoading();
-        LocalDatabase<PBISPlusGenricBehaviourModal> _pbisPlusSkillsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
-        List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
-            await _pbisPlusSkillsDB.getData();
-        if (event.item.id!.isNotEmpty && _pbisPlusSkillsData.isNotEmpty) {
-          final int index = _pbisPlusSkillsData
-              .indexWhere((item) => item.id == event.item.id);
-          final itemToUpdate = _pbisPlusSkillsData.firstWhere(
-            (item) => item.id == event.item.id,
-          );
-          if (index != -1) {
-            // Update the name of the item
-            _pbisPlusSkillsData.removeAt(index);
-            // Shift the remaining items
-            for (int i = index + 1; i < _pbisPlusSkillsData.length; i++) {
-              _pbisPlusSkillsData[i].sortOrderC =
-                  (int.parse(_pbisPlusSkillsData[i].sortOrderC!) - 1)
-                      .toString();
-            }
-            PBISPlusGenricBehaviourModal newItem = PBISPlusGenricBehaviourModal(
-              id: "5",
-              activeStatusC: "Show",
-              iconUrlC: "assets/Pbis_plus/add_icon.svg",
-              name: 'Add Skill',
-              sortOrderC: _pbisPlusSkillsData.length.toString(),
-              counter: 0,
-              behaviourId: "0",
-            );
-            // Add the new item at the end of the list
-            _pbisPlusSkillsData.add(newItem);
-
-            final check = await _pbisPlusSkillsDB.getData();
-
-            await _pbisPlusSkillsDB.clear();
-            _pbisPlusSkillsData.forEach((element) async {
-              await _pbisPlusSkillsDB
-                  .addData(element); // Pass 'element' instead of 'list'
-            });
-
-            yield PBISPlusDefaultBehaviourSucess(
-                skillsList: _pbisPlusSkillsData);
-          } else {
-            yield PBISPlusSkillsDeleteError();
-          }
-        } else {
-          yield PBISPlusSkillsDeleteError();
-        }
-      } catch (e) {
-        yield PBISPlusSkillsDeleteError();
       }
     }
 
@@ -929,6 +951,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
       List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+      yield PBISPlusLoading();
       try {
         if (_localData.isEmpty) {
           yield PBISPlusBehvaiourLoading(
@@ -948,6 +971,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         });
         yield PBISPlusGetTeacherCustomBehvaiourSuccess(
             teacherCustomBehaviourList: list);
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    if (event is PBISPlusAddTeacherCustomBehvaiour) {
+      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+
+      try {
+        await _localDb.addData(event.behvaiour);
+
+        var result = await addTeacherCustomBehvaiour(
+            behvaiour: event.behvaiour,
+            schoolId: Overrides.SCHOOL_ID ?? "",
+            teacherId: Globals.teacherId ?? "");
       } catch (e) {
         print(e);
       }
@@ -1586,6 +1625,69 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
 
       return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<dynamic> deleteTeacherCustomBehvaiour(
+      {required PBISPlusALLBehaviourModal behaviour,
+      required String teacherId,
+      int retry = 3}) async {
+    try {
+      print("deletcting API CALLLED");
+
+      final url =
+          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/delete-behaviour/teacher/$teacherId/behaviour/${behaviour.id}";
+
+      final ResponseModel response = await _dbServices.deleteApi(
+        url,
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else if (retry > 0) {
+        return deleteTeacherCustomBehvaiour(
+            behaviour: behaviour, teacherId: teacherId, retry: retry - 1);
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<dynamic> addTeacherCustomBehvaiour(
+      {required PBISPlusALLBehaviourModal behvaiour,
+      required String teacherId,
+      required String schoolId,
+      int retry = 3}) async {
+    try {
+      Map body = {
+        "behaviour_name": behvaiour.behaviorTitleC,
+        "behaviour_score": "0",
+        "is_default_behaviour": "false",
+        "icon_url": behvaiour.pBISBehaviorIconURLC,
+        "teacher_id": teacherId,
+        "school_id": schoolId
+      };
+      final headers = {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+      };
+      final url =
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
+
+      final ResponseModel response = await _dbServices.postApi(url,
+          headers: headers, body: body, isGoogleApi: true);
+
+      if (response.statusCode == 200) {
+        return true;
+      } else if (retry > 0) {
+        return addTeacherCustomBehvaiour(
+            behvaiour: behvaiour,
+            teacherId: teacherId,
+            schoolId: schoolId,
+            retry: retry - 1);
+      }
     } catch (e) {
       throw (e);
     }

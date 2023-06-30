@@ -32,15 +32,18 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
-  PBISPlusBloc? pbisPlusClassroomBloc;
+  PBISPlusBloc? pbisPlusBloc;
+  final VoidCallback onDelete;
+
   PBISPlusEditSkillsBottomSheet(
       {Key? key,
       this.height = 100,
       required this.item,
       this.containerIcons,
       required BoxConstraints constraints,
-      required pbisPlusClassroomBloc,
-      required int index});
+      required pbisPlusBloc,
+      required int index,
+      required this.onDelete});
   @override
   State<PBISPlusEditSkillsBottomSheet> createState() =>
       _PBISPlusBottomSheetState();
@@ -50,7 +53,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   late PageController _pageController;
   final _formKey = GlobalKey<FormState>();
   final editNameController = TextEditingController();
-  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+  PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
 
   Future<void> initController() async {
     _pageController = PageController()
@@ -141,12 +144,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   iconPath: "assets/Pbis_plus/Edit.svg",
                   tittle: "Edit Name"),
               _buildCard(
-                  onTap: () {
-                    showPopup(
-                        message: "Are you sure you want to delete this item",
-                        title: "",
-                        item: dataList);
-                  },
+                  onTap: widget.onDelete,
                   iconPath: "assets/Pbis_plus/delete.svg",
                   tittle: "Delete"),
             ],
@@ -207,33 +205,33 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  showPopup(
-      {required String message,
-      required String? title,
-      PBISPlusALLBehaviourModal? item,
-      PBISPlusBloc? pbisPlusClassroomBloc}) async {
-    var res = await Navigator.of(context).push(HeroDialogRoute(
-        builder: (context) => PBISPlusCommonPopup(
-              pbisPlusClassroomBloc: pbisPlusClassroomBloc,
-              item: item!,
-              containerIcons: widget.containerIcons,
-              backgroundColor:
-                  Theme.of(context).colorScheme.background == Color(0xff000000)
-                      ? Color(0xff162429)
-                      : null,
-              orientation: MediaQuery.of(context).orientation,
-              context: context,
-              message: message,
-              title: '',
-              titleStyle: Theme.of(context)
-                  .textTheme
-                  .headline1!
-                  .copyWith(fontWeight: FontWeight.bold),
-            )));
-    if (res == true) {
-      Navigator.pop(context);
-    }
-  }
+  // showPopup(
+  //     {required String message,
+  //     required String? title,
+  //     PBISPlusALLBehaviourModal? item,
+  //     PBISPlusBloc? pbisPlusClassroomBloc}) async {
+  //   var res = await Navigator.of(context).push(HeroDialogRoute(
+  //       builder: (context) => PBISPlusCommonPopup(
+  //             pbisPlusBloc: pbisPlusClassroomBloc,
+  //             item: item!,
+  //             containerIcons: widget.containerIcons,
+  //             backgroundColor:
+  //                 Theme.of(context).colorScheme.background == Color(0xff000000)
+  //                     ? Color(0xff162429)
+  //                     : null,
+  //             orientation: MediaQuery.of(context).orientation,
+  //             context: context,
+  //             message: message,
+  //             title: '',
+  //             titleStyle: Theme.of(context)
+  //                 .textTheme
+  //                 .headline1!
+  //                 .copyWith(fontWeight: FontWeight.bold),
+  //           )));
+  //   if (res == true) {
+  //     Navigator.pop(context);
+  //   }
+  // }
 
   Widget _buildNextbutton(PBISPlusALLBehaviourModal dataList) {
     return Container(
@@ -244,7 +242,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           onPressed: () async {
             print(editNameController.text);
             if (editNameController.text.isNotEmpty) {
-              pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
+              pbisPlusBloc.add(GetPBISSkillsUpdateName(
                   item: dataList, newName: editNameController.text));
             }
           },
@@ -304,7 +302,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           ),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           BlocConsumer(
-              bloc: pbisPlusClassroomBloc,
+              bloc: pbisPlusBloc,
               builder: (context, state) {
                 print(state);
                 if (state is GetPBISSkillsUpdateNameLoading) {

@@ -117,27 +117,27 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
   List<Object> get props => [item, newName];
 }
 
-class GetPBISSkillsDeleteItem extends PBISPlusEvent {
-  final PBISPlusALLBehaviourModal item;
+// class GetPBISSkillsDeleteItem extends PBISPlusEvent {
+//   final PBISPlusALLBehaviourModal item;
 
-  GetPBISSkillsDeleteItem({
-    required this.item,
-  });
+//   GetPBISSkillsDeleteItem({
+//     required this.item,
+//   });
 
-  @override
-  List<Object> get props => [item];
-}
+//   @override
+//   List<Object> get props => [item];
+// }
 
-class GetPBISSkillsUpdateList extends PBISPlusEvent {
-  final PBISPlusGenricBehaviourModal item;
-  final List<PBISPlusGenricBehaviourModal> olditem;
-  int index;
-  GetPBISSkillsUpdateList(
-      {required this.item, required this.index, required this.olditem});
+// class GetPBISSkillsUpdateList extends PBISPlusEvent {
+//   final PBISPlusGenricBehaviourModal item;
+//   final List<PBISPlusGenricBehaviourModal> olditem;
+//   int index;
+//   GetPBISSkillsUpdateList(
+//       {required this.item, required this.index, required this.olditem});
 
-  @override
-  List<Object> get props => [item, index, olditem];
-}
+//   @override
+//   List<Object> get props => [item, index, olditem];
+// }
 
 // ignore: must_be_immutable
 class GetPBISPlusStudentNotes extends PBISPlusEvent {
@@ -161,4 +161,29 @@ class PBISPlusGetTeacherCustomBehvaiour extends PBISPlusEvent {
 
   @override
   List<Object> get props => [];
+}
+
+class PBISPlusDeleteTeacherCustomBehvaiour extends PBISPlusEvent {
+  final PBISPlusALLBehaviourModal behvaiour;
+
+  PBISPlusDeleteTeacherCustomBehvaiour({
+    required this.behvaiour,
+  });
+
+  @override
+  List<Object> get props => [behvaiour];
+}
+
+class PBISPlusAddTeacherCustomBehvaiour extends PBISPlusEvent {
+  final PBISPlusALLBehaviourModal behvaiour;
+  // final List<PBISPlusALLBehaviourModal> oldbehvaiour;
+  final int index;
+  PBISPlusAddTeacherCustomBehvaiour({
+    required this.behvaiour,
+    required this.index,
+    //required this.oldbehvaiour
+  });
+
+  @override
+  List<Object> get props => [behvaiour];
 }
