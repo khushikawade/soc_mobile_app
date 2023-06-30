@@ -8,10 +8,8 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart'
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_grades_details.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -154,14 +152,6 @@ class individual extends State<StudentPlusGradesPage> {
                     }
                   },
                 ),
-
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesChipListWidget(), // widget to grades chip List
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // SpacerWidget(_kLabelSpacing / 2),
-                // HeaderTitle(), // widget to show header of list
-                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-                // gradesListSectionWidget() // widget to show grades class wise
               ],
             ),
           ),
@@ -301,6 +291,8 @@ class individual extends State<StudentPlusGradesPage> {
           );
   }
 
+  /* ----------------------------- widget used to build current widget ---------------------------- */
+
   Widget _buildCurrentList(
       {required int index,
       required StudentPlusCourseModel studentPlusCourseModel}) {
@@ -332,18 +324,10 @@ class individual extends State<StudentPlusGradesPage> {
         },
         contentPadding: EdgeInsets.symmetric(horizontal: 5),
         minLeadingWidth: 0,
-        // trailing: Utility.textWidget(
-        //     text: '7.3%',
-        //     context: context,
-        //     textTheme: Theme.of(context)
-        //         .textTheme
-        //         .headline2!
-        //         .copyWith(color: AppTheme.kButtonColor)),
         title: Utility.textWidget(
             text: studentPlusCourseModel.name ?? '',
             context: context,
             textTheme: Theme.of(context).textTheme.headline2),
-
         subtitle: Utility.textWidget(
             text: studentPlusCourseModel.section == null ||
                     studentPlusCourseModel.room == null
@@ -354,87 +338,9 @@ class individual extends State<StudentPlusGradesPage> {
                 .textTheme
                 .subtitle1!
                 .copyWith(color: Colors.grey)),
-        // leading: Container(
-        //   width: MediaQuery.of(context).size.width * 0.6,
-        //   child: Utility.textWidget(
-        //       text: studentPlusGradeModel.schoolSubjectC ?? '-',
-        //       maxLines: 2,
-        //       context: context,
-        //       textTheme: Theme.of(context).textTheme.headline2!),
-        // ),
-        // trailing: Container(
-        //   // padding: EdgeInsets.symmetric(
-        //   //     vertical: _kLabelSpacing / 4, horizontal: _kLabelSpacing / 2),
-        //   // decoration: BoxDecoration(
-        //   //   color: AppTheme.kButtonColor,
-        //   //   borderRadius: BorderRadius.circular(20.0),
-        //   // ),
-        //   // child: Utility.textWidget(
-        //   //     text: '3/3',
-        //   //     context: context,
-        //   //     textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-        //   //         fontWeight: FontWeight.bold, color: AppTheme.kButtonColor)),
-        // ),
       ),
     );
   }
-
-  // Widget _buildCurrentList({required int index,required StudentPlusCourseModel studentPlusCourseModel}) {
-  //   return Container(
-  //     // height: 54,
-  //     padding: EdgeInsets.symmetric(
-  //       horizontal: 5,
-  //     ),
-  //     decoration: BoxDecoration(
-  //         borderRadius: BorderRadius.circular(0.0),
-  //         color: (index % 2 == 0)
-  //             ? Theme.of(context).colorScheme.background == Color(0xff000000)
-  //                 ? AppTheme.klistTilePrimaryDark
-  //                 : AppTheme
-  //                     .klistTilePrimaryLight //Theme.of(context).colorScheme.background
-  //             : Theme.of(context).colorScheme.background == Color(0xff000000)
-  //                 ? AppTheme.klistTileSecoandryDark
-  //                 : AppTheme
-  //                     .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
-  //         ),
-  //     child: ListTile(
-  //       contentPadding: EdgeInsets.symmetric(horizontal: 5),
-  //       minLeadingWidth: 0,
-  //       title: Utility.textWidget(
-  //           text: 'Point & Call Brainstorm',
-  //           context: context,
-  //           textTheme: Theme.of(context).textTheme.headline2),
-  //       subtitle: Utility.textWidget(
-  //           text: 'No due date',
-  //           context: context,
-  //           textTheme: Theme.of(context)
-  //               .textTheme
-  //               .subtitle1!
-  //               .copyWith(color: Colors.grey)),
-  //       // leading: Container(
-  //       //   width: MediaQuery.of(context).size.width * 0.6,
-  //       //   child: Utility.textWidget(
-  //       //       text: studentPlusGradeModel.schoolSubjectC ?? '-',
-  //       //       maxLines: 2,
-  //       //       context: context,
-  //       //       textTheme: Theme.of(context).textTheme.headline2!),
-  //       // ),
-  //       trailing: Container(
-  //         // padding: EdgeInsets.symmetric(
-  //         //     vertical: _kLabelSpacing / 4, horizontal: _kLabelSpacing / 2),
-  //         // decoration: BoxDecoration(
-  //         //   color: AppTheme.kButtonColor,
-  //         //   borderRadius: BorderRadius.circular(20.0),
-  //         // ),
-  //         child: Utility.textWidget(
-  //             text: '3/3',
-  //             context: context,
-  //             textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-  //                 fontWeight: FontWeight.bold, color: AppTheme.kButtonColor)),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   /* ---------- Widget to show list tile (to show individual grades) ---------- */
   Widget _buildList(
@@ -534,11 +440,4 @@ class individual extends State<StudentPlusGradesPage> {
       ),
     );
   }
-
-  List<String> gradeList = ['First', 'Second', 'Third', 'Fourth'];
-  List<StudentPlusInfoModel> gradeDataList = [
-    StudentPlusInfoModel(label: "Math", value: "62"),
-    StudentPlusInfoModel(label: "Science", value: "95"),
-    StudentPlusInfoModel(label: "ELA", value: "78"),
-  ];
 }
