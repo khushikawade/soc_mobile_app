@@ -32,13 +32,14 @@ class RecentGoogleFileSearchAdapter
       assessmentId: fields[11] as String?,
       classroomCourseId: fields[12] as String?,
       classroomCourseWorkId: fields[13] as String?,
+      classroomCourseWorkUrl: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, RecentGoogleFileSearch obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -66,7 +67,9 @@ class RecentGoogleFileSearchAdapter
       ..writeByte(12)
       ..write(obj.classroomCourseId)
       ..writeByte(13)
-      ..write(obj.classroomCourseWorkId);
+      ..write(obj.classroomCourseWorkId)
+      ..writeByte(14)
+      ..write(obj.classroomCourseWorkUrl);
   }
 
   @override

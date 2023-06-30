@@ -1674,7 +1674,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         child: Container(),
         listener: (context, state) async {
           print("state is $state");
-          if (state is GoogleSuccess) {
+          if (state is GoogleFolderCreated) {
             showDialogSetState!(() {
               assessmentExportAndSaveStatus.value.excelSheetPrepared = true;
             });
@@ -2026,6 +2026,13 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 ''
             : GoogleClassroomOverrides
                     .recentStudentResultSummaryForStandardApp.courseWorkId ??
+                '',
+        classroomCourseWorkUrl: Overrides.STANDALONE_GRADED_APP
+            ? GoogleClassroomOverrides
+                    ?.studentAssessmentAndClassroomObj?.courseWorkURL ??
+                ''
+            : GoogleClassroomOverrides
+                    .recentStudentResultSummaryForStandardApp.courseWorkURL ??
                 ''));
   }
 }

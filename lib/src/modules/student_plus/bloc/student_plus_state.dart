@@ -80,3 +80,15 @@ class SaveStudentGooglePresentationWorkEventSuccess extends StudentPlusState {
   @override
   List<Object> get props => [];
 }
+
+/* --------------------------- State to return student search by email -------------------------- */
+class StudentPlusSearchByEmailSuccess extends StudentPlusState {
+  final StudentPlusDetailsModel obj;
+  StudentPlusSearchByEmailSuccess({required this.obj});
+  StudentPlusSearchByEmailSuccess copyWith({final obj}) {
+    return StudentPlusSearchByEmailSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}

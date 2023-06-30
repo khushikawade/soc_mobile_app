@@ -13,7 +13,8 @@ abstract class OcrEvent extends Equatable {
 class AuthorizedUserWithDatabase extends OcrEvent {
   final String? email;
   final bool? isAuthorizedUser;
-  AuthorizedUserWithDatabase({required this.email,required this.isAuthorizedUser});
+  AuthorizedUserWithDatabase(
+      {required this.email, required this.isAuthorizedUser});
 
   @override
   List<Object> get props => [email!];
@@ -152,7 +153,7 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final bool isMcqSheet;
   final String classroomCourseId;
   final String classroomCourseWorkId;
-
+  final String classroomCourseWorkUrl;
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
       required this.rubricScore,
@@ -171,7 +172,8 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
       required this.assessmentQueImage,
       required this.isMcqSheet,
       required this.classroomCourseId,
-      required this.classroomCourseWorkId});
+      required this.classroomCourseWorkId,
+      required this.classroomCourseWorkUrl});
 
   @override
   List<Object> get props => [];
