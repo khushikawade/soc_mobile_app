@@ -192,7 +192,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             googleClassroomCourseList: _localData);
       }
     }
-    if (event is PBISPlusGetPBISPlusAdditionalBehaviour) {
+    if (event is PBISPlusGetAdditionalBehaviour) {
       LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusAdditionalBehaviourLocalDbTable);
 
@@ -209,15 +209,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
               additionalbehaviourList: _localData);
         }
-
+        yield PBISPlusLoading();
         List<PBISPlusALLBehaviourModal> list =
             await getPBISPAdditionalBehaviour();
+        list.add(PBISPlusALLBehaviourModal(
+            activeStatusC: "Show",
+            behaviorTitleC: "Music",
+            createdById: "0054W00000F8jKgQAJ",
+            id: "a3z4W000000QfheQAC",
+            lastModifiedById: "0054W00000F8jKgQAJ",
+            mobileAppC: "a1f4W000007DQaNQAW",
+            name: "PSB-00006",
+            ownerId: "0054W00000F8jKgQAJ",
+            pBISBehaviorIconURLC:
+                "https://pbis-additional-icons.s3.us-east-2.amazonaws.com/icons8-airpods-pro-max-96.png",
+            pBISBehaviorSortOrderC: "6",
+            pBISSoundC: ""));
 
         await _localDb.clear();
-
         list.forEach((PBISPlusALLBehaviourModal e) async {
           await _localDb.addData(e);
         });
+        yield PBISPlusLoading();
         yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
             additionalbehaviourList: list);
       } catch (e) {
@@ -495,7 +508,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     //     List<PBISPlusGenricBehaviourModal>? _pbisPlusSkillsData =
     //         await _pbisPlusSkillsDB.getData();
     //     yield PBISPlusSkillsUpdateLoading(skillsList: _pbisPlusSkillsData);
-    
+
     //     if (event.item.id!.isNotEmpty &&
     //         event.index != null &&
     //         _pbisPlusSkillsData != null &&
@@ -603,17 +616,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
       List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
       try {
+        //remove the deletd item from db
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].id == event.behvaiour.id) {
             print(
                 "---------------------------behvaiour deleted from Teacher Custom Behaviour LocalDb db");
+            _localData.removeAt(i);
             await _localDb.deleteAt(i);
             break;
           }
         }
+        //clean localDB AND
+        //update the new sorting index every item in localDB
 
-        var result = await deleteTeacherCustomBehvaiour(
-            behaviour: event.behvaiour, teacherId: Globals.teacherId ?? '');
+        await _localDb.clear();
+        _localData.asMap().forEach((index, element) async {
+          element.pBISBehaviorSortOrderC = (index + 1).toString();
+          await _localDb.addData(element);
+        });
+
+         var result = await deleteTeacherCustomBehvaiour(
+             behaviour: event.behvaiour, teacherId: Globals.teacherId ?? '');
       } catch (e) {
         print(e);
       }
@@ -934,6 +957,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISPlusALLBehaviourModal> list =
             await GetDefaultSchoolBehvaiour();
 
+        print(list[0]);
+
         print(list);
         await _localDb.clear();
 
@@ -947,6 +972,50 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
+    // if (event is PBISPlusGetTeacherCustomBehvaiour) {
+    //   LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
+    //       PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+    //   List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+    //   yield PBISPlusLoading();
+    //   try {
+    //     if (_localData.isEmpty) {
+    //       yield PBISPlusBehvaiourLoading(
+    //           demoBehaviourData: PBISPlusALLBehaviourModal.demoBehaviourData);
+    //     } else {
+    //       yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+    //           teacherCustomBehaviourList: _localData);
+    //     }
+
+    //     List<PBISPlusALLBehaviourModal> list =
+    //         await getTeacherCustomBehvaiour(teacherId: Globals.teacherId ?? '');
+
+    //     //Adding placeholder
+    //     while (list.length < 6) {
+    //       int newItemId = list.length + 1;
+    //       PBISPlusALLBehaviourModal newItem = PBISPlusALLBehaviourModal(
+    //         ownerId: newItemId.toString(),
+    //         activeStatusC: "Show",
+    //         pBISBehaviorIconURLC: "assets/Pbis_plus/add_icon.svg",
+    //         behaviorTitleC: 'Add behaviour',
+    //         pBISBehaviorSortOrderC: newItemId.toString(),
+    //         id: "0",
+    //       );
+
+    //       list.add(newItem);
+    //     }
+
+    //     await _localDb.clear();
+
+    //     list.forEach((PBISPlusALLBehaviourModal e) async {
+    //       await _localDb.addData(e);
+    //     });
+    //     yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+    //         teacherCustomBehaviourList: list);
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // }
+
     if (event is PBISPlusGetTeacherCustomBehvaiour) {
       LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
@@ -957,15 +1026,26 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusBehvaiourLoading(
               demoBehaviourData: PBISPlusALLBehaviourModal.demoBehaviourData);
         } else {
+          _localData = sortByOrder(_localData);
+
           yield PBISPlusGetTeacherCustomBehvaiourSuccess(
               teacherCustomBehaviourList: _localData);
         }
 
+        yield PBISPlusLoading();
+
         List<PBISPlusALLBehaviourModal> list =
             await getTeacherCustomBehvaiour(teacherId: Globals.teacherId ?? '');
 
-        await _localDb.clear();
+//update temporary sort order will remove later
+        list.asMap().forEach((index, element) {
+          element.pBISBehaviorSortOrderC = (index + 1).toString();
+        });
 
+// Sort the list based on the "order" key
+        list = sortByOrder(list);
+
+        await _localDb.clear();
         list.forEach((PBISPlusALLBehaviourModal e) async {
           await _localDb.addData(e);
         });
@@ -979,18 +1059,81 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     if (event is PBISPlusAddTeacherCustomBehvaiour) {
       LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
 
       try {
-        await _localDb.addData(event.behvaiour);
+        if (event.index == null) {
+          print("added item--- on ${_localData.length.toString()}------");
+          event.behvaiour.pBISBehaviorSortOrderC = _localData.length.toString();
+          await _localDb.addData(event.behvaiour);
+        } else {
+          print("update the item of ${event.index} position");
+          event.behvaiour.pBISBehaviorSortOrderC =
+              (event.index! + 1).toString();
+          await _localDb.putAt(event.index!, event.behvaiour);
+        }
 
-        var result = await addTeacherCustomBehvaiour(
-            behvaiour: event.behvaiour,
-            schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: Globals.teacherId ?? "");
+        // var result = await addTeacherCustomBehvaiour(
+        //     behvaiour: event.behvaiour,
+        //     schoolId: Overrides.SCHOOL_ID ?? "",
+        //     teacherId: Globals.teacherId ?? "");
       } catch (e) {
         print(e);
       }
     }
+    // if (event is PBISPlusAddTeacherCustomBehvaiour) {
+    //   LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
+    //       PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
+
+    //   List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+
+    //   try {
+    //     yield PBISPlusLoading();
+
+    //     if (event.behvaiour.id!.isNotEmpty &&
+    //         event.index != null &&
+    //         _localData != null &&
+    //         _localData.isNotEmpty &&
+    //         event.index < _localData.length) {
+    //       //Check count of total number of existing behavior
+    //       int count = _localData
+    //           .where((item) => item.behaviorTitleC != "Add behaviour")
+    //           .length;
+
+    //       //Check if updating the behaviour or adding a new behaviour
+    //       if (event.index < count) {
+    //         //Updating existing behaviour
+    //         _localData.removeAt(event.index);
+    //         _localData.insert(event.index, event.behvaiour);
+    //         event.behvaiour.pBISBehaviorSortOrderC = event.index.toString();
+    //       } else {
+    //         //Adding new behaviour //Adding the behavior always to the 1st empty placeholder
+    //         _localData.removeAt(count);
+    //         _localData.insert(count, event.behvaiour);
+    //         event.behvaiour.pBISBehaviorSortOrderC = count.toString();
+    //       }
+
+    //       //Updating local db with latest chnages
+    //       await _localDb.clear();
+    //       _localData.forEach((element) async {
+    //         await _localDb.addData(element);
+    //       });
+
+    //       var result = await addTeacherCustomBehvaiour(
+    //           behvaiour: event.behvaiour,
+    //           schoolId: Overrides.SCHOOL_ID ?? "",
+    //           teacherId: Globals.teacherId ?? "");
+
+    //       yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+    //           teacherCustomBehaviourList: _localData);
+    //     } else {
+    //       yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+    //           teacherCustomBehaviourList: _localData);
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -1593,7 +1736,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/PBIS_School_Behavior__c/"Mobile_App__c" = \'${Overrides.SCHOOL_ID}\'',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        print("GetDefaultSchoolBehvaiour recived");
+        //  print("GetDefaultSchoolBehvaiour recived");
 
         List<PBISPlusALLBehaviourModal> _list = response.data['body']
             .map<PBISPlusALLBehaviourModal>(
@@ -1667,7 +1810,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "is_default_behaviour": "false",
         "icon_url": behvaiour.pBISBehaviorIconURLC,
         "teacher_id": teacherId,
-        "school_id": schoolId
+        "school_id": schoolId,
+        "sorting_order": behvaiour.pBISBehaviorSortOrderC
       };
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
@@ -1691,5 +1835,17 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  List<PBISPlusALLBehaviourModal> sortByOrder(
+      List<PBISPlusALLBehaviourModal> allBehaviours) {
+    allBehaviours.sort((a, b) {
+      int orderA = int.parse(a.pBISBehaviorSortOrderC ?? '');
+      int orderB = int.parse(b.pBISBehaviorSortOrderC ?? '');
+
+      return orderA.compareTo(
+          orderB); // For descending order: return orderB.compareTo(orderA);
+    });
+    return allBehaviours;
   }
 }

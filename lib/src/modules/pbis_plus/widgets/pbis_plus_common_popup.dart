@@ -23,20 +23,22 @@ class PBISPlusCommonPopup extends StatefulWidget {
   final TextStyle? titleStyle;
   final Color? backgroundColor;
   final PBISPlusALLBehaviourModal item;
+  void Function() onDelete;
   // PBISPlusBloc? pbisPlusBloc;
   // ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
-  PBISPlusCommonPopup({
-    Key? key,
-    required this.orientation,
-    required this.context,
-    required this.message,
-    required this.title,
-    required this.titleStyle,
-    required this.backgroundColor,
-    required this.item,
-    // required this.containerIcons,
-    // required this.pbisPlusBloc,
-  }) : super(key: key);
+  PBISPlusCommonPopup(
+      {Key? key,
+      required this.orientation,
+      required this.context,
+      required this.message,
+      required this.title,
+      required this.titleStyle,
+      required this.backgroundColor,
+      required this.item,
+      // required this.containerIcons,
+      // required this.pbisPlusBloc,
+      required this.onDelete})
+      : super(key: key);
 
   @override
   State<PBISPlusCommonPopup> createState() => _PBISPlusCommonPopupState();
@@ -154,12 +156,14 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                                   Theme.of(context).backgroundColor
                               ? Color(0xff111C20)
                               : Color(0xffF7F8F9),
-                          onClick: () {
-                            pbisPlusBloc.add(
-                                PBISPlusDeleteTeacherCustomBehvaiour(
-                                    behvaiour: widget.item));
-                            Navigator.pop(context, true);
-                          },
+                          onClick: widget.onDelete,
+
+                          //  () {
+                          //   pbisPlusBloc.add(
+                          //       PBISPlusDeleteTeacherCustomBehvaiour(
+                          //           behvaiour: widget.item));
+                          //   Navigator.pop(context, true);
+                          // },
                           backgroundColor: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor
                               ? Color(0xffF7F8F9)

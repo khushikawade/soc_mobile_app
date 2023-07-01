@@ -101,8 +101,8 @@ class GetPBISPlusDefaultBehaviour extends PBISPlusEvent {
   List<bool> get props => [isCustom!];
 }
 
-class PBISPlusGetPBISPlusAdditionalBehaviour extends PBISPlusEvent {
-  PBISPlusGetPBISPlusAdditionalBehaviour();
+class PBISPlusGetAdditionalBehaviour extends PBISPlusEvent {
+  PBISPlusGetAdditionalBehaviour();
   @override
   List<Object> get props => [];
 }
@@ -177,10 +177,10 @@ class PBISPlusDeleteTeacherCustomBehvaiour extends PBISPlusEvent {
 class PBISPlusAddTeacherCustomBehvaiour extends PBISPlusEvent {
   final PBISPlusALLBehaviourModal behvaiour;
   // final List<PBISPlusALLBehaviourModal> oldbehvaiour;
-  final int index;
+  final int? index;
   PBISPlusAddTeacherCustomBehvaiour({
     required this.behvaiour,
-    required this.index,
+    this.index,
     //required this.oldbehvaiour
   });
 
