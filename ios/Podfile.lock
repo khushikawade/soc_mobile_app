@@ -7,6 +7,8 @@ PODS:
   - AppAuth/Core (1.6.2)
   - AppAuth/ExternalUserAgent (1.6.2):
     - AppAuth/Core
+  - audioplayers_darwin (0.0.1):
+    - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -238,6 +240,7 @@ PODS:
 
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
@@ -302,6 +305,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   add_2_calendar:
     :path: ".symlinks/plugins/add_2_calendar/ios"
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   connectivity_plus:
@@ -368,6 +373,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175

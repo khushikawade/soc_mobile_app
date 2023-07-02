@@ -10,6 +10,8 @@ class StudentPlusInitial extends StudentPlusState {}
 
 class StudentPlusLoading extends StudentPlusState {}
 
+class StudentPlusDemoLoading extends StudentPlusState {}
+
 class StudentPlusGetDetailsLoading extends StudentPlusState {}
 
 /* -------------------- state use to return student search details --------------- */
@@ -60,13 +62,32 @@ class StudentPlusInfoSuccess extends StudentPlusState {
   List<Object> get props => [];
 }
 
-/* ----------------------- state use to return student work ---------------------- */
+/* ----------------------- state use to return grade ---------------------- */
 class StudentPlusGradeSuccess extends StudentPlusState {
   final List<StudentPlusGradeModel> obj;
+  final List<StudentPlusCourseModel> courseList;
   final List<String> chipList;
-  StudentPlusGradeSuccess({required this.obj, required this.chipList});
+  StudentPlusGradeSuccess(
+      {required this.obj, required this.chipList, required this.courseList});
   StudentPlusGradeSuccess copyWith({final obj}) {
-    return StudentPlusGradeSuccess(obj: obj ?? this.obj, chipList: chipList);
+    return StudentPlusGradeSuccess(
+        obj: obj ?? this.obj, chipList: chipList, courseList: courseList);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+/* ----------------------- state use to return  Course student work ---------------------- */
+class StudentPlusCourseWorkSuccess extends StudentPlusState {
+  final List<StudentPlusCourseWorkModel> obj;
+  final String? nextPageToken;
+  StudentPlusCourseWorkSuccess(
+      {required this.obj, required this.nextPageToken});
+  StudentPlusCourseWorkSuccess copyWith({final obj}) {
+    return StudentPlusCourseWorkSuccess(
+        obj: obj ?? this.obj,
+        nextPageToken: nextPageToken ?? this.nextPageToken);
   }
 
   @override
@@ -76,6 +97,18 @@ class StudentPlusGradeSuccess extends StudentPlusState {
 class SaveStudentGooglePresentationWorkEventSuccess extends StudentPlusState {
   StudentPlusDetailsModel studentDetails;
   SaveStudentGooglePresentationWorkEventSuccess({required this.studentDetails});
+
+  @override
+  List<Object> get props => [];
+}
+
+/* --------------------------- State to return student search by email -------------------------- */
+class StudentPlusSearchByEmailSuccess extends StudentPlusState {
+  final StudentPlusDetailsModel obj;
+  StudentPlusSearchByEmailSuccess({required this.obj});
+  StudentPlusSearchByEmailSuccess copyWith({final obj}) {
+    return StudentPlusSearchByEmailSuccess(obj: obj ?? this.obj);
+  }
 
   @override
   List<Object> get props => [];

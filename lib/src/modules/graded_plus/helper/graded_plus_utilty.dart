@@ -582,7 +582,7 @@ class OcrUtility {
                                           fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  'Student Assessments Saved Successfully',
+                                  'Student Assignments Saved Successfully',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme

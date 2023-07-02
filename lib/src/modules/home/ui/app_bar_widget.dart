@@ -57,80 +57,87 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildPopupMenuWidget(BuildContext context) {
     Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
-    return PopupMenuButton<IconMenu>(
-      color: Globals.themeType != 'Dark'
-          ? Theme.of(context).backgroundColor
-          : Theme.of(context).colorScheme.secondary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        cardColor: Globals.themeType != 'Dark'
+            ? Theme.of(context).backgroundColor
+            : Theme.of(context).colorScheme.secondary,
       ),
-      icon: Icon(
-        const IconData(0xe806,
-            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        size: Globals.deviceType == "phone" ? 20 : 28,
-      ),
-      onSelected: (value) async {
-        //   Utility.setFree();
-        switch (value) {
-          case IconsMenu.Information:
-            Globals.appSetting.appInformationC != null
-                ? await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => InformationPage(
-                              appbarTitle: 'Information',
-                              isBottomSheet: true,
-                              ishtml: true,
-                            )))
-                : Utility.showSnackBar(
-                    scaffoldKey, 'No Information Available', context, null);
-            break;
-          case IconsMenu.Setting:
-            await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SettingPage(
-                          appbarTitle: '',
-                          isBottomSheet: true,
-                        )));
+      child: PopupMenuButton<IconMenu>(
+        // color: Globals.themeType != 'Dark'
+        //     ? Theme.of(context).backgroundColor
+        //     : Theme.of(context).colorScheme.secondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2),
+        ),
+        icon: Icon(
+          const IconData(0xe806,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          size: Globals.deviceType == "phone" ? 20 : 28,
+        ),
+        onSelected: (value) async {
+          //   Utility.setFree();
+          switch (value) {
+            case IconsMenu.Information:
+              Globals.appSetting.appInformationC != null
+                  ? await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InformationPage(
+                                appbarTitle: 'Information',
+                                isBottomSheet: true,
+                                ishtml: true,
+                              )))
+                  : Utility.showSnackBar(
+                      scaffoldKey, 'No Information Available', context, null);
+              break;
+            case IconsMenu.Setting:
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SettingPage(
+                            appbarTitle: '',
+                            isBottomSheet: true,
+                          )));
 
-            break;
-          case IconsMenu.Permissions:
-            OpenAppsSettings.openAppsSettings(
-                settingsCode: SettingsCode.APP_SETTINGS);
-            break;
-        }
-        // Utility.setLocked();
-      },
-      itemBuilder: (context) => IconsMenu.items
-          .map((item) => PopupMenuItem<IconMenu>(
-              height: Globals.deviceType != "phone"
-                  ? currentOrientation == Orientation.portrait
-                      ? MediaQuery.of(context).size.height / 17
-                      : MediaQuery.of(context).size.width / 17
-                  : kMinInteractiveDimension,
-              value: item,
-              child: Container(
-                width: Globals.deviceType != "phone"
+              break;
+            case IconsMenu.Permissions:
+              OpenAppsSettings.openAppsSettings(
+                  settingsCode: SettingsCode.APP_SETTINGS);
+              break;
+          }
+          // Utility.setLocked();
+        },
+        itemBuilder: (context) => IconsMenu.items
+            .map((item) => PopupMenuItem<IconMenu>(
+                height: Globals.deviceType != "phone"
                     ? currentOrientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.width / 5
-                        : MediaQuery.of(context).size.height / 5
-                    : null,
-                padding: EdgeInsets.symmetric(
-                    horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: TranslationWidget(
-                    message: item.text,
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) {
-                      return Text(
-                        translatedMessage.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText1!.copyWith(),
-                      );
-                    }),
-              )))
-          .toList(),
+                        ? MediaQuery.of(context).size.height / 17
+                        : MediaQuery.of(context).size.width / 17
+                    : kMinInteractiveDimension,
+                value: item,
+                child: Container(
+                  width: Globals.deviceType != "phone"
+                      ? currentOrientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.width / 5
+                          : MediaQuery.of(context).size.height / 5
+                      : null,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: _kLabelSpacing / 4, vertical: 0),
+                  child: TranslationWidget(
+                      message: item.text,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(
+                          translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(),
+                        );
+                      }),
+                )))
+            .toList(),
+      ),
     );
   }
 

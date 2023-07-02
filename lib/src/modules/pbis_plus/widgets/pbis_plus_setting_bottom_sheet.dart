@@ -9,7 +9,6 @@ import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_behaviour.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -98,7 +97,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
     // Combine all the students from different courses into a single list.
     allStudents = await getClassroomStudents(
-        classroomCourses: widget.googleClassroomCourseworkList);
+        classroomCoursesList: widget.googleClassroomCourseworkList);
   }
 
   @override
@@ -329,7 +328,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
             case 'Edit Behaviour':
               sectionName = 'Behaviour';
-              // Navigator.pop(context);
+              Navigator.pop(context);
               pushNewScreen(
                 context,
                 screen: PBISPlusEditSkills(),
@@ -448,8 +447,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return Container(
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 25),
+                padding: EdgeInsets.all(5),
                 height: widget.height! * 0.65,
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -468,7 +466,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             }),
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
@@ -613,8 +611,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
+                  padding: EdgeInsets.all(5),
                   height: widget.height! * 0.60,
                   child: (allStudents?.isNotEmpty ?? false)
                       ? ListView.builder(
@@ -639,20 +636,22 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
                   //this is for default  'ALL' selected
                   if (selectedStudentList?.isEmpty ?? true) {
                     selectedStudentList = getClassroomStudents(
-                        classroomCourses: widget.googleClassroomCourseworkList,
+                        classroomCoursesList:
+                            widget.googleClassroomCourseworkList,
                         isSubmitOnTap: true);
                   } else {
                     //this is for selected students
                     selectedStudentList = getAllStudentsForCourse(
                       selectedStudentList: selectedStudentList,
-                      classroomCourses: widget.googleClassroomCourseworkList,
+                      classroomCoursesList:
+                          widget.googleClassroomCourseworkList,
                     );
                   }
 
@@ -787,7 +786,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             listener: (context, state) async {
               print("UI STATE------------GOOGLE STATE $state");
 
-              if (state is GoogleSuccess) {
+              if (state is GoogleFolderCreated) {
                 //In case of Folder Id received
                 _exportDataToSpreadSheet();
               }
@@ -797,7 +796,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     classroomCourseworkList:
                         (sectionName == 'All Courses & Students' ||
                                 (selectedRecords?.isEmpty ?? true))
-                            ? widget.googleClassroomCourseworkList
+                            ? List<ClassroomCourse>.from(
+                                widget.googleClassroomCourseworkList)
                             : selectedRecords));
               }
               if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
@@ -902,13 +902,17 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       type: sectionName,
       selectedRecords: (sectionName == 'All Courses & Students' ||
               (selectedRecords?.isEmpty ?? true))
-          ? widget.googleClassroomCourseworkList
+          ? List<ClassroomCourse>.from(widget.googleClassroomCourseworkList)
           : selectedRecords,
     ));
   }
 
   List<ClassroomStudents> getClassroomStudents(
-      {required List<ClassroomCourse> classroomCourses, bool? isSubmitOnTap}) {
+      {required final List<ClassroomCourse> classroomCoursesList,
+      bool? isSubmitOnTap}) {
+    List<ClassroomCourse> classroomCourses =
+        List<ClassroomCourse>.from(classroomCoursesList);
+
     final uniqueStudents = <ClassroomStudents>[];
 
     for (final course in classroomCourses) {
@@ -946,8 +950,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     if (isSubmitOnTap != true) {
       uniqueStudents
           .removeWhere((element) => element.profile!.name!.fullName == 'All');
-      uniqueStudents.insert(
-          0, widget.googleClassroomCourseworkList[0].students![0]);
+      uniqueStudents.insert(0, classroomCourses[0].students![0]);
     }
     return uniqueStudents;
   }
@@ -990,11 +993,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           SpacerWidget(30),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
-                  _pageController.animateToPage(4,
+                  _pageController.animateToPage(5,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
                   _exportDataToSpreadSheet();
@@ -1036,7 +1039,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 //Used to add all courses data of single student if exist in multiple classes
   List<ClassroomStudents> getAllStudentsForCourse(
       {required List<ClassroomStudents> selectedStudentList,
-      required List<ClassroomCourse> classroomCourses}) {
+      required final List<ClassroomCourse> classroomCoursesList}) {
+    List<ClassroomCourse> classroomCourses =
+        List<ClassroomCourse>.from(classroomCoursesList);
+
     try {
       //add all student that contains same ids
       List<ClassroomStudents> newStudentList = [];
@@ -1138,12 +1144,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
-                  height: widget.height! * 0.70,
+                  padding: EdgeInsets.all(5),
+                  height: widget.height! * 0.65,
                   child: (widget.googleClassroomCourseworkList?.isNotEmpty ??
                           false)
                       ? ListView.builder(
+                          padding: EdgeInsets.all(0),
                           itemBuilder: (BuildContext context, int index) {
                             return _buildCourseSeparationList(
                                 course:
@@ -1167,7 +1173,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
@@ -1178,7 +1184,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     //this is for selected students
                     selectedRecords = prepareStudentListByCourseToReset(
                       selectedStudentList: selectedStudentList,
-                      classroomCourses: widget.googleClassroomCourseworkList,
+                      classroomCoursesList:
+                          widget.googleClassroomCourseworkList,
                     );
                   }
 
@@ -1213,7 +1220,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       if ((course.students?.isNotEmpty ?? false) && parentIndex != 0)
         Center(
             child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+          padding: EdgeInsets.all(5),
           child: Text(
             course.name ?? '',
             style: Theme.of(context)
@@ -1224,7 +1231,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         )),
       if (course.students?.isNotEmpty ?? false)
         Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
+          // padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
           child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(0),
@@ -1268,9 +1275,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       },
       child: Container(
           height: 54,
-          padding: EdgeInsets.symmetric(
-            horizontal: 0,
-          ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
@@ -1330,8 +1334,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   //Add all Selected student to a new list type class course
   List<ClassroomCourse> prepareStudentListByCourseToReset(
       {required List<ClassroomStudents> selectedStudentList,
-      required List<ClassroomCourse> classroomCourses}) {
+      required final List<ClassroomCourse> classroomCoursesList}) {
     try {
+      List<ClassroomCourse> classroomCourses =
+          List<ClassroomCourse>.from(classroomCoursesList);
       List<ClassroomCourse> newClassroomCourseList = [];
 
       for (var i = 0; i < classroomCourses.length; i++) {

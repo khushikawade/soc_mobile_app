@@ -24,8 +24,10 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusExamsScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
+  final String sectionType;
 
-  const StudentPlusExamsScreen({Key? key, required this.studentDetails})
+  const StudentPlusExamsScreen(
+      {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
 
   @override
@@ -78,29 +80,31 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPlusExamsTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          StudentPlusInfoSearchBar(
-            hintText:
-                '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-            isMainPage: false,
-            autoFocus: false,
-            onTap: () async {
-              var result = await pushNewScreen(
-                context,
-                screen: StudentPlusSearchScreen(
-                  fromStudentPlusDetailPage: true,
-                  index: 1,
-                  studentDetails: widget.studentDetails,
+          widget.sectionType == "Student"
+              ? Container()
+              : StudentPlusInfoSearchBar(
+                  hintText:
+                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                  isMainPage: false,
+                  autoFocus: false,
+                  onTap: () async {
+                    var result = await pushNewScreen(
+                      context,
+                      screen: StudentPlusSearchScreen(
+                        fromStudentPlusDetailPage: true,
+                        index: 1,
+                        studentDetails: widget.studentDetails,
+                      ),
+                      withNavBar: false,
+                    );
+                    if (result == true) {
+                      Utility.closeKeyboard(context);
+                    }
+                  },
+                  controller: _controller,
+                  kLabelSpacing: _kLabelSpacing,
+                  focusNode: myFocusNode,
                 ),
-                withNavBar: false,
-              );
-              if (result == true) {
-                Utility.closeKeyboard(context);
-              }
-            },
-            controller: _controller,
-            kLabelSpacing: _kLabelSpacing,
-            focusNode: myFocusNode,
-          ),
           tabWidget(),
         ],
       ),
@@ -176,7 +180,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             Container(
               height: Globals.deviceType == "phone" &&
                       MediaQuery.of(context).orientation == Orientation.portrait
-                  ? (MediaQuery.of(context).size.height * 0.57) //61
+                  ? (widget.sectionType == "Student"
+                      ? MediaQuery.of(context).size.height * 0.7
+                      : MediaQuery.of(context).size.height * 0.57) //61
                   : Globals.deviceType == "phone" &&
                           MediaQuery.of(context).orientation ==
                               Orientation.landscape

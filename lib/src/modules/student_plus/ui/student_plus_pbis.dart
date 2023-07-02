@@ -19,8 +19,12 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 class StudentPlusPBISScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
   final int index;
+  final String sectionType;
   const StudentPlusPBISScreen(
-      {Key? key, required this.studentDetails, required this.index})
+      {Key? key,
+      required this.studentDetails,
+      required this.index,
+      required this.sectionType})
       : super(key: key);
 
   @override
@@ -110,29 +114,31 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          StudentPlusInfoSearchBar(
-            hintText:
-                '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-            onTap: () async {
-              var result = await pushNewScreen(context,
-                  screen: StudentPlusSearchScreen(
-                    fromStudentPlusDetailPage: true,
-                    studentDetails: widget.studentDetails,
-                    index: widget.index,
-                  ),
-                  withNavBar: false,
-                  pageTransitionAnimation: PageTransitionAnimation.fade);
-              if (result == true) {
-                Utility.closeKeyboard(context);
-              }
-            },
-            isMainPage: false,
-            autoFocus: false,
-            controller: _controller,
-            kLabelSpacing: _kLabelSpacing,
-            focusNode: myFocusNode,
-            onItemChanged: null,
-          ),
+          widget.sectionType == "Student"
+              ? Container()
+              : StudentPlusInfoSearchBar(
+                  hintText:
+                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                  onTap: () async {
+                    var result = await pushNewScreen(context,
+                        screen: StudentPlusSearchScreen(
+                          fromStudentPlusDetailPage: true,
+                          studentDetails: widget.studentDetails,
+                          index: widget.index,
+                        ),
+                        withNavBar: false,
+                        pageTransitionAnimation: PageTransitionAnimation.fade);
+                    if (result == true) {
+                      Utility.closeKeyboard(context);
+                    }
+                  },
+                  isMainPage: false,
+                  autoFocus: false,
+                  controller: _controller,
+                  kLabelSpacing: _kLabelSpacing,
+                  focusNode: myFocusNode,
+                  onItemChanged: null,
+                ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
           pbisDashboardWidget(constraint)
         ],

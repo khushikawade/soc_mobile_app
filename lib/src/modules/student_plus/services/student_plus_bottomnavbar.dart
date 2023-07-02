@@ -19,23 +19,29 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 class StudentPlusBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
   static List<Widget> buildScreens(
-      {required StudentPlusDetailsModel studentInfo}) {
+      {required StudentPlusDetailsModel studentInfo,
+      required String sectionType}) {
     List<Widget> _screens = [];
     _screens.add(StudentPlusInfoScreen(
       studentDetails: studentInfo,
+      sectionType: sectionType,
     ));
     _screens.add(StudentPlusExamsScreen(
       studentDetails: studentInfo,
+      sectionType: sectionType,
     ));
     _screens.add(StudentPlusWorkScreen(
       studentDetails: studentInfo,
+      sectionType: sectionType,
     ));
     _screens.add(StudentPlusGradesPage(
       studentDetails: studentInfo,
+      sectionType: sectionType,
     ));
     _screens.add(StudentPlusPBISScreen(
       studentDetails: studentInfo,
       index: 4,
+      sectionType: sectionType,
     )
         // studentInfo.emailC == null
         //     ? NoDataFoundErrorWidget(
@@ -57,7 +63,7 @@ class StudentPlusBottomNavBar {
 
   /* ---------- function to return list of bottom navigation bar item --------- */
   static List<PersistentBottomNavBarItem> navBarsItems(
-      {required BuildContext context}) {
+      {required BuildContext context, String? sectionType}) {
     List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
       icon: ResultSummaryIcons("0xe883", '   Info', context),
@@ -87,7 +93,10 @@ class StudentPlusBottomNavBar {
       ),
     );
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-      icon: ResultSummaryIcons(getStaffIconCode(), 'Staff', context),
+      icon: ResultSummaryIcons(
+          sectionType == "Student" ? "0xe80a" : getStaffIconCode(),
+          sectionType == "Student" ? 'Student' : 'Staff',
+          context),
       activeColorPrimary: AppTheme.kButtonColor,
       inactiveColorPrimary: CupertinoColors.systemGrey,
     ));

@@ -2,7 +2,6 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../styles/theme.dart';
 

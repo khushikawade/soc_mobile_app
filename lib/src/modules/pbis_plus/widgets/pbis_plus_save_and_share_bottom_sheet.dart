@@ -565,7 +565,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     classroomBloc.add(CreatePBISClassroomCoursework(
                       pointPossible: pointPossibleController.text,
                       courseAndStudentList: selectedCoursesList.length == 0
-                          ? widget.googleClassroomCourseworkList
+                          ? List<ClassroomCourse>.from(
+                              widget.googleClassroomCourseworkList)
                           : selectedCoursesList,
                       // studentAssessmentInfoDb: studentAssessmentInfoDb
                     ));
@@ -741,7 +742,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
                   courseAndStudentList: selectedCoursesList.length == 0
-                      ? widget.googleClassroomCourseworkList
+                      ? List<ClassroomCourse>.from(
+                          widget.googleClassroomCourseworkList)
                       : selectedCoursesList,
                   // studentAssessmentInfoDb: studentAssessmentInfoDb
                 ));
@@ -766,7 +768,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       child: BlocListener<GoogleDriveBloc, GoogleDriveState>(
           bloc: googleDriveBloc,
           listener: (context, state) async {
-            if (state is GoogleSuccess) {
+            if (state is GoogleFolderCreated) {
               //In case of Folder Id received
               _createSpreadSheet();
             }
@@ -774,7 +776,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
               googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
                   spreadSheetFileObj: state.googleSpreadSheetFileObj,
                   classroomCourseworkList: selectedCoursesList?.isEmpty ?? true
-                      ? widget.googleClassroomCourseworkList
+                      ? List<ClassroomCourse>.from(
+                          widget.googleClassroomCourseworkList)
                       : selectedCoursesList));
             }
             if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {

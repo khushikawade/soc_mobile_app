@@ -113,17 +113,17 @@ class ClassroomProfile {
   @HiveField(7)
   int? helpful;
   // @HiveField(5)
-  // PBISPlusGenricBehaviourModal? behaviour1;
+  // PBISPlusGenericBehaviourModal? behaviour1;
   // @HiveField(6)
-  // PBISPlusGenricBehaviourModal? behaviour2;
+  // PBISPlusGenericBehaviourModal? behaviour2;
   // @HiveField(7)
-  // PBISPlusGenricBehaviourModal? behaviour3;
+  // PBISPlusGenericBehaviourModal? behaviour3;
   // @HiveField(8)
-  // PBISPlusGenricBehaviourModal? behaviour4;
+  // PBISPlusGenericBehaviourModal? behaviour4;
   // @HiveField(9)
-  // PBISPlusGenricBehaviourModal? behaviour5;
+  // PBISPlusGenericBehaviourModal? behaviour5;
   // @HiveField(10)
-  // PBISPlusGenricBehaviourModal? behaviour6;
+  // PBISPlusGenericBehaviourModal? behaviour6;
 
   @HiveField(8)
   String? courseName;
@@ -165,22 +165,22 @@ class ClassroomProfile {
       });
     }
     // behaviour1 = json['behaviour1'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour2 = json['behaviour2'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour3 = json['behaviou3'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour4 = json['behaviour4'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour5 = json['behaviour5'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     // behaviour6 = json['behaviour6'] != null
-    //     ? PBISPlusGenricBehaviourModal.fromJson(json['name'])
+    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
     //     : null;
     engaged = 0;
     niceWork = 0;

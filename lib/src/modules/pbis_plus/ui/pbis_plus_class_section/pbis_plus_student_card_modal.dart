@@ -4,7 +4,8 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
@@ -60,6 +61,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   @override
   void initState() {
     super.initState();
+    trackUserActivity();
   }
 
   @override
@@ -70,7 +72,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   @override
   Widget build(BuildContext context) {
-    final AddNotes = Column(
+    final Column addNotes = Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -107,7 +109,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                               ? Color(0xffF7F8F9)
                               : Color(0xff111C20),
                       // Color(0xffF7F8F9),
-                      hintText: 'Add note',
+                      hintText: 'Add Note',
                       hintStyle: Theme.of(context)
                           .textTheme
                           .bodyText1!
@@ -156,7 +158,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: FittedBox(
-                      child: CircularCustomButton(
+                      child: CustomCircularButton(
                         size: Size(MediaQuery.of(context).size.width * 0.26,
                             MediaQuery.of(context).size.width / 10),
                         borderColor: AppTheme.kButtonColor,
@@ -383,7 +385,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 ),
                                 alignment: Alignment.bottomRight,
                                 width: MediaQuery.of(context).size.width * 0.8,
-                                child: AddNotes)),
+                                child: addNotes)),
                 Positioned(
                   top: 0,
                   child: GestureDetector(
@@ -432,19 +434,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             )));
   }
 
-//   // void trackUserActivity() {
-//   //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-//   //       "pbis_plus_student_card_modal_view");
-//   //   FirebaseAnalyticsService.setCurrentScreen(
-//   //       screenTitle: 'pbis_plus_student_card_modal_screen',
-//   //       screenClass: 'PBISPlusStudentCardModal');
-//   //   /*-------------------------------------------------------------------------------------*/
-//   //   Utility.updateLogs(
-//   //       activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-//   //       activityId: '37',
-//   //       description:
-//   //           'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-//   //       operationResult: 'Success');
-//   // }
-// }
+  void trackUserActivity() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_student_card_modal_view");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_student_card_modal_screen',
+        screenClass: 'PBISPlusStudentCardModal');
+    /*-------------------------------------------------------------------------------------*/
+    PlusUtility.updateLogs(
+        activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+        activityId: '37',
+        userType: 'Teacher',
+        description:
+            'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+        operationResult: 'Success');
+  }
 }
