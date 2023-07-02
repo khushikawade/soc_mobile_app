@@ -19,19 +19,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PBISPlusNotes extends StatefulWidget {
+class PBISPlusNotesStudentList extends StatefulWidget {
   final IconData titleIconData;
 
-  PBISPlusNotes({
+  PBISPlusNotesStudentList({
     Key? key,
     required this.titleIconData,
   }) : super(key: key);
 
   @override
-  State<PBISPlusNotes> createState() => _PBISPlusHistoryState();
+  State<PBISPlusNotesStudentList> createState() => _PBISPlusHistoryState();
 }
 
-class _PBISPlusHistoryState extends State<PBISPlusNotes> {
+class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   static const double _KVertcalSpace = 60.0;
   // used for space between the widgets
   static const double _kLabelSpacing = 20.0;
@@ -46,12 +46,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
       ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
   // search text editing controller
   final _searchController = TextEditingController();
-  // hide animated container
-  final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
   final _deBouncer = Debouncer(milliseconds: 500);
-  List<PBISPlusStudentList>? mainList;
-  // final ScrollController _scrollcontroller = ScrollController();
-
+  List<PBISPlusStudentList>? studentLocalList;
+ 
   @override
   void initState() {
     super.initState();
@@ -62,7 +59,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "pbis_plus_history_screen");
     // FirebaseAnalyticsService.setCurrentScreen(
-    //     screenTitle: 'pbis_plus_PBISPlusNotes', screenClass: 'PBISPlusNotes');
+    //     screenTitle: 'pbis_plus_PBISPlusNotes', screenClass: 'PBISPlusNotesStudentList');
     // /*-------------------------User Activity Track END----------------------------*/
   }
 
@@ -80,7 +77,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
           resizeToAvoidBottomInset: true,
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          // Theme.of(context).colorScheme.secondary,
           appBar: PBISPlusUtility.pbisAppBar(
             context: context,
             titleIconData: widget.titleIconData,
@@ -114,17 +110,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
         searchBarWidget(),
         validationMessageWidget(),
         SpacerWidget(_KVertcalSpace / 5),
-        ValueListenableBuilder(
-            valueListenable: filterNotifier,
-            builder: (BuildContext context, String value, Widget? child) {
-              return BlocConsumer(
+        BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
                     if (state is PBISPlusStudentListSucess) {
                       //---------------------return the filter list to UI-----------//
                       if (state.studentList.isNotEmpty) {
                         //Storing the data in another list to use in search student functionality
-                        mainList = state.studentList;
+                        studentLocalList = state.studentList;
                         return _listBuilder(state.studentList,
                             isShimmerLoading: false);
                       } else {
@@ -139,8 +132,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                     } else if (state is PBISPlusStudentSearchSucess) {
                       return _listBuilder(state.sortedList,
                           isShimmerLoading: false);
-                    } else if (state is PBISPlusStudentSearchNoDataFound ||
-                        state is PBISPlusStudentListError) {
+                    } else if (state is GetPBISPlusStudentsListNoData ||
+                        state is GetPBISPlusStudentsListNoData) {
                       return _noDataFoundWidget();
                     }
                     //Managing shimmer loading in case of initial loading
@@ -152,17 +145,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                           GetPBISPlusStudentList(studentNotesList: null));
                     }
                   });
-            }),
+            
       ],
     );
   }
 
+ /* ----------- Search Widget ---------- */
   Widget searchBarWidget() {
-    return ValueListenableBuilder(
-        valueListenable: moveToTopNotifier,
-        child: Container(),
-        builder: (BuildContext context, dynamic value, Widget? child) {
-          return PBISPlusSearchBar(
+    return PBISPlusSearchBar(
               iconOnTap: () {
                 _searchController.clear();
                 onItemChanged("");
@@ -175,7 +165,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               focusNode: searchFocusNode,
               onTap: () {},
               onItemChanged: onItemChanged);
-        });
   }
 
   /* ----------- Widget to show error related to maximum three digit ---------- */
@@ -235,7 +224,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
               decoration: BoxDecoration(
                   border: Border.all(
                     color: Theme.of(context).colorScheme.secondary,
-                    //  Theme.of(context).colorScheme.background,
                     width: 0.65,
                   ),
                   borderRadius: BorderRadius.circular(0.0),
@@ -281,7 +269,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                   title: isShimmerLoading == true
                       ? localSimmerWidget(height: 20, width: 30)
                       : Utility.textWidget(
-                          // textAlign: TextAlign.center,
                           text: studentNotesList[index].names!.fullName ?? '',
                           context: context,
                           textTheme: Theme.of(context)
@@ -300,10 +287,10 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
                     ),
                   ),
                   onTap: (() {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (context) => PBISPlusNotesDetailPage(
-                    //         pBISPlusBlocInstance:PBISPlusBlocInstance
-                    //         item: studentNotesList[index])));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PBISPlusNotesDetailPage(
+                            pBISPlusBlocInstance:PBISPlusBlocInstance
+                            item: studentNotesList[index])));
                   })));
         });
   }
@@ -326,9 +313,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    // PBISPlusBlocInstance.add(PBISPlusImportRoster(
-    //   isGradedPlus: false,
-    // ));
+    PBISPlusBlocInstance.add(PBISPlusImportRoster(
+      isGradedPlus: false,
+    ));
   }
 
   /* --------------- Things Perform on On changes in search bar --------------- */
@@ -336,16 +323,15 @@ class _PBISPlusHistoryState extends State<PBISPlusNotes> {
     _deBouncer.run(() {
       if (_searchController.text.isEmpty) {
         PBISPlusBlocInstance.add(
-            GetPBISPlusStudentList(studentNotesList: mainList));
+            GetPBISPlusStudentList(studentNotesList: studentLocalList));
         showErrorInSearch.value = false;
       } else if (_searchController.text.length >= 3) {
         showErrorInSearch.value = false;
-        PBISPlusBlocInstance.add(GetPBISPlusStudentNotesSearchEvent(
-            searchKey: _searchController.text, studentNotes: mainList!));
+        PBISPlusBlocInstance.add(PBISPlusNotesSearchStudentList(
+            searchKey: _searchController.text, studentNotes: studentLocalList!));
       } else {
         showErrorInSearch.value = true;
       }
-      // setState(() {});
     });
   }
 

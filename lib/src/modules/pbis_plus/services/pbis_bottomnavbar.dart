@@ -29,7 +29,7 @@ class PBISBottomNavBar {
         titleIconData: IconData(0xe824,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
-      PBISPlusNotes(
+      PBISPlusNotesStudentList(
         titleIconData: IconData(0xe824,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),

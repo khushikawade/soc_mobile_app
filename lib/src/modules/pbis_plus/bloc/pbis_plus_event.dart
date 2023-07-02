@@ -147,10 +147,10 @@ class GetPBISPlusStudentList extends PBISPlusEvent {
   List<Object> get props => [studentNotesList!];
 }
 
-class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
+class PBISPlusNotesSearchStudentList extends PBISPlusEvent {
   final String searchKey;
   final List<PBISPlusStudentList> studentNotes;
-  GetPBISPlusStudentNotesSearchEvent({
+  PBISPlusNotesSearchStudentList({
     required this.searchKey,
     required this.studentNotes,
   });
@@ -162,11 +162,11 @@ class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
       ];
 }
 
-class GetPBISPlusStudentNotesList extends PBISPlusEvent {
+class GetPBISPlusNotes extends PBISPlusEvent {
   final String studentId;
   final String teacherid;
   final String dbn;
-  GetPBISPlusStudentNotesList({
+  GetPBISPlusNotes({
     required this.studentId,
     required this.teacherid,
     required this.dbn,
@@ -182,7 +182,7 @@ class GetPBISPlusStudentNotesList extends PBISPlusEvent {
 //   final String studentEmail;
 //   final String studentEmail;
 //   final String studentEmail;
-//   GetPBISPlusStudentNotesList({
+//   GetPBISPlusNotes({
 //     required this.studentId,
 //     required this.teacherid,
 //     required this.dbn,
@@ -191,3 +191,26 @@ class GetPBISPlusStudentNotesList extends PBISPlusEvent {
 //   @override
 //   List<Object> get props => [studentId, teacherid, dbn];
 // }
+ 
+ class AddPBISPlusStudentNotes extends PBISPlusEvent {
+final  String studentId;
+ final String studentName;
+ final String studentEmail;
+ final String teacherId;
+ final String schoolId;
+ final String schoolDbn;
+ final String notes;
+  
+  GetPBISPlusNotes({
+    required this.studentId,
+    required this.studentName,
+    required this.studentEmail,
+    required this.teacherid,
+    required this.schoolId,
+    required this.schoolDbn,
+    required this.notes,
+  });
+
+  @override
+  List<Object> get props => [studentId, studentName, studentEmail,teacherId,schoolId,schoolDbn,notes];
+}
