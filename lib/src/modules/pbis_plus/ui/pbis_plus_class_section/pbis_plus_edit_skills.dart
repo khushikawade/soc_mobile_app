@@ -140,6 +140,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 child: CupertinoSwitch(
                   value: isCustomBehaviour.value,
                   onChanged: (value) {
+                    changedIndex.value = -1;
                     isCustomBehaviour.value = value;
                     setToggleValue(value: value);
                   },
@@ -951,51 +952,54 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     }, builder: (context, candidateData, rejectedData) {
       return GestureDetector(
           onTap: () {
-            if (skillsList[index].name != "Add Skill") {
-              // isEditMode.value = true;
-              changedIndex.value = index;
-            }
+            changedIndex.value = index;
           },
           child: ValueListenableBuilder(
               valueListenable: changedIndex,
               builder: (context, value, _) => ValueListenableBuilder(
                   valueListenable: changedIndex,
-                  builder: (context, value, _) => index == changedIndex.value
-                      ? _buildEditWidget(
-                          item, index,
-                          //  pbisPluBlocForDefaultSchoolBehvaiour
-                        )
-                      : ShimmerLoading(
-                          isLoading: loading,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                height: 40,
-                                width: 40,
-                                child: _buildIcons(
-                                  item: item,
+                  builder: (context, value, _) {
+                    print("PRITING THE VALUE IN ${changedIndex.value}");
+
+                    return index == changedIndex.value &&
+                            isCustomBehaviour.value == true
+                        ? _buildEditWidget(
+                            item, index,
+                            //  pbisPluBlocForDefaultSchoolBehvaiour
+                          )
+                        : ShimmerLoading(
+                            isLoading: loading,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  child: _buildIcons(
+                                    item: item,
+                                  ),
                                 ),
-                              ),
-                              SpacerWidget(4),
-                              ShimmerLoading(
-                                isLoading: loading,
-                                child: Padding(
-                                  padding: Globals.deviceType != 'phone'
-                                      ? const EdgeInsets.only(top: 10, left: 10)
-                                      : EdgeInsets.zero,
-                                  child: Utility.textWidget(
-                                      text: item.behaviorTitleC!,
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(fontSize: 12)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ))));
+                                SpacerWidget(4),
+                                ShimmerLoading(
+                                  isLoading: loading,
+                                  child: Padding(
+                                    padding: Globals.deviceType != 'phone'
+                                        ? const EdgeInsets.only(
+                                            top: 10, left: 10)
+                                        : EdgeInsets.zero,
+                                    child: Utility.textWidget(
+                                        text: item.behaviorTitleC!,
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(fontSize: 12)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                  })));
     });
   }
 
