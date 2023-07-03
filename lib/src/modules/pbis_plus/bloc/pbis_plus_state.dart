@@ -213,12 +213,6 @@ class GetPBISPlusStudentsListNoData extends PBISPlusState {
   List<Object> get props => [];
 }
 
-// class GetPBISPlusAdditionalBehaviourLoading extends PBISPlusState {
-//   GetPBISPlusAdditionalBehaviourLoading();
-//   @override
-//   List<Object> get props => [];
-// }
-
 class PBISPlusAdditionalBehaviourError extends PBISPlusState {
   final error;
   PBISPlusAdditionalBehaviourError({
@@ -239,12 +233,6 @@ class PBISPlusStudentSearchSucess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
-
-// class GetPBISPlusStudentAllNotesListLoading extends PBISPlusState {
-//   GetPBISPlusStudentAllNotesListLoading();
-//   @override
-//   List<Object> get props => [];
-// }
 
 class PBISPlusNotesSucess extends PBISPlusState {
   final List<PBISStudentNotes> notesList;

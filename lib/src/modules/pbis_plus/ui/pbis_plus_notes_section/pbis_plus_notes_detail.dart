@@ -14,13 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
-  PBISPlusBloc? pBISPlusBlocInstance;
-
   final PBISPlusStudentList item;
 
   PBISPlusNotesDetailPage({
     Key? key,
-    required this.pBISPlusBlocInstance,
     required this.item,
   }) : super(key: key);
 
@@ -30,14 +27,11 @@ class PBISPlusNotesDetailPage extends StatefulWidget {
 
 class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   static const double _KVertcalSpace = 60.0;
-  // used for space between the widgets
-  static const double _kLabelSpacing = 20.0;
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   FocusNode searchFocusNode = new FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<String> filterNotifier =
-      ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
+
   // hide animated container
   PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
   @override
@@ -107,68 +101,57 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                         .headline6!
                         .copyWith(fontWeight: FontWeight.w500)))),
         SpacerWidget(_KVertcalSpace / 5),
-        ValueListenableBuilder(
-            valueListenable: filterNotifier,
-            builder: (BuildContext context, String value, Widget? child) {
-              return BlocConsumer(
-                  bloc: PBISPlusBlocInstance,
-                  builder: (context, state) {
-                    print("-----state------$state------");
-                    if (state is PBISPlusNotesSucess) {
-                      //---------------------return the filter list to UI-----------//
-                      return _listBuilder(state.notesList,
-                          isShimmerLoading: false);
-                    } else if (state is PBISPlusLoading ||
-                        state is PBISPlusInitial) {
-                      return _listBuilder(
-                          List.generate(
-                            10,
-                            (index) => PBISStudentNotes(),
-                          ),
-                          isShimmerLoading: true);
-                    } else if (state is GetPBISPlusStudentAllNotesListError) {
-                      return _noDataFoundWidget();
-                    }
-                    //Managing shimmer loading in case of initial loading
-                    return _listBuilder(
-                        List.generate(10, (index) => PBISStudentNotes()),
-                        isShimmerLoading: true);
-                  },
-                  listener: (context, state) {});
-            }),
+        BlocConsumer(
+            bloc: PBISPlusBlocInstance,
+            builder: (context, state) {
+              print("-----state------$state------");
+              if (state is PBISPlusNotesSucess) {
+                //---------------------return the filter list to UI-----------//
+                return _listBuilder(state.notesList, isShimmerLoading: false);
+              } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
+                return _listBuilder(
+                    List.generate(
+                      10,
+                      (index) => PBISStudentNotes(),
+                    ),
+                    isShimmerLoading: true);
+              } else if (state is GetPBISPlusStudentAllNotesListError) {
+                return _noDataFoundWidget();
+              }
+              //Managing shimmer loading in case of initial loading
+              return _listBuilder(
+                  List.generate(10, (index) => PBISStudentNotes()),
+                  isShimmerLoading: true);
+            },
+            listener: (context, state) {})
       ],
     );
   }
 
+//-----------------Build the Notes List-----------------------------------
   Widget _listBuilder(List<PBISStudentNotes> studentNotesList,
       {required final bool isShimmerLoading}) {
     return studentNotesList.length > 0
         ? Container(
             height: MediaQuery.of(context).size.height * 0.8,
-            child: ValueListenableBuilder(
-                valueListenable: filterNotifier,
-                builder: (BuildContext context, String value, Widget? child) {
-                  return RefreshIndicator(
-                      color: AppTheme.kButtonColor,
-                      key: refreshKey,
-                      onRefresh: refreshPage,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: isShimmerLoading
-                            ? NeverScrollableScrollPhysics()
-                            : null,
-                        padding: EdgeInsets.only(
-                          bottom: 40,
-                        ),
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildCard(
-                              studentNotesList[index], index, isShimmerLoading);
-                        },
-                        itemCount: studentNotesList.length,
-                      ));
-                }),
-          )
+            child: RefreshIndicator(
+                color: AppTheme.kButtonColor,
+                key: refreshKey,
+                onRefresh: refreshPage,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics:
+                      isShimmerLoading ? NeverScrollableScrollPhysics() : null,
+                  padding: EdgeInsets.only(
+                    bottom: 40,
+                  ),
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildCard(
+                        studentNotesList[index], index, isShimmerLoading);
+                  },
+                  itemCount: studentNotesList.length,
+                )))
         : RefreshIndicator(
             color: AppTheme.kButtonColor,
             key: refreshKey,
@@ -176,6 +159,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             child: NoDataFoundErrorWidget(
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
+//-----------------Build the Notes List Card-----------------------------------
 
   Widget _buildCard(PBISStudentNotes obj, index, final bool isShimmerLoading) {
     return Card(
@@ -211,6 +195,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             ])));
   }
 
+//-----------------Build the Date List-----------------------------------
   Widget _buildDateList(PBISStudentNotes item, bool isShimmerLoading) {
     return Row(
       children: [
@@ -221,6 +206,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     );
   }
 
+//-----------------Build the Date Card Item-----------------------------------
   Widget _buildCardDateTime(item, bool isShowDivider, bool isShimmerLoading) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,6 +228,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         ]);
   }
 
+//-----------------NO Data Found-----------------------------------
   Widget _noDataFoundWidget() {
     return Center(
         child: RefreshIndicator(
@@ -257,6 +244,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             )));
   }
 
+//---------------Build--Vertcial Divider-----------------------------------
   Widget _buildVerticalDivider() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4),
@@ -272,6 +260,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
       ),
     );
   }
+//---------------Build--Refresh-------Function-----------------------------------
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -287,7 +276,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   }
 
 //------------------------------for filter call bottom sheet"-------------------//
-
   Widget localSimmerWidget({required double height, required double width}) {
     return ShimmerLoading(
         isLoading: true,

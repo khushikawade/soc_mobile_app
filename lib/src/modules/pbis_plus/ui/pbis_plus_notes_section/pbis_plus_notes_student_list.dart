@@ -135,7 +135,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                 return _noDataFoundWidget();
               }
               //Managing shimmer loading in case of initial loading
-              return Container();
+              return _listBuilder(
+                  List.generate(10, (index) => PBISPlusStudentList()),
+                  isShimmerLoading: true);
             },
             listener: (context, state) {
               if (state is PBISPlusImportRosterSuccess) {
@@ -185,6 +187,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
         });
   }
 
+  /* -----------------------------Widget to list of the student---------------- */
   Widget _listBuilder(List<PBISPlusStudentList> studentNotesList,
       {required final bool isShimmerLoading}) {
     return studentNotesList.length > 0
@@ -210,6 +213,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
 
+  /* -----------------------------Widget to list item of the student---------------- */
   Widget _buildListItem(
       List<PBISPlusStudentList> studentNotesList, bool isShimmerLoading) {
     return ListView.builder(
@@ -287,12 +291,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                   onTap: (() {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => PBISPlusNotesDetailPage(
-                            pBISPlusBlocInstance: PBISPlusBlocInstance,
                             item: studentNotesList[index])));
                   })));
         });
   }
 
+//------------------------NO DATA FOUND ---------------------------------//
   Widget _noDataFoundWidget() {
     return Expanded(
         child: Center(
@@ -308,6 +312,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                     errorMessage: 'No Student Found'))));
   }
 
+//----------------------------Pull to Refresh--------------------------
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
