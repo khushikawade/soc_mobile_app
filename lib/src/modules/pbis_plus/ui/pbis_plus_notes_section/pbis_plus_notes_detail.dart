@@ -143,7 +143,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   physics:
                       isShimmerLoading ? NeverScrollableScrollPhysics() : null,
                   padding: EdgeInsets.only(
-                    bottom: 40,
+                    bottom: 60,
                   ),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {

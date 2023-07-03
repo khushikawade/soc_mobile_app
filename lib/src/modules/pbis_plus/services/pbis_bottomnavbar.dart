@@ -30,7 +30,7 @@ class PBISBottomNavBar {
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
       PBISPlusNotesStudentList(
-        titleIconData: IconData(0xe824,
+        titleIconData: IconData(0xe892,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
       PBISPlusStaff(
@@ -65,7 +65,7 @@ class PBISBottomNavBar {
       ),
       PersistentBottomNavBarItem(
         icon: pbisBottomNavBarIcons(
-            IconData(0xe824,
+            IconData(0xe892,
                 fontFamily: Overrides.kFontFam,
                 fontPackage: Overrides.kFontPkg),
             'Notes',

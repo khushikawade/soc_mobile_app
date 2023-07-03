@@ -311,7 +311,7 @@ class CustomFlutterIcons {
       IconData(0xe88f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData class_icon =
       IconData(0xe891, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData group_13872 =
+  static const IconData editIcon =
       IconData(0xe892, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData circle_eye =
       IconData(0xe893, fontFamily: _kFontFam, fontPackage: _kFontPkg);
