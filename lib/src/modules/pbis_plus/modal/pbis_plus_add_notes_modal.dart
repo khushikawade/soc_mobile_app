@@ -4,36 +4,39 @@
 
 import 'dart:convert';
 
-PbisPlusAddNotes pbisPlusAddNotesFromJson(String str) => PbisPlusAddNotes.fromJson(json.decode(str));
+PbisPlusAddNotes pbisPlusAddNotesFromJson(String str) =>
+    PbisPlusAddNotes.fromJson(json.decode(str));
 
-String pbisPlusAddNotesToJson(PbisPlusAddNotes data) => json.encode(data.toJson());
+String pbisPlusAddNotesToJson(PbisPlusAddNotes data) =>
+    json.encode(data.toJson());
 
 class PbisPlusAddNotes {
-    int id;
-    String studentC;
-    String teacherC;
-    String dbnC;
-    String schoolAppC;
-    String studentName;
-    String studentEmail;
-    String notes;
-    DateTime createdAt;
-    DateTime updatedAt;
+  int id;
+  String studentC;
+  String teacherC;
+  String dbnC;
+  String schoolAppC;
+  String studentName;
+  String studentEmail;
+  String notes;
+  DateTime createdAt;
+  DateTime updatedAt;
 
-    PbisPlusAddNotes({
-        required this.id,
-        required this.studentC,
-        required this.teacherC,
-        required this.dbnC,
-        required this.schoolAppC,
-        required this.studentName,
-        required this.studentEmail,
-        required this.notes,
-        required this.createdAt,
-        required this.updatedAt,
-    });
+  PbisPlusAddNotes({
+    required this.id,
+    required this.studentC,
+    required this.teacherC,
+    required this.dbnC,
+    required this.schoolAppC,
+    required this.studentName,
+    required this.studentEmail,
+    required this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-    factory PbisPlusAddNotes.fromJson(Map<String, dynamic> json) => PbisPlusAddNotes(
+  factory PbisPlusAddNotes.fromJson(Map<String, dynamic> json) =>
+      PbisPlusAddNotes(
         id: json["Id"],
         studentC: json["Student__c"],
         teacherC: json["Teacher__c"],
@@ -44,9 +47,9 @@ class PbisPlusAddNotes {
         notes: json["Notes"],
         createdAt: DateTime.parse(json["CreatedAt"]),
         updatedAt: DateTime.parse(json["UpdatedAt"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "Id": id,
         "Student__c": studentC,
         "Teacher__c": teacherC,
@@ -57,5 +60,5 @@ class PbisPlusAddNotes {
         "Notes": notes,
         "CreatedAt": createdAt.toIso8601String(),
         "UpdatedAt": updatedAt.toIso8601String(),
-    };
+      };
 }

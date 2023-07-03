@@ -136,7 +136,6 @@ class UpdatePBISBehavior extends PBISPlusEvent {
   List<Object> get props => [item, index, olditem];
 }
 
-
 class GetPBISPlusStudentList extends PBISPlusEvent {
   List<PBISPlusStudentList>? studentNotesList;
   GetPBISPlusStudentList({
@@ -191,16 +190,16 @@ class GetPBISPlusNotes extends PBISPlusEvent {
 //   @override
 //   List<Object> get props => [studentId, teacherid, dbn];
 // }
- 
- class AddPBISPlusStudentNotes extends PBISPlusEvent {
-final  String studentId;
- final String studentName;
- final String studentEmail;
- final String teacherId;
- final String schoolId;
- final String schoolDbn;
- final String notes;
-  
+
+class AddPBISPlusStudentNotes extends PBISPlusEvent {
+  final String studentId;
+  final String studentName;
+  final String studentEmail;
+  final String teacherId;
+  final String schoolId;
+  final String schoolDbn;
+  final String notes;
+
   GetPBISPlusNotes({
     required this.studentId,
     required this.studentName,
@@ -212,5 +211,13 @@ final  String studentId;
   });
 
   @override
-  List<Object> get props => [studentId, studentName, studentEmail,teacherId,schoolId,schoolDbn,notes];
+  List<Object> get props => [
+        studentId,
+        studentName,
+        studentEmail,
+        teacherId,
+        schoolId,
+        schoolDbn,
+        notes
+      ];
 }

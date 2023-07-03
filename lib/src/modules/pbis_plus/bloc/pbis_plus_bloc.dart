@@ -805,7 +805,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
  
    if (studentItemindex != null && studentItemindex = -1  &&_pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes.isNotEmpty)
    {
-     PBISPlusNotesSucess(notesList: _pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes[0]);
+  yield  PBISPlusNotesSucess(notesList: _pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes[0]);
    }
 
   //*FEED THE NOTES IN LOCAL DB 
@@ -844,50 +844,29 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     if (event is AddPBISPlusStudentNotes) {
       try {
         yield PBISPlusLoading();
-
+  
         //TODO SEND THE LOCAL DB DATA 
-        List<PBISStudentNotes>? apidata = await getPBIStudentNotesData(
-            student_id: event.studentId,
-            school_dbn: event.studentId,
-            teacher_id: event.teacherid);
+        List<PBISStudentNotes>? apidata = await addPBIStudentNotes(
+         studentId :event.studentId,
+  studentName :event.studentName,,
+ studentEmail:event.studentId,,
+ teacherId:event.teacherId,,
+ schoolId:event.schoolId,,
+  dBNc:event.dBNc,,
+  notes:event.notes,,)
+        if(apidata != null && apiData.isNotEmpty && apiData.length >0)
+{
+ yield PBISPlusAddNotesSucess(note:apidata);
+}
 
-// Find student data index in local db
-  int studentItemindex = _pbisPlusNotesStudentsList.indexWhere(
-          (student) => student.studentId == event.studentId,
-        );
- // If the notes exits in the local db then return to notes  to UI
- 
-   if (studentItemindex != null && studentItemindex = -1  &&_pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes.isNotEmpty)
-   {
-     PBISPlusNotesSucess(notesList: _pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes[0]);
-   }
+else{
+    yield  PBISPlusAddNotesError(error :"Note was not  added  Please try again later.");
+}
 
-  //*FEED THE NOTES IN LOCAL DB 
-      
-        PBISPlusStudentList? studentToUpdate = studentItemindex != -1
-            ? _pbisPlusStudentNotesList[studentItemindex]
-            : null;
 
-        if (studentToUpdate != null) {
-          // Student found, update the notes
-          if (apiData != null && apiData.isNotEmpty) {
-            // Assuming want to update the notes with the first API data
-            studentToUpdate.notes = apiData[0];
-            _pbisPlusStudentNotesList.removeAt(studentItemindex);
-            _pbisPlusStudentNotesList.insert(studentItemindex, studentToUpdate);
-          }
-          await _pbisPlusSNotesStudentListDB.clear();
-          _pbisPlusStudentNotesList.forEach((element) async {
-            await _pbisPlusSNotesStudentListDB.addData(element);
-          });
-        } 
-        if (apidata != null && apidata.isNotEmpty && apidata.length > 0) {
-          yield PBISPlusNotesSucess(notesList: apidata!);
-        } else {
-          yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
-        }
+  
       } catch (e) {
-        yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
+        yield  PBISPlusAddNotesError(error :"Note was not  added  Please try again later.");
       }
     }
   }
@@ -1625,14 +1604,30 @@ newList.forEach((element) async {
 //---------------------------------ADD THE STUDENT NOTES---------------------------------
 
   Future<List<PBISStudentNotes>> addPBIStudentNotes(
-      {String teacher_id ,
-      String student_id ,
-      String school_dbn }) async {
+      {String   studentId,
+String  studentName,
+String studentEmail,
+String teacherId,
+String schoolId,
+String  dBNc,
+String  notes,}) async {
     try {
+
+ var body =  {
+"student_id": studentId,
+"student_name": studentName,
+"student_email": studentEmail,,
+"teacher_id":teacherId,,
+"school_id": schoolId,,
+"DBN__c":dBNc,
+"notes": notes,
+}
+
       final ResponseModel response = await _dbServices.postApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacher_id/student/$student_id?dbn=$school_dbn',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
+             body:body,
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           isCompleteUrl: true);

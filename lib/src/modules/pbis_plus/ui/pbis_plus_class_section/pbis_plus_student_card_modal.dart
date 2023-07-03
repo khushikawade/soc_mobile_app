@@ -56,6 +56,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<int> maxLine = ValueNotifier<int>(1);
   final _noteFormKey = GlobalKey<FormState>();
   final TextEditingController noteController = TextEditingController();
+    PBISPlusBloc pbisAddNoteBlocInstance = PBISPlusBloc();
 
   ValueNotifier<bool> isexpanded = ValueNotifier<bool>(false);
   @override
@@ -146,15 +147,52 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.next,
                   )),
-          ValueListenableBuilder(
+
+
+//--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
+                 BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                      bloc: pbisAddNoteBlocInstance,
+                      builder: (context, state) {
+                        print(state);
+                        if (state is PBISPlusLoading) {
+                          return _buildAddButton(true);
+                        }
+              
+                
+                        return _buildAddButton(false);
+                      },
+                      listener: (context, state) async {
+
+                           if (state is PBISPlusAddNotesSucess) {
+                         
+             Utility.currentScreenSnackBar(
+                                    "Successfully Added Notes", null);
+                                Navigator.pop(context, true);
+                                  isexpanded.value = false;
+                          noteController.clear();
+
+                        } else if (state is PBISPlusAddNotesError) {
+                          
+  Utility.currentScreenSnackBar(
+                                    "Please try again later. Unable Note was not  added  .",
+                                    null);
+
+                                             isexpanded.value = false;
+                          noteController.clear();
+                        }
+                      }
+                      ),
+
+
+          
+        ]);
+
+     Widget _buildAddButton({bool isLoading =false}){
+
+      return ValueListenableBuilder(
             valueListenable: isexpanded,
             builder: (context, value, _) => isexpanded.value
                 ?
-                //  Container(
-                //     margin: EdgeInsets .symmetric(horizontal: 12, vertical: 8),
-                //     alignment: Alignment.bottomRight,
-                //     child:
-
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: FittedBox(
@@ -166,21 +204,34 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
-                        text: "Done",
+                        text: "Add",
                         onClick: () {
-                          isexpanded.value = false;
-                          noteController.clear();
+
+                          pbisAddNoteBlocInstance.add(AddPBISPlusStudentNotes(
+studentId:"1" ,
+studentName: "1",
+studentEmail:"1",
+teacherId:"1",
+schoolId:"1",
+dBNc:"1",
+notes :"1",
+
+                          ))
+                          // isexpanded.value = false;
+                          // noteController.clear();
                           // Navigator.pop(context);
                         },
                         backgroundColor: AppTheme.kButtonColor,
-                        isBusy: false,
+                        isBusy: isLoading,
                         buttonRadius: 64,
                       ),
                     ),
                   )
                 : SizedBox.shrink(),
-          )
-        ]);
+          );
+
+
+     }   
 
     final ActionInteractionButtonsRowWise = GridView.builder(
       shrinkWrap: true,
