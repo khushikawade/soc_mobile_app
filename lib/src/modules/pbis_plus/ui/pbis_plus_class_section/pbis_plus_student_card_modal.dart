@@ -207,14 +207,20 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     Widget ActionInteractionButtonsRowWise = BlocBuilder(
         bloc: pBISPlusBloc,
         builder: (contxt, state) {
+          print("printing state is recived $state");
           if (state is PBISPlusGetDefaultSchoolBehvaiourSuccess) {
             return buildGridView(
                 behaviourList: state.defaultSchoolBehaviourList);
           }
           if (state is PBISPlusGetTeacherCustomBehvaiourSuccess) {
-            return buildGridView(
-                behaviourList: state.teacherCustomBehaviourList);
+            if (state.teacherCustomBehaviourList.isNotEmpty) {
+              return buildGridView(
+                  behaviourList: state.teacherCustomBehaviourList);
+            } else {
+              pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
+            }
           }
+
           if (state is PBISPlusBehvaiourLoading) {
             return buildGridView(
                 behaviourList: state.demoBehaviourData, loading: true);

@@ -280,6 +280,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         }
 
                         if (state is PBISPlusGetTeacherCustomBehvaiourSuccess) {
+                          teacherCustomBehaviourList.value =
+                              state.teacherCustomBehaviourList;
                           return ValueListenableBuilder(
                               valueListenable: updateBehaviourWidget,
                               builder: (context, value, _) {
@@ -299,12 +301,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         return _noDataFoundWidget();
                       },
                       listener: (context, state) async {
-                        if (state is PBISPlusGetTeacherCustomBehvaiourSuccess) {
-                          teacherCustomBehaviourList.value =
-                              state.teacherCustomBehaviourList;
-                          updateBehaviourWidget.value =
-                              !updateBehaviourWidget.value;
-                        }
+                        // if (state is PBISPlusGetTeacherCustomBehvaiourSuccess) {
+                        //   teacherCustomBehaviourList.value =
+                        //       state.teacherCustomBehaviourList;
+                        //   updateBehaviourWidget.value =
+                        //       !updateBehaviourWidget.value;
+                        // }
                       }
                       //_buildEditSkillCards()
                       ),
@@ -368,22 +370,25 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         //       "-----------------onLeave---- ${draggedData!.behaviorTitleC}-------------");
         // }),
         onAccept: (PBISPlusALLBehaviourModal draggedData) {
+          PBISPlusALLBehaviourModal onAccepttedObj = draggedData;
+          onAccepttedObj.id = '';
+
           print("onAccept on GridView DragTarget widget");
           if (skillsList.length == 6) {
             return;
           }
 
-          if (!IsBehaviouralReadyAvailable(draggedData, skillsList) &&
+          if (!IsBehaviouralReadyAvailable(onAccepttedObj, skillsList) &&
               skillsList.length < 6) {
             print("added new behaviour on GridView DragTarget widget");
 
-            teacherCustomBehaviourList.value.add(draggedData);
+            teacherCustomBehaviourList.value.add(onAccepttedObj);
             // print(additionalbehaviourList.value.length);
             // additionalbehaviourList.value.remove(draggedData);
             // print(additionalbehaviourList.value.length);
             pbisPluBlocForDefaultSchoolBehvaiour
                 .add(PBISPlusAddTeacherCustomBehvaiour(
-              behvaiour: draggedData,
+              behvaiour: onAccepttedObj,
               // oldbehvaiour: localskillsList.value
             ));
           } else {
@@ -573,6 +578,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             if (state
                                     is PBISPlusGetPBISPlusAdditionalBehaviourSuccess &&
                                 state.additionalbehaviourList.isNotEmpty) {
+                              additionalbehaviourList.value =
+                                  state.additionalbehaviourList;
                               return ValueListenableBuilder(
                                   valueListenable: additionalbehaviourList,
                                   builder: (context, value, _) {
@@ -588,12 +595,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             return _noDataFoundWidget();
                           },
                           listener: (context, state) async {
-                            if (state
-                                    is PBISPlusGetPBISPlusAdditionalBehaviourSuccess &&
-                                state.additionalbehaviourList.isNotEmpty) {
-                              additionalbehaviourList.value =
-                                  state.additionalbehaviourList;
-                            }
+                            // if (state
+                            //         is PBISPlusGetPBISPlusAdditionalBehaviourSuccess &&
+                            //     state.additionalbehaviourList.isNotEmpty) {}
                           }),
                       SpacerWidget(18),
                     ],
@@ -865,7 +869,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     },
         // onLeave: ((data) => print(
         //     "-----------------INSIDE ON LEAVE---------------------------")),
-        onAccept: (draggedData) {
+        onAccept: (PBISPlusALLBehaviourModal draggedData) {
+      PBISPlusALLBehaviourModal onAccepttedObj = draggedData;
+
       print("onAccept on Single DragTarget widget");
 
       if (skillsList.length != 6) {
@@ -895,16 +901,26 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       // hoveredIconIndex.value = -1;
       // changedIndex.value = -1;
 
-      if (!IsBehaviouralReadyAvailable(draggedData, skillsList)) {
+      if (!IsBehaviouralReadyAvailable(onAccepttedObj, skillsList)) {
         print("added new behaviour on single DragTarget widget");
 
-        teacherCustomBehaviourList.value[index] = draggedData;
+        // teacherCustomBehaviourList.value[index] = onAccepttedObj;
+
+        PBISPlusALLBehaviourModal currentDraggedObj =
+            teacherCustomBehaviourList.value[index];
+
+        currentDraggedObj.behaviorTitleC = onAccepttedObj.behaviorTitleC;
+
+        currentDraggedObj.pBISBehaviorIconURLC =
+            onAccepttedObj.pBISBehaviorIconURLC;
+
+        teacherCustomBehaviourList.value[index] = currentDraggedObj;
 
         updateBehaviourWidget.value = !updateBehaviourWidget.value;
         pbisPluBlocForDefaultSchoolBehvaiour
             .add(PBISPlusAddTeacherCustomBehvaiour(
           index: index,
-          behvaiour: draggedData,
+          behvaiour: currentDraggedObj,
           // oldbehvaiour: localskillsList.value
         ));
       } else {

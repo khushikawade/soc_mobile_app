@@ -101,7 +101,7 @@ part 'pbis_plus_all_behaviour_modal.g.dart';
 //   }
 // }
 
-@HiveType(typeId: 49)
+@HiveType(typeId: 54)
 class PBISPlusALLBehaviourModal {
   @HiveField(0)
   String? id;

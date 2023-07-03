@@ -42,11 +42,14 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
 }
 
 class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
+  // ValueNotifier<String> _errorMessage = ValueNotifier<String>('');
   late PageController _pageController;
   final _formKey = GlobalKey<FormState>();
-  final editNameController = TextEditingController();
+  // final editNameController = TextEditingController();
   PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
-
+  ValueNotifier<TextEditingController> editNameController =
+      ValueNotifier<TextEditingController>(TextEditingController());
+  String _errorMessage = 'Field is required.';
   Future<void> initController() async {
     _pageController = PageController()
       ..addListener(() {
@@ -219,9 +222,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
       child: FloatingActionButton.extended(
           backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
           onPressed: () async {
-            if (editNameController.text.isNotEmpty) {
+            if (editNameController.value.text.isNotEmpty) {
               pbisPlusBloc.add(GetPBISSkillsUpdateName(
-                  item: dataList, newName: editNameController.text));
+                  item: dataList, newName: editNameController.value.text));
             }
           },
           label: Row(
@@ -265,46 +268,93 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 textTheme: Theme.of(context).textTheme.headline5!),
           ),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+
           Form(
             key: _formKey,
             child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: TextFieldWidget(
-                    hintText: 'Edit Name',
-                    msg: "Field is required",
-                    keyboardType: TextInputType.text,
-                    controller: editNameController,
-                    onSaved: (String value) {})),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child:
+
+                  //  TextFieldWidget(
+                  //     hintText: 'Edit Name',
+                  //     msg: "Field is required",
+                  //     keyboardType: TextInputType.text,
+                  //     controller: editNameController,
+                  //     onSaved: (String value) {})
+
+                  ValueListenableBuilder(
+                      valueListenable: editNameController,
+                      builder: (context, value, _) {
+                        return TextFormField(
+                          controller: editNameController.value,
+                          decoration: InputDecoration(
+                            hintText: 'Enter a value',
+                            labelText: 'Field',
+                            errorText: editNameController.value.text.isNotEmpty
+                                ? _errorMessage
+                                : "",
+                          ),
+                        );
+                      }),
+            ),
           ),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
-          BlocConsumer(
-              bloc: pbisPlusBloc,
-              builder: (context, state) {
-                if (state is PBISPlusLoading) {
-                  return Container(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator.adaptive(
-                          backgroundColor: AppTheme.kButtonColor));
-                } else if (state is PBISErrorState) {}
-                return Container();
+          _buildSaveButton(dataList)
 
-                // _buildSaveButton(dataList);
-              },
-              listener: (context, state) async {
-                if (state is PBISPlusDefaultBehaviourSucess) {
-                  Utility.currentScreenSnackBar(
-                      "Successfully updated skills name", null);
-                  //Close bottomsheet on success
-                  Navigator.pop(context);
-                } else if (state is PBISErrorState) {
-                  Utility.currentScreenSnackBar(
-                      "Action cannot be performed. Please try again.", null);
-                }
-              }),
+          // BlocConsumer(
+          //     bloc: pbisPlusBloc,
+          //     builder: (context, state) {
+          //       if (state is PBISPlusLoading) {
+          //         return Container(
+          //             alignment: Alignment.center,
+          //             child: CircularProgressIndicator.adaptive(
+          //                 backgroundColor: AppTheme.kButtonColor));
+          //       } else if (state is PBISErrorState) {}
+
+          //       return _buildSaveButton(dataList);
+          //     },
+          //     listener: (context, state) async {
+          //       if (state is PBISPlusDefaultBehaviourSucess) {
+          //         Utility.currentScreenSnackBar(
+          //             "Successfully updated skills name", null);
+          //         //Close bottomsheet on success
+          //         Navigator.pop(context);
+          //       } else if (state is PBISErrorState) {
+          //         Utility.currentScreenSnackBar(
+          //             "Action cannot be performed. Please try again.", null);
+          //       }
+          //     }),
         ],
       ),
+    );
+  }
+
+  Widget _buildSaveButton(PBISPlusALLBehaviourModal dataList) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+      child: FloatingActionButton.extended(
+          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+          onPressed: () async {
+            if (editNameController.value.text.isNotEmpty) {
+              // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
+              //     item: dataList, newName: editNameController.text));
+            } else {}
+          },
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Utility.textWidget(
+                  text: 'Save',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Theme.of(context).backgroundColor)),
+            ],
+          )),
     );
   }
 }

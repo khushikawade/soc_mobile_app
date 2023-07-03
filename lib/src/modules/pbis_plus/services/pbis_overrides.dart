@@ -38,10 +38,16 @@ class PBISPlusOverrides {
   static const String kresetOptionThreetitle = 'Select Courses';
   static const String kresetOptionFourtitle = 'Select Students by Course';
 
+  // static final String PbisPlusDefaultBehaviourLocalDbTable =
+  //     'pbisplus_default_behaviour_local_db_details';
+  // static final String PbisPlusAdditionalBehaviourLocalDbTable =
+  //     'pbisplus_default_additional_behaviour_local_db_details';
+  // static final String PbisPlusTeacherCustomBehaviourLocalDbTable =
+  //     'pbisplus_teacher_custom_behaviour_local_db_details';
   static final String PbisPlusDefaultBehaviourLocalDbTable =
-      'pbisplus_default_behaviour_local_db_details';
+      'pbisplus_default_behaviour_local_db_details_1';
   static final String PbisPlusAdditionalBehaviourLocalDbTable =
-      'pbisplus_default_additional_behaviour_local_db_details';
+      'pbisplus_default_additional_behaviour_local_db_details_1';
   static final String PbisPlusTeacherCustomBehaviourLocalDbTable =
-      'pbisplus_teacher_custom_behaviour_local_db_details';
+      'pbisplus_teacher_custom_behaviour_local_db_details_1';
 }
