@@ -1,10 +1,13 @@
 // // ignore_for_file: must_be_immutable
 
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
@@ -17,6 +20,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusStudentCardModal extends StatefulWidget {
@@ -56,7 +60,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<int> maxLine = ValueNotifier<int>(1);
   final _noteFormKey = GlobalKey<FormState>();
   final TextEditingController noteController = TextEditingController();
-    PBISPlusBloc pbisAddNoteBlocInstance = PBISPlusBloc();
+  PBISPlusBloc pbisAddNoteBlocInstance = PBISPlusBloc();
 
   ValueNotifier<bool> isexpanded = ValueNotifier<bool>(false);
   @override
@@ -138,100 +142,38 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
                         fontWeight: FontWeight.w400),
-
-                    // validator: (value) {
-                    //   if (value == null || value == "")
-                    //     return "Please enter event title.";
-                    //   return null;
-                    // },
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.next,
                   )),
 
-
 //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
-                 BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                      bloc: pbisAddNoteBlocInstance,
-                      builder: (context, state) {
-                        print(state);
-                        if (state is PBISPlusLoading) {
-                          return _buildAddButton(true);
-                        }
-              
-                
-                        return _buildAddButton(false);
-                      },
-                      listener: (context, state) async {
+          BlocConsumer<PBISPlusBloc, PBISPlusState>(
+              bloc: pbisAddNoteBlocInstance,
+              builder: (context, state) {
+                print(state);
+                if (state is PBISPlusLoading) {
+                  return _buildAddButton(isLoading: true);
+                }
 
-                           if (state is PBISPlusAddNotesSucess) {
-                         
-             Utility.currentScreenSnackBar(
-                                    "Successfully Added Notes", null);
-                                Navigator.pop(context, true);
-                                  isexpanded.value = false;
-                          noteController.clear();
-
-                        } else if (state is PBISPlusAddNotesError) {
-                          
-  Utility.currentScreenSnackBar(
-                                    "Please try again later. Unable Note was not  added  .",
-                                    null);
-
-                                             isexpanded.value = false;
-                          noteController.clear();
-                        }
-                      }
-                      ),
-
-
-          
+                return _buildAddButton(isLoading: false);
+              },
+              listener: (context, state) async {
+                if (state is PBISPlusAddNotesSucess) {
+                  Utility.currentScreenSnackBar(
+                      "Successfully Added Notes", null);
+                  Navigator.pop(context, true);
+                  isexpanded.value = false;
+                  noteController.clear();
+                } else if (state is PBISPlusAddNotesError) {
+                  Utility.currentScreenSnackBar(
+                      "Please try again later. Unable Note was not  added  .",
+                      null);
+                  isexpanded.value = false;
+                  noteController.clear();
+                  Navigator.pop(context, true);
+                }
+              }),
         ]);
-
-     Widget _buildAddButton({bool isLoading =false}){
-
-      return ValueListenableBuilder(
-            valueListenable: isexpanded,
-            builder: (context, value, _) => isexpanded.value
-                ?
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: FittedBox(
-                      child: CustomCircularButton(
-                        size: Size(MediaQuery.of(context).size.width * 0.26,
-                            MediaQuery.of(context).size.width / 10),
-                        borderColor: AppTheme.kButtonColor,
-                        textColor: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
-                            ? Color(0xff111C20)
-                            : Color(0xffF7F8F9),
-                        text: "Add",
-                        onClick: () {
-
-                          pbisAddNoteBlocInstance.add(AddPBISPlusStudentNotes(
-studentId:"1" ,
-studentName: "1",
-studentEmail:"1",
-teacherId:"1",
-schoolId:"1",
-dBNc:"1",
-notes :"1",
-
-                          ))
-                          // isexpanded.value = false;
-                          // noteController.clear();
-                          // Navigator.pop(context);
-                        },
-                        backgroundColor: AppTheme.kButtonColor,
-                        isBusy: isLoading,
-                        buttonRadius: 64,
-                      ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-          );
-
-
-     }   
 
     final ActionInteractionButtonsRowWise = GridView.builder(
       shrinkWrap: true,
@@ -483,6 +425,60 @@ notes :"1",
                 ),
               ],
             )));
+  }
+
+  Widget _buildAddButton({bool isLoading = false}) {
+    return ValueListenableBuilder(
+      valueListenable: isexpanded,
+      builder: (context, value, _) => isexpanded.value
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: FittedBox(
+                child: CustomCircularButton(
+                  size: Size(MediaQuery.of(context).size.width * 0.26,
+                      MediaQuery.of(context).size.width / 10),
+                  borderColor: AppTheme.kButtonColor,
+                  textColor:
+                      Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color(0xff111C20)
+                          : Color(0xffF7F8F9),
+                  text: "Add Note",
+                  onClick: () {
+                    if (noteController.text.isNotEmpty) {
+                      pbisAddNoteBlocInstance.add(AddPBISPlusStudentNotes(
+                        studentId:
+                            widget.studentValueNotifier.value.profile?.id!,
+                        studentName: widget
+                            .studentValueNotifier.value.profile?.name?.fullName,
+                        studentEmail: widget
+                            .studentValueNotifier.value.profile?.emailAddress,
+                        teacherId: Globals.teacherId,
+                        schoolId: Overrides.SCHOOL_ID,
+                        schoolDbn: Globals.schoolDbnC,
+                        notes: noteController.text,
+                      ));
+                      print(widget.studentValueNotifier.value.profile?.id!);
+                      print(widget
+                          .studentValueNotifier.value.profile?.emailAddress);
+                      print(widget
+                          .studentValueNotifier.value.profile?.name?.fullName);
+                      print(Globals.teacherId);
+                      print(Overrides.SCHOOL_ID);
+                      print(Globals.schoolDbnC);
+                      print(noteController.text);
+                    } else {
+                      // noteController.clear();
+                      // Navigator.pop(context);
+                    }
+                  },
+                  backgroundColor: AppTheme.kButtonColor,
+                  isBusy: isLoading,
+                  buttonRadius: 64,
+                ),
+              ),
+            )
+          : SizedBox.shrink(),
+    );
   }
 
   void trackUserActivity() {

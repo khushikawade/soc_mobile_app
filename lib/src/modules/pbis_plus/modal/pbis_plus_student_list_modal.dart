@@ -11,7 +11,7 @@ class PBISPlusStudentList extends HiveObject {
   @HiveField(2)
   String? iconUrlC;
   @HiveField(3)
-  PBISStudentNotes? notes;
+  List<PBISStudentNotes>? notes;
   @HiveField(4)
   String? email;
 
@@ -28,7 +28,9 @@ class PBISPlusStudentList extends HiveObject {
     names =
         json['names'] != null ? new StudentName.fromJson(json['names']) : null;
     notes = json['notes'] != null
-        ? new PBISStudentNotes.fromJson(json['notes'])
+        ? [
+            PBISStudentNotes.fromJson(json['notes'])
+          ] // Wrap the object inside a list
         : null;
     ;
     iconUrlC = json['iconUrlC'].toString().contains('http')

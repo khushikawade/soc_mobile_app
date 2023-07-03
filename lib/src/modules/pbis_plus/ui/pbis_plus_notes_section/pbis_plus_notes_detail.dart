@@ -98,14 +98,14 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         SpacerWidget(24),
         _buildBackIcon(),
         Padding(
-            padding: EdgeInsets.only(left: 22),
+            padding: EdgeInsets.only(left: 22, right: 22),
             child: FittedBox(
                 child: Text("${widget.item.names!.fullName!}'s" + " Notes",
                     textAlign: TextAlign.left,
                     style: Theme.of(context)
                         .textTheme
-                        .headline1!
-                        .copyWith(fontSize: 28, fontWeight: FontWeight.w600)))),
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.w500)))),
         SpacerWidget(_KVertcalSpace / 5),
         ValueListenableBuilder(
             valueListenable: filterNotifier,
@@ -113,6 +113,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
               return BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
+                    print("-----state------$state------");
                     if (state is PBISPlusNotesSucess) {
                       //---------------------return the filter list to UI-----------//
                       return _listBuilder(state.notesList,
@@ -157,7 +158,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                             ? NeverScrollableScrollPhysics()
                             : null,
                         padding: EdgeInsets.only(
-                          bottom: 20,
+                          bottom: 40,
                         ),
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
@@ -186,14 +187,15 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         color: Theme.of(context).backgroundColor,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: Column(children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               SpacerWidget(24),
               isShimmerLoading
                   ? localSimmerWidget(
                       height: MediaQuery.of(context).size.width * 0.3,
                       width: MediaQuery.of(context).size.width * 0.9)
                   : Text(
-                      "${obj.notes ?? ""}  Sed euismod eros non ante lacinia condimentum. Pellentesque est lacus, rutrum ac arcu et, accumsan pharetra neque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc vel lectus rutrum, mollis dui ac, molestie neque. Quisque sit amet lacus vulputate, varius leo eu, elementum dui. Curabitur condimentum facilisis nisi, a pretium risus malesuada et. Mauris non leo",
+                      "${obj.notes ?? ""}",
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: Color(0xff000000) ==
@@ -274,7 +276,10 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentList(studentNotesList: null));
+    PBISPlusBlocInstance!.add(GetPBISPlusNotes(
+        dbn: Globals.schoolDbnC!,
+        studentId: widget.item.studentId!,
+        teacherid: Globals.teacherId));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
@@ -290,7 +295,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           height: height,
           width: width,
           decoration: BoxDecoration(
-            color: AppTheme.kShimmerBaseColor!,
+            color: AppTheme.kShimmerHighlightColor!,
             borderRadius: BorderRadius.circular(6),
           ),
         ));

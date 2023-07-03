@@ -11,7 +11,7 @@ String pbisPlusAddNotesToJson(PbisPlusAddNotes data) =>
     json.encode(data.toJson());
 
 class PbisPlusAddNotes {
-  int id;
+  // String id;
   String studentC;
   String teacherC;
   String dbnC;
@@ -19,11 +19,11 @@ class PbisPlusAddNotes {
   String studentName;
   String studentEmail;
   String notes;
-  DateTime createdAt;
-  DateTime updatedAt;
+  // DateTime createdAt;
+  // DateTime updatedAt;
 
   PbisPlusAddNotes({
-    required this.id,
+    // required this.id,
     required this.studentC,
     required this.teacherC,
     required this.dbnC,
@@ -31,26 +31,26 @@ class PbisPlusAddNotes {
     required this.studentName,
     required this.studentEmail,
     required this.notes,
-    required this.createdAt,
-    required this.updatedAt,
+    // required this.createdAt,
+    // required this.updatedAt,
   });
 
   factory PbisPlusAddNotes.fromJson(Map<String, dynamic> json) =>
       PbisPlusAddNotes(
-        id: json["Id"],
-        studentC: json["Student__c"],
-        teacherC: json["Teacher__c"],
-        dbnC: json["DBN__c"],
-        schoolAppC: json["School_App__c"],
-        studentName: json["Student_Name"],
-        studentEmail: json["Student_Email"],
-        notes: json["Notes"],
-        createdAt: DateTime.parse(json["CreatedAt"]),
-        updatedAt: DateTime.parse(json["UpdatedAt"]),
+        // id: json["Id"].toString(),
+        studentC: json["Student__c"] ?? "",
+        teacherC: json["Teacher__c"] ?? "",
+        dbnC: json["DBN__c"] ?? "",
+        schoolAppC: json["School_App__c"] ?? "",
+        studentName: json["Student_Name"] ?? "",
+        studentEmail: json["Student_Email"] ?? "",
+        notes: json["Notes"] ?? "",
+        // createdAt: json["CreatedAt"],
+        // updatedAt: json["UpdatedAt"],
       );
 
   Map<String, dynamic> toJson() => {
-        "Id": id,
+        // "Id": id,
         "Student__c": studentC,
         "Teacher__c": teacherC,
         "DBN__c": dbnC,
@@ -58,7 +58,7 @@ class PbisPlusAddNotes {
         "Student_Name": studentName,
         "Student_Email": studentEmail,
         "Notes": notes,
-        "CreatedAt": createdAt.toIso8601String(),
-        "UpdatedAt": updatedAt.toIso8601String(),
+        // "CreatedAt": createdAt,
+        // "UpdatedAt": updatedAt,
       };
 }

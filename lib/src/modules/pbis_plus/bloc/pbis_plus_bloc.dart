@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_add_notes_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -66,7 +67,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsLocalData =
             await _pbisPlusSkilllocalsDB.getData();
         // await _pbisPlusSkilllocalsDB.clear();
-
+        if (_localData.isEmpty) {
+          //Managing dummy response for shimmer loading
+          var list = await _getShimmerData();
+          yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
+        } else {
+          sort(obj: _localData);
+          await getFilteredStudentList(_localData);
+          yield PBISPlusImportRosterSuccess(
+              googleClassroomCourseList: _localData);
+        }
         //Clear Roster local data to manage loading issue
         SharedPreferences clearRosterCache =
             await SharedPreferences.getInstance();
@@ -77,17 +87,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           await _localDb.close();
           _localData.clear();
           await clearRosterCache.setBool('delete_local_Roster_cache', true);
-        }
-
-        if (_localData.isEmpty) {
-          //Managing dummy response for shimmer loading
-          var list = await _getShimmerData();
-          yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
-        } else {
-          sort(obj: _localData);
-          await getFilteredStudentList(_localData);
-          yield PBISPlusImportRosterSuccess(
-              googleClassroomCourseList: _localData);
         }
 
         //API call to refresh with the latest data in the local DB
@@ -324,6 +323,69 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
+    if (event is GetPBISPlusStudentList) {
+      String plusClassroomDBTableName = PBISPlusOverrides.pbisPlusClassroomDB;
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+        LocalDatabase<ClassroomCourse> _localDb =
+            LocalDatabase(plusClassroomDBTableName);
+        List<ClassroomCourse>? _localData = await _localDb.getData();
+        // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        if (_localData.isEmpty) {
+          yield PBISPlusLoading();
+        } else {
+          List<PBISPlusStudentList> list =
+              await getFilteredStudentList(_localData);
+          yield PBISPlusStudentListSucess(studentList: list);
+        }
+
+        List responseList = await importPBISClassroomRoster(
+            accessToken: userProfileLocalData[0].authorizationToken,
+            refreshToken: userProfileLocalData[0].refreshToken,
+            isGradedPlus: false);
+
+        if (responseList[1] == '') {
+          List<ClassroomCourse> coursesList = responseList[0];
+
+          // List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
+          // //Get PBISTotal interaction only if Section is PBIS+
+          // if (event.isGradedPlus == false) {
+          //   pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+          //       teacherEmail: userProfileLocalData[0].userEmail!);
+          // }
+
+          // // Merge Student Interaction with Google Classroom Rosters
+          // List<ClassroomCourse> classroomStudentProfile =
+          //     await assignStudentTotalInteraction(
+          //         pbisTotalInteractionList, coursesList);
+
+          await _localDb.clear();
+
+          coursesList.forEach((ClassroomCourse e) {
+            _localDb.addData(e);
+          });
+
+          yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+
+          List<PBISPlusStudentList> updatedList =
+              await getFilteredStudentList(coursesList);
+          yield PBISPlusStudentListSucess(studentList: updatedList);
+        } else {
+          yield PBISErrorState(
+            error: 'ReAuthentication is required',
+          );
+        }
+      } catch (e) {
+        LocalDatabase<ClassroomCourse> _localDb =
+            LocalDatabase(plusClassroomDBTableName);
+        List<ClassroomCourse>? _localData = await _localDb.getData();
+        List<PBISPlusStudentList> list =
+            await getFilteredStudentList(_localData);
+        yield PBISPlusStudentListSucess(studentList: list);
+      }
+    }
+
     if (event is GetPBISSkillsUpdateName) {
       try {
         yield PBISPlusLoading();
@@ -470,46 +532,31 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusSkillsDeleteError();
       }
     }
-//------------pbis student list home page-------------------///
-    if (event is GetPBISPlusStudentList) {
-      try {
-        yield PBISPlusLoading();
-        if (event.studentNotesList != null &&
-            event.studentNotesList!.length > 0) {
-          yield PBISPlusStudentListSucess(
-           studentList : event.studentNotesList!);
-        }
+// //------------pbis student list home page-------------------///
+//     if (event is GetPBISPlusStudentList) {
+//       try {
+//         yield PBISPlusLoading();
+//         if (event.studentNotesList != null &&
+//             event.studentNotesList!.length > 0) {
+//           yield PBISPlusStudentListSucess(studentList: event.studentNotesList!);
+//         }
 
-        LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB = LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-        List<PBISPlusStudentList>? _pbisPlusNotesStudentDataList =
-            await _pbisPlusStudentListDB.getData();
-      
-        var list;
+//         LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
+//             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+//         List<PBISPlusStudentList>? _pbisPlusNotesStudentDataList =
+//             await _pbisPlusStudentListDB.getData();
 
-        if (_pbisPlusNotesStudentDataList.isEmpty) {
-          list = PBISPlusStudentNotesLocal.PBISPlusLocalStudentNoteslist.map(
-              (item) => PBISPlusStudentList(
-                    names: item.names,
-                    iconUrlC: item.iconUrlC,
-                    studentId: item.studentId,
-                    notes: item.notes,
-                  )).toList();
-          list.forEach((element) async {
-            await _pbisPlusStudentListDB
-                .addData(element); // Pass 'element' instead of 'list'
-          });
-        }
-        _pbisPlusNotesStudentDataList = await _pbisPlusStudentListDB.getData();
-        if (_pbisPlusNotesStudentDataList.isNotEmpty) {
-          yield PBISPlusStudentListSucess(
-           studentList   : _pbisPlusNotesStudentDataList);
-        } else {
-          yield GetPBISPlusStudentsListNoData(error: "No Student found");
-        }
-      } catch (e) {
-        yield GetPBISPlusStudentsListNoData(error: "No Student found");
-      }
-    }
+//         _pbisPlusNotesStudentDataList = await _pbisPlusStudentListDB.getData();
+//         if (_pbisPlusNotesStudentDataList.isNotEmpty) {
+//           yield PBISPlusStudentListSucess(
+//               studentList: _pbisPlusNotesStudentDataList);
+//         } else {
+//           yield GetPBISPlusStudentsListNoData(error: "No Student found");
+//         }
+//       } catch (e) {
+//         yield GetPBISPlusStudentsListNoData(error: "No Student found");
+//       }
+//     }
 //---------------pbis student list SEARCH----- ===-----------------
     if (event is PBISPlusNotesSearchStudentList) {
       try {
@@ -791,91 +838,77 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await _pbisPlusSNotesStudentListDB.getData();
         yield PBISPlusLoading();
 
-        //TODO SEND THE LOCAL DB DATA 
-        List<PBISStudentNotes>? apidata = await getPBIStudentNotesData(
-            student_id: event.studentId,
-            school_dbn: event.studentId,
-            teacher_id: event.teacherid);
-
-// Find student data index in local db
-  int studentItemindex = _pbisPlusNotesStudentsList.indexWhere(
+        // Find student data index in local db
+        int studentItemindex = _pbisPlusNotesStudentsList.indexWhere(
           (student) => student.studentId == event.studentId,
         );
- // If the notes exits in the local db then return to notes  to UI
- 
-   if (studentItemindex != null && studentItemindex = -1  &&_pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes.isNotEmpty)
-   {
-  yield  PBISPlusNotesSucess(notesList: _pbisPlusNotesStudentsList[studentItemindex].PBISStudentNotes[0]);
-   }
+        // If the notes exits in the local db then return to notes  to UI
 
-  //*FEED THE NOTES IN LOCAL DB 
-      
+        if (studentItemindex != -1 &&
+            _pbisPlusNotesStudentsList[studentItemindex].notes != null) {
+          yield PBISPlusNotesSucess(
+              notesList: _pbisPlusNotesStudentsList[studentItemindex].notes!);
+        }
+
+        //TODO Call the Api
+        List<PBISStudentNotes>? apidata = await getPBIStudentNotesData(
+            student_id: event.studentId,
+            school_dbn: event.dbn,
+            teacher_id: event.teacherid);
+
+        // //*FEED THE NOTES IN LOCAL DB
         PBISPlusStudentList? studentToUpdate = studentItemindex != -1
-            ? _pbisPlusStudentNotesList[studentItemindex]
+            ? _pbisPlusNotesStudentsList[studentItemindex]
             : null;
 
         if (studentToUpdate != null) {
           // Student found, update the notes
-          if (apiData != null && apiData.isNotEmpty) {
+          if (apidata != null && apidata.isNotEmpty) {
             // Assuming want to update the notes with the first API data
-            studentToUpdate.notes = apiData[0];
-            _pbisPlusStudentNotesList.removeAt(studentItemindex);
-            _pbisPlusStudentNotesList.insert(studentItemindex, studentToUpdate);
+            studentToUpdate.notes = apidata;
+            _pbisPlusNotesStudentsList.removeAt(studentItemindex);
+            _pbisPlusNotesStudentsList.insert(
+                studentItemindex, studentToUpdate);
           }
           await _pbisPlusSNotesStudentListDB.clear();
-          _pbisPlusStudentNotesList.forEach((element) async {
+          _pbisPlusNotesStudentsList.forEach((element) async {
             await _pbisPlusSNotesStudentListDB.addData(element);
           });
-        } 
-        if (apidata != null && apidata.isNotEmpty && apidata.length > 0) {
-          yield PBISPlusNotesSucess(notesList: apidata!);
-        } else {
-          yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
         }
+        yield PBISPlusNotesSucess(notesList: apidata);
+        print("------sucess 2-------");
       } catch (e) {
         yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
       }
     }
-  }
-
-
 
 //----------------------------------------ADD THE NEW  NOTES---------------------------------------- //
     if (event is AddPBISPlusStudentNotes) {
       try {
         yield PBISPlusLoading();
-  
-        //TODO SEND THE LOCAL DB DATA 
-        List<PBISStudentNotes>? apidata = await addPBIStudentNotes(
-         studentId :event.studentId,
-  studentName :event.studentName,,
- studentEmail:event.studentId,,
- teacherId:event.teacherId,,
- schoolId:event.schoolId,,
-  dBNc:event.dBNc,,
-  notes:event.notes,,)
-        if(apidata != null && apiData.isNotEmpty && apiData.length >0)
-{
- yield PBISPlusAddNotesSucess(note:apidata);
-}
 
-else{
-    yield  PBISPlusAddNotesError(error :"Note was not  added  Please try again later.");
-}
-
-
-  
+        //TODO SEND THE LOCAL DB DATA
+        PbisPlusAddNotes? apidata = await addPBIStudentNotes(
+          studentId: event.studentId,
+          studentName: event.studentName,
+          studentEmail: event.studentEmail,
+          teacherId: event.teacherId,
+          schoolId: event.schoolId,
+          dBNc: event.schoolDbn,
+          notes: event.notes,
+        );
+        if (apidata != null) {
+          yield PBISPlusAddNotesSucess(note: apidata);
+        } else {
+          yield PBISPlusAddNotesError(
+              error: "Note was not added  Please try again later.");
+        }
       } catch (e) {
-        yield  PBISPlusAddNotesError(error :"Note was not  added  Please try again later.");
+        yield PBISPlusAddNotesError(
+            error: "Note was not  added  Please try again later.");
       }
     }
   }
-
-
-
-
-
-
 
   /*----------------------------------------------------------------------------------------------*/
   /*---------------------------------Function importPBISClassroomRoster---------------------------*/
@@ -886,7 +919,7 @@ else{
       required String? refreshToken,
       required bool? isGradedPlus}) async {
     try {
-      final ResponseModel response = await _dbServices.postApiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
           isCompleteUrl: true);
 
@@ -1390,7 +1423,9 @@ else{
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
       List<PBISPlusStudentList>? _pbisPlusStudentNotesDataList =
           await _pbisPlusStudentListDB.getData();
-      List<PBISPlusStudentList> list;
+      List<PBISPlusStudentList> list = [];
+
+      // ---------------------------OLD LIST MAP ----------------------------------
       // list = uniqueStudents
       //     .map((item) => PBISPlusStudentList(
       //         email: item.profile!.emailAddress!,
@@ -1402,40 +1437,53 @@ else{
       //         studentId: item.profile?.id,
       //         notes: null))
       //     .toList();
-      
-   //NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS AS ITS  /    
+
+      // await _pbisPlusStudentListDB.clear();
+      // list.forEach((element) async {
+      //   await _pbisPlusStudentListDB
+      //       .addData(element); // Pass 'element' instead of 'list'
+      // });
+
+      //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
       // Fetch the list from the first API
-List<PBISPlusStudentList> newList = uniqueStudents.map((item) {
-  // Check if the student already exists in the local database
-  PBISPlusStudentList existingStudent = _pbisPlusStudentListDB.getStudentById(item.profile!.id);
-  String notes = existingStudent != null ? existingStudent.notes : null;
-
-  // Create a new PBISPlusStudentList object with the updated details
-  return PBISPlusStudentList(
-    email: item.profile!.emailAddress!,
-    names: StudentName(
-      familyName: item.profile!.name!.familyName!,
-      fullName: item.profile!.name!.fullName!,
-      givenName: item.profile!.name!.givenName!,
-    ),
-    iconUrlC: item.profile?.photoUrl!,
-    studentId: item.profile?.id,
-    notes: notes, // Assign the existing notes or null
-  );
-}).toList();
-
-await _pbisPlusStudentListDB.clear();
-
-newList.forEach((element) async {
-  await _pbisPlusStudentListDB.addData(element);
-});
-
-      
+      if (_pbisPlusStudentNotesDataList.isNotEmpty) {
+        list = uniqueStudents.map((item) {
+          // Check if the student already exists in the local database
+          PBISPlusStudentList existingStudent = _pbisPlusStudentNotesDataList
+              .firstWhere((e) => e.studentId == item.profile?.id);
+          List<PBISStudentNotes>? notes =
+              existingStudent != null ? existingStudent.notes : null;
+          // Create a new PBISPlusStudentList object with the updated details
+          return PBISPlusStudentList(
+            email: item.profile!.emailAddress!,
+            names: StudentName(
+              familyName: item.profile!.name!.familyName!,
+              fullName: item.profile!.name!.fullName!,
+              givenName: item.profile!.name!.givenName!,
+            ),
+            iconUrlC: item.profile?.photoUrl!,
+            studentId: item.profile?.id,
+            notes: notes, // Assign the existing notes or null
+          );
+        }).toList();
+      } else {
+        list = uniqueStudents
+            .map((item) => PBISPlusStudentList(
+                email: item.profile!.emailAddress!,
+                names: StudentName(
+                    familyName: item.profile!.name!.familyName!,
+                    fullName: item.profile!.name!.fullName!,
+                    givenName: item.profile!.name!.givenName!),
+                iconUrlC: item.profile?.photoUrl!,
+                studentId: item.profile?.id,
+                notes: null))
+            .toList();
+      }
       await _pbisPlusStudentListDB.clear();
       list.forEach((element) async {
-        await _pbisPlusStudentListDB
-            .addData(element); // Pass 'element' instead of 'list'
+        await _pbisPlusStudentListDB.addData(element);
       });
+
       print(
           "----------unique sudent ==================================================================================================  saved on db -------------------- ");
       var dataList = await _pbisPlusStudentListDB.getData();
@@ -1444,13 +1492,15 @@ newList.forEach((element) async {
         print('Name: ${student.names?.fullName!}');
         print('Email: ${student.email}');
         print('Photo URL: ${student.iconUrlC}');
+        print("----NOTES: ${student.notes}");
         // Access and print other properties as needed
         print('---');
       });
 
       return list;
+      // return newList;
     } catch (e) {
-      print('INSIDE EXPECTION');
+      print('INSIDE EXPECTION IN THE STUDENT LIST  $e');
       throw (e);
     }
   }
@@ -1575,9 +1625,7 @@ newList.forEach((element) async {
 
   //============-----------------------------------------GET STUDENT ALL NOTES -----------------//
   Future<List<PBISStudentNotes>> getPBIStudentNotesData(
-      {String teacher_id ,
-      String student_id ,
-      String school_dbn }) async {
+      {String? teacher_id, String? student_id, String? school_dbn}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacher_id/student/$student_id?dbn=$school_dbn',
@@ -1600,64 +1648,62 @@ newList.forEach((element) async {
     }
   }
 
-
 //---------------------------------ADD THE STUDENT NOTES---------------------------------
 
-  Future<List<PBISStudentNotes>> addPBIStudentNotes(
-      {String   studentId,
-String  studentName,
-String studentEmail,
-String teacherId,
-String schoolId,
-String  dBNc,
-String  notes,}) async {
+  Future addPBIStudentNotes({
+    String? studentId,
+    String? studentName,
+    String? studentEmail,
+    String? teacherId,
+    String? schoolId,
+    String? dBNc,
+    String? notes,
+  }) async {
     try {
+      Map<String, String>? body = {};
+      body['student_id'] = studentId!;
+      body['student_name'] = studentName!;
+      body['student_email'] = studentEmail!;
+      body['teacher_id'] = teacherId!;
+      body['school_id'] = schoolId!;
+      body['DBN__c'] = dBNc!;
+      body['notes'] = notes!;
 
- var body =  {
-"student_id": studentId,
-"student_name": studentName,
-"student_email": studentEmail,,
-"teacher_id":teacherId,,
-"school_id": schoolId,,
-"DBN__c":dBNc,
-"notes": notes,
-}
-
-      final ResponseModel response = await _dbServices.postApiNew(
+      final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
-             body:body,
-            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
-          isCompleteUrl: true);
+          body: body,
+          isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PBISStudentNotes> listData = response.data['body']
-            .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
-            .toList();
-
+        final data = response.data as Map<String, dynamic>;
+        final listData = PbisPlusAddNotes.fromJson(data['body']);
         return listData;
       }
-      return [];
+      return null;
     } catch (e) {
+      print(e);
       throw (e);
     }
   }
-}
 
+  List<PBISPlusStudentList> searchNotesList(
+      List<PBISPlusStudentList> notesList, String keyword) {
+    List<PBISPlusStudentList> searchResults = [];
 
-List<PBISPlusStudentList> searchNotesList(
-    List<PBISPlusStudentList> notesList, String keyword) {
-  List<PBISPlusStudentList> searchResults = [];
-
-  for (var note in notesList) {
-    if (note.names != null && note.names!.fullName != null) {
-      if (note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase())) {
-        searchResults.add(note);
+    for (var note in notesList) {
+      if (note.names != null && note.names!.fullName != null) {
+        if (note.names!.fullName!
+            .toLowerCase()
+            .contains(keyword.toLowerCase())) {
+          searchResults.add(note);
+        }
       }
     }
-  }
 
-  return searchResults;
+    return searchResults;
+  }
 }

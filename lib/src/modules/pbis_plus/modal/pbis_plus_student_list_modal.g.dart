@@ -20,7 +20,7 @@ class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
       studentId: fields[0] as String?,
       names: fields[1] as StudentName?,
       iconUrlC: fields[2] as String?,
-      notes: fields[3] as PBISStudentNotes?,
+      notes: (fields[3] as List?)?.cast<PBISStudentNotes>(),
       email: fields[4] as String?,
     );
   }

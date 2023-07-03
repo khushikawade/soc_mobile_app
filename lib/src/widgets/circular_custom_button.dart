@@ -78,10 +78,11 @@ class CustomCircularButton extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                        height: 14,
-                        width: 14,
+                        height: 16,
+                        width: 16,
                         alignment: Alignment.center,
                         child: CircularProgressIndicator.adaptive(
+                            strokeWidth: 2,
                             backgroundColor: AppTheme.kButtonColor)))
                 : Text((text!),
                     textAlign: TextAlign.center,
