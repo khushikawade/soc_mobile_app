@@ -258,3 +258,26 @@ class PBISPlusBehvaiourLoading extends PBISPlusState {
   @override
   List<Object> get props => [demoBehaviourData];
 }
+
+class PBISPlusStudentSearchSucess extends PBISPlusState {
+  final List<PBISPlusStudentList> sortedList;
+  PBISPlusStudentSearchSucess({required this.sortedList});
+  PBISPlusStudentSearchSucess copyWith({final studentNotes}) {
+    return PBISPlusStudentSearchSucess(
+        sortedList: studentNotes ?? this.sortedList);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusStudentSearchNoDataFound extends PBISPlusState {
+  final String error;
+  PBISPlusStudentSearchNoDataFound({required this.error});
+  PBISPlusStudentSearchNoDataFound copyWith({final error}) {
+    return PBISPlusStudentSearchNoDataFound(error: error ?? this.error);
+  }
+
+  @override
+  List<Object> get props => [error];
+}

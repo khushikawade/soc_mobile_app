@@ -653,24 +653,24 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    // if (event is GetPBISPlusStudentNotesSearchEvent) {
-    //   try {
-    //     print("----------GetPBISPlusStudentNotesSearchEvent=================");
-    //     yield PBISPlusLoading();
-    //     if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
-    //       final searchedList =
-    //           await searchNotesList(event.studentNotes, event.searchKey);
+    if (event is GetPBISPlusStudentNotesSearchEvent) {
+      try {
+        print("----------GetPBISPlusStudentNotesSearchEvent=================");
+        yield PBISPlusLoading();
+        if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
+          final searchedList =
+              await searchNotesList(event.studentNotes, event.searchKey);
 
-    //       if (searchedList.isNotEmpty && searchedList.length > 0) {
-    //         yield PBISPlusStudentSearchSucess(sortedList: searchedList);
-    //       } else {
-    //         yield PBISPlusStudentSearchNoDataFound(error: "No result found");
-    //       }
-    //     }
-    //   } catch (e) {
-    //     yield PBISPlusStudentNotesError(error: "No data found");
-    //   }
-    // }
+          if (searchedList.isNotEmpty && searchedList.length > 0) {
+            yield PBISPlusStudentSearchSucess(sortedList: searchedList);
+          } else {
+            yield PBISPlusStudentSearchNoDataFound(error: "No result found");
+          }
+        }
+      } catch (e) {
+        yield PBISPlusStudentNotesError(error: "No data found");
+      }
+    }
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/

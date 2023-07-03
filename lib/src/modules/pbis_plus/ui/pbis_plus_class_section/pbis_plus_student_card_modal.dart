@@ -69,11 +69,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
     getCustomValue();
-=======
-    trackUserActivity();
->>>>>>> pbis_main
   }
 
   @override
@@ -359,14 +355,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 : Color(0xff111C20),
                           ],
                           stops: [
-<<<<<<< HEAD
-                            widget.isFromDashboardPage == true ? 0.3 : 0.2,
-                            // 0.3,//Row
-                            // 0.2, //col
-
-=======
                             widget.isFromDashboardPage! ? 0.3 : 0.2,
->>>>>>> pbis_main
                             0.0,
                           ],
                         ),
@@ -437,7 +426,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             )));
   }
 
-<<<<<<< HEAD
   Widget buildGridView(
       {required List<PBISPlusALLBehaviourModal> behaviourList,
       bool loading = false}) {
@@ -502,21 +490,4 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 //   //       operationResult: 'Success');
 //   // }
 // }
-=======
-  void trackUserActivity() {
-    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        "pbis_plus_student_card_modal_view");
-    FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'pbis_plus_student_card_modal_screen',
-        screenClass: 'PBISPlusStudentCardModal');
-    /*-------------------------------------------------------------------------------------*/
-    PlusUtility.updateLogs(
-        activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-        activityId: '37',
-        userType: 'Teacher',
-        description:
-            'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-        operationResult: 'Success');
-  }
->>>>>>> pbis_main
 }
