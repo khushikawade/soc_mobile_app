@@ -22,7 +22,7 @@ class PlusScreenTitleWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 0, horizontal: kLabelSpacing / 2),
       child: Row(
-        children: [
+        children: <Widget>[
           if (backButton == true)
             IconButton(
               alignment: Alignment.centerLeft,
@@ -39,7 +39,7 @@ class PlusScreenTitleWidget extends StatelessWidget {
               ),
             ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.75,
+            width: MediaQuery.of(context).size.width * 0.65,
             child: FittedBox(
               alignment: Alignment.centerLeft,
               fit: BoxFit.scaleDown,

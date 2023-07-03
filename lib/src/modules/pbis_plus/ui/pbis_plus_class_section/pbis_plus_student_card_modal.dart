@@ -159,12 +159,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
                         fontWeight: FontWeight.w400),
-
-                    // validator: (value) {
-                    //   if (value == null || value == "")
-                    //     return "Please enter event title.";
-                    //   return null;
-                    // },
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.next,
                   )),
@@ -172,11 +166,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             valueListenable: isexpanded,
             builder: (context, value, _) => isexpanded.value
                 ?
-                //  Container(
-                //     margin: EdgeInsets .symmetric(horizontal: 12, vertical: 8),
-                //     alignment: Alignment.bottomRight,
-                //     child:
-
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: FittedBox(
@@ -370,19 +359,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 ),
                 Positioned(
                     bottom: 5,
-                    child:
-                        widget.isFromStudentPlus! || widget.isFromDashboardPage!
-                            ? SizedBox.shrink()
-                            : Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12),
-                                  ),
-                                ),
-                                alignment: Alignment.bottomRight,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                child: addNotes)),
+                    child: widget.isFromStudentPlus == true ||
+                            widget.isFromDashboardPage!
+                        ? SizedBox.shrink()
+                        : Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(12),
+                                bottomRight: Radius.circular(12),
+                              ),
+                            ),
+                            alignment: Alignment.bottomRight,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: addNotes)),
                 Positioned(
                   top: 0,
                   child: GestureDetector(

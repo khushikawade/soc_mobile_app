@@ -193,10 +193,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           ),
                           color: AppTheme.kButtonColor,
                         ))
-                    : SizedBox(
-                        height: 0,
-                        width: 0,
-                      );
+                    : SizedBox.shrink();
               }),
     );
   }
