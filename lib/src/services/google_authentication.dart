@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -214,7 +212,12 @@ class Authentication {
   /* -----------------------------------------signOut-------------------------------------- */
   /* -------------------------------------------------------------------------------------- */
   static Future<void> signOut({required BuildContext context}) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+            : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+        // forceCodeForRefreshToken: true,
+        scopes: scopes);
 
     try {
       if (!kIsWeb) {
@@ -267,7 +270,7 @@ class Authentication {
         content,
         style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
-    ); 
+    );
   }
 
   static Future refreshAuthenticationToken({String? refreshToken}) async {

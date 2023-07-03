@@ -54,7 +54,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   ValueNotifier<int> maxLine = ValueNotifier<int>(1);
-  final _noteFormKey = GlobalKey<FormState>();
+  // final _noteFormKey = GlobalKey<FormState>();
   final TextEditingController noteController = TextEditingController();
 
   ValueNotifier<bool> isexpanded = ValueNotifier<bool>(false);
@@ -303,7 +303,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       height: widget.isFromDashboardPage!
                           ? (widget.constraint <= 115)
                               ? MediaQuery.of(context).size.height * 0.43
-                              : MediaQuery.of(context).size.height * 0.4
+                              : MediaQuery.of(context).size.height * 0.37
                           : (widget.constraint <= 115)
                               ? isexpanded.value
                                   ? MediaQuery.of(context).size.height * 0.58
@@ -365,11 +365,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           ],
                         ),
                       ),
-                      child: Column(
-                        children: [
-                          FittedBox(child: pbisStudentDetailWidget),
-                        ],
-                      )),
+                      child: FittedBox(child: pbisStudentDetailWidget)),
                 ),
                 Positioned(
                     bottom: 5,
