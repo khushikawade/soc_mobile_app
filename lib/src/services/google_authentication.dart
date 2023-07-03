@@ -212,7 +212,12 @@ class Authentication {
   /* -----------------------------------------signOut-------------------------------------- */
   /* -------------------------------------------------------------------------------------- */
   static Future<void> signOut({required BuildContext context}) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+            : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+        // forceCodeForRefreshToken: true,
+        scopes: scopes);
 
     try {
       if (!kIsWeb) {
