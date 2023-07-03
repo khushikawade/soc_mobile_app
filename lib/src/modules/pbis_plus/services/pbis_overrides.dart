@@ -7,7 +7,9 @@ class PBISPlusOverrides {
   //     'PBISPlusAdditionalBehviour';
   static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
-  static final String pbisPlusStudentNotesDB = 'PBISPlus_student_notes';
+  static final String pbisPlusStudentListDB = 'PBISPlus_student_list';
+  static final String pbisPlusStudentNotesListtDB =
+      'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
   static final String pbisStudentInteractionDB = 'pbis_student_interaction';
@@ -36,10 +38,16 @@ class PBISPlusOverrides {
   static const String kresetOptionThreetitle = 'Select Courses';
   static const String kresetOptionFourtitle = 'Select Students by Course';
 
+  // static final String PbisPlusDefaultBehaviourLocalDbTable =
+  //     'pbisplus_default_behaviour_local_db_details';
+  // static final String PbisPlusAdditionalBehaviourLocalDbTable =
+  //     'pbisplus_default_additional_behaviour_local_db_details';
+  // static final String PbisPlusTeacherCustomBehaviourLocalDbTable =
+  //     'pbisplus_teacher_custom_behaviour_local_db_details';
   static final String PbisPlusDefaultBehaviourLocalDbTable =
-      'pbisplus_default_behaviour_local_db_details';
+      'pbisplus_default_behaviour_local_db_details_1';
   static final String PbisPlusAdditionalBehaviourLocalDbTable =
-      'pbisplus_default_additional_behaviour_local_db_details';
+      'pbisplus_default_additional_behaviour_local_db_details_1';
   static final String PbisPlusTeacherCustomBehaviourLocalDbTable =
-      'pbisplus_teacher_custom_behaviour_local_db_details';
+      'pbisplus_teacher_custom_behaviour_local_db_details_1';
 }

@@ -6,7 +6,9 @@ abstract class PBISPlusEvent extends Equatable {
 
 class PBISPlusImportRoster extends PBISPlusEvent {
   final bool isGradedPlus;
-  PBISPlusImportRoster({required this.isGradedPlus});
+  PBISPlusImportRoster({
+    required this.isGradedPlus,
+  });
   @override
   List<Object> get props => [];
 }
@@ -92,13 +94,10 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
   List<Object> get props => [];
 }
 
-class GetPBISPlusDefaultBehaviour extends PBISPlusEvent {
-  final bool? isCustom;
-  GetPBISPlusDefaultBehaviour({
-    required this.isCustom,
-  });
+class GetPBISPlusCustomBehaviour extends PBISPlusEvent {
+  GetPBISPlusCustomBehaviour();
   @override
-  List<bool> get props => [isCustom!];
+  List<bool> get props => [];
 }
 
 class PBISPlusGetAdditionalBehaviour extends PBISPlusEvent {
@@ -141,12 +140,42 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
 
 // ignore: must_be_immutable
 class GetPBISPlusStudentNotes extends PBISPlusEvent {
-  final String item;
-  int index;
-  GetPBISPlusStudentNotes({required this.item, required this.index});
+  List<PBISPlusStudentList>? studentNotesList;
+  GetPBISPlusStudentNotes({
+    this.studentNotesList,
+  });
 
   @override
-  List<Object> get props => [item, index];
+  List<Object> get props => [studentNotesList!];
+}
+
+class GetPBISPlusStudentNotesSearchEvent extends PBISPlusEvent {
+  final String searchKey;
+  final List<PBISPlusStudentList> studentNotes;
+  GetPBISPlusStudentNotesSearchEvent({
+    required this.searchKey,
+    required this.studentNotes,
+  });
+
+  @override
+  List<Object> get props => [
+        searchKey,
+        studentNotes,
+      ];
+}
+
+class GetPBISPlusStudentNotesList extends PBISPlusEvent {
+  final String studentId;
+  final String teacherid;
+  final String dbn;
+  GetPBISPlusStudentNotesList({
+    required this.studentId,
+    required this.teacherid,
+    required this.dbn,
+  });
+
+  @override
+  List<Object> get props => [studentId, teacherid, dbn];
 }
 
 class PBISPlusGetDefaultSchoolBehvaiour extends PBISPlusEvent {

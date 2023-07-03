@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'pbis_plus_genric_behaviour_modal.g.dart';
 
 @HiveType(typeId: 44)
-class PBISPlusGenricBehaviourModal extends HiveObject {
+class PBISPlusGenericBehaviourModal extends HiveObject {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -18,7 +18,7 @@ class PBISPlusGenricBehaviourModal extends HiveObject {
   @HiveField(6)
   String? behaviourId;
 
-  PBISPlusGenricBehaviourModal({
+  PBISPlusGenericBehaviourModal({
     required this.id,
     required this.activeStatusC,
     required this.iconUrlC,
@@ -28,18 +28,18 @@ class PBISPlusGenricBehaviourModal extends HiveObject {
     required this.behaviourId,
   });
 
-  PBISPlusGenricBehaviourModal.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? '';
-    activeStatusC = json['activeStatusC'] ?? '';
-    iconUrlC = json['iconUrlC'].toString().contains('http')
-        ? json['iconUrlC']
-        : 'https:' + json['iconUrlC'] ?? '';
+  PBISPlusGenericBehaviourModal.fromJson(Map<String, dynamic> json) {
+    id = json['Id'].toString() ?? '';
+    // activeStatusC = json['activeStatusC'] ?? '';
+    iconUrlC = json['Icon_URL'].toString().contains('http')
+        ? json['Icon_URL']
+        : 'https:' + json['Icon_URL'] ?? '';
     // photoUrl =
     //     'https://source.unsplash.com/random/200x200?sig=${generateRandomUniqueNumber().toString()}';
-    name = json['name'] ?? '';
-    sortOrderC = json['sortOrderC'] ?? '';
+    name = json['Name'] ?? '';
+    sortOrderC = json['Sorting_Order'] ?? '';
     counter = json['counter'] ?? 0;
-    behaviourId = json['behaviourId'] ?? 0;
+    behaviourId = json['behaviourId'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

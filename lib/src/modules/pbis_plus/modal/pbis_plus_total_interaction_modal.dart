@@ -74,4 +74,4 @@ class PBISPlusTotalInteractionModal {
     return data;
   }
 }
-//  PBISPlusGenricBehaviourModal intern;
+//  PBISPlusGenericBehaviourModal intern;

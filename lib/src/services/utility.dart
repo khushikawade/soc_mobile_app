@@ -1026,4 +1026,22 @@ class Utility {
         ? Color(0xffF7F8F9)
         : Color(0xff111C20);
   }
+
+  static getTimefromUtc(String utcdatetimeString, String cas) {
+    try {
+      if (utcdatetimeString != null && utcdatetimeString.isNotEmpty) {
+        DateTime datetime = DateTime.parse(utcdatetimeString).toLocal();
+        switch (cas) {
+          case 'D':
+            return DateFormat('dd/MM/yyyy').format(datetime); //Date: 28/06/2023
+          case 'T':
+            return DateFormat.jm().format(datetime); //Time: 9:27 AM
+          case 'WD':
+            return DateFormat.EEEE().format(datetime); // e.g., Wednesday
+        }
+      }
+    } catch (e) {
+      return utcdatetimeString;
+    }
+  }
 }
