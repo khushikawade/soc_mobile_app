@@ -1,42 +1,41 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_notes_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
-class PBISPlusActionInteractionModal {
-  String title;
-  Color color;
-  IconData iconData;
+// class PBISPlusActionInteractionModal {
+//   String title;
+//   Color color;
+//   IconData iconData;
 
-  PBISPlusActionInteractionModal({
-    required this.title,
-    required this.color,
-    required this.iconData,
-  });
+//   PBISPlusActionInteractionModal({
+//     required this.title,
+//     required this.color,
+//     required this.iconData,
+//   });
 
-  static List<PBISPlusActionInteractionModal> PBISPlusActionInteractionIcons = [
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe87e,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      color: Colors.red,
-      title: 'Engaged',
-    ),
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe87f,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      color: Colors.blue,
-      title: 'Nice Work',
-    ),
-    PBISPlusActionInteractionModal(
-      iconData: IconData(0xe880,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      color: Colors.green,
-      title: 'Helpful',
-    ),
-  ];
-}
+//   static List<PBISPlusActionInteractionModal> PBISPlusActionInteractionIcons = [
+//     PBISPlusActionInteractionModal(
+//       iconData: IconData(0xe87e,
+//           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+//       color: Colors.red,
+//       title: 'Engaged',
+//     ),
+//     PBISPlusActionInteractionModal(
+//       iconData: IconData(0xe87f,
+//           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+//       color: Colors.blue,
+//       title: 'Nice Work',
+//     ),
+//     PBISPlusActionInteractionModal(
+//       iconData: IconData(0xe880,
+//           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+//       color: Colors.green,
+//       title: 'Helpful',
+//     ),
+//   ];
+// }
 
 class PBISPlusActionInteractionModalNew {
   String imagePath;
@@ -174,8 +173,98 @@ class PBISPlusSkillsModalLocal {
     required this.counter,
   });
 
-  static List<PBISPlusGenricBehaviourModal> PBISPlusSkillLocalModallist = [
-    PBISPlusGenricBehaviourModal(
+  // static List<PBISPlusGenericBehaviourModal> PBISPlusSkillLocalModallist = [
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "0",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/Engaged.svg",
+  //     name: 'Engaged',
+  //     sortOrderC: "0",
+  //     counter: 0,
+  //     behaviourId: "0",
+  //   ),
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "1",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/Helpful.svg",
+  //     name: 'Nice Work',
+  //     sortOrderC: "1",
+  //     counter: 0,
+  //     behaviourId: "0",
+  //   ),
+
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "2",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/add_icon.svg",
+  //     name: 'Add Skill',
+  //     sortOrderC: "2",
+  //     counter: 0,
+  //     behaviourId: "0",
+  //   ),
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "3",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/add_icon.svg",
+  //     name: 'Add Skill',
+  //     sortOrderC: "3",
+  //     counter: 0,
+  //     behaviourId: "0",
+  //   ),
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "4",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/add_icon.svg",
+  //     name: 'Add Skill',
+  //     sortOrderC: "4",
+  //     counter: 0,
+  //     behaviourId: "0",
+  //   ),
+  //   PBISPlusGenericBehaviourModal(
+  //     id: "5",
+  //     activeStatusC: "Show",
+  //     iconUrlC: "assets/Pbis_plus/add_icon.svg",
+  //     name: 'Add Skill',
+  //     sortOrderC: "5",
+  //     counter: 0,
+  //     behaviourId: "0",
+  // ),
+
+  // PBISPlusSkillsModalLocal(
+  //   id: "2",
+  //   activeStatusC: "Show",
+  //   iconUrlC: "assets/Pbis_plus/nice_work.svg",
+  //   name: 'Helpful',
+  //   sortOrderC: "2",
+  //   counter: 0,
+  // ),
+  // PBISPlusSkillsModalLocal(
+  //   id: "3",
+  //   activeStatusC: "Show",
+  //   iconUrlC: "assets/Pbis_plus/participation.svg",
+  //   name: 'Participation',
+  //   sortOrderC: "3",
+  //   counter: 0,
+  // ),
+  // PBISPlusSkillsModalLocal(
+  //   id: "4",
+  //   activeStatusC: "Show",
+  //   iconUrlC: "assets/Pbis_plus/collaboration.svg",
+  //   name: 'Collaboration',
+  //   sortOrderC: "4",
+  //   counter: 0,
+  // ),
+  // PBISPlusSkillsModalLocal(
+  //   id: "5",
+  //   activeStatusC: "Show",
+  //   iconUrlC: "assets/Pbis_plus/listening.svg",
+  //   name: 'Listening',
+  //   sortOrderC: "5",
+  //   counter: 0,
+  // ),
+  // ];
+  static List<PBISPlusGenericBehaviourModal> PBISPlusSkillLocalBehaviourlist = [
+    PBISPlusGenericBehaviourModal(
       id: "0",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/Engaged.svg",
@@ -184,7 +273,7 @@ class PBISPlusSkillsModalLocal {
       counter: 0,
       behaviourId: "0",
     ),
-    PBISPlusGenricBehaviourModal(
+    PBISPlusGenericBehaviourModal(
       id: "1",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/Helpful.svg",
@@ -193,97 +282,7 @@ class PBISPlusSkillsModalLocal {
       counter: 0,
       behaviourId: "0",
     ),
-
-    PBISPlusGenricBehaviourModal(
-      id: "2",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/add_icon.svg",
-      name: 'Add Skill',
-      sortOrderC: "2",
-      counter: 0,
-      behaviourId: "0",
-    ),
-    PBISPlusGenricBehaviourModal(
-      id: "3",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/add_icon.svg",
-      name: 'Add Skill',
-      sortOrderC: "3",
-      counter: 0,
-      behaviourId: "0",
-    ),
-    PBISPlusGenricBehaviourModal(
-      id: "4",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/add_icon.svg",
-      name: 'Add Skill',
-      sortOrderC: "4",
-      counter: 0,
-      behaviourId: "0",
-    ),
-    PBISPlusGenricBehaviourModal(
-      id: "5",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/add_icon.svg",
-      name: 'Add Skill',
-      sortOrderC: "5",
-      counter: 0,
-      behaviourId: "0",
-    ),
-
-    // PBISPlusSkillsModalLocal(
-    //   id: "2",
-    //   activeStatusC: "Show",
-    //   iconUrlC: "assets/Pbis_plus/nice_work.svg",
-    //   name: 'Helpful',
-    //   sortOrderC: "2",
-    //   counter: 0,
-    // ),
-    // PBISPlusSkillsModalLocal(
-    //   id: "3",
-    //   activeStatusC: "Show",
-    //   iconUrlC: "assets/Pbis_plus/participation.svg",
-    //   name: 'Participation',
-    //   sortOrderC: "3",
-    //   counter: 0,
-    // ),
-    // PBISPlusSkillsModalLocal(
-    //   id: "4",
-    //   activeStatusC: "Show",
-    //   iconUrlC: "assets/Pbis_plus/collaboration.svg",
-    //   name: 'Collaboration',
-    //   sortOrderC: "4",
-    //   counter: 0,
-    // ),
-    // PBISPlusSkillsModalLocal(
-    //   id: "5",
-    //   activeStatusC: "Show",
-    //   iconUrlC: "assets/Pbis_plus/listening.svg",
-    //   name: 'Listening',
-    //   sortOrderC: "5",
-    //   counter: 0,
-    // ),
-  ];
-  static List<PBISPlusGenricBehaviourModal> PBISPlusSkillLocalBehaviourlist = [
-    PBISPlusGenricBehaviourModal(
-      id: "0",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      name: 'Engaged',
-      sortOrderC: "0",
-      counter: 0,
-      behaviourId: "0",
-    ),
-    PBISPlusGenricBehaviourModal(
-      id: "1",
-      activeStatusC: "Show",
-      iconUrlC: "assets/Pbis_plus/Helpful.svg",
-      name: 'Nice Work',
-      sortOrderC: "1",
-      counter: 0,
-      behaviourId: "0",
-    ),
-    PBISPlusGenricBehaviourModal(
+    PBISPlusGenericBehaviourModal(
       id: "2",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/nice_work.svg",
@@ -292,7 +291,7 @@ class PBISPlusSkillsModalLocal {
       counter: 0,
       behaviourId: "0",
     ),
-    PBISPlusGenricBehaviourModal(
+    PBISPlusGenericBehaviourModal(
       id: "3",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/participation.svg",
@@ -301,7 +300,7 @@ class PBISPlusSkillsModalLocal {
       counter: 0,
       behaviourId: "0",
     ),
-    PBISPlusGenricBehaviourModal(
+    PBISPlusGenericBehaviourModal(
       id: "4",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/collaboration.svg",
@@ -310,7 +309,7 @@ class PBISPlusSkillsModalLocal {
       counter: 0,
       behaviourId: "0",
     ),
-    PBISPlusGenricBehaviourModal(
+    PBISPlusGenericBehaviourModal(
       id: "5",
       activeStatusC: "Show",
       iconUrlC: "assets/Pbis_plus/listening.svg",
@@ -323,118 +322,33 @@ class PBISPlusSkillsModalLocal {
 }
 
 class PBISPlusStudentNotesLocal {
-  static List<PBISPlusStudentNotes> PBISPlusLocalStudentNoteslist = [
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
+  static PBISStudentNotes notes = PBISStudentNotes(
+      date: "25/05/2023",
+      id: 123,
+      notes:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+      schoolAppC: "1221",
+      studentEmail: "ashwin@gmail.com,",
+      studentName: "adldl",
+      teacherC: "121454",
+      time: "10:30 Pm",
+      weekday: "Monday");
+
+  static List<PBISPlusStudentList> PBISPlusLocalStudentNoteslist = [
+    PBISPlusStudentList(
+      names: StudentName(familyName: "Emma Davis"),
+      iconUrlC: "assets/Pbis_plus/Engaged.svg",
+      studentId: "123",
+      notes: notes,
     ),
-    PBISPlusStudentNotes(
-      studentName: "Vicky Jackson",
+    PBISPlusStudentList(
+      names: StudentName(familyName: "Vicky Jackson"),
       iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
     ),
-    PBISPlusStudentNotes(
-      studentName: "Buttler Damian",
+    PBISPlusStudentList(
+      names: StudentName(familyName: "Buttler Damian"),
       iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Jennie Taylor",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Lorel Damian",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emlie Thomas",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Vicky Jackson",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Buttler Damian",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Jennie Taylor",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emma Davis",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Lorel Damian",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-    ),
-    PBISPlusStudentNotes(
-      studentName: "Emlie Thomas",
-      iconUrlC: "assets/Pbis_plus/Engaged.svg",
-      date: "22/June/2023",
-      notesComments:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisi lorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
+      notes: notes,
     ),
   ];
 }

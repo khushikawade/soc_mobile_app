@@ -1,29 +1,21 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
-import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pdfWidget;
-import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:share/share.dart';
+
 import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
@@ -157,52 +149,39 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   Widget _buildCard(
       {void Function()? onTap, String? iconPath, String? tittle}) {
     return GestureDetector(
-      onTap: onTap!,
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3,
-        height:
-            // widget.constraints!.maxHeight <= 115
-            //     ?
-            MediaQuery.of(context).size.width / 3
-        // : MediaQuery.of(context).size.width / 4,
-        ,
-        decoration: BoxDecoration(
-          color: AppTheme.kButtonColor,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              iconPath!,
-              // height: Globals.deviceType == 'phone' ? 64 : 74,
-              // width: Globals.deviceType == 'phone' ? 64 : 74,
-            ),
-            Padding(
-              padding: Globals.deviceType != 'phone'
-                  ? const EdgeInsets.only(top: 14, left: 14)
-                  : EdgeInsets.zero,
-              child: Utility.textWidget(
-                  text: tittle!,
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Colors.black, fontSize: 12)),
-            ),
-          ],
-        ),
-      ),
-    );
+        onTap: onTap!,
+        child: Container(
+            width: MediaQuery.of(context).size.width / 3,
+            height: MediaQuery.of(context).size.width / 3,
+            decoration: BoxDecoration(
+                color: AppTheme.kButtonColor,
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3))
+                ]),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    iconPath!,
+                  ),
+                  Padding(
+                      padding: Globals.deviceType != 'phone'
+                          ? const EdgeInsets.only(top: 14, left: 14)
+                          : EdgeInsets.zero,
+                      child: Utility.textWidget(
+                          text: tittle!,
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: Colors.black, fontSize: 12)))
+                ])));
   }
 
   // showPopup(
@@ -240,7 +219,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
       child: FloatingActionButton.extended(
           backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
           onPressed: () async {
-            print(editNameController.text);
             if (editNameController.text.isNotEmpty) {
               pbisPlusBloc.add(GetPBISSkillsUpdateName(
                   item: dataList, newName: editNameController.text));
@@ -250,7 +228,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Utility.textWidget(
-                  text: 'Update',
+                  text: 'Save',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
@@ -304,37 +282,27 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
           BlocConsumer(
               bloc: pbisPlusBloc,
               builder: (context, state) {
-                print(state);
-                if (state is GetPBISSkillsUpdateNameLoading) {
+                if (state is PBISPlusLoading) {
                   return Container(
                       alignment: Alignment.center,
                       child: CircularProgressIndicator.adaptive(
-                        backgroundColor: AppTheme.kButtonColor,
-                      ));
-                } else if (state is PBISPlusDefaultBehaviourSucess) {
-                  if (state.skillsList.isNotEmpty ?? false) {
-                    return _buildNextbutton(dataList);
-                  } else {
-                    return _buildNextbutton(dataList);
-                  }
-                } else if (state is PBISErrorState)
-                  return _buildNextbutton(dataList);
-                return _buildNextbutton(dataList);
+                          backgroundColor: AppTheme.kButtonColor));
+                } else if (state is PBISErrorState) {}
+                return Container();
+
+                // _buildSaveButton(dataList);
               },
               listener: (context, state) async {
                 if (state is PBISPlusDefaultBehaviourSucess) {
                   Utility.currentScreenSnackBar(
                       "Successfully updated skills name", null);
+                  //Close bottomsheet on success
                   Navigator.pop(context);
-                  FocusScope.of(context).requestFocus(FocusNode());
                 } else if (state is PBISErrorState) {
                   Utility.currentScreenSnackBar(
-                      "Please try again later. Unable to update the skills name.",
-                      null);
+                      "Action cannot be performed. Please try again.", null);
                 }
-              }
-              //_buildEditSkillCards()
-              ),
+              }),
         ],
       ),
     );

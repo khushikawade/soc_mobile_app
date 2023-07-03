@@ -9,7 +9,6 @@ import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_behaviour.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -329,7 +328,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
             case 'Edit Behaviour':
               sectionName = 'Behaviour';
-              // Navigator.pop(context);
+              Navigator.pop(context);
               pushNewScreen(
                 context,
                 screen: PBISPlusEditSkills(),

@@ -449,8 +449,7 @@ class _GradedPlusSearchScreenPageState
                             .textTheme
                             .headline2!
                             .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  )
+                                color: Theme.of(context).backgroundColor)))
                 : Container();
       },
     );

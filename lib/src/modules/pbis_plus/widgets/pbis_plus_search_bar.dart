@@ -2,7 +2,6 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../styles/theme.dart';
 
@@ -52,21 +51,25 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
               borderRadius: BorderRadius.circular(15),
             ),
             color: Colors.transparent,
-            child: widget.isMainPage == true
-                ? mainSearchBar(widget.hintText)
-                : innerSearchBar(widget.hintText)),
+            child: innerSearchBar(widget.hintText)),
       ),
     );
   }
 
-  Widget mainSearchBar(String translatedMessage) {
+  Widget innerSearchBar(String translatedMessage) {
     return TextFormField(
-      enabled: widget.isMainPage,
       autofocus: widget.autoFocus,
-      style: Theme.of(context).textTheme.headline5,
+      //  onTap: widget.onTap,
+      style: Theme.of(context).textTheme.headline5!.copyWith(
+            color: Color(0xff000000) != Theme.of(context).backgroundColor
+                ? Color(0xffF7F8F9)
+                : Color(0xff111C20),
+          ),
       focusNode: widget.focusNode,
       controller: widget.controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
+      cursorColor: Color(0xff000000) != Theme.of(context).backgroundColor
+          ? Color(0xffF7F8F9)
+          : Color(0xff111C20),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 16),
           focusedBorder: OutlineInputBorder(
@@ -76,17 +79,18 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.secondary, width: 2),
+                color: Theme.of(context).colorScheme.secondary, width: 0),
           ),
-          hintStyle: Theme.of(context)
-              .textTheme
-              .headline1!
-              .copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
+          hintStyle: Theme.of(context).textTheme.headline1!.copyWith(
+                fontWeight: FontWeight.w300,
+                color: Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xffF7F8F9)
+                    : Color(0xff111C20),
+              ),
           hintText: translatedMessage.toString(),
           fillColor: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Theme.of(context).colorScheme.secondary
-              : Color.fromARGB(255, 12, 20, 23),
-          //Theme.of(context).colorScheme.secondary,
+              ? Color(0xff111C20)
+              : Color(0xffF7F8F9),
           suffixIcon: IconButton(
             onPressed: widget.iconOnTap,
             icon: Icon(
@@ -95,57 +99,17 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg)
                   : Icons.clear,
-              color: Theme.of(context).colorScheme.primaryVariant,
+              color: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
               size: Globals.deviceType == "phone" ? 20 : 28,
             ),
           ),
           prefix: SizedBox(
             width: 20,
           )),
-      onChanged: widget.onItemChanged,
-    );
-  }
-
-  Widget innerSearchBar(String translatedMessage) {
-    return TextFormField(
-      autofocus: widget.autoFocus,
-      //  onTap: widget.onTap,
-      style: Theme.of(context).textTheme.headline5,
-      // TextStyle(
-      //     color: Theme.of(context).colorScheme.primaryVariant),
-      focusNode: widget.focusNode,
-      controller: widget.controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 16),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-            borderSide: BorderSide(color: AppTheme.kButtonColor, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-            borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.secondary, width: 2),
-          ),
-          hintStyle: Theme.of(context)
-              .textTheme
-              .headline1!
-              .copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
-          hintText: translatedMessage.toString(),
-          fillColor: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Theme.of(context).colorScheme.secondary
-              : Color.fromARGB(255, 12, 20, 23),
-          suffixIcon: Icon(
-            const IconData(0xe805,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg),
-            color: Theme.of(context).colorScheme.primaryVariant,
-            size: Globals.deviceType == "phone" ? 20 : 28,
-          ),
-          prefix: SizedBox(
-            width: 20,
-          )),
       onTap: widget.onTap,
+      onChanged: widget.onItemChanged,
     );
   }
 }

@@ -1,10 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/circular_custom_button.dart';
+import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -15,7 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PBISPlusCommonPopup extends StatefulWidget {
+class PBISPlusDeleteBehaviorPopup extends StatefulWidget {
   final Orientation? orientation;
   final BuildContext? context;
   final String? message;
@@ -26,7 +28,7 @@ class PBISPlusCommonPopup extends StatefulWidget {
   void Function() onDelete;
   // PBISPlusBloc? pbisPlusBloc;
   // ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
-  PBISPlusCommonPopup(
+  PBISPlusDeleteBehaviorPopup(
       {Key? key,
       required this.orientation,
       required this.context,
@@ -41,10 +43,14 @@ class PBISPlusCommonPopup extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<PBISPlusCommonPopup> createState() => _PBISPlusCommonPopupState();
+  State<PBISPlusDeleteBehaviorPopup> createState() =>
+      _PBISPlusDeleteBehaviorPopupState();
 }
 
-class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
+class _PBISPlusDeleteBehaviorPopupState
+    extends State<PBISPlusDeleteBehaviorPopup> {
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+
   @override
   void dispose() {
     super.dispose();
@@ -55,13 +61,12 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(),
-    );
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: contentBox());
   }
 
   // bool replaceItems(String title) {
@@ -131,12 +136,12 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        CircularCustomButton(
+                        CustomCircularButton(
                           size: Size(MediaQuery.of(context).size.width * 0.29,
                               MediaQuery.of(context).size.width / 10),
                           text: "Cancel",
                           onClick: () {
-                            Navigator.pop(context!);
+                            Navigator.pop(context);
                           },
                           backgroundColor: AppTheme.kButtonColor,
                           isBusy: false,
@@ -145,34 +150,34 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
                         ),
                         SizedBox(
                             width: MediaQuery.of(context).size.height / 40),
+                        _buildDeleteButton(false)
+                        // CircularCustomButton(
+                        //   borderColor: Color(0xff000000) !=
+                        //           Theme.of(context).backgroundColor
+                        //       ? Color(0xff111C20)
+                        //       : Color(0xffF7F8F9),
+                        //   text: "Delete",
+                        //   textColor: Color(0xff000000) !=
+                        //           Theme.of(context).backgroundColor
+                        //       ? Color(0xff111C20)
+                        //       : Color(0xffF7F8F9),
+                        //   onClick: widget.onDelete,
 
-                        CircularCustomButton(
-                          borderColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          text: "Delete",
-                          textColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          onClick: widget.onDelete,
-
-                          //  () {
-                          //   pbisPlusBloc.add(
-                          //       PBISPlusDeleteTeacherCustomBehvaiour(
-                          //           behvaiour: widget.item));
-                          //   Navigator.pop(context, true);
-                          // },
-                          backgroundColor: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                          isBusy: false,
-                          size: Size(MediaQuery.of(context).size.width * 0.29,
-                              MediaQuery.of(context).size.width / 10),
-                          buttonRadius: 64,
-                        ),
+                        //   //  () {
+                        //   //   pbisPlusBloc.add(
+                        //   //       PBISPlusDeleteTeacherCustomBehvaiour(
+                        //   //           behvaiour: widget.item));
+                        //   //   Navigator.pop(context, true);
+                        //   // },
+                        //   backgroundColor: Color(0xff000000) !=
+                        //           Theme.of(context).backgroundColor
+                        //       ? Color(0xffF7F8F9)
+                        //       : Color(0xff111C20),
+                        //   isBusy: false,
+                        //   size: Size(MediaQuery.of(context).size.width * 0.29,
+                        //       MediaQuery.of(context).size.width / 10),
+                        //   buttonRadius: 64,
+                        // ),
 
                         // BlocConsumer(
                         //     bloc: pbisPlusBloc,
@@ -208,13 +213,16 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
           ),
         ),
         Positioned(
-            top: 0, left: 16, right: 16, child: _buildIconWidget(widget.item)),
+            top: 0,
+            left: 16,
+            right: 16,
+            child: _showDeleteIconWidget(widget.item))
       ],
     );
   }
 
-  Widget _buildDeletebutton(bool isBusy) {
-    return CircularCustomButton(
+  Widget _buildDeleteButton(bool isBusy) {
+    return CustomCircularButton(
       borderColor: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xff111C20)
           : Color(0xffF7F8F9),
@@ -222,9 +230,11 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
       textColor: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xff111C20)
           : Color(0xffF7F8F9),
-      onClick: () async {
-        _handleDeleteItem();
-      },
+      onClick: widget.onDelete,
+
+      //  async {
+      //   _handleDeleteItem();
+      // },
       backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xffF7F8F9)
           : Color(0xff111C20),
@@ -235,10 +245,10 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     );
   }
 
-  void _handleDeleteItem() async {
-    pbisPlusBloc
-        .add(PBISPlusDeleteTeacherCustomBehvaiour(behvaiour: widget.item));
-  }
+  // void _handleDeleteItem() async {
+  //   pbisPlusBloc
+  //       .add(PBISPlusDeleteTeacherCustomBehvaiour(behvaiour: widget.item));
+  // }
 
   Widget _buildIcons({required PBISPlusALLBehaviourModal item}) {
     return CachedNetworkImage(
@@ -274,14 +284,13 @@ class _PBISPlusCommonPopupState extends State<PBISPlusCommonPopup> {
     );
   }
 
-  Widget _buildIconWidget(PBISPlusALLBehaviourModal item) {
+  Widget _showDeleteIconWidget(PBISPlusALLBehaviourModal item) {
     return Container(
         decoration: BoxDecoration(
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xffF7F8F9)
-              : Color(0xff111C20),
-          shape: BoxShape.circle,
-        ),
+            color: Color(0xff000000) != Theme.of(context).backgroundColor
+                ? Color(0xffF7F8F9)
+                : Color(0xff111C20),
+            shape: BoxShape.circle),
         child: CircleAvatar(
             radius: 42.0,
             backgroundColor: Colors.transparent,
