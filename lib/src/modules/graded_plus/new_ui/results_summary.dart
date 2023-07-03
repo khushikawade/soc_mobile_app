@@ -366,6 +366,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               PlusScreenTitleWidget(
+                isTrailingIcon: true,
                 kLabelSpacing: widget.assessmentDetailPage!
                     ? 0
                     : StudentPlusOverrides.kLabelSpacing / 2,

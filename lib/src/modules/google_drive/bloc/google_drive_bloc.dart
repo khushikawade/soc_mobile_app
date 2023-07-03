@@ -553,7 +553,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId == null ||
             _userProfileLocalData[0].gradedPlusGoogleDriveFolderId == "") {
           bool result = await googleDriveBlocMethods.getAndUpdateFolderDetails(
-              folderName: "SOLVED GRADED+" );
+              folderName: "SOLVED GRADED+");
           if (result == false) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
             return;
@@ -802,23 +802,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is AssessmentImgToAwsBucked) {
       try {
+        LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
+            event.isHistoryAssessmentSection == true
+                ? 'history_student_info'
+                : 'student_info');
+
+        List<StudentAssessmentInfo> studentInfo =
+            await OcrUtility.getSortedStudentInfoList(
+                tableName: event.isHistoryAssessmentSection == true
+                    ? 'history_student_info'
+                    : 'student_info');
+
+        for (var i = 0; i < studentInfo.length; i++) {
+          if (event.studentId == studentInfo[i].studentId) {
+            return;
+          }
+        }
         String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: "assessment-sheet");
 
         if (imgUrl != "") {
-          LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
-              event.isHistoryAssessmentSection == true
-                  ? 'history_student_info'
-                  : 'student_info');
-
-          List<StudentAssessmentInfo> studentInfo =
-              await OcrUtility.getSortedStudentInfoList(
-                  tableName: event.isHistoryAssessmentSection == true
-                      ? 'history_student_info'
-                      : 'student_info');
-
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
               StudentAssessmentInfo e = studentInfo[i];
