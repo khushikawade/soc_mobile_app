@@ -170,10 +170,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
 
         if (_localData.isEmpty) {
+          print("PBISPlusGetAdditionalBehaviour  is Empty");
           yield PBISPlusBehvaiourLoading(
               demoBehaviourData: PBISPlusALLBehaviourModal.demoBehaviourData);
         } else {
-          yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
+          print("PBISPlusGetAdditionalBehaviour  not Empty");
+          yield PBISPlusGetAdditionalBehaviourSuccess(
               additionalbehaviourList: _localData);
         }
 
@@ -187,7 +189,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           await _localDb.addData(e);
         });
         yield PBISPlusLoading();
-        yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
+        yield PBISPlusGetAdditionalBehaviourSuccess(
             additionalbehaviourList: list);
       } catch (e) {
         yield PBISPlusAdditionalBehaviourError(error: e.toString());
@@ -1015,6 +1017,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
 // Sort the list based on the "order" key
         list = sortByOrder(list);
+        print("PBISPlusGetTeacherCustomBehvaiour LENGTH ${list.length}");
 
         await _localDb.clear();
         list.forEach((PBISPlusALLBehaviourModal e) async {
@@ -1818,6 +1821,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
   Future<List<PBISPlusALLBehaviourModal>> getTeacherCustomBehvaiour(
       {required String teacherId}) async {
+    print("teacherId $teacherId");
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/${teacherId}',

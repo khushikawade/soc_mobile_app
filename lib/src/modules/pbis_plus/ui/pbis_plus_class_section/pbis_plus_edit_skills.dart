@@ -378,7 +378,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             return;
           }
 
-          if (!IsBehaviouralReadyAvailable(onAccepttedObj, skillsList) &&
+          if (!IsBehaviourAleadyAvailable(onAccepttedObj, skillsList) &&
               skillsList.length < 6) {
             print("added new behaviour on GridView DragTarget widget");
 
@@ -457,22 +457,38 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           );
   }
 
-  Widget _buildEditWidget(PBISPlusALLBehaviourModal item, int index,
-      PBISPlusBloc pbisPlusClassroomBloc) {
+  Widget _buildEditWidget(
+    PBISPlusALLBehaviourModal item,
+    int index,
+    //   PBISPlusBloc pbisPlusClassroomBloc
+  ) {
     return GestureDetector(
       onTap: () async {
         await _modalBottomSheetMenu(
-          item,
-          index,
-          pbisPlusClassroomBloc,
-          () {
-            Navigator.pop(context);
-            showPopup(
-                message: "Are you sure you want to delete this item",
-                title: "",
-                item: item);
-          },
-        );
+            item: item,
+            index: index,
+            //  pbisPlusBloc: pbisPlusClassroomBloc,
+            onDelete: () {
+              Navigator.pop(context);
+              showPopup(
+                  message: "Are you sure you want to delete this item",
+                  title: "",
+                  item: item);
+            },
+            onEditCallBack: (String? editedName) {
+              Navigator.pop(context);
+              if (editedName != null && editedName.isNotEmpty) {
+                //update the current obj with new name
+                item.behaviorTitleC = editedName;
+                //update the the Ui list with new name
+                teacherCustomBehaviourList.value[index] = item;
+                updateBehaviourWidget.value = !updateBehaviourWidget.value;
+
+                pbisPluBlocForDefaultSchoolBehvaiour.add(
+                    PBISPlusAddTeacherCustomBehvaiour(
+                        behvaiour: item, index: index));
+              }
+            });
 
         // print("----------botton sheet ======== close=======----------------");
         // isEditMode.value = !isEditMode.value;
@@ -576,7 +592,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                             //     false);
 
                             if (state
-                                    is PBISPlusGetPBISPlusAdditionalBehaviourSuccess &&
+                                    is PBISPlusGetAdditionalBehaviourSuccess &&
                                 state.additionalbehaviourList.isNotEmpty) {
                               additionalbehaviourList.value =
                                   state.additionalbehaviourList;
@@ -757,8 +773,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         );
   }
 
-  _modalBottomSheetMenu(PBISPlusALLBehaviourModal item, int index,
-          PBISPlusBloc pbisPlusBloc, final VoidCallback onDelete) =>
+  _modalBottomSheetMenu(
+          {required PBISPlusALLBehaviourModal item,
+          required int index,
+          // required PBISPlusBloc pbisPlusBloc,
+          required final VoidCallback onDelete,
+          required final void Function(String) onEditCallBack}) =>
       showModalBottomSheet(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           isScrollControlled: true,
@@ -771,13 +791,15 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             return LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
-                pbisPlusBloc: pbisPlusBloc,
+                // pbisPlusBloc: pbisPlusBloc,
                 index: index,
                 constraints: constraints,
                 // containerIcons: containerIcons,
                 item: item,
                 height: MediaQuery.of(context).size.height * 0.35,
                 onDelete: onDelete,
+
+                onEditCallBack: onEditCallBack,
               );
             });
           });
@@ -901,7 +923,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       // hoveredIconIndex.value = -1;
       // changedIndex.value = -1;
 
-      if (!IsBehaviouralReadyAvailable(onAccepttedObj, skillsList)) {
+      if (!IsBehaviourAleadyAvailable(onAccepttedObj, skillsList)) {
         print("added new behaviour on single DragTarget widget");
 
         // teacherCustomBehaviourList.value[index] = onAccepttedObj;
@@ -940,7 +962,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   valueListenable: changedIndex,
                   builder: (context, value, _) => index == changedIndex.value
                       ? _buildEditWidget(
-                          item, index, pbisPluBlocForDefaultSchoolBehvaiour)
+                          item, index,
+                          //  pbisPluBlocForDefaultSchoolBehvaiour
+                        )
                       : ShimmerLoading(
                           isLoading: loading,
                           child: Column(
@@ -1009,11 +1033,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     );
   }
 
-  bool IsBehaviouralReadyAvailable(PBISPlusALLBehaviourModal draggedData,
+  bool IsBehaviourAleadyAvailable(PBISPlusALLBehaviourModal draggedData,
       List<PBISPlusALLBehaviourModal> skillsList) {
     try {
       for (PBISPlusALLBehaviourModal behavioural in skillsList) {
-        if (behavioural.behaviorTitleC == draggedData.behaviorTitleC) {
+        if (behavioural.pBISBehaviorIconURLC ==
+            draggedData.pBISBehaviorIconURLC) {
           return true;
         }
       }
