@@ -709,7 +709,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List result = await addTeacherCustomBehavior(
             behavior: event.behavior,
             schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: OcrUtility.getTeacherId() ?? "",
+            teacherId: await OcrUtility.getTeacherId() ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
         //Fetching updated value
