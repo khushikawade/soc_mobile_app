@@ -226,6 +226,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
           var result = await sortTheBehaviourInDB(
               allBehavior: _localData, teacherId: Globals.teacherId ?? '');
+
+          if (result != true) {
+            print("sorting API FAL");
+          }
+        } else if (result != true) {
+          print("item is not deleted on backend");
         }
       } catch (e) {
         print(e);
@@ -718,7 +724,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await _localDb.putAt(updateIndex, _localData[updateIndex]);
           }
         }
-
+        if (result[0] != true) {
+          print("item is not added in backend");
+        }
         PBISPlusLoading();
         yield PBISPlusGetTeacherCustomBehaviorSuccess(
             teacherCustomBehaviorList: _localData);
@@ -1375,7 +1383,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     print("teacherId $teacherId");
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/get-custom-behavior/teacher/${teacherId}',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/${teacherId}',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
         List<PBISPlusCommonBehaviorModal> _list = response.data['body']
@@ -1400,7 +1408,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       int retry = 3}) async {
     try {
       final url =
-          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/delete-behavior/teacher/$teacherId/behavior/${behavior.id}";
+          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/delete-behaviour/teacher/$teacherId/behaviour/${behavior.id}";
 
       final ResponseModel response = await _dbServices.deleteApi(
         url,
@@ -1429,27 +1437,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       int retry = 3}) async {
     try {
       Map body = {
-        "behavior_name": behavior.behaviorTitleC,
-        "behavior_score": "0",
-        "is_default_behavior": "false",
-        "icon_url": behavior.pBISBehaviorIconURLC,
-        "teacher_id": teacherId,
-        "school_id": schoolId,
-        "sorting_order": behavior.pBISBehaviorSortOrderC
+        "behaviour_name": behavior.behaviorTitleC.toString(),
+        "behaviour_score": "1",
+        "is_default_behaviour": "false",
+        "icon_url": behavior.pBISBehaviorIconURLC.toString(),
+        "teacher_id": teacherId.toString(),
+        "school_id": schoolId.toString(),
+        "sorting_order": behavior.pBISBehaviorSortOrderC.toString()
       };
 
       //Add behavior id to request body in case of behavior update
       if (isAddedNewIcon == false) {
-        body.addAll({"behavior_id": behavior.id});
+        body.addAll({"behaviour_id": behavior.id});
       }
-
+      print(body);
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
 
       final url =
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/add-behavior';
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
