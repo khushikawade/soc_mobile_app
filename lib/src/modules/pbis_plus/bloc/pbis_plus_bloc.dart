@@ -205,15 +205,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             break;
           }
         }
-        //clean localDB AND //update the new sorting index every item in localDB
-        await _localDb.clear();
-        _localData.asMap().forEach((index, element) async {
-          element.pBISBehaviorSortOrderC = (index + 1).toString();
-          await _localDb.addData(element);
-        });
 
         var result = await deleteTeacherCustomBehavior(
             behavior: event.behavior, teacherId: Globals.teacherId ?? '');
+
+        if (result == true && _localData.isNotEmpty) {
+          //clean localDB AND
+          //update the new sorting index every item in localDB
+          await _localDb.clear();
+
+          _localData.asMap().forEach((index, element) async {
+            element.pBISBehaviorSortOrderC = (index + 1).toString();
+            await _localDb.addData(element);
+          });
+
+          yield PBISPlusLoading();
+          yield PBISPlusGetTeacherCustomBehaviorSuccess(
+              teacherCustomBehaviorList: _localData);
+
+          // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
+          var result = await sortTheBehaviourInDB(
+              allBehavior: _localData, teacherId: Globals.teacherId ?? '');
+        }
       } catch (e) {
         print(e);
       }
@@ -915,7 +928,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   }
 
   /*----------------------------------------------------------------------------------------------*/
-  /*---------------------------------Function createPBISPlusHistoryData------------------------------*/
+  /*--------------------------------Function createPBISPlusHistoryData----------------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
   Future<bool> createPBISPlusHistoryData(
@@ -1201,10 +1214,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-          },
+          headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1221,16 +1231,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-//-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
+/*----------------------------------------------------------------------------------------------*/
+/*------------------------Function getPBISPlusBehaviorAdditionalBehaviorList--------------------*/
+/*----------------------------------------------------------------------------------------------*/
 
   Future getPBISPlusBehaviorAdditionalBehaviorList() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-          },
+          headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1239,8 +1248,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 (i) => PbisPlusAdditionalBehaviorList.fromJson(i))
             .toList();
 
-        print(resp.length);
-        print(resp);
         return resp;
       }
       return [];
@@ -1249,7 +1256,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-//-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
+/*----------------------------------------------------------------------------------------------*/
+/*---------------------------------Function GetDefaultSchoolBehavior----------------------------*/
+/*----------------------------------------------------------------------------------------------*/
 
   Future<List<PBISPlusCommonBehaviorModal>> GetDefaultSchoolBehavior() async {
     try {
@@ -1271,8 +1280,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*--------------------------------Function getTeacherCustomBehavior-----------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
   Future<List<PBISPlusCommonBehaviorModal>> getTeacherCustomBehavior(
       {required String teacherId}) async {
+    print("teacherId $teacherId");
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/get-custom-behavior/teacher/${teacherId}',
@@ -1291,14 +1304,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*------------------------------Function deleteTeacherCustomBehavior----------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
   Future<dynamic> deleteTeacherCustomBehavior(
       {required PBISPlusCommonBehaviorModal behavior,
       required String teacherId,
       int retry = 3}) async {
     try {
-      print(
-          "deletcting API CALLLED ${behavior.behaviorTitleC} and ${behavior.id}");
-
       final url =
           "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/delete-behavior/teacher/$teacherId/behavior/${behavior.id}";
 
@@ -1312,11 +1325,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return deleteTeacherCustomBehavior(
             behavior: behavior, teacherId: teacherId, retry: retry - 1);
       }
+      return false;
     } catch (e) {
       throw (e);
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*-------------------------------Function addTeacherCustomBehavior------------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
   Future<List> addTeacherCustomBehavior(
       {required PBISPlusCommonBehaviorModal behavior,
       required String teacherId,
@@ -1367,6 +1384,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*-------------------------------------Function sortByOrder-------------------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
   List<PBISPlusCommonBehaviorModal> sortByOrder(
       List<PBISPlusCommonBehaviorModal> allBehaviors) {
     allBehaviors.sort((a, b) {
@@ -1378,8 +1398,52 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     });
     return allBehaviors;
   }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*-----------------------------------Function sortTheBehaviourInDB------------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
+  Future sortTheBehaviourInDB(
+      {List<PBISPlusCommonBehaviorModal>? allBehavior,
+      required String teacherId,
+      int retry = 3}) async {
+    try {
+      List<Map> body = [];
+
+      //Creating list of behavior to sort all together
+      allBehavior!.forEach((element) {
+        Map obj = {
+          "Behaviour_Id": element.id,
+          "Sorting_Order": element.pBISBehaviorSortOrderC,
+          "Teacher_Id": teacherId
+        };
+
+        body.add(obj);
+      });
+
+      final ResponseModel response = await _dbServices.postApi(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/sort-behaviour',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        return true;
+      } else if (retry > 0) {
+        return sortTheBehaviourInDB(
+            teacherId: teacherId, allBehavior: allBehavior, retry: retry - 1);
+      }
+      return response.statusCode;
+    } catch (e) {
+      throw (e);
+    }
+  }
 }
 
+/*----------------------------------------------------------------------------------------------*/
+/*---------------------------------------Function searchNotesList-------------------------------*/
+/*----------------------------------------------------------------------------------------------*/
 List<PBISPlusStudentList> searchNotesList(
     List<PBISPlusStudentList> notesList, String keyword) {
   List<PBISPlusStudentList> searchResults = [];
