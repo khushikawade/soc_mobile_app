@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_plus_total_interaction_modal.g.dart';
 
@@ -74,4 +74,4 @@ class PBISPlusTotalInteractionModal {
     return data;
   }
 }
-//  PBISPlusGenericBehaviourModal intern;
+//  PBISPlusGenericBehaviorModal intern;

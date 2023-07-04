@@ -2,9 +2,9 @@ import 'package:Soc/src/globals.dart';
 
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
-  static final String pbisPlusBehaviourGenricDB = 'PBISPlus_Behaviour_Genric';
-  static final String pbisPlusAdditionalBehviourDB =
-      'PBISPlusAdditionalBehviour';
+  static final String pbisPlusBehaviorGenricDB = 'PBISPlus_Behavior_Genric';
+  // static final String pbisPlusAdditionalBehviourDB =
+  //     'PBISPlusAdditionalBehviour';
   static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
   static final String pbisPlusStudentListDB = 'PBISPlus_student_list';
@@ -29,12 +29,17 @@ class PBISPlusOverrides {
   static final String pbisBaseUrl =
       "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/";
 
-  // static String pbisPlusGoogleDriveFolderId = '';
-  // static String pbisPlusGoogleDriveFolderPath = '';
-
 //for reseting bottom sheet items titles
   static const String kresetOptionOnetitle = 'All Courses & Students';
   static const String kresetOptionTwotitle = 'Select Students';
   static const String kresetOptionThreetitle = 'Select Courses';
   static const String kresetOptionFourtitle = 'Select Students by Course';
+
+//PBIS custom behavior local DBs
+  static final String PbisPlusDefaultBehaviorLocalDbTable =
+      'pbis_plus_default_behavior';
+  static final String PbisPlusAdditionalBehaviorLocalDbTable =
+      'pbis_plus_additional_behavior';
+  static final String PbisPlusTeacherCustomBehaviorLocalDbTable =
+      'pbis_plus_custom_behavior';
 }

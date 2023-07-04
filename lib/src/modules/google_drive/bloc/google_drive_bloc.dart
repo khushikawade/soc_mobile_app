@@ -553,7 +553,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId == null ||
             _userProfileLocalData[0].gradedPlusGoogleDriveFolderId == "") {
           bool result = await googleDriveBlocMethods.getAndUpdateFolderDetails(
-              folderName: "SOLVED GRADED+" );
+              folderName: "SOLVED GRADED+");
           if (result == false) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
             return;
@@ -3305,20 +3305,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               student.profile!.name!.fullName,
               if (course == true) student.profile!.courseName,
               //TODOPBIS:  SPREAD SHEET TOP CLOUMN DATA & TOTAL DATA
-              // student.profile!.behaviour1?.counter! ?? 0,
-              // student.profile!.behaviour2?.counter! ?? 0,
-              // student.profile!.behaviour3?.counter! ?? 0,
-              // student.profile!.behaviour4?.counter! ?? 0,
-              // student.profile!.behaviour5?.counter! ?? 0,
-              // student.profile!.behaviour6?.counter! ?? 0,
+              // student.profile!.behavior1?.counter! ?? 0,
+              // student.profile!.behavior2?.counter! ?? 0,
+              // student.profile!.behavior3?.counter! ?? 0,
+              // student.profile!.behavior4?.counter! ?? 0,
+              // student.profile!.behavior5?.counter! ?? 0,
+              // student.profile!.behavior6?.counter! ?? 0,
               (0)
               //ADD DATA REMAIN
-              // student.profile!.behaviour1!.counter! ??
-              //   student.profile!.behaviour2!.counter! +
-              //       student.profile!.behaviour3!.counter! +
-              //       student.profile!.behaviour4!.counter! +
-              //       student.profile!.behaviour5!.counter! +
-              //       student.profile!.behaviour6!.counter!)
+              // student.profile!.behavior1!.counter! ??
+              //   student.profile!.behavior2!.counter! +
+              //       student.profile!.behavior3!.counter! +
+              //       student.profile!.behavior4!.counter! +
+              //       student.profile!.behavior5!.counter! +
+              //       student.profile!.behavior6!.counter!)
             ]),
       ];
     } catch (e) {

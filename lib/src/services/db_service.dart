@@ -1,15 +1,11 @@
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
-import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
 import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {
-  getApi(
-    api, {
-    headers,
-  }) async {
+  getApi(api, {headers}) async {
     try {
       final response = await httpClient.get(
           // baseURLExist == true
@@ -89,12 +85,7 @@ class DbServices {
   //   }
   // }
 
-  postApi(
-    api, {
-    body,
-    headers,
-    bool? isGoogleApi,
-  }) async {
+  postApi(api, {body, headers, bool? isGoogleApi}) async {
     try {
       final response = await httpClient.post(
           isGoogleApi == true
@@ -130,40 +121,36 @@ class DbServices {
     }
   }
 
-  diopostApi(api, _headers, body) async {
-    try {
-      final dio = Dio();
-      Response response = await dio.post(
-        '${Overrides.API_BASE_URL}$api',
-        data: body,
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept-Language': 'Accept-Language',
-            'authorization': 'Bearer ${Globals.token}'
-          },
-        ),
-      );
-      final data = response.data;
-      if (response.statusCode == 200) {
-        return ResponseModel(statusCode: response.statusCode, data: data);
-      } else {
-        return ResponseModel(statusCode: response.statusCode, data: data);
-      }
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
-    }
-  }
+  // dioPostAPI(api, _headers, body) async {
+  //   try {
+  //     final dio = Dio();
+  //     Response response = await dio.post(
+  //       '${Overrides.API_BASE_URL}$api',
+  //       data: body,
+  //       options: Options(
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Accept-Language': 'Accept-Language',
+  //           'authorization': 'Bearer ${Globals.token}'
+  //         },
+  //       ),
+  //     );
+  //     final data = response.data;
+  //     if (response.statusCode == 200) {
+  //       return ResponseModel(statusCode: response.statusCode, data: data);
+  //     } else {
+  //       return ResponseModel(statusCode: response.statusCode, data: data);
+  //     }
+  //   } catch (e) {
+  //     if (e.toString().contains("Failed host lookup")) {
+  //       throw ("NO_CONNECTION");
+  //     } else {
+  //       throw (e);
+  //     }
+  //   }
+  // }
 
-  patchApi(
-    api, {
-    body,
-    headers,
-  }) async {
+  patchApi(api, {body, headers}) async {
     try {
       final response = await httpClient.patch(Uri.parse('$api'),
           headers: headers, body: body);
@@ -190,7 +177,7 @@ class DbServices {
 
 //Use it for all the previous aws APIs, Do not use it for google APIs
 //'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/'
-  postApimain(api, {body, headers}) async {
+  postAPIMain(api, {body, headers}) async {
     try {
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api'),
@@ -210,6 +197,29 @@ class DbServices {
         }
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  deleteApi(api) async {
+    try {
+      final response = await httpClient.delete(Uri.parse(api));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res = await deleteApi(api);
+          return _res;
+        }
+        return ResponseModel(statusCode: response.statusCode, data: null);
       }
     } catch (e) {
       if (e.toString().contains('Failed host lookup')) {
