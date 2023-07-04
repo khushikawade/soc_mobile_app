@@ -60,11 +60,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<bool> isNotesTextfieldEnable = ValueNotifier<bool>(false);
   //---------------------------------------------------------------------------------------------
   final TextEditingController noteController = TextEditingController();
-
-  // ValueNotifier<bool> isnotestextfieldenable = ValueNotifier<bool>(false);
-
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
-  ValueNotifier<int> behvaiouriconListCount = ValueNotifier<int>(0);
+  ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -209,7 +206,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
             if (state.teacherCustomBehaviorList.isNotEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                behvaiouriconListCount.value =
+                behvaiourIconListCount.value =
                     state.teacherCustomBehaviorList.length;
               });
 
@@ -313,13 +310,13 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               ValueListenableBuilder(
                   valueListenable: isNotesTextfieldEnable,
                   builder: (context, value, _) => ValueListenableBuilder(
-                        valueListenable: behvaiouriconListCount,
+                        valueListenable: behvaiourIconListCount,
                         builder: (context, value, _) => Container(
                             alignment: Alignment.center,
                             height: getContainerHeight(
                                 widget.isFromDashboardPage,
                                 widget.constraint,
-                                behvaiouriconListCount),
+                                behvaiourIconListCount),
                             width: widget.isFromDashboardPage == true
                                 ? MediaQuery.of(context).size.width
                                 : MediaQuery.of(context).size.width * 0.8,
@@ -492,7 +489,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             ? MediaQuery.of(context).size.width * 0.1
             : MediaQuery.of(context).size.width * 0.1
         : 0;
-    print(spacing);
+
     double height = widget.isFromDashboardPage == true
         ? (widget.constraint <= 115)
             ? MediaQuery.of(context).size.height * 0.43 - spacing
