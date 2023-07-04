@@ -131,6 +131,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         kLabelSpacing: 0,
         text: 'All Courses',
         backButton: true,
+        isTrailingIcon: true,
         backButtonOnTap: () {
           widget.backOnTap();
         },
