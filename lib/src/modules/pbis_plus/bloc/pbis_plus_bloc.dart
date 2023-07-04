@@ -1027,14 +1027,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       };
       //if user reset Course //All Courses & Students||Select Students
       if (type == PBISPlusOverrides.kresetOptionOnetitle ||
-          type == PBISPlusOverrides.kresetOptionTwotitle) {
+          type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
       }
       //Select Courses
-      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
+      else if (type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
