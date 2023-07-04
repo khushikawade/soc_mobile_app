@@ -571,6 +571,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
       List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+
       try {
         //remove the deletd item from db
         for (int i = 0; i < _localData.length; i++) {
@@ -582,17 +583,26 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             break;
           }
         }
-        //clean localDB AND
-        //update the new sorting index every item in localDB
-
-        await _localDb.clear();
-        _localData.asMap().forEach((index, element) async {
-          element.pBISBehaviorSortOrderC = (index + 1).toString();
-          await _localDb.addData(element);
-        });
 
         var result = await deleteTeacherCustomBehvaiour(
             behaviour: event.behvaiour, teacherId: Globals.teacherId ?? '');
+
+        if (result == true && _localData.isNotEmpty) {
+          //clean localDB AND
+          //update the new sorting index every item in localDB
+          await _localDb.clear();
+
+          _localData.asMap().forEach((index, element) async {
+            element.pBISBehaviorSortOrderC = (index + 1).toString();
+            await _localDb.addData(element);
+          });
+          yield PBISPlusLoading();
+          yield PBISPlusGetTeacherCustomBehvaiourSuccess(
+              teacherCustomBehaviourList: _localData);
+
+          var result = await sortTheBehaviourInDB(
+              allBehvaiour: _localData, teacherId: Globals.teacherId ?? '');
+        }
       } catch (e) {
         print(e);
       }
@@ -1862,6 +1872,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return deleteTeacherCustomBehvaiour(
             behaviour: behaviour, teacherId: teacherId, retry: retry - 1);
       }
+      return false;
     } catch (e) {
       throw (e);
     }
@@ -1929,6 +1940,44 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           orderB); // For descending order: return orderB.compareTo(orderA);
     });
     return allBehaviours;
+  }
+
+  Future sortTheBehaviourInDB(
+      {List<PBISPlusALLBehaviourModal>? allBehvaiour,
+      required String teacherId,
+      int retry = 3}) async {
+    try {
+      List<Map> body = [];
+
+      allBehvaiour!.forEach((element) {
+        Map obj = {
+          "Behaviour_Id": element.id,
+          "Sorting_Order": element.pBISBehaviorSortOrderC,
+          "Teacher_Id": teacherId
+        };
+
+        body.add(obj);
+      });
+
+      print(body);
+      final ResponseModel response = await _dbServices.postApi(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/sort-behaviour',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        return true;
+      } else if (retry > 0) {
+        return sortTheBehaviourInDB(
+            teacherId: teacherId, allBehvaiour: allBehvaiour, retry: retry - 1);
+      }
+      return response.statusCode;
+    } catch (e) {
+      throw (e);
+    }
   }
 }
 
