@@ -63,7 +63,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets ,
+      padding: MediaQuery.of(context).viewInsets,
       controller: ModalScrollController.of(context),
       child: Container(
         height: widget.sheetHeight != null

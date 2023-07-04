@@ -194,10 +194,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           ),
                           color: AppTheme.kButtonColor,
                         ))
-                    : SizedBox(
-                        height: 0,
-                        width: 0,
-                      );
+                    : SizedBox.shrink();
               }),
     );
   }
@@ -750,8 +747,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           ]));
     }
 
-    print("UI OPEN BOTTOM SHEET");
-    print(allClassroomCourses[0].name);
+    // print("UI OPEN BOTTOM SHEET");
+    // print(allClassroomCourses[0].name);
 
     var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,

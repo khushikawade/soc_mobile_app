@@ -12,7 +12,7 @@
 ///       - asset: fonts/CustomFlutterIcons.ttf
 ///
 ///
-///  
+///
 import 'package:flutter/widgets.dart';
 
 class CustomFlutterIcons {
