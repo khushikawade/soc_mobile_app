@@ -800,6 +800,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw e;
       }
     }
+
     if (event is AssessmentImgToAwsBucked) {
       try {
         LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
@@ -813,11 +814,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                     ? 'history_student_info'
                     : 'student_info');
 
+        //In case of scan more, if user already exist, no need to reupload the same image again and again
         for (var i = 0; i < studentInfo.length; i++) {
           if (event.studentId == studentInfo[i].studentId) {
             return;
           }
         }
+
         String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
