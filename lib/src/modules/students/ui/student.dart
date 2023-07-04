@@ -618,8 +618,6 @@ class _StudentPageState extends State<StudentPage> {
               );
             }));
   }
- 
-
 
   /* ---------------------------- Function call in case of student Plus --------------------------- */
   Future studentPlusLogin() async {
@@ -668,9 +666,13 @@ class _StudentPageState extends State<StudentPage> {
       //Creating fresh sessionID
       // Check user is login in other section or not
       if (_profileData[0].userType != "Student") {
-        popupModal(message: "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
+        popupModal(
+            message:
+                "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
         return;
       }
+
+      await Authentication.refreshAuthenticationToken(refreshToken: _profileData[0].refreshToken??'');
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
       navigateToStudentPlus();
     }

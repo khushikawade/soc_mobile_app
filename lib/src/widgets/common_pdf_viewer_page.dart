@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -17,6 +18,7 @@ class CommonPdfViewerPage extends StatefulWidget {
   String? language;
   bool? isHomePage;
   bool? isOCRFeature;
+  bool? isBackButton;
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   bool isBottomSheet;
@@ -27,6 +29,7 @@ class CommonPdfViewerPage extends StatefulWidget {
       @required this.tittle,
       required this.isBottomSheet,
       required this.language,
+      this.isBackButton,
       required this.isHomePage})
       : super(key: key);
   @override
@@ -124,35 +127,39 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                               //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                             ))
                           : Stack(children: [
-                              PDFView(
-                                filePath: remotePDFpath.value,
-                                enableSwipe: true,
-                                swipeHorizontal: false,
-                                autoSpacing: false,
-                                pageFling: true,
-                                pageSnap: true,
-                                fitPolicy: FitPolicy.WIDTH,
-                                fitEachPage: true,
-                                preventLinkNavigation: false,
-                                onViewCreated: (PDFViewController
-                                    pdfViewController) async {
-                                  _controller.complete(pdfViewController);
-                                },
-                                onLinkHandler: (String? uri) {
-                                  print('goto uri: $uri');
-                                },
-                                onPageChanged: (int? page, int? total) {
-                                  totalPage.value = total!;
-                                  currentPage.value = page! + 1;
-                                },
-                              ),
+                              widget.isBackButton == true
+                                  ? ListView(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: PlusScreenTitleWidget(
+                                            kLabelSpacing: 0,
+                                            text: 'Rubric Pdf',
+                                            backButton: true,
+                                            backButtonOnTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ),
+                                        Container(
+                                            padding:
+                                                EdgeInsets.only(bottom: 30),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.8,
+                                            child: pdfWidget()),
+                                      ],
+                                    )
+                                  : pdfWidget(),
                               Flex(
                                 direction: Axis.horizontal,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   Container(
                                       margin:
-                                          EdgeInsets.only(top: 10, right: 10),
+                                          EdgeInsets.only(top: 50, right: 10),
                                       padding: const EdgeInsets.all(10.0),
                                       constraints: BoxConstraints(
                                         maxWidth:
@@ -203,5 +210,29 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                 ],
               );
             }));
+  }
+
+  Widget pdfWidget() {
+    return PDFView(
+      filePath: remotePDFpath.value,
+      enableSwipe: true,
+      swipeHorizontal: false,
+      autoSpacing: false,
+      pageFling: true,
+      pageSnap: true,
+      fitPolicy: FitPolicy.WIDTH,
+      fitEachPage: true,
+      preventLinkNavigation: false,
+      onViewCreated: (PDFViewController pdfViewController) async {
+        _controller.complete(pdfViewController);
+      },
+      onLinkHandler: (String? uri) {
+        print('goto uri: $uri');
+      },
+      onPageChanged: (int? page, int? total) {
+        totalPage.value = total!;
+        currentPage.value = page! + 1;
+      },
+    );
   }
 }

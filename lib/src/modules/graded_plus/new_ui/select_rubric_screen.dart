@@ -697,6 +697,7 @@ class _GradedPlusConstructedResponseState
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => CommonPdfViewerPage(
+                    isBackButton: true,
                     isOCRFeature: true,
                     isHomePage: false,
                     url: pdfObject.rubricPdfC,

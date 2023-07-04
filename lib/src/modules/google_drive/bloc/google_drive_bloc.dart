@@ -553,7 +553,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (_userProfileLocalData[0].gradedPlusGoogleDriveFolderId == null ||
             _userProfileLocalData[0].gradedPlusGoogleDriveFolderId == "") {
           bool result = await googleDriveBlocMethods.getAndUpdateFolderDetails(
-              folderName: "SOLVED GRADED+" );
+              folderName: "SOLVED GRADED+");
           if (result == false) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
             return;
@@ -1640,7 +1640,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       };
 
       String query =
-          '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
+          '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'${searchKey}\')';
       if (searchKey == "" || searchKey == null) {
         switch (filterType) {
           case 'Multiple Choice':
