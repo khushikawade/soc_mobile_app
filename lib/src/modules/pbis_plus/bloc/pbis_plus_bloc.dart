@@ -414,18 +414,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         var data = await addPBISInteraction(body: body);
 
         /*-------------------------User Activity Track START----------------------------*/
-        // PlusUtility.updateLogs(
-        //     activityType: 'PBIS+',
-        //     userType: 'Teacher',
-        //     activityId: '38',
-        //     description:
-        //         'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
-        //     operationResult: 'Success');
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            userType: 'Teacher',
+            activityId: '38',
+            description:
+                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+            operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
-        yield AddPBISInteractionSuccess(
-          obj: data,
-        );
+        yield AddPBISInteractionSuccess(obj: data);
       } catch (e) {
         if (e.toString().contains('NO_CONNECTION')) {
           Utility.showSnackBar(
@@ -724,9 +722,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await _localDb.putAt(updateIndex, _localData[updateIndex]);
           }
         }
-        if (result[0] != true) {
-          print("item is not added in backend");
-        }
+
         PBISPlusLoading();
         yield PBISPlusGetTeacherCustomBehaviorSuccess(
             teacherCustomBehaviorList: _localData);
@@ -1450,7 +1446,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       if (isAddedNewIcon == false) {
         body.addAll({"behaviour_id": behavior.id});
       }
-      print(body);
+
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
