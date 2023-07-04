@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
@@ -708,7 +709,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List result = await addTeacherCustomBehavior(
             behavior: event.behavior,
             schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: Utility.getTeacherId() ?? "",
+            teacherId: OcrUtility.getTeacherId() ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
         //Fetching updated value
