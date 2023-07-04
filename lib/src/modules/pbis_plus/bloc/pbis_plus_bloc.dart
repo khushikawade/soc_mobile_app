@@ -1068,7 +1068,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List result = await addTeacherCustomBehvaiour(
             behvaiour: event.behvaiour,
             schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: Globals.teacherId ?? "",
+            teacherId: Utility.getTeacherId() ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
         if (result[0] == true && isAddedNewIcon == true) {

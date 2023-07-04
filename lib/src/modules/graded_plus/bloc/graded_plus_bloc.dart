@@ -1265,9 +1265,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         } else {
           Globals.teacherId = data['Id'];
-
+          print(
+              "-----------Globals.teacherId = data['Id']--------${Globals.teacherId}----");
+          Utility.setTeacherId(data['Id']);
           if (data['Assessment_App_User__c'] != 'true') {
             Globals.teacherId = data['Id'];
+            print(
+                "-----------Globals.teacherId = data['Id']--------${Globals.teacherId}----");
+            Utility.setTeacherId(data['Id']);
             bool result = await updateContactToSalesforce(recordId: data['Id']);
             if (!result) {
               await updateContactToSalesforce(recordId: data['Id']);
@@ -1321,6 +1326,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         // print(response.data["body"]);
         Globals.teacherId = response.data["body"]["id"];
+        print(
+            "-----------Globals.teacherId = data['Id']--------${Globals.teacherId}----");
+        Utility.setTeacherId(response.data["body"]["id"]);
         // print(response.data["body"]["id"]);
         return true;
       } else {

@@ -262,7 +262,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 ),
                 widget.isFromDashboardPage == true
                     ? SizedBox.shrink()
-                    : SpacerWidget(6)
+                    : SpacerWidget(8)
               ],
             ),
           ),
@@ -445,7 +445,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   Widget buildGridView(
       {required List<PBISPlusALLBehaviourModal> behaviourList,
       bool loading = false}) {
-    return GridView.builder(
+    return Center(
+        child: GridView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
@@ -487,15 +488,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           ),
         );
       },
-    );
+    ));
   }
 
   dynamic getContainerHeight(
       bool? isFromDashboardPage, double? constraint, itemcount) {
     double spacing = itemcount.value <= 3
         ? isFromDashboardPage!
-            ? MediaQuery.of(context).size.width * 0.3
-            : MediaQuery.of(context).size.width * 0.2
+            ? MediaQuery.of(context).size.width * 0.2
+            : MediaQuery.of(context).size.width * 0.1
         : 0;
     print(spacing);
     double height = widget.isFromDashboardPage == true
