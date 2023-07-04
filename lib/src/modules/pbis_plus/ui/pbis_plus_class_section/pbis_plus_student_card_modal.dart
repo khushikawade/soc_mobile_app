@@ -339,7 +339,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       child: FittedBox(child: pbisStudentProfileWidget))),
               Positioned(
                   bottom: 5,
-                  child: widget.isFromStudentPlus! == true ||
+                  child: widget.isFromStudentPlus == true ||
                           widget.isFromDashboardPage == true
                       ? SizedBox.shrink()
                       : Container(
