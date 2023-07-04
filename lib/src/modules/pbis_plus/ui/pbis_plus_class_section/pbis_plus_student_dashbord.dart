@@ -119,155 +119,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------body--------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   Widget body(BuildContext context) {
-    return ListView(
-      // physics: NeverScrollableScrollPhysics(),
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        widget.isFromStudentPlus != true
-            ? IconButton(
-                alignment: Alignment.centerLeft,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                    IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor),
-              )
-            : Container(),
-        // widget.isFromStudentPlus == true
-        Container(
-          child: Screenshot(
-            controller: headerScreenshotController,
-            child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, PBISPlusState state) {
-                  if (state is PBISPlusLoading) {
-                    return PBISPlusStudentCardModal(
-                        studentProfile: widget.studentProfile,
-                        constraint: widget.constraint,
-                        isLoading:
-                            widget.isFromStudentPlus == true ? true : false,
-                        isFromDashboardPage: true,
-                        heroTag: widget.heroTag,
-                        onValueUpdate: widget.onValueUpdate,
-                        scaffoldKey: widget.scaffoldKey,
-                        studentValueNotifier: widget.studentValueNotifier,
-                        isFromStudentPlus: widget.isFromStudentPlus,
-                        classroomCourseId: widget.classroomCourseId!);
-                  } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                    if (widget.isFromStudentPlus == true) {
-                      updateActionCountStudentPlusModuleWidget(
-                        pbisHistoryData: state.pbisStudentInteractionList,
-                      );
-                    }
-                    return PBISPlusStudentCardModal(
-                        studentProfile: widget.studentProfile,
-                        constraint: widget.constraint,
-                        isLoading: false,
-                        isFromDashboardPage: true,
-                        heroTag: widget.heroTag,
-                        onValueUpdate: widget.onValueUpdate,
-                        scaffoldKey: widget.scaffoldKey,
-                        studentValueNotifier: widget.studentValueNotifier,
-                        isFromStudentPlus: widget.isFromStudentPlus,
-                        classroomCourseId: widget.classroomCourseId!);
-                  } else {
-                    // In case of student email not found in STUDENT+ Module
-                    List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
-                    if (widget.isFromStudentPlus == true) {
-                      updateActionCountStudentPlusModuleWidget(
-                        pbisHistoryData: pbisHistoryData,
-                      );
-                    }
-                    return PBISPlusStudentCardModal(
-                        studentProfile: widget.studentProfile,
-                        constraint: widget.constraint,
-                        isLoading: false,
-                        isFromDashboardPage: true,
-                        heroTag: widget.heroTag,
-                        onValueUpdate: widget.onValueUpdate,
-                        scaffoldKey: widget.scaffoldKey,
-                        studentValueNotifier: widget.studentValueNotifier,
-                        isFromStudentPlus: widget.isFromStudentPlus,
-                        classroomCourseId: widget.classroomCourseId!);
-                  }
-                }),
-          ),
-        ),
-        // to remove hero widget for STUDENT+
-        Container(
-          alignment: Alignment.topCenter,
-          height: (widget.constraint <= 115)
-              ? MediaQuery.of(context).size.height * 0.30
-              : MediaQuery.of(context).size.height * 0.32,
-          // height: MediaQuery.of(context).size.height * 0.50,
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(horizontal: 16),
-          padding: EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, PBISPlusState state) {
-                if (state is PBISPlusLoading) {
-                  return Center(
-                      child: CircularProgressIndicator.adaptive(
-                    backgroundColor: AppTheme.kButtonColor,
-                  ));
-                } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                  return
-                      // state.pbisStudentInteractionList.length > 0
-                      //     ?
-                      RefreshIndicator(
-                    color: AppTheme.kButtonColor,
-                    key: refreshKey,
-                    onRefresh: refreshPage,
-                    child: ListView(
-                      children: [
-                        FittedBox(
-                            child: Screenshot(
-                          controller: screenshotController,
-                          child: Container(
-                            padding: EdgeInsets.only(bottom: 80),
-                            child: _buildDataTable(
-                                list: state.pbisStudentInteractionList),
-                          ),
-                        )),
-                      ],
-                    ),
-                  );
-                  // : RefreshIndicator(
-                  //     key: refreshKey,
-                  //     onRefresh: refreshPage,
-                  //     child: NoDataFoundErrorWidget(
-                  //         marginTop:
-                  //             MediaQuery.of(context).size.height * 0.06,
-                  //         isResultNotFoundMsg: true,
-                  //         isNews: false,
-                  //         isEvents: false),
-                  //   );
-                } else {
-                  //  shows in condition where email is not not their in case of student plus
-                  return RefreshIndicator(
-                    color: AppTheme.kButtonColor,
-                    key: refreshKey,
-                    onRefresh: refreshPage,
-                    child: NoDataFoundErrorWidget(
-                        // marginTop: MediaQuery.of(context).size.height * 0.1,
-                        isResultNotFoundMsg: true,
-                        isNews: false,
-                        isEvents: false),
-                  );
-                }
-              }),
-        ),
-      ],
-    );
+    return widget.isFromStudentPlus == true
+        ? Column(
+            // physics: NeverScrollableScrollPhysics(),
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children())
+        : ListView(
+            children: children(),
+          );
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -540,4 +400,151 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           );
         },
       );
+
+  List<Widget> children() {
+    return [
+      widget.isFromStudentPlus != true
+          ? IconButton(
+              alignment: Alignment.centerLeft,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor),
+            )
+          : Container(),
+      // widget.isFromStudentPlus == true
+      Container(
+        child: Screenshot(
+          controller: headerScreenshotController,
+          child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, PBISPlusState state) {
+                if (state is PBISPlusLoading) {
+                  return PBISPlusStudentCardModal(
+                      studentProfile: widget.studentProfile,
+                      constraint: widget.constraint,
+                      isLoading:
+                          widget.isFromStudentPlus == true ? true : false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
+                } else if (state is PBISPlusStudentDashboardLogSuccess) {
+                  if (widget.isFromStudentPlus == true) {
+                    updateActionCountStudentPlusModuleWidget(
+                      pbisHistoryData: state.pbisStudentInteractionList,
+                    );
+                  }
+                  return PBISPlusStudentCardModal(
+                      studentProfile: widget.studentProfile,
+                      constraint: widget.constraint,
+                      isLoading: false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
+                } else {
+                  // In case of student email not found in STUDENT+ Module
+                  List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
+                  if (widget.isFromStudentPlus == true) {
+                    updateActionCountStudentPlusModuleWidget(
+                      pbisHistoryData: pbisHistoryData,
+                    );
+                  }
+                  return PBISPlusStudentCardModal(
+                      studentProfile: widget.studentProfile,
+                      constraint: widget.constraint,
+                      isLoading: false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
+                }
+              }),
+        ),
+      ),
+      // to remove hero widget for STUDENT+
+      Container(
+        alignment: Alignment.topCenter,
+        height: (widget.constraint <= 115)
+            ? MediaQuery.of(context).size.height * 0.30
+            : MediaQuery.of(context).size.height * 0.32,
+        // height: MediaQuery.of(context).size.height * 0.50,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+            bloc: _bloc,
+            builder: (BuildContext contxt, PBISPlusState state) {
+              if (state is PBISPlusLoading) {
+                return Center(
+                    child: CircularProgressIndicator.adaptive(
+                  backgroundColor: AppTheme.kButtonColor,
+                ));
+              } else if (state is PBISPlusStudentDashboardLogSuccess) {
+                return
+                    // state.pbisStudentInteractionList.length > 0
+                    //     ?
+                    RefreshIndicator(
+                  color: AppTheme.kButtonColor,
+                  key: refreshKey,
+                  onRefresh: refreshPage,
+                  child: ListView(
+                    children: [
+                      FittedBox(
+                          child: Screenshot(
+                        controller: screenshotController,
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: 80),
+                          child: _buildDataTable(
+                              list: state.pbisStudentInteractionList),
+                        ),
+                      )),
+                    ],
+                  ),
+                );
+                // : RefreshIndicator(
+                //     key: refreshKey,
+                //     onRefresh: refreshPage,
+                //     child: NoDataFoundErrorWidget(
+                //         marginTop:
+                //             MediaQuery.of(context).size.height * 0.06,
+                //         isResultNotFoundMsg: true,
+                //         isNews: false,
+                //         isEvents: false),
+                //   );
+              } else {
+                //  shows in condition where email is not not their in case of student plus
+                return RefreshIndicator(
+                  color: AppTheme.kButtonColor,
+                  key: refreshKey,
+                  onRefresh: refreshPage,
+                  child: NoDataFoundErrorWidget(
+                      // marginTop: MediaQuery.of(context).size.height * 0.1,
+                      isResultNotFoundMsg: true,
+                      isNews: false,
+                      isEvents: false),
+                );
+              }
+            }),
+      ),
+    ];
+  }
 }
