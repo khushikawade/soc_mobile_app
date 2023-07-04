@@ -222,8 +222,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         FittedBox(
                             child: Screenshot(
                           controller: screenshotController,
-                          child: _buildDataTable(
-                              list: state.pbisStudentInteractionList),
+                          child: Container(
+                            padding: EdgeInsets.only(bottom: 80),
+                            child: _buildDataTable(
+                                list: state.pbisStudentInteractionList),
+                          ),
                         )),
                       ],
                     ),

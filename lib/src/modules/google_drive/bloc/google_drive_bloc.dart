@@ -800,25 +800,33 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw e;
       }
     }
+
     if (event is AssessmentImgToAwsBucked) {
       try {
+        LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
+            event.isHistoryAssessmentSection == true
+                ? 'history_student_info'
+                : 'student_info');
+
+        List<StudentAssessmentInfo> studentInfo =
+            await OcrUtility.getSortedStudentInfoList(
+                tableName: event.isHistoryAssessmentSection == true
+                    ? 'history_student_info'
+                    : 'student_info');
+
+        //In case of scan more, if user already exist, no need to reupload the same image again and again
+        for (var i = 0; i < studentInfo.length; i++) {
+          if (event.studentId == studentInfo[i].studentId) {
+            return;
+          }
+        }
+
         String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: "assessment-sheet");
 
         if (imgUrl != "") {
-          LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
-              event.isHistoryAssessmentSection == true
-                  ? 'history_student_info'
-                  : 'student_info');
-
-          List<StudentAssessmentInfo> studentInfo =
-              await OcrUtility.getSortedStudentInfoList(
-                  tableName: event.isHistoryAssessmentSection == true
-                      ? 'history_student_info'
-                      : 'student_info');
-
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
               StudentAssessmentInfo e = studentInfo[i];
