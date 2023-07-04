@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Note: Do not change sequence of this enumeration if not necessary
-// this can change behaviour of month and week view.
+// this can change behavior of month and week view.
 /// Defines day of week
 enum WeekDays {
   /// Monday: 0

@@ -7,12 +7,14 @@ class PlusScreenTitleWidget extends StatelessWidget {
   final double kLabelSpacing;
   final String text;
   final bool? backButton;
+  final bool? isTrailingIcon;
   final Function()? backButtonOnTap;
 
   const PlusScreenTitleWidget(
       {Key? key,
       required this.kLabelSpacing,
       required this.text,
+      this.isTrailingIcon,
       this.backButton = false,
       this.backButtonOnTap})
       : super(key: key);
@@ -39,7 +41,9 @@ class PlusScreenTitleWidget extends StatelessWidget {
               ),
             ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.72,
+            width: isTrailingIcon == true
+                ? MediaQuery.of(context).size.width * 0.6
+                : MediaQuery.of(context).size.width * 0.75,
             child: FittedBox(
               alignment: Alignment.centerLeft,
               fit: BoxFit.scaleDown,

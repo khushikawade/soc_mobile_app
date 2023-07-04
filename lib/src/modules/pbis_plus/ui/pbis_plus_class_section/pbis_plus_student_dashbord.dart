@@ -119,10 +119,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------body--------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   Widget body(BuildContext context) {
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      // physics: NeverScrollableScrollPhysics(),
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         widget.isFromStudentPlus != true
             ? IconButton(
@@ -138,62 +138,64 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               )
             : Container(),
         // widget.isFromStudentPlus == true
-        Screenshot(
-          controller: headerScreenshotController,
-          child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, PBISPlusState state) {
-                if (state is PBISPlusLoading) {
-                  return PBISPlusStudentCardModal(
-                      studentProfile: widget.studentProfile,
-                      constraint: widget.constraint,
-                      isLoading:
-                          widget.isFromStudentPlus == true ? true : false,
-                      isFromDashboardPage: true,
-                      heroTag: widget.heroTag,
-                      onValueUpdate: widget.onValueUpdate,
-                      scaffoldKey: widget.scaffoldKey,
-                      studentValueNotifier: widget.studentValueNotifier,
-                      isFromStudentPlus: widget.isFromStudentPlus,
-                      classroomCourseId: widget.classroomCourseId!);
-                } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                  if (widget.isFromStudentPlus == true) {
-                    updateActionCountStudentPlusModuleWidget(
-                      pbisHistoryData: state.pbisStudentInteractionList,
-                    );
+        Container(
+          child: Screenshot(
+            controller: headerScreenshotController,
+            child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+                bloc: _bloc,
+                builder: (BuildContext contxt, PBISPlusState state) {
+                  if (state is PBISPlusLoading) {
+                    return PBISPlusStudentCardModal(
+                        studentProfile: widget.studentProfile,
+                        constraint: widget.constraint,
+                        isLoading:
+                            widget.isFromStudentPlus == true ? true : false,
+                        isFromDashboardPage: true,
+                        heroTag: widget.heroTag,
+                        onValueUpdate: widget.onValueUpdate,
+                        scaffoldKey: widget.scaffoldKey,
+                        studentValueNotifier: widget.studentValueNotifier,
+                        isFromStudentPlus: widget.isFromStudentPlus,
+                        classroomCourseId: widget.classroomCourseId!);
+                  } else if (state is PBISPlusStudentDashboardLogSuccess) {
+                    if (widget.isFromStudentPlus == true) {
+                      updateActionCountStudentPlusModuleWidget(
+                        pbisHistoryData: state.pbisStudentInteractionList,
+                      );
+                    }
+                    return PBISPlusStudentCardModal(
+                        studentProfile: widget.studentProfile,
+                        constraint: widget.constraint,
+                        isLoading: false,
+                        isFromDashboardPage: true,
+                        heroTag: widget.heroTag,
+                        onValueUpdate: widget.onValueUpdate,
+                        scaffoldKey: widget.scaffoldKey,
+                        studentValueNotifier: widget.studentValueNotifier,
+                        isFromStudentPlus: widget.isFromStudentPlus,
+                        classroomCourseId: widget.classroomCourseId!);
+                  } else {
+                    // In case of student email not found in STUDENT+ Module
+                    List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
+                    if (widget.isFromStudentPlus == true) {
+                      updateActionCountStudentPlusModuleWidget(
+                        pbisHistoryData: pbisHistoryData,
+                      );
+                    }
+                    return PBISPlusStudentCardModal(
+                        studentProfile: widget.studentProfile,
+                        constraint: widget.constraint,
+                        isLoading: false,
+                        isFromDashboardPage: true,
+                        heroTag: widget.heroTag,
+                        onValueUpdate: widget.onValueUpdate,
+                        scaffoldKey: widget.scaffoldKey,
+                        studentValueNotifier: widget.studentValueNotifier,
+                        isFromStudentPlus: widget.isFromStudentPlus,
+                        classroomCourseId: widget.classroomCourseId!);
                   }
-                  return PBISPlusStudentCardModal(
-                      studentProfile: widget.studentProfile,
-                      constraint: widget.constraint,
-                      isLoading: false,
-                      isFromDashboardPage: true,
-                      heroTag: widget.heroTag,
-                      onValueUpdate: widget.onValueUpdate,
-                      scaffoldKey: widget.scaffoldKey,
-                      studentValueNotifier: widget.studentValueNotifier,
-                      isFromStudentPlus: widget.isFromStudentPlus,
-                      classroomCourseId: widget.classroomCourseId!);
-                } else {
-                  // In case of student email not found in STUDENT+ Module
-                  List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
-                  if (widget.isFromStudentPlus == true) {
-                    updateActionCountStudentPlusModuleWidget(
-                      pbisHistoryData: pbisHistoryData,
-                    );
-                  }
-                  return PBISPlusStudentCardModal(
-                      studentProfile: widget.studentProfile,
-                      constraint: widget.constraint,
-                      isLoading: false,
-                      isFromDashboardPage: true,
-                      heroTag: widget.heroTag,
-                      onValueUpdate: widget.onValueUpdate,
-                      scaffoldKey: widget.scaffoldKey,
-                      studentValueNotifier: widget.studentValueNotifier,
-                      isFromStudentPlus: widget.isFromStudentPlus,
-                      classroomCourseId: widget.classroomCourseId!);
-                }
-              }),
+                }),
+          ),
         ),
         // to remove hero widget for STUDENT+
         Container(
@@ -230,8 +232,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         FittedBox(
                             child: Screenshot(
                           controller: screenshotController,
-                          child: _buildDataTable(
-                              list: state.pbisStudentInteractionList),
+                          child: Container(
+                            padding: EdgeInsets.only(bottom: 80),
+                            child: _buildDataTable(
+                                list: state.pbisStudentInteractionList),
+                          ),
                         )),
                       ],
                     ),
@@ -282,9 +287,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       niceWork = niceWork + (pbisHistoryData[i].niceWork ?? 0);
     }
     // TODOPBIS:
-    // widget.studentValueNotifier.value.profile!.behaviour1!.counter = engaged;
-    // widget.studentValueNotifier.value.profile!.behaviour2!.counter = helpful;
-    // widget.studentValueNotifier.value.profile!.behaviour3!.counter = niceWork;
+    // widget.studentValueNotifier.value.profile!.behavior1!.counter = engaged;
+    // widget.studentValueNotifier.value.profile!.behavior2!.counter = helpful;
+    // widget.studentValueNotifier.value.profile!.behavior3!.counter = niceWork;
     widget.studentValueNotifier.value.profile!.engaged = engaged;
     widget.studentValueNotifier.value.profile!.helpful = helpful;
     widget.studentValueNotifier.value.profile!.niceWork = niceWork;

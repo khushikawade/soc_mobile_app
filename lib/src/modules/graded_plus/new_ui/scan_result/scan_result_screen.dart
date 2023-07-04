@@ -1668,7 +1668,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         }
       }
 
-      if (isUpdateData == true && studentInfo.isNotEmpty) {
+      if (isUpdateData == true &&
+          studentInfo.isNotEmpty ) {
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
 
