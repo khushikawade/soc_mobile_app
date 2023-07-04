@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -204,8 +205,37 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
+    Utility.playSound(Strings.soundPath[0]);
+    Utility.doVibration();
+
+    if (_isOffline) {
+      Utility.currentScreenSnackBar("No Internet Connection", null);
+      return isLiked;
+    }
+
+    /*-------------------------User Activity Track START----------------------------*/
+    //Postgres event track for interaction added to bloc success
+
+    // FirebaseAnalyticsService.addCustomAnalyticsEvent(
+    //     'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));
+    /*-------------------------User Activity Track END----------------------------*/
+
+    _showMessage.value = true;
+    Future.delayed(Duration(seconds: 1), () {
+      _showMessage.value = false;
+    });
+
+    interactionBloc.add(PbisPlusAddPBISInteraction(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        studentId: widget.studentValueNotifier.value.profile!.id,
+        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
+        classroomCourseId: widget.classroomCourseId,
+        behaviour: widget.iconData));
+
     return true;
   }
+
   // Future<bool> _onLikeButtonTapped(bool isLiked) async {
   //   Utility.playSound(Strings.soundPath[0]);
 

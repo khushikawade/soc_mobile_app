@@ -10,6 +10,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -17,7 +18,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
   final PBISPlusCommonBehaviorModal? item;
-  final ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   final int? index = -1;
   final VoidCallback onDelete;
@@ -27,7 +27,6 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
       {Key? key,
       this.height = 100,
       required this.item,
-      this.containerIcons,
       required BoxConstraints constraints,
       required int index,
       required this.onDelete,
@@ -202,35 +201,11 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
               Form(
                   key: _formKey,
                   child: Container(
-                      child: TextFormField(
-                          controller: editNameController,
-                          decoration: InputDecoration(
-                              hintText: 'Enter a value',
-                              labelText: 'Field',
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                              fillColor: Colors.transparent,
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant
-                                          .withOpacity(0.5))),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant
-                                          .withOpacity(0.5))),
-                              contentPadding:
-                                  EdgeInsets.only(top: 10, bottom: 10),
-                              border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3))))))),
+                    child: TextFieldWidget(
+                        msg: "Field is required",
+                        controller: editNameController,
+                        onSaved: (String value) {}),
+                  )),
               ValueListenableBuilder(
                   valueListenable: _errorMessage,
                   builder: (context, value, _) {

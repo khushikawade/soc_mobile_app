@@ -186,4 +186,10 @@ class PBISPlusCommonBehaviorModal {
       ownerId: 'Owner',
     ),
   ];
+
+// default Add Behavior Widget data
+
+  static final defaultAddBehaviorItem = PBISPlusCommonBehaviorModal(
+      behaviorTitleC: "Add Behavior",
+      pBISBehaviorIconURLC: "assets/Pbis_plus/add_icon.svg");
 }

@@ -19,30 +19,30 @@ class PBISPlusImportRoster extends PBISPlusEvent {
 //   List<Object> get props => [];
 // }
 
-class AddPBISInteraction extends PBISPlusEvent {
-  final context;
-  final scaffoldKey;
-  final String? studentId;
-  final String? studentEmail;
-  final String? classroomCourseId;
-  final int? engaged;
-  final int? niceWork;
-  final int? helpful;
+// class AddPBISInteraction extends PBISPlusEvent {
+//   final context;
+//   final scaffoldKey;
+//   final String? studentId;
+//   final String? studentEmail;
+//   final String? classroomCourseId;
+//   final int? engaged;
+//   final int? niceWork;
+//   final int? helpful;
 
-  AddPBISInteraction(
-      {required this.context,
-      required this.scaffoldKey,
-      required this.studentId,
-      required this.studentEmail,
-      required this.classroomCourseId,
-      this.engaged,
-      this.niceWork,
-      this.helpful});
+//   AddPBISInteraction(
+//       {required this.context,
+//       required this.scaffoldKey,
+//       required this.studentId,
+//       required this.studentEmail,
+//       required this.classroomCourseId,
+//       this.engaged,
+//       this.niceWork,
+//       this.helpful});
 
-  @override
-  List<Object> get props =>
-      [studentId!, classroomCourseId!, engaged!, niceWork!, helpful!];
-}
+//   @override
+//   List<Object> get props =>
+//       [studentId!, classroomCourseId!, engaged!, niceWork!, helpful!];
+// }
 
 class GetPBISPlusHistory extends PBISPlusEvent {
   GetPBISPlusHistory();
@@ -215,4 +215,24 @@ class PBISPlusAddTeacherCustomBehavior extends PBISPlusEvent {
 
   @override
   List<Object> get props => [behavior];
+}
+
+class PbisPlusAddPBISInteraction extends PBISPlusEvent {
+  final context;
+  final scaffoldKey;
+  final String? studentId;
+  final String? studentEmail;
+  final String? classroomCourseId;
+  final PBISPlusCommonBehaviorModal? behaviour;
+
+  PbisPlusAddPBISInteraction(
+      {required this.context,
+      required this.scaffoldKey,
+      required this.studentId,
+      required this.studentEmail,
+      required this.classroomCourseId,
+      required this.behaviour});
+
+  @override
+  List<Object> get props => [studentId!, classroomCourseId!, behaviour!];
 }
