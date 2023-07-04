@@ -15,6 +15,7 @@ class OcrOverrides {
   static String? cameraPermissionTitle = 'Camera Required';
   static String? cameraPermissionMessage =
       'GRADED+ requires camera access to capture student work. Go to your phone\'s App Settings to enable camera access for this app';
+  static final String teacherId = 'teacherId';
 
   // To manage Graded plus bottom nav bar
   static final ValueNotifier<bool> gradedPlusNavBarIsHide =
