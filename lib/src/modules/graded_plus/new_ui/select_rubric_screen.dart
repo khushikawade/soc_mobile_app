@@ -701,7 +701,7 @@ class _GradedPlusConstructedResponseState
                     isOCRFeature: true,
                     isHomePage: false,
                     url: pdfObject.rubricPdfC,
-                    tittle: pdfObject.titleC ?? 'no tittle',
+                    title: pdfObject.titleC ?? pdfObject.name,
                     isBottomSheet: false,
                     language: Globals.selectedLanguage,
                   )));

@@ -152,7 +152,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
-                        tittle: obj.titleC,
+                        title: obj.titleC,
                         isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
