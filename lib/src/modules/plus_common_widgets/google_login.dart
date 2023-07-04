@@ -19,7 +19,8 @@ import '../graded_plus/bloc/graded_plus_bloc.dart';
 class GoogleLogin {
   //To authenticate the user via google
   static launchURL(String? title, context, _scaffoldKey, String? buttonPressed,
-      String? activityType , {required String userType}) async {
+      String? activityType,
+      {required String userType}) async {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'google_login', screenClass: 'GoogleLogin');
@@ -72,7 +73,7 @@ class GoogleLogin {
     } else if (value.toString().contains('success')) {
       value = value.split('?')[1] ?? '';
       //Save user profile
-      await saveUserProfile(value,userType);
+      await saveUserProfile(value, userType);
       List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
@@ -112,7 +113,8 @@ class GoogleLogin {
     }
   }
 
-  static Future<void> saveUserProfile(String profileData,String userType) async {
+  static Future<void> saveUserProfile(
+      String profileData, String userType) async {
     List<String> profile = profileData.split('+');
     UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],

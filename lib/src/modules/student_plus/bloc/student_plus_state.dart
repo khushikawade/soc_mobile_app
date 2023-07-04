@@ -9,6 +9,7 @@ abstract class StudentPlusState extends Equatable {
 class StudentPlusInitial extends StudentPlusState {}
 
 class StudentPlusLoading extends StudentPlusState {}
+
 class StudentPlusDemoLoading extends StudentPlusState {}
 
 class StudentPlusGetDetailsLoading extends StudentPlusState {}
@@ -80,12 +81,13 @@ class StudentPlusGradeSuccess extends StudentPlusState {
 /* ----------------------- state use to return  Course student work ---------------------- */
 class StudentPlusCourseWorkSuccess extends StudentPlusState {
   final List<StudentPlusCourseWorkModel> obj;
-  final String? nextPageToken; 
-  StudentPlusCourseWorkSuccess({
-    required this.obj,required this.nextPageToken
-  });
+  final String? nextPageToken;
+  StudentPlusCourseWorkSuccess(
+      {required this.obj, required this.nextPageToken});
   StudentPlusCourseWorkSuccess copyWith({final obj}) {
-    return StudentPlusCourseWorkSuccess(obj: obj ?? this.obj,nextPageToken: nextPageToken?? this.nextPageToken);
+    return StudentPlusCourseWorkSuccess(
+        obj: obj ?? this.obj,
+        nextPageToken: nextPageToken ?? this.nextPageToken);
   }
 
   @override

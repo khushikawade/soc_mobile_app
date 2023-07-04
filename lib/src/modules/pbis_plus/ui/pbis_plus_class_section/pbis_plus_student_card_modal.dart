@@ -165,8 +165,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           ValueListenableBuilder(
             valueListenable: isexpanded,
             builder: (context, value, _) => isexpanded.value
-                ?
-                Padding(
+                ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: FittedBox(
                       child: CustomCircularButton(
@@ -227,16 +226,16 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             // color: AppTheme.kButtonColor,
             child: Column(
               children: [
-                SpacerWidget((widget.isFromStudentPlus == true &&
-                        widget.constraint <= 553)
-                    ? MediaQuery.of(context).size.width * 0.11
-                    : (widget.constraint <= 115)
-                        ? widget.isFromDashboardPage == true
-                            ? MediaQuery.of(context).size.width * 0.18
-                            : MediaQuery.of(context).size.width * 0.17
-                        : widget.isFromDashboardPage == true
-                            ? MediaQuery.of(context).size.width * 0.13
-                            : MediaQuery.of(context).size.width * 0.16),
+                // SpacerWidget((widget.isFromStudentPlus == true &&
+                //         widget.constraint <= 553)
+                //     ? MediaQuery.of(context).size.width * 0.11
+                //     : (widget.constraint <= 115)
+                //         ? widget.isFromDashboardPage == true
+                //             ? MediaQuery.of(context).size.width * 0.18
+                //             : MediaQuery.of(context).size.width * 0.17
+                //         : widget.isFromDashboardPage == true
+                //             ? MediaQuery.of(context).size.width * 0.13
+                //             : MediaQuery.of(context).size.width * 0.16),
                 Text(
                   widget.studentValueNotifier.value.profile?.name?.fullName ??
                       '',
@@ -357,6 +356,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       ),
                       child: FittedBox(child: pbisStudentDetailWidget)),
                 ),
+
+                //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
                 Positioned(
                     bottom: 5,
                     child: widget.isFromStudentPlus == true ||
@@ -372,6 +373,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                             alignment: Alignment.bottomRight,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: addNotes)),
+
+                //----------------------------------------------------Profile Image-----------------------------------------------------
                 Positioned(
                   top: 0,
                   child: GestureDetector(

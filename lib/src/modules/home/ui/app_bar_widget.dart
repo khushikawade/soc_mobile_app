@@ -59,10 +59,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     final scaffoldKey = Scaffold.of(context);
     return Theme(
       data: Theme.of(context).copyWith(
-        cardColor:  Globals.themeType != 'Dark'
+        cardColor: Globals.themeType != 'Dark'
             ? Theme.of(context).backgroundColor
             : Theme.of(context).colorScheme.secondary,
-      
       ),
       child: PopupMenuButton<IconMenu>(
         // color: Globals.themeType != 'Dark'
