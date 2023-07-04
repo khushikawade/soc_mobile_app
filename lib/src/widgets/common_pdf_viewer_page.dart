@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
@@ -44,13 +46,12 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
-      plusAppName: 'GRADED+',
-      fromGradedPlus: true,
-      isSuccessState: ValueNotifier<bool>(true),
-      isBackOnSuccess: widget.isBackFromCamera,
-      key: GlobalKey(),
-      isBackButton: true,
-    );
+        plusAppName: 'GRADED+',
+        fromGradedPlus: true,
+        isSuccessState: ValueNotifier<bool>(true),
+        isBackOnSuccess: widget.isBackFromCamera,
+        key: GlobalKey(),
+        isBackButton: true);
   }
 
   // String? remotePDFpath;
@@ -65,9 +66,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     super.initState();
 
     createFileOfPdfUrl().then((f) {
-      // setState(() {
       remotePDFpath.value = f.path;
-      // });
     });
   }
 
@@ -106,42 +105,35 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                     appBarTitle: widget.tittle!,
                     sharedPopBodyText: widget.url.toString(),
                     sharedPopUpHeaderText: "Please check out this",
-                    language: Globals.selectedLanguage,
-                  ),
+                    language: Globals.selectedLanguage),
         body: ValueListenableBuilder(
             valueListenable: remotePDFpath,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return Stack(
-                children: <Widget>[
-                  widget.url != null && widget.url != ""
-                      ? remotePDFpath.value == null || remotePDFpath.value == ''
-                          ? Center(
-                              child: CircularProgressIndicator(
-                              color: widget.isOCRFeature == true
-                                  ? AppTheme.kButtonColor
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
-                              // valueColor:
-                              //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
-                            ))
-                          : Stack(children: [
-                              widget.isBackButton == true
-                                  ? ListView(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      children: [
+              return Stack(children: <Widget>[
+                widget.url != null && widget.url != ""
+                    ? remotePDFpath.value == null || remotePDFpath.value == ''
+                        ? Center(
+                            child: CircularProgressIndicator(
+                                color: widget.isOCRFeature == true
+                                    ? AppTheme.kButtonColor
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant))
+                        : Stack(children: [
+                            widget.isBackButton == true
+                                ? ListView(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    children: [
                                         Container(
-                                          margin: EdgeInsets.only(left: 10),
-                                          child: PlusScreenTitleWidget(
-                                            kLabelSpacing: 0,
-                                            text: 'Rubric Pdf',
-                                            backButton: true,
-                                            backButtonOnTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ),
+                                            margin: EdgeInsets.only(left: 10),
+                                            child: PlusScreenTitleWidget(
+                                                kLabelSpacing: 0,
+                                                text: 'Rubric PDF',
+                                                backButton: true,
+                                                backButtonOnTap: () {
+                                                  Navigator.pop(context);
+                                                })),
                                         Container(
                                             padding:
                                                 EdgeInsets.only(bottom: 30),
@@ -149,11 +141,10 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                                                     .size
                                                     .height *
                                                 0.8,
-                                            child: pdfWidget()),
-                                      ],
-                                    )
-                                  : pdfWidget(),
-                              Flex(
+                                            child: pdfWidget())
+                                      ])
+                                : pdfWidget(),
+                            Flex(
                                 direction: Axis.horizontal,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
@@ -162,16 +153,14 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                                           EdgeInsets.only(top: 50, right: 10),
                                       padding: const EdgeInsets.all(10.0),
                                       constraints: BoxConstraints(
-                                        maxWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                      ),
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7),
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.1),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(30.0),
-                                        ),
-                                      ),
+                                          color: Colors.black.withOpacity(0.1),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0))),
                                       child: ValueListenableBuilder(
                                           valueListenable: totalPage,
                                           child: Container(),
@@ -183,56 +172,51 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                                                 builder: (BuildContext context,
                                                     int value, Widget? child) {
                                                   return FittedBox(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          right: 10, left: 10),
-                                                      child: Text(
-                                                        "${currentPage.value} / ${totalPage.value}",
-                                                        // "999 / 1000",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  );
+                                                      child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 10,
+                                                                  left: 10),
+                                                          child: Text(
+                                                              "${currentPage.value} / ${totalPage.value}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))));
                                                 });
-                                          })),
-                                ],
-                              )
-                            ])
-                      : NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: false,
-                          isNews: false,
-                          isEvents: false,
-                        ),
-                ],
-              );
+                                          }))
+                                ])
+                          ])
+                    : NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: false,
+                        isNews: false,
+                        isEvents: false)
+              ]);
             }));
   }
 
   Widget pdfWidget() {
     return PDFView(
-      filePath: remotePDFpath.value,
-      enableSwipe: true,
-      swipeHorizontal: false,
-      autoSpacing: false,
-      pageFling: true,
-      pageSnap: true,
-      fitPolicy: FitPolicy.WIDTH,
-      fitEachPage: true,
-      preventLinkNavigation: false,
-      onViewCreated: (PDFViewController pdfViewController) async {
-        _controller.complete(pdfViewController);
-      },
-      onLinkHandler: (String? uri) {
-        print('goto uri: $uri');
-      },
-      onPageChanged: (int? page, int? total) {
-        totalPage.value = total!;
-        currentPage.value = page! + 1;
-      },
-    );
+        filePath: remotePDFpath.value,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: false,
+        pageFling: true,
+        pageSnap: true,
+        fitPolicy: FitPolicy.WIDTH,
+        fitEachPage: true,
+        preventLinkNavigation: false,
+        onViewCreated: (PDFViewController pdfViewController) async {
+          _controller.complete(pdfViewController);
+        },
+        // onLinkHandler: (String? uri) {
+        //   print('goto uri: $uri');
+        // },
+        onPageChanged: (int? page, int? total) {
+          totalPage.value = total!;
+          currentPage.value = page! + 1;
+        });
   }
 }
