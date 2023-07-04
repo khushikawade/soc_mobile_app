@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -94,6 +96,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         Padding(
             padding: EdgeInsets.only(left: 22, right: 22),
             child: FittedBox(
+                alignment: Alignment.centerLeft,
+                fit: BoxFit.scaleDown,
                 child: Text("${widget.item.names!.fullName!}'s" + " Notes",
                     textAlign: TextAlign.left,
                     style: Theme.of(context)
@@ -143,7 +147,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   physics:
                       isShimmerLoading ? NeverScrollableScrollPhysics() : null,
                   padding: EdgeInsets.only(
-                    bottom: 60,
+                    bottom: Platform.isIOS ? 80 : 46,
                   ),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {

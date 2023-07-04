@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes_detail.dart';
@@ -96,14 +98,16 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: _kHorizontalLabelSpacing),
             child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.scaleDown,
               child: Utility.textWidget(
                   text: "Student Notes",
                   context: context,
                   textAlign: TextAlign.left,
                   textTheme: Theme.of(context)
                       .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.w600)),
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.w700)),
             ),
           ),
         ]),
@@ -218,7 +222,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
       List<PBISPlusStudentList> studentNotesList, bool isShimmerLoading) {
     return ListView.builder(
         shrinkWrap: true,
-        padding: EdgeInsets.only(bottom: 30),
+        padding: EdgeInsets.only(
+          bottom: Platform.isIOS ? 50 : 30,
+        ),
         itemCount: studentNotesList.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index) {
