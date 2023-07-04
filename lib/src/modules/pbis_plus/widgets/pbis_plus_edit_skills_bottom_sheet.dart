@@ -22,7 +22,7 @@ import 'hero_dialog_route.dart';
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
   PBISPlusALLBehaviourModal? item;
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  // ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
 //  PBISPlusBloc? pbisPlusBloc;
@@ -32,7 +32,7 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
       {Key? key,
       this.height = 100,
       required this.item,
-      this.containerIcons,
+      // this.containerIcons,
       required BoxConstraints constraints,
       //   required pbisPlusBloc,
       required int index,
@@ -271,56 +271,60 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   text: "${"Edit " + "${dataList!.name}"}",
                   textTheme: Theme.of(context).textTheme.headline5!),
             ),
-            // SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+            SpacerWidget(MediaQuery.of(context).size.width * 0.1),
 
             Form(
               key: _formKey,
               child: Container(
-                child:
+                  child:
 
-                    //  TextFieldWidget(
-                    //     hintText: 'Edit Name',
-                    //     msg: "Field is required",
-                    //     keyboardType: TextInputType.text,
-                    //     controller: editNameController,
-                    //     onSaved: (String value) {})
-                    TextFormField(
-                  controller: editNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter a value',
-                    labelText: 'Field',
-                    hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.bold, color: Colors.grey),
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)),
-                    ),
-                    contentPadding: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primaryVariant
-                            .withOpacity(0.3),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                      //  TextFieldWidget(
+                      //     hintText: 'Edit Name',
+                      //     msg: "Field is required",
+                      //     keyboardType: TextInputType.text,
+                      //     controller: editNameController,
+                      //     onSaved: (String value) {})
+                      //     TextFormField(
+                      //   controller: editNameController,
+                      //   decoration: InputDecoration(
+                      //     hintText: 'Enter a value',
+                      //     labelText: 'Field',
+                      //     hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      //         fontWeight: FontWeight.bold, color: Colors.grey),
+                      //     fillColor: Colors.transparent,
+                      //     enabledBorder: UnderlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //           color: Theme.of(context)
+                      //               .colorScheme
+                      //               .primaryVariant
+                      //               .withOpacity(0.5)),
+                      //     ),
+                      //     focusedBorder: UnderlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //           color: Theme.of(context)
+                      //               .colorScheme
+                      //               .primaryVariant
+                      //               .withOpacity(0.5)),
+                      //     ),
+                      //     contentPadding: EdgeInsets.only(
+                      //       top: 10,
+                      //       bottom: 10,
+                      //     ),
+                      //     border: UnderlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Theme.of(context)
+                      //             .colorScheme
+                      //             .primaryVariant
+                      //             .withOpacity(0.3),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      TextFieldWidget(
+                          msg: "Field is required",
+                          controller: editNameController,
+                          onSaved: (String value) {})),
             ),
 
             ValueListenableBuilder(
@@ -346,7 +350,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                           : null);
                 }),
 
-            SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+            // SpacerWidget(MediaQuery.of(context).size.width * 0.1),
             _buildSaveButton(dataList)
 
             // BlocConsumer(
