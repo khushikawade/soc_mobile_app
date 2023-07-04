@@ -1481,8 +1481,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   List<PBISPlusCommonBehaviorModal> sortByOrder(
       List<PBISPlusCommonBehaviorModal> allBehaviors) {
     allBehaviors.sort((a, b) {
-      int orderA = int.parse(a.pBISBehaviorSortOrderC ?? '1');
-      int orderB = int.parse(b.pBISBehaviorSortOrderC ?? '1');
+      int orderA = int.parse(
+          a.pBISBehaviorSortOrderC != '' ? a.pBISBehaviorSortOrderC! : '1');
+      int orderB = int.parse(
+          b.pBISBehaviorSortOrderC != '' ? b.pBISBehaviorSortOrderC! : '1');
 
       return orderA.compareTo(orderB);
       // For descending order: return orderB.compareTo(orderA);
