@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -21,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:mailto/mailto.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -94,7 +96,11 @@ class Utility {
   }
 
   static doVibration() async {
-    HapticFeedback.vibrate();
+    try {
+      await HapticFeedback.vibrate();
+    } catch (e) {
+      print(e);
+    }
   }
 
   static String convertTimestampToDateFormat(
@@ -1043,5 +1049,26 @@ class Utility {
     } catch (e) {
       return utcdatetimeString;
     }
+  }
+
+  static getTeacherId() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
+        return Globals.teacherId;
+      } else {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        return prefs.getString(
+          PBISPlusOverrides.teacherId,
+        );
+      }
+    } catch (e) {}
+  }
+
+  static setTeacherId(String techerId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(PBISPlusOverrides.teacherId, techerId);
+    } catch (e) {}
   }
 }

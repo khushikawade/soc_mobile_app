@@ -172,13 +172,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_edit_behavior_screen',
         screenClass: 'PBISPlusEditSkills');
-    /*-------------------------------------------------------------------------------------*/
-    // Utility.updateLogs(
-    //     activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-    //     activityId: '37',
-    //     description:
-    //         'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-    //     operationResult: 'Success');
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -313,7 +306,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               skillsList.length < 6) {
             teacherCustomBehaviorList.value.add(onAcceptedObj);
 
-            pbisPluDefaultBehaviorBloc.add(PBISPlusAddTeacherCustomBehavior(
+            pbisPluCustomBehaviorBloc.add(PBISPlusAddTeacherCustomBehavior(
               behavior: onAcceptedObj,
             ));
           } else {
@@ -379,7 +372,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   teacherCustomBehaviorList.value[index] = item;
                   updateBehaviorWidget.value = !updateBehaviorWidget.value;
 
-                  pbisPluDefaultBehaviorBloc.add(
+                  pbisPluCustomBehaviorBloc.add(
                       PBISPlusAddTeacherCustomBehavior(
                           behavior: item, index: index));
                 }
@@ -615,7 +608,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 }
               }
               //Updating the same deleted behavior API to the API
-              pbisPluDefaultBehaviorBloc
+              pbisPluCustomBehaviorBloc
                   .add(PBISPlusDeleteTeacherCustomBehavior(behavior: item));
               updateBehaviorWidget.value = !updateBehaviorWidget.value;
 
@@ -657,7 +650,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         teacherCustomBehaviorList.value[index] = currentDraggedObj;
 
         updateBehaviorWidget.value = !updateBehaviorWidget.value;
-        pbisPluDefaultBehaviorBloc.add(PBISPlusAddTeacherCustomBehavior(
+        pbisPluCustomBehaviorBloc.add(PBISPlusAddTeacherCustomBehavior(
             index: index, behavior: currentDraggedObj));
       }
     }, builder: (context, candidateData, rejectedData) {

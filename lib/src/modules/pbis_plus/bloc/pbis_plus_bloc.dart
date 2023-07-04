@@ -225,6 +225,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
           var result = await sortTheBehaviourInDB(
               allBehavior: _localData, teacherId: Globals.teacherId ?? '');
+
+          if (result != true) {
+            print("sorting API FAL");
+          }
+        } else if (result != true) {
+          print("item is not deleted on backend");
         }
       } catch (e) {
         print(e);
@@ -279,7 +285,73 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
 
-    if (event is AddPBISInteraction) {
+    // if (event is AddPBISInteraction) {
+    //   try {
+    //     //Fetch logged in user profile
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
+
+    //     String? _objectName = "${PBISPlusOverrides.pbisStudentInteractionDB}";
+    //     LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
+    //     List<ClassroomCourse> _localData = await _localDb.getData();
+
+    //     yield PBISPlusLoading();
+    //     if (_localData.isNotEmpty) {
+    //       for (int i = 0; i < _localData.length; i++) {
+    //         for (int j = 0; j < _localData[i].students!.length; j++) {
+    //           if (_localData[i].students![j].profile!.id == event.studentId) {
+    //             ClassroomCourse obj = _localData[i];
+    //             // print(_localData[i].likeCount);
+    //             _localDb.putAt(i, obj);
+    //           }
+    //         }
+    //       }
+    //     }
+
+    //     var data = await addPBISInteraction({
+    //       "Student_Id": event.studentId!,
+    //       "Student_Email": event.studentEmail,
+    //       "Classroom_Course_Id": "${event.classroomCourseId}",
+    //       "Engaged": "${event.engaged}",
+    //       "Nice_Work": "${event.niceWork}",
+    //       "Helpful": "${event.helpful}",
+    //       "School_Id": Overrides.SCHOOL_ID,
+    //       "DBN": Globals.schoolDbnC,
+    //       "Teacher_Email": userProfileLocalData[0].userEmail,
+    //       "Teacher_Name":
+    //           userProfileLocalData[0].userName!.replaceAll('%20', ' '),
+    //       "Status": "active"
+    //     });
+
+    //     /*-------------------------User Activity Track START----------------------------*/
+    //     PlusUtility.updateLogs(
+    //         activityType: 'PBIS+',
+    //         userType: 'Teacher',
+    //         activityId: '38',
+    //         description:
+    //             'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+    //         operationResult: 'Success');
+    //     /*-------------------------User Activity Track END----------------------------*/
+
+    //     yield AddPBISInteractionSuccess(
+    //       obj: data,
+    //     );
+    //   } catch (e) {
+    //     if (e.toString().contains('NO_CONNECTION')) {
+    //       Utility.showSnackBar(
+    //           event.scaffoldKey,
+    //           'Make sure you have a proper Internet connection',
+    //           event.context,
+    //           null);
+    //     } else {
+    //       Utility.showSnackBar(
+    //           event.scaffoldKey, 'Something went wrong', event.context, null);
+    //     }
+    //     yield PBISErrorState(error: e);
+    //   }
+    // }
+
+    if (event is PbisPlusAddPBISInteraction) {
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
@@ -295,27 +367,27 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             for (int j = 0; j < _localData[i].students!.length; j++) {
               if (_localData[i].students![j].profile!.id == event.studentId) {
                 ClassroomCourse obj = _localData[i];
-                // print(_localData[i].likeCount);
+
                 _localDb.putAt(i, obj);
               }
             }
           }
         }
-
-        var data = await addPBISInteraction({
+        Map body = {
           "Student_Id": event.studentId!,
           "Student_Email": event.studentEmail,
           "Classroom_Course_Id": "${event.classroomCourseId}",
-          "Engaged": "${event.engaged}",
-          "Nice_Work": "${event.niceWork}",
-          "Helpful": "${event.helpful}",
           "School_Id": Overrides.SCHOOL_ID,
           "DBN": Globals.schoolDbnC,
           "Teacher_Email": userProfileLocalData[0].userEmail,
           "Teacher_Name":
               userProfileLocalData[0].userName!.replaceAll('%20', ' '),
-          "Status": "active"
-        });
+          "Status": "active",
+          "Behaviour_Id": event.behaviour?.id.toString() ?? '',
+          "Behaviour_Score": 1.toString()
+        };
+
+        var data = await addPBISInteraction(body: body);
 
         /*-------------------------User Activity Track START----------------------------*/
         PlusUtility.updateLogs(
@@ -327,9 +399,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
-        yield AddPBISInteractionSuccess(
-          obj: data,
-        );
+        yield AddPBISInteractionSuccess(obj: data);
       } catch (e) {
         if (e.toString().contains('NO_CONNECTION')) {
           Utility.showSnackBar(
@@ -614,7 +684,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List result = await addTeacherCustomBehavior(
             behavior: event.behavior,
             schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: Globals.teacherId ?? "",
+            teacherId: Utility.getTeacherId() ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
         //Fetching updated value
@@ -843,7 +913,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  Future addPBISInteraction(body) async {
+  // Future addPBISInteraction(body) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         body: body,
+  //         isGoogleApi: true);
+  //     if (response.statusCode == 200) {
+  //       return response.data;
+  //     } else {
+  //       throw ('something_went_wrong');
+  //     }
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  Future addPBISInteraction({required Map body, int retry = 3}) async {
+    print(body);
     try {
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions',
@@ -855,8 +946,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isGoogleApi: true);
       if (response.statusCode == 200) {
         return response.data;
-      } else {
-        throw ('something_went_wrong');
+      } else if (retry > 0) {
+        return addPBISInteraction(body: body, retry: retry - 1);
       }
     } catch (e) {
       throw (e);
@@ -1395,7 +1486,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     print("teacherId $teacherId");
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/get-custom-behavior/teacher/${teacherId}',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/${teacherId}',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
         List<PBISPlusCommonBehaviorModal> _list = response.data['body']
@@ -1420,7 +1511,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       int retry = 3}) async {
     try {
       final url =
-          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/delete-behavior/teacher/$teacherId/behavior/${behavior.id}";
+          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/delete-behaviour/teacher/$teacherId/behaviour/${behavior.id}";
 
       final ResponseModel response = await _dbServices.deleteApi(
         url,
@@ -1449,18 +1540,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       int retry = 3}) async {
     try {
       Map body = {
-        "behavior_name": behavior.behaviorTitleC,
-        "behavior_score": "0",
-        "is_default_behavior": "false",
-        "icon_url": behavior.pBISBehaviorIconURLC,
-        "teacher_id": teacherId,
-        "school_id": schoolId,
-        "sorting_order": behavior.pBISBehaviorSortOrderC
+        "behaviour_name": behavior.behaviorTitleC.toString(),
+        "behaviour_score": "1",
+        "is_default_behaviour": "false",
+        "icon_url": behavior.pBISBehaviorIconURLC.toString(),
+        "teacher_id": teacherId.toString(),
+        "school_id": schoolId.toString(),
+        "sorting_order": behavior.pBISBehaviorSortOrderC.toString()
       };
 
       //Add behavior id to request body in case of behavior update
       if (isAddedNewIcon == false) {
-        body.addAll({"behavior_id": behavior.id});
+        body.addAll({"behaviour_id": behavior.id});
       }
 
       final headers = {
@@ -1469,7 +1560,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       };
 
       final url =
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/add-behavior';
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
