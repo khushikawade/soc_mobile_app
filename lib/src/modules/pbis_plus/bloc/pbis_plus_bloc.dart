@@ -218,12 +218,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             element.pBISBehaviorSortOrderC = (index + 1).toString();
             await _localDb.addData(element);
           });
+
           yield PBISPlusLoading();
           yield PBISPlusGetTeacherCustomBehaviorSuccess(
               teacherCustomBehaviorList: _localData);
 
+          // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
           var result = await sortTheBehaviourInDB(
-              allBehvaiour: _localData, teacherId: Globals.teacherId ?? '');
+              allBehavior: _localData, teacherId: Globals.teacherId ?? '');
         }
       } catch (e) {
         print(e);
@@ -1401,13 +1403,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*-----------------------------------Function sortTheBehaviourInDB------------------------------*/
   /*----------------------------------------------------------------------------------------------*/
   Future sortTheBehaviourInDB(
-      {List<PBISPlusCommonBehaviorModal>? allBehvaiour,
+      {List<PBISPlusCommonBehaviorModal>? allBehavior,
       required String teacherId,
       int retry = 3}) async {
     try {
       List<Map> body = [];
 
-      allBehvaiour!.forEach((element) {
+      //Creating list of behavior to sort all together
+      allBehavior!.forEach((element) {
         Map obj = {
           "Behaviour_Id": element.id,
           "Sorting_Order": element.pBISBehaviorSortOrderC,
@@ -1429,7 +1432,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         return true;
       } else if (retry > 0) {
         return sortTheBehaviourInDB(
-            teacherId: teacherId, allBehvaiour: allBehvaiour, retry: retry - 1);
+            teacherId: teacherId, allBehavior: allBehavior, retry: retry - 1);
       }
       return response.statusCode;
     } catch (e) {

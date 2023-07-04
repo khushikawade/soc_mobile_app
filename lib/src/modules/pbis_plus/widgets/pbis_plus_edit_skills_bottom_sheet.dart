@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, must_be_immutable
 
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
@@ -13,24 +13,22 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusCommonBehaviorModal? item;
-  ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
+  final PBISPlusCommonBehaviorModal? item;
+  final ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
-  int? index = -1;
-//  PBISPlusBloc? pbisPlusBloc;
+  final int? index = -1;
   final VoidCallback onDelete;
   final void Function(String) onEditCallBack;
+
   PBISPlusEditSkillsBottomSheet(
       {Key? key,
       this.height = 100,
       required this.item,
       this.containerIcons,
       required BoxConstraints constraints,
-      //   required pbisPlusBloc,
       required int index,
       required this.onDelete,
       required this.onEditCallBack});
@@ -45,8 +43,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   final editNameController = TextEditingController();
   PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
   ValueNotifier<bool> _errorMessage = ValueNotifier<bool>(false);
-
-  // String _errorMessage = 'Field is required.';
   int pageValue = 0;
 
   Future<void> initController() async {
@@ -72,48 +68,44 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets,
-      controller: ModalScrollController.of(context),
-      child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Utility.getContrastColor(context),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          ),
-          height: pageValue == 0
-              ? widget.height
-              : MediaQuery.of(context).size.height * 0.4, //saveAndShareOptions
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            onPageChanged: ((value) {
-              pageValue = value;
-            }),
-            allowImplicitScrolling: false,
-            pageSnapping: false,
-            controller: _pageController,
-            children: [
-              EditAndDeleteIcon(widget.item),
-              _buildEditNameWidget(widget.item)
-            ],
-          )),
-    );
+        padding: MediaQuery.of(context).viewInsets,
+        controller: ModalScrollController.of(context),
+        child: Container(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Utility.getContrastColor(context),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+            height: pageValue == 0
+                ? widget.height
+                : MediaQuery.of(context).size.height * 0.4,
+            //saveAndShareOptions
+            child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                onPageChanged: ((value) {
+                  pageValue = value;
+                }),
+                allowImplicitScrolling: false,
+                pageSnapping: false,
+                controller: _pageController,
+                children: [
+                  EditAndDeleteIcon(widget.item),
+                  _buildEditNameWidget(widget.item)
+                ])));
   }
 
   Widget _buildCloseIcon() {
     return Container(
         alignment: Alignment.topRight,
         child: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          icon: Icon(
-            Icons.clear,
-            color: AppTheme.kButtonColor,
-            size: Globals.deviceType == "phone" ? 28 : 36,
-          ),
-        ));
+            onPressed: () {
+              Navigator.pop(context);
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            icon: Icon(Icons.clear,
+                color: AppTheme.kButtonColor,
+                size: Globals.deviceType == "phone" ? 28 : 36)));
   }
 
   Widget EditAndDeleteIcon(PBISPlusCommonBehaviorModal? dataList) {
@@ -139,7 +131,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 _buildCard(
                     onTap: widget.onDelete,
                     iconPath: "assets/Pbis_plus/delete.svg",
-                    tittle: "Delete"),
+                    tittle: "Delete")
               ])
         ]));
   }
@@ -180,195 +172,87 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 ])));
   }
 
-  // showPopup(
-  //     {required String message,
-  //     required String? title,
-  //     PBISPlusALLBehaviourModal? item,
-  //     PBISPlusBloc? pbisPlusClassroomBloc}) async {
-  //   var res = await Navigator.of(context).push(HeroDialogRoute(
-  //       builder: (context) => PBISPlusCommonPopup(
-  //             pbisPlusBloc: pbisPlusClassroomBloc,
-  //             item: item!,
-  //             containerIcons: widget.containerIcons,
-  //             backgroundColor:
-  //                 Theme.of(context).colorScheme.background == Color(0xff000000)
-  //                     ? Color(0xff162429)
-  //                     : null,
-  //             orientation: MediaQuery.of(context).orientation,
-  //             context: context,
-  //             message: message,
-  //             title: '',
-  //             titleStyle: Theme.of(context)
-  //                 .textTheme
-  //                 .headline1!
-  //                 .copyWith(fontWeight: FontWeight.bold),
-  //           )));
-  //   if (res == true) {
-  //     Navigator.pop(context);
-  //   }
-  // }
-
-  Widget _buildNextbutton(PBISPlusCommonBehaviorModal dataList) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-      child: FloatingActionButton.extended(
-          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-          onPressed: () async {
-            if (editNameController.text.isNotEmpty) {
-              pbisPlusBloc.add(GetPBISSkillsUpdateName(
-                  item: dataList, newName: editNameController.text));
-            } else {}
-          },
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Utility.textWidget(
-                  text: 'Save',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor)),
-            ],
-          )),
-    );
-  }
-
   Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    color: AppTheme.kButtonColor,
-                    size: Globals.deviceType == "phone" ? 28 : 36,
-                  ),
-                )),
-            Center(
-              child: Utility.textWidget(
-                  context: context,
-                  text: "${"Edit " + "${dataList!.name}"}",
-                  textTheme: Theme.of(context).textTheme.headline5!),
-            ),
-            // SpacerWidget(MediaQuery.of(context).size.width * 0.1),
-
-            Form(
-              key: _formKey,
-              child: Container(
-                child:
-
-                    //  TextFieldWidget(
-                    //     hintText: 'Edit Name',
-                    //     msg: "Field is required",
-                    //     keyboardType: TextInputType.text,
-                    //     controller: editNameController,
-                    //     onSaved: (String value) {})
-                    TextFormField(
-                  controller: editNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter a value',
-                    labelText: 'Field',
-                    hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.bold, color: Colors.grey),
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)),
-                    ),
-                    contentPadding: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primaryVariant
-                            .withOpacity(0.3),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            ValueListenableBuilder(
-                valueListenable: _errorMessage,
-                builder: (context, value, _) {
-                  return Container(
-                      height: 20,
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: _errorMessage.value
-                          ? TranslationWidget(
-                              message: 'Field is required.',
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) {
-                                return FittedBox(
-                                  child: Text(
-                                    translatedMessage,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                );
-                              })
-                          : null);
-                }),
-
-            SpacerWidget(MediaQuery.of(context).size.width * 0.1),
-            _buildSaveButton(dataList)
-
-            // BlocConsumer(
-            //     bloc: pbisPlusBloc,
-            //     builder: (context, state) {
-            //       if (state is PBISPlusLoading) {
-            //         return Container(
-            //             alignment: Alignment.center,
-            //             child: CircularProgressIndicator.adaptive(
-            //                 backgroundColor: AppTheme.kButtonColor));
-            //       } else if (state is PBISErrorState) {}
-
-            //       return _buildSaveButton(dataList);
-            //     },
-            //     listener: (context, state) async {
-            //       if (state is PBISPlusDefaultBehaviourSucess) {
-            //         Utility.currentScreenSnackBar(
-            //             "Successfully updated skills name", null);
-            //         //Close bottomsheet on success
-            //         Navigator.pop(context);
-            //       } else if (state is PBISErrorState) {
-            //         Utility.currentScreenSnackBar(
-            //             "Action cannot be performed. Please try again.", null);
-            //       }
-            //     }),
-          ],
-        ),
-      ),
-    );
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+              Container(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
+                      icon: Icon(Icons.clear,
+                          color: AppTheme.kButtonColor,
+                          size: Globals.deviceType == "phone" ? 28 : 36))),
+              Container(
+                  alignment: Alignment.centerLeft,
+                  child: Utility.textWidget(
+                      context: context,
+                      text: "${"Edit " + "${dataList!.name}"}",
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontWeight: FontWeight.bold))),
+              Form(
+                  key: _formKey,
+                  child: Container(
+                      child: TextFormField(
+                          controller: editNameController,
+                          decoration: InputDecoration(
+                              hintText: 'Enter a value',
+                              labelText: 'Field',
+                              hintStyle: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                              fillColor: Colors.transparent,
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant
+                                          .withOpacity(0.5))),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant
+                                          .withOpacity(0.5))),
+                              contentPadding:
+                                  EdgeInsets.only(top: 10, bottom: 10),
+                              border: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3))))))),
+              ValueListenableBuilder(
+                  valueListenable: _errorMessage,
+                  builder: (context, value, _) {
+                    return Container(
+                        height: 20,
+                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: _errorMessage.value
+                            ? TranslationWidget(
+                                message: 'Field is required.',
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) {
+                                  return FittedBox(
+                                      child: Text(translatedMessage,
+                                          style: TextStyle(color: Colors.red)));
+                                })
+                            : null);
+                  }),
+              SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+              _buildSaveButton(dataList)
+            ])));
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
@@ -380,8 +264,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             onPressed: () async {
               if (editNameController.text.isNotEmpty) {
                 _errorMessage.value = false;
-                // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
-                //     item: dataList, newName: editNameController.text));
                 widget.onEditCallBack(editNameController.text);
               } else {
                 _errorMessage.value = true;

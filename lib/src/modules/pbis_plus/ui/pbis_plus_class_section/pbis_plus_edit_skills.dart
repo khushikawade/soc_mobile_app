@@ -30,6 +30,7 @@ class PBISPlusEditSkills extends StatefulWidget {
 }
 
 class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
+  //changedIndex////Used to show edit icon on tap
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
   ValueNotifier<bool> isCustomBehavior = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
@@ -351,7 +352,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           );
   }
 
-  Widget _buildEditWidget(
+  Widget _showEditIconWidget(
     PBISPlusCommonBehaviorModal item,
     int index,
   ) {
@@ -364,7 +365,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               onDelete: () {
                 Navigator.pop(context);
                 showDeletePopup(
-                    message: "Are you sure you want to delete this item",
+                    message:
+                        "You are about to delete the ${item.behaviorTitleC} behavior. Continue?",
                     title: "",
                     item: item);
               },
@@ -439,20 +441,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                           BlocConsumer(
                               bloc: pbisPluAdditionalBehaviorBloc,
                               builder: (context, state) {
-                                if (state
-                                        is PBISPlusAdditionalBehaviorSuccess &&
-                                    state.additionalBehaviorList.isNotEmpty) {
-                                  additionalBehaviorList.value =
-                                      state.additionalBehaviorList;
-                                  return ValueListenableBuilder(
-                                      valueListenable: additionalBehaviorList,
-                                      builder: (context, value, _) {
-                                        return _buildAdditionalBehaviorList(
-                                            additionalBehaviorList.value,
-                                            false);
-                                      });
-                                }
-
                                 if (state
                                         is PBISPlusAdditionalBehaviorSuccess &&
                                     state.additionalBehaviorList.isNotEmpty) {
@@ -684,39 +672,32 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   builder: (context, value, _) {
                     return index == changedIndex.value &&
                             isCustomBehavior.value == true
-                        ? _buildEditWidget(item, index)
+                        ? _showEditIconWidget(item, index)
                         : ShimmerLoading(
                             isLoading: loading,
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  child: _buildIcons(
-                                    item: item,
-                                  ),
-                                ),
-                                SpacerWidget(4),
-                                ShimmerLoading(
-                                  isLoading: loading,
-                                  child: Padding(
-                                    padding: Globals.deviceType != 'phone'
-                                        ? const EdgeInsets.only(
-                                            top: 10, left: 10)
-                                        : EdgeInsets.zero,
-                                    child: Utility.textWidget(
-                                        text: item.behaviorTitleC!,
-                                        context: context,
-                                        textTheme: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(fontSize: 12)),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Container(
+                                      height: 40,
+                                      width: 40,
+                                      child: _buildIcons(item: item)),
+                                  SpacerWidget(4),
+                                  ShimmerLoading(
+                                      isLoading: loading,
+                                      child: Padding(
+                                          padding: Globals.deviceType != 'phone'
+                                              ? const EdgeInsets.only(
+                                                  top: 10, left: 10)
+                                              : EdgeInsets.zero,
+                                          child: Utility.textWidget(
+                                              text: item.behaviorTitleC!,
+                                              context: context,
+                                              textTheme: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(fontSize: 12))))
+                                ]));
                   })));
     });
   }
