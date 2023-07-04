@@ -697,10 +697,11 @@ class _GradedPlusConstructedResponseState
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => CommonPdfViewerPage(
+                    isBackButton: true,
                     isOCRFeature: true,
                     isHomePage: false,
                     url: pdfObject.rubricPdfC,
-                    tittle: pdfObject.titleC ?? 'no tittle',
+                    title: pdfObject.titleC ?? pdfObject.name,
                     isBottomSheet: false,
                     language: Globals.selectedLanguage,
                   )));

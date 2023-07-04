@@ -1,6 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -13,10 +16,11 @@ import '../modules/graded_plus/widgets/common_ocr_appbar.dart';
 // ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
-  String? tittle = '';
+  String? title = '';
   String? language;
   bool? isHomePage;
   bool? isOCRFeature;
+  bool? isBackButton;
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   bool isBottomSheet;
@@ -24,9 +28,10 @@ class CommonPdfViewerPage extends StatefulWidget {
       {Key? key,
       @required this.isOCRFeature,
       @required this.url,
-      @required this.tittle,
+      @required this.title,
       required this.isBottomSheet,
       required this.language,
+      this.isBackButton,
       required this.isHomePage})
       : super(key: key);
   @override
@@ -41,13 +46,12 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
-      plusAppName: 'GRADED+',
-      fromGradedPlus: true,
-      isSuccessState: ValueNotifier<bool>(true),
-      isBackOnSuccess: widget.isBackFromCamera,
-      key: GlobalKey(),
-      isBackButton: true,
-    );
+        plusAppName: 'GRADED+',
+        fromGradedPlus: true,
+        isSuccessState: ValueNotifier<bool>(true),
+        isBackOnSuccess: widget.isBackFromCamera,
+        key: GlobalKey(),
+        isBackButton: true);
   }
 
   // String? remotePDFpath;
@@ -62,17 +66,14 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     super.initState();
 
     createFileOfPdfUrl().then((f) {
-      // setState(() {
       remotePDFpath.value = f.path;
-      // });
     });
   }
 
   Future<File> createFileOfPdfUrl() async {
     Completer<File> completer = Completer();
-    // print("Start download file from internet!");
     try {
-      final url = widget.url!; //"http://www.pdf995.com/samples/pdf.pdf";
+      final url = widget.url!;
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();
@@ -100,71 +101,65 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                 : CustomAppBarWidget(
                     isSearch: false,
                     isShare: true,
-                    appBarTitle: widget.tittle!,
+                    appBarTitle: widget.title!,
                     sharedPopBodyText: widget.url.toString(),
                     sharedPopUpHeaderText: "Please check out this",
-                    language: Globals.selectedLanguage,
-                  ),
+                    language: Globals.selectedLanguage),
         body: ValueListenableBuilder(
             valueListenable: remotePDFpath,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return Stack(
-                children: <Widget>[
-                  widget.url != null && widget.url != ""
-                      ? remotePDFpath.value == null || remotePDFpath.value == ''
-                          ? Center(
-                              child: CircularProgressIndicator(
-                              color: widget.isOCRFeature == true
-                                  ? AppTheme.kButtonColor
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
-                              // valueColor:
-                              //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
-                            ))
-                          : Stack(children: [
-                              PDFView(
-                                filePath: remotePDFpath.value,
-                                enableSwipe: true,
-                                swipeHorizontal: false,
-                                autoSpacing: false,
-                                pageFling: true,
-                                pageSnap: true,
-                                fitPolicy: FitPolicy.WIDTH,
-                                fitEachPage: true,
-                                preventLinkNavigation: false,
-                                onViewCreated: (PDFViewController
-                                    pdfViewController) async {
-                                  _controller.complete(pdfViewController);
-                                },
-                                onLinkHandler: (String? uri) {
-                                  print('goto uri: $uri');
-                                },
-                                onPageChanged: (int? page, int? total) {
-                                  totalPage.value = total!;
-                                  currentPage.value = page! + 1;
-                                },
-                              ),
-                              Flex(
+              return Stack(children: <Widget>[
+                widget.url != null && widget.url != ""
+                    ? remotePDFpath.value == null || remotePDFpath.value == ''
+                        ? Center(
+                            child: CircularProgressIndicator(
+                                color: widget.isOCRFeature == true
+                                    ? AppTheme.kButtonColor
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant))
+                        : Stack(children: [
+                            widget.isBackButton == true
+                                ? ListView(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    children: [
+                                        Container(
+                                            margin: EdgeInsets.only(left: 10),
+                                            child: PlusScreenTitleWidget(
+                                                kLabelSpacing: 0,
+                                                text: widget.title ?? '',
+                                                backButton: true,
+                                                backButtonOnTap: () {
+                                                  Navigator.pop(context);
+                                                })),
+                                        Container(
+                                            padding:
+                                                EdgeInsets.only(bottom: 30),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.8,
+                                            child: pdfWidget())
+                                      ])
+                                : pdfWidget(),
+                            Flex(
                                 direction: Axis.horizontal,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   Container(
                                       margin:
-                                          EdgeInsets.only(top: 10, right: 10),
+                                          EdgeInsets.only(top: 50, right: 10),
                                       padding: const EdgeInsets.all(10.0),
                                       constraints: BoxConstraints(
-                                        maxWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                      ),
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7),
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.1),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(30.0),
-                                        ),
-                                      ),
+                                          color: Colors.black.withOpacity(0.1),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0))),
                                       child: ValueListenableBuilder(
                                           valueListenable: totalPage,
                                           child: Container(),
@@ -176,32 +171,51 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                                                 builder: (BuildContext context,
                                                     int value, Widget? child) {
                                                   return FittedBox(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          right: 10, left: 10),
-                                                      child: Text(
-                                                        "${currentPage.value} / ${totalPage.value}",
-                                                        // "999 / 1000",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  );
+                                                      child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 10,
+                                                                  left: 10),
+                                                          child: Text(
+                                                              "${currentPage.value} / ${totalPage.value}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))));
                                                 });
-                                          })),
-                                ],
-                              )
-                            ])
-                      : NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: false,
-                          isNews: false,
-                          isEvents: false,
-                        ),
-                ],
-              );
+                                          }))
+                                ])
+                          ])
+                    : NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: false,
+                        isNews: false,
+                        isEvents: false)
+              ]);
             }));
+  }
+
+  Widget pdfWidget() {
+    return PDFView(
+        filePath: remotePDFpath.value,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: false,
+        pageFling: true,
+        pageSnap: true,
+        fitPolicy: FitPolicy.WIDTH,
+        fitEachPage: true,
+        preventLinkNavigation: false,
+        onViewCreated: (PDFViewController pdfViewController) async {
+          _controller.complete(pdfViewController);
+        },
+        // onLinkHandler: (String? uri) {
+        //   print('goto uri: $uri');
+        // },
+        onPageChanged: (int? page, int? total) {
+          totalPage.value = total!;
+          currentPage.value = page! + 1;
+        });
   }
 }
