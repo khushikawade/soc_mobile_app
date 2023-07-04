@@ -40,13 +40,6 @@ class AddPBISInteractionSuccess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
-// class PBISPlusTotalInteractionByTeacherSuccess extends PBISPlusState {
-//   final List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList;
-//   PBISPlusTotalInteractionByTeacherSuccess(
-//       {required this.pbisTotalInteractionList});
-//   @override
-//   List<Object> get props => [];
-// }
 
 class PBISPlusHistorySuccess extends PBISPlusState {
   final List<PBISPlusHistoryModal> pbisHistoryList;
@@ -95,83 +88,37 @@ class PBISPlusClassRoomShimmerLoading extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusGetAdditionalBehaviourSuccess extends PBISPlusState {
-  final List<PBISPlusALLBehaviourModal> additionalbehaviourList;
+class PBISPlusAdditionalBehaviorSuccess extends PBISPlusState {
+  final List<PBISPlusCommonBehaviorModal> additionalBehaviorList;
 
-  PBISPlusGetAdditionalBehaviourSuccess(
-      {required this.additionalbehaviourList});
-  PBISPlusGetAdditionalBehaviourSuccess copyWith(
-      {final additionalbehaviourList}) {
-    return PBISPlusGetAdditionalBehaviourSuccess(
-        additionalbehaviourList:
-            additionalbehaviourList ?? this.additionalbehaviourList);
+  PBISPlusAdditionalBehaviorSuccess({required this.additionalBehaviorList});
+  PBISPlusAdditionalBehaviorSuccess copyWith({final additionalBehaviorList}) {
+    return PBISPlusAdditionalBehaviorSuccess(
+        additionalBehaviorList:
+            additionalBehaviorList ?? this.additionalBehaviorList);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class PBISPlusDefaultBehaviourSucess extends PBISPlusState {
-  final List<PBISPlusGenericBehaviourModal> skillsList;
-
-  PBISPlusDefaultBehaviourSucess({required this.skillsList});
-  PBISPlusDefaultBehaviourSucess copyWith({final skillsList}) {
-    return PBISPlusDefaultBehaviourSucess(
-        skillsList: skillsList ?? this.skillsList);
-  }
-
-  @override
-  List<Object> get props => [skillsList];
-}
-
-// class PBISPlusDefaultBehaviourLoading extends PBISPlusState {
-//   PBISPlusDefaultBehaviourLoading();
-//   @override
-//   List<Object> get props => [];
-// }
-
-class PBISPlusDefaultBehaviourError extends PBISPlusState {
+class PBISPlusDefaultBehaviorError extends PBISPlusState {
   final error;
 
-  PBISPlusDefaultBehaviourError({required this.error});
-  PBISPlusDefaultBehaviourError copyWith({final error}) {
-    return PBISPlusDefaultBehaviourError(error: error ?? this.error);
+  PBISPlusDefaultBehaviorError({required this.error});
+  PBISPlusDefaultBehaviorError copyWith({final error}) {
+    return PBISPlusDefaultBehaviorError(error: error ?? this.error);
   }
 
   @override
   List<Object> get props => [];
 }
-
-// class PBISPlusSkillsUpdateLoading extends PBISPlusState {
-//   final List<PBISPlusGenericBehaviourModal> skillsList;
-
-//   PBISPlusSkillsUpdateLoading({required this.skillsList});
-//   PBISPlusSkillsUpdateLoading copyWith({final skillsList}) {
-//     return PBISPlusSkillsUpdateLoading(
-//         skillsList: skillsList ?? this.skillsList);
-//   }
-
-//   @override
-//   List<Object> get props => [skillsList];
-// }
 
 class PBISPlusSkillsUpdateError extends PBISPlusState {
   PBISPlusSkillsUpdateError();
   @override
   List<Object> get props => [];
 }
-
-// class DeletePBISPlusBehaviourLoading extends PBISPlusState {
-//   PBISPlusSkillsDeleteLoading();
-//   @override
-//   List<Object> get props => [];
-// }
-
-// class GetPBISSkillsUpdateNameLoading extends PBISPlusState {
-//   GetPBISSkillsUpdateNameLoading();
-//   @override
-//   List<Object> get props => [];
-// }
 
 class PBISPlusSkillsDeleteError extends PBISPlusState {
   PBISPlusSkillsDeleteError();
@@ -184,12 +131,6 @@ class PBISPlusSkillsListUpdateError extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
-
-// class PBISPlusStudentNotesShimmer extends PBISPlusState {
-//   PBISPlusStudentNotesShimmer();
-//   @override
-//   List<Object> get props => [];
-// }
 
 class PBISPlusStudentNotesSucess extends PBISPlusState {
   final List<PBISPlusStudentList> studentNotes;
@@ -215,48 +156,42 @@ class PBISPlusStudentNotesError extends PBISPlusState {
   List<Object> get props => [];
 }
 
-// class GetPBISPlusAdditionalBehaviourLoading extends PBISPlusState {
-//   GetPBISPlusAdditionalBehaviourLoading();
-//   @override
-//   List<Object> get props => [];
-// }
-
-class PBISPlusAdditionalBehaviourError extends PBISPlusState {
+class PBISPlusAdditionalBehaviorError extends PBISPlusState {
   final error;
-  PBISPlusAdditionalBehaviourError({
+  PBISPlusAdditionalBehaviorError({
     this.error,
   });
   @override
   List<Object> get props => [];
 }
 
-class PBISPlusGetDefaultSchoolBehvaiourSuccess extends PBISPlusState {
-  final List<PBISPlusALLBehaviourModal> defaultSchoolBehaviourList;
+class PBISPlusGetDefaultSchoolBehaviorSuccess extends PBISPlusState {
+  final List<PBISPlusCommonBehaviorModal> defaultSchoolBehaviorList;
 
-  PBISPlusGetDefaultSchoolBehvaiourSuccess(
-      {required this.defaultSchoolBehaviourList});
+  PBISPlusGetDefaultSchoolBehaviorSuccess(
+      {required this.defaultSchoolBehaviorList});
 
   @override
-  List<Object> get props => [defaultSchoolBehaviourList];
+  List<Object> get props => [defaultSchoolBehaviorList];
 }
 
-class PBISPlusGetTeacherCustomBehvaiourSuccess extends PBISPlusState {
-  final List<PBISPlusALLBehaviourModal> teacherCustomBehaviourList;
+class PBISPlusGetTeacherCustomBehaviorSuccess extends PBISPlusState {
+  final List<PBISPlusCommonBehaviorModal> teacherCustomBehaviorList;
 
-  PBISPlusGetTeacherCustomBehvaiourSuccess(
-      {required this.teacherCustomBehaviourList});
+  PBISPlusGetTeacherCustomBehaviorSuccess(
+      {required this.teacherCustomBehaviorList});
 
   @override
-  List<Object> get props => [teacherCustomBehaviourList];
+  List<Object> get props => [teacherCustomBehaviorList];
 }
 
-class PBISPlusBehvaiourLoading extends PBISPlusState {
-  final List<PBISPlusALLBehaviourModal> demoBehaviourData;
+class PBISPlusBehaviorLoading extends PBISPlusState {
+  final List<PBISPlusCommonBehaviorModal> demoBehaviorData;
 
-  PBISPlusBehvaiourLoading({required this.demoBehaviourData});
+  PBISPlusBehaviorLoading({required this.demoBehaviorData});
 
   @override
-  List<Object> get props => [demoBehaviourData];
+  List<Object> get props => [demoBehaviorData];
 }
 
 class PBISPlusStudentSearchSucess extends PBISPlusState {

@@ -27,7 +27,7 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
   final double? constraintDeviceHeight;
   final PBISPlusBloc? pbisBloc;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  // Function? editBehaviourFunction;
+  // Function? editBehaviorFunction;
 
   PBISPlusSettingBottomSheet(
       {Key? key,
@@ -35,7 +35,7 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
       required this.constraintDeviceHeight,
       this.pbisBloc,
       this.height = 200,
-      // required this.editBehaviourFunction,
+      // required this.editBehaviorFunction,
       required this.scaffoldKey})
       : super(key: key);
 
@@ -250,8 +250,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
         textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
-        textWidget('Edit Behaviour', AppTheme.kButtonColor),
-        textWidget('Edit Behaviour', Color(0xff111C20)),
+        textWidget('Edit Behavior', AppTheme.kButtonColor),
+        textWidget('Edit Behavior', Color(0xff111C20)),
       ],
     );
   }
@@ -326,32 +326,14 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
 
-            case 'Edit Behaviour':
-              sectionName = 'Behaviour';
+            case 'Edit Behavior':
+              sectionName = 'Behavior';
               Navigator.pop(context);
               pushNewScreen(
                 context,
                 screen: PBISPlusEditSkills(),
                 withNavBar: true,
               );
-
-              // _pageController.animateToPage(1,
-              //     duration: const Duration(milliseconds: 100),
-              //     curve: Curves.ease);
-              // widget.editSkills;
-              // pushNewScreen(
-              //   context,
-              //   screen: PBISPlusEditSkills(),
-              //   withNavBar: true,
-              // );
-              // Navigator.pop(context);
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => Center(
-              //       child: PBISPlusEditSkills(constraint: 450),
-              //     ),
-              //   ),
-              // );
 
               break;
             case PBISPlusOverrides.kresetOptionFourtitle:
@@ -1065,12 +1047,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     engaged: studentInCourse.profile?.engaged,
                     helpful: studentInCourse.profile?.helpful,
                     niceWork: studentInCourse.profile?.niceWork,
-                    // behaviour1: studentInCourse.profile?.behaviour1,
-                    // behaviour2: studentInCourse.profile?.behaviour2,
-                    // behaviour3: studentInCourse.profile?.behaviour3,
-                    // behaviour4: studentInCourse.profile?.behaviour4,
-                    // behaviour5: studentInCourse.profile?.behaviour5,
-                    // behaviour6: studentInCourse.profile?.behaviour6,
+                    // behavior1: studentInCourse.profile?.behavior1,
+                    // behavior2: studentInCourse.profile?.behavior2,
+                    // behavior3: studentInCourse.profile?.behavior3,
+                    // behavior4: studentInCourse.profile?.behavior4,
+                    // behavior5: studentInCourse.profile?.behavior5,
+                    // behavior6: studentInCourse.profile?.behavior6,
                   ),
                 );
 

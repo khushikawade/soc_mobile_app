@@ -232,8 +232,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         FittedBox(
                             child: Screenshot(
                           controller: screenshotController,
-                          child: _buildDataTable(
-                              list: state.pbisStudentInteractionList),
+                          child: Container(
+                            padding: EdgeInsets.only(bottom: 80),
+                            child: _buildDataTable(
+                                list: state.pbisStudentInteractionList),
+                          ),
                         )),
                       ],
                     ),
@@ -284,9 +287,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       niceWork = niceWork + (pbisHistoryData[i].niceWork ?? 0);
     }
     // TODOPBIS:
-    // widget.studentValueNotifier.value.profile!.behaviour1!.counter = engaged;
-    // widget.studentValueNotifier.value.profile!.behaviour2!.counter = helpful;
-    // widget.studentValueNotifier.value.profile!.behaviour3!.counter = niceWork;
+    // widget.studentValueNotifier.value.profile!.behavior1!.counter = engaged;
+    // widget.studentValueNotifier.value.profile!.behavior2!.counter = helpful;
+    // widget.studentValueNotifier.value.profile!.behavior3!.counter = niceWork;
     widget.studentValueNotifier.value.profile!.engaged = engaged;
     widget.studentValueNotifier.value.profile!.helpful = helpful;
     widget.studentValueNotifier.value.profile!.niceWork = niceWork;

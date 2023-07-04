@@ -171,12 +171,12 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                     //       .studentValueNotifier
                                     //       .value
                                     //       .profile!
-                                    //       .behaviour1!
+                                    //       .behavior1!
                                     //       .counter! +
                                     //   widget.studentValueNotifier.value.profile!
-                                    //       .behaviour2!.counter! +
+                                    //       .behavior2!.counter! +
                                     //   widget.studentValueNotifier.value.profile!
-                                    //       .behaviour3!.counter!
+                                    //       .behavior3!.counter!
                                     widget.studentValueNotifier.value.profile!
                                             .engaged! +
                                         widget.studentValueNotifier.value

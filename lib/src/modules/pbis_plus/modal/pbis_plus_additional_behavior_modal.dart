@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
-part 'pbis_plus_additional_behvaiour_modal.g.dart';
+part 'pbis_plus_additional_behavior_modal.g.dart';
 
 @HiveType(typeId: 48)
-class PbisPlusAdditionalBehaviourList {
+class PbisPlusAdditionalBehaviorList {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -18,7 +18,7 @@ class PbisPlusAdditionalBehaviourList {
   @HiveField(6)
   String? lastModifiedById;
 
-  PbisPlusAdditionalBehaviourList({
+  PbisPlusAdditionalBehaviorList({
     required this.id,
     required this.activeStatusC,
     required this.iconUrlC,
@@ -28,8 +28,8 @@ class PbisPlusAdditionalBehaviourList {
     required this.lastModifiedById,
   });
 
-  factory PbisPlusAdditionalBehaviourList.fromJson(Map<String, dynamic> json) =>
-      PbisPlusAdditionalBehaviourList(
+  factory PbisPlusAdditionalBehaviorList.fromJson(Map<String, dynamic> json) =>
+      PbisPlusAdditionalBehaviorList(
         id: json["Id"] ?? null,
         activeStatusC: json["Active_Status__c"] ?? null,
         iconUrlC: json["Icon_URL__c"] ?? null,
