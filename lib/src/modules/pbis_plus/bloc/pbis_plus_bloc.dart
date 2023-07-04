@@ -194,7 +194,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             userType: 'Teacher',
             activityId: '38',
             description:
-                'User Interaction PBIS+ for student ${event.studentId}',
+                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
@@ -370,18 +370,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
     if (event is PBISPlusResetInteractions) {
       try {
+        //Save the event records in separate list to make sure not to change on runtime.
+        List<ClassroomCourse> LocalSelectedRecords =
+            List<ClassroomCourse>.from(event.selectedRecords);
+
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
         //REMOVE THE 'ALL' OBJECT FROM LIST IF EXISTS
-        if (event.selectedRecords.length > 0 &&
-            event.selectedRecords[0].name == 'All') {
-          event.selectedRecords.removeAt(0);
+        if (LocalSelectedRecords.length > 0 &&
+            LocalSelectedRecords[0].name == 'All') {
+          LocalSelectedRecords.removeAt(0);
         }
 
         var result = await resetPBISPlusInteractionInteractions(
           type: event.type,
-          selectedCourses: event.selectedRecords,
+          selectedCourses: LocalSelectedRecords,
           userProfile: userProfileLocalData[0],
         );
         if (result == true) {
@@ -390,6 +394,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISErrorState(error: result);
         }
       } catch (e) {
+        print(e);
         yield PBISErrorState(error: e.toString());
       }
     }
@@ -760,14 +765,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       };
       //if user reset Course //All Courses & Students||Select Students
       if (type == PBISPlusOverrides.kresetOptionOnetitle ||
-          type == PBISPlusOverrides.kresetOptionTwotitle) {
+          type == PBISPlusOverrides.kresetOptionThreetitle) {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
         body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
       }
       //Select Courses
-      else if (type == PBISPlusOverrides.kresetOptionThreetitle) {
+      else if (type == PBISPlusOverrides.kresetOptionTwotitle) {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
@@ -834,7 +839,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
       return response.statusCode;
     } catch (e) {
-      return e.toString();
+      throw (e);
     }
   }
 

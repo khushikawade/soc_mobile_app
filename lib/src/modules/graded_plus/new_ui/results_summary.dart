@@ -14,7 +14,6 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
@@ -43,9 +42,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share/share.dart';
 import '../../../services/strings.dart';
 
 class GradedPlusResultsSummary extends StatefulWidget {
@@ -369,6 +366,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               PlusScreenTitleWidget(
+                isTrailingIcon: true,
                 kLabelSpacing: widget.assessmentDetailPage!
                     ? 0
                     : StudentPlusOverrides.kLabelSpacing / 2,
@@ -533,7 +531,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             //       context: context, isOCR: true);
                             // }
 
-                            if (state is GoogleSuccess) {
+                            if (state is GoogleFolderCreated) {
                               if (Overrides.STANDALONE_GRADED_APP) {
                                 _googleClassroomBloc.add(
                                     CreateClassRoomCourseWork(
@@ -924,30 +922,27 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             : dashboardState.value = '';
                       }
 
-                      List<ClassroomCourse> _googleClassroomCourseslocalData =
-                          await _googleClassRoomlocalDbForStandardApp.getData();
+                      // List<ClassroomCourse> _googleClassroomCourseslocalData =
+                      //     await _googleClassRoomlocalDbForStandardApp.getData();
 
-                      for (ClassroomCourse element
-                          in _googleClassroomCourseslocalData) {
-                        if (element.id == state.assessmentObj!.id) {
-                          //update the classroom course work id in GoogleClassroomOverrides obj
-                          element.courseWorkId =
-                              state.assessmentObj!.courseWorkId!;
+                      // for (ClassroomCourse element
+                      //     in _googleClassroomCourseslocalData) {
+                      //   if (element.id == state.assessmentObj!.id) {
+                      //     //update the classroom course work id in GoogleClassroomOverrides obj
+                      //     element.courseWorkId =
+                      //         state.assessmentObj!.courseWorkId!;
 
-                          GoogleClassroomOverrides
-                                  .historyStudentResultSummaryForStandardApp =
-                              element;
+                      //     GoogleClassroomOverrides
+                      //             .historyStudentResultSummaryForStandardApp =
+                      //         element;
 
-                          break;
-                        }
-                      }
+                      //     break;
+                      //   }
+                      // }
 
                       savedRecordCount = state.resultRecordCount;
-                      GoogleClassroomOverrides
-                              .historyStudentResultSummaryForStandardApp
-                              .assessmentCId =
-                          historyAssessmentId =
-                              state.assessmentObj!.assessmentCId;
+
+                      historyAssessmentId = state.assessmentObj!.assessmentCId;
                     }
                   }
 
@@ -2009,7 +2004,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: widget.assessmentDetailPage!,
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.45,
 
                 //  getURlForResultSummaryIcons: getURlForBottomIcons,
                 //  resultSummaryIconsOnTap: bottomIconsOnTap,
@@ -2035,9 +2030,16 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   'Sheets': widget.shareLink == null || widget.shareLink == ''
                       ? Globals.shareableLink ?? ''
                       : widget.shareLink ?? '',
-                  'Class': GoogleClassroomOverrides
-                          .studentAssessmentAndClassroomObj.courseWorkURL ??
-                      '',
+
+                  'Class': widget.assessmentDetailPage != true
+                      ? GoogleClassroomOverrides
+                              .recentStudentResultSummaryForStandardApp
+                              .courseWorkURL ??
+                          ''
+                      : GoogleClassroomOverrides
+                              .historyStudentResultSummaryForStandardApp
+                              .courseWorkURL ??
+                          '',
                 },
               );
             },

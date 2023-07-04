@@ -461,7 +461,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           teacherContactId: event.teacherContactId,
           teacherEmail: event.teacherEmail,
           classroomCourseId: event.classroomCourseId,
-          classroomCourseWorkId: event.classroomCourseWorkId);
+          classroomCourseWorkId: event.classroomCourseWorkId,
+          classroomCourseWorkUrl: event.classroomCourseWorkUrl);
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
@@ -549,6 +550,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.id = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
+          event.assessmentObj!.courseWorkURL = obj.classroomCourseWorUrl;
         }
         //Fetch Saved Student List from Database/Dashboard
         yield AssessmentDashboardStatusForStandardApp(
@@ -1374,7 +1376,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required String assessmentQueImage,
       required bool isMcqSheet,
       required String? classroomCourseId,
-      required String? classroomCourseWorkId}) async {
+      required String? classroomCourseWorkId,
+      required String? classroomCourseWorkUrl}) async {
     try {
       String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -1403,7 +1406,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response',
         "Classroom_Course_Id": classroomCourseId,
-        "Classroom_Course_Work_Id": classroomCourseWorkId
+        "Classroom_Course_Work_Id": classroomCourseWorkId,
+        "Classroom_Coursework_URL": classroomCourseWorkUrl
       };
 
       final ResponseModel response = await _dbServices.postApi(

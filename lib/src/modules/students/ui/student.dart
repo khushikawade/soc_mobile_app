@@ -1,17 +1,26 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/styles/marquee.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -24,10 +33,12 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../schedule/modal/blackOutDate_modal.dart';
 
@@ -47,12 +58,12 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? isErrorState = false;
-
+  OcrBloc _ocrBloc = new OcrBloc();
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
   CalenderBloc _scheduleBloc = CalenderBloc();
 
-  bool isCalenderEentCalledaAready = false;
+  bool isCalenderEventCalledAlready = false;
   @override
   void initState() {
     super.initState();
@@ -97,6 +108,14 @@ class _StudentPageState extends State<StudentPage> {
 
       return;
     }
+
+    /* --------------------------- START // Condition to check Student Plus Section -------------------------- */
+    if (obj.typeC != null && obj.typeC == 'Student+') {
+      studentPlusLogin();
+      return;
+    }
+    /* --------------------------- END -------------------------- */
+
     // Schedule Ends
 
     if (obj.appUrlC != null) {
@@ -379,6 +398,38 @@ class _StudentPageState extends State<StudentPage> {
                         },
                         child: EmptyContainer()),
                   ),
+
+                  /* --------------------------- BlocListener to verify user to database -------------------------- */
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<OcrBloc, OcrState>(
+                      child: Container(),
+                      bloc: _ocrBloc,
+                      listener: (context, state) {
+                        if (state is AuthorizedUserSuccess) {
+                          Navigator.pop(context, false);
+                          navigateToStudentPlus();
+                        }
+                        if (state is AuthorizedUserLoading) {
+                          Utility.showLoadingDialog(
+                              context: context,
+                              isOCR: true,
+                              msg: "Please Wait");
+                        }
+                        if (state is AuthorizedUserError) {
+                          Navigator.pop(context, false);
+                          if (Globals.appSetting.enableGoogleSSO == "true") {
+                            Authentication.signOut(context: context);
+                            UserGoogleProfile.clearUserProfile();
+                          }
+                          Utility.currentScreenSnackBar(
+                              'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                              null);
+                        }
+                      },
+                    ),
+                  )
                 ]);
           },
           child: Container()),
@@ -501,18 +552,129 @@ class _StudentPageState extends State<StudentPage> {
               )),
     );
 
-    isCalenderEentCalledaAready = false;
+    isCalenderEventCalledAlready = false;
   }
 
   void _scheduleEvent(UserInformation studentProfile) {
-    if (isCalenderEentCalledaAready) {
+    if (isCalenderEventCalledAlready) {
       Utility.currentScreenSnackBar('Please wait..... ', null);
     } else {
-      isCalenderEentCalledaAready = true;
+      isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(
           studentProfile: studentProfile,
           pullToRefresh: false,
           isFromStudent: true));
+    }
+  }
+
+  navigateToStudentPlus() async {
+    PlusUtility.updateLogs(
+        activityType: 'GRADED+',
+        userType: 'Student',
+        activityId: '2',
+        description: 'Student+ Accessed(Login)/Login Id:',
+        operationResult: 'Success');
+
+    pushNewScreen(
+      context,
+      screen: StudentPlusHome(
+        sectionType: "Student",
+        studentPlusStudentInfo: StudentPlusDetailsModel(),
+        index: 0,
+      ),
+      withNavBar: false,
+    );
+  }
+
+  popupModal({required String message}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message: message,
+                title: "Action Required",
+                confirmationOnPress: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "logout");
+                  await UserGoogleProfile.clearUserProfile();
+                  await GoogleClassroom.clearClassroomCourses();
+                  await Authentication.signOut(context: context);
+                  Utility.clearStudentInfo(tableName: 'student_info');
+                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  // Globals.googleDriveFolderId = null;
+                  PlusUtility.updateLogs(
+                      activityType: 'GRADED+',
+                      userType: 'Teacher',
+                      activityId: '3',
+                      description: 'User profile logout',
+                      operationResult: 'Success');
+                  Navigator.pop(context);
+                  studentPlusLogin();
+                },
+              );
+            }));
+  }
+
+  /* ---------------------------- Function call in case of student Plus --------------------------- */
+  Future studentPlusLogin() async {
+    Globals.lastIndex = Globals.controller!.index;
+
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details28JUNE', true);
+    }
+    /* ---- Clear login local data base once because we added classroom scope --- */
+
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (_profileData.isEmpty) {
+      // Condition to check SSO login enable or not
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+            userType: 'Student');
+        if (value == true) {
+          navigateToStudentPlus();
+        }
+      } else {
+        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            _ocrBloc.add(AuthorizedUserWithDatabase(
+                email: user.email, isAuthorizedUser: true));
+            //navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        }
+      }
+    } else {
+      // GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+      //Creating fresh sessionID
+      // Check user is login in other section or not
+      if (_profileData[0].userType != "Student") {
+        popupModal(
+            message:
+                "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
+        return;
+      }
+
+      await Authentication.refreshAuthenticationToken(refreshToken: _profileData[0].refreshToken??'');
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      navigateToStudentPlus();
     }
   }
 }

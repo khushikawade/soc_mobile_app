@@ -39,14 +39,13 @@ class DbServices {
 
 //User this for OCR/Google inetgration
   getApiNew(api, {headers, required bool? isCompleteUrl}) async {
-    print(api);
     try {
       final response = await httpClient.get(
           isCompleteUrl == true
               ? Uri.parse('$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: headers);
-
+      print(api);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);

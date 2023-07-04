@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -88,31 +89,34 @@ class _GradedPlusResultOptionBottomSheetState
 /*------------------------------------------------------------BODY FRAME---------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------------------------*/
   Widget body() {
-    return SingleChildScrollView(
-      controller: ModalScrollController.of(context),
-      child: Container(
-          height: widget.height,
-          decoration: BoxDecoration(
-            color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          ),
-          // padding: EdgeInsets.only(left: 16),
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              onPageChanged: ((value) {
-                pageValue = value;
-              }),
-              allowImplicitScrolling: false,
-              pageSnapping: false,
-              controller: _pageController,
-              children: [
-                buildOptions(),
-                commonLoaderWidget(),
-              ])),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: SingleChildScrollView(
+        controller: ModalScrollController.of(context),
+        child: Container(
+            height: widget.height,
+            decoration: BoxDecoration(
+              color: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+            // padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                onPageChanged: ((value) {
+                  pageValue = value;
+                }),
+                allowImplicitScrolling: false,
+                pageSnapping: false,
+                controller: _pageController,
+                children: [
+                  buildOptions(),
+                  commonLoaderWidget(),
+                ])),
+      ),
     );
   }
 
@@ -126,6 +130,7 @@ class _GradedPlusResultOptionBottomSheetState
         horizontalTitleGap: 20,
         leading: element.title == "Sync Presentation"
             ? Icon(Icons.sync,
+                size: 30,
                 color: Color(0xff000000) == Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20))
@@ -197,13 +202,15 @@ class _GradedPlusResultOptionBottomSheetState
             ),
           ),
           widget?.title?.isNotEmpty ?? false
-              ? Utility.textWidget(
-                  context: context,
-                  text: widget.title!,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline5!
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
+              ? Column(
+                  children: [
+                    PlusScreenTitleWidget(
+                      kLabelSpacing: 8,
+                      text: widget.title!,
+                    ),
+                    SpacerWidget(10)
+                  ],
+                )
               : Container(),
           ...widget.resultSummaryIconsModalList.map(
               (ResultSummaryIcons element) => _listTileMenu(element: element)),
@@ -220,11 +227,11 @@ class _GradedPlusResultOptionBottomSheetState
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SpacerWidget(50),
+          // SpacerWidget(50),
           CircularProgressIndicator.adaptive(
             backgroundColor: AppTheme.kButtonColor,
           ),
@@ -259,7 +266,9 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
+          print("STATE $state");
           if (state is GoogleSlidesPresentationErrorState) {
+            print(state.errorMsg);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
@@ -273,7 +282,9 @@ class _GradedPlusResultOptionBottomSheetState
               Utility.currentScreenSnackBar(
                   state.errorMsg == 'NO_CONNECTION'
                       ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
+                      : state.errorMsg == "404"
+                          ? "Ahh! Looks like the Google Presentation moved to trash. Try again to create a new Google Presentation."
+                          : "Something Went Wrong. Please Try Again.",
                   null);
             }
           }
@@ -340,6 +351,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
+          print("STATE $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(
@@ -347,6 +359,7 @@ class _GradedPlusResultOptionBottomSheetState
                 null);
           }
           if (state is StudentPlusErrorReceived) {
+            print(state.err);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();

@@ -6,7 +6,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
+
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,10 +68,10 @@ class Authentication {
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signInSilently(reAuthenticate: true);
-
+    List<UserInformation> userInfo = await UserGoogleProfile.getUserProfile();
     if (googleSignInAccount == null) {
-      await signInWithGoogle();
-      List<UserInformation> userInfo = await UserGoogleProfile.getUserProfile();
+      await signInWithGoogle(userType: userInfo[0].userType ?? '');
+
       return userInfo.length < 1 ? '' : userInfo[0].authorizationToken ?? '';
     }
     final GoogleSignInAuthentication googleSignInAuthentication =
@@ -98,7 +98,8 @@ class Authentication {
       }
 
       //-------------------------------Updating user info locally--------------------------------------------
-      await saveUserProfile(user!, googleSignInAuthentication);
+      await saveUserProfile(
+          user!, googleSignInAuthentication, userInfo[0].userType ?? '');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // Handle the case where the user already exists with a different credential
@@ -123,7 +124,7 @@ class Authentication {
   /* -------------------------------------------------------------------------------------- */
   /* -----------------------------------------signInWithGoogle-------------------------------------- */
   /* -------------------------------------------------------------------------------------- */
-  static Future<User?> signInWithGoogle() async {
+  static Future<User?> signInWithGoogle({required String userType}) async {
     // FirebaseAuth auth = FirebaseAuth.instance;
     // User? user;
 
@@ -184,7 +185,7 @@ class Authentication {
 
           //-------------------------------Updating user info locally--------------------------------------------
 
-          await saveUserProfile(user!, googleSignInAuthentication);
+          await saveUserProfile(user!, googleSignInAuthentication, userType);
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             // Handle the case where the user already exists with a different credential
@@ -211,7 +212,12 @@ class Authentication {
   /* -----------------------------------------signOut-------------------------------------- */
   /* -------------------------------------------------------------------------------------- */
   static Future<void> signOut({required BuildContext context}) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId ?? ''
+            : DefaultFirebaseOptions.currentPlatform.androidClientId ?? '',
+        // forceCodeForRefreshToken: true,
+        scopes: scopes);
 
     try {
       if (!kIsWeb) {
@@ -220,6 +226,7 @@ class Authentication {
       await FirebaseAuth.instance.signOut();
       user = null;
     } catch (e) {
+      print('Sign Out Error:::::: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         Authentication.customSnackBar(
           content: 'Error signing out. Try again.',
@@ -232,7 +239,9 @@ class Authentication {
   /* --------------------------------------saveUserProfile---------------------------------- */
   /* -------------------------------------------------------------------------------------- */
   static Future<void> saveUserProfile(
-      User user, GoogleSignInAuthentication googleSignInAuthentication) async {
+      User user,
+      GoogleSignInAuthentication googleSignInAuthentication,
+      String userType) async {
     // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
 
@@ -242,7 +251,8 @@ class Authentication {
         profilePicture: user.photoURL,
         authorizationToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
-        refreshToken: user.refreshToken ?? "");
+        refreshToken: user.refreshToken ?? "",
+        userType: userType);
 
     //Save user profile to locally
     //UPDATE CURRENT GOOGLE USER PROFILE
@@ -294,12 +304,13 @@ class Authentication {
               userName: _userProfileLocalData[0].userName,
               userEmail: _userProfileLocalData[0].userEmail,
               profilePicture: _userProfileLocalData[0].profilePicture,
+              userType: _userProfileLocalData[0].userType,
               refreshToken: _userProfileLocalData[0].refreshToken,
               authorizationToken: newToken["access_token"]);
 
           // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
 
-          await UserGoogleProfile.updateUserProfile(updatedObj);
+          await (updatedObj);
 
           //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 

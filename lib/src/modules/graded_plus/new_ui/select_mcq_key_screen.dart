@@ -76,7 +76,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
                 Utility.showLoadingDialog(context: context, isOCR: true);
               }
 
-              if (state is GoogleSuccess) {
+              if (state is GoogleFolderCreated) {
                 Navigator.of(context).pop();
 
                 List<UserInformation> userProfileInfoData =

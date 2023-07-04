@@ -1,4 +1,7 @@
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/user_profile.dart';
 
 class GoogleDriveBlocMethods {
   List<ClassroomCourse> updateSheetTabTitleForDuplicateNames(
@@ -41,5 +44,69 @@ class GoogleDriveBlocMethods {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<bool> getAndUpdateFolderDetails({required String folderName}) async {
+    try {
+      GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
+      List<UserInformation> _userProfileLocalData =
+          await UserGoogleProfile.getUserProfile();
+      UserInformation userProfileLocalInfo = _userProfileLocalData[0];
+
+      //Get Folder Id if folder already exist
+      var folderObject = await googleDriveBloc.getGoogleDriveFolderId(
+          token: userProfileLocalInfo.authorizationToken, // event.token,
+          folderName: folderName,
+          refreshToken:
+              userProfileLocalInfo.refreshToken); // event.refreshToken);
+
+      if (folderObject != 401 && folderObject != 500) {
+        print("inside folder obj::::::${folderObject}");
+        //Which means folder API return 200 but folder not found
+        if (folderObject.length == 0) {
+          print("${folderName} is not available on drive Create one ");
+          //Create the folder now
+          List isFolderCreated = await googleDriveBloc.createFolderOnDrive(
+              token: userProfileLocalInfo.authorizationToken,
+              folderName: folderName);
+
+          if (isFolderCreated[0] == true) {
+            bool result = await updateDriveFolderDetails(
+                isFolderCreated[0], userProfileLocalInfo, folderName);
+            return result;
+          } else {
+            return false;
+          }
+        } else {
+          bool result = await updateDriveFolderDetails(
+              folderObject, userProfileLocalInfo, folderName);
+          return result;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future updateDriveFolderDetails(folderObject,
+      UserInformation userProfileLocalInfo, String folderName) async {
+    print("FOLDER IS ALREADY EXISTS SECTION NAME ${folderName} ");
+
+    if (folderName == "SOLVED GRADED+") {
+      userProfileLocalInfo.gradedPlusGoogleDriveFolderId = folderObject['id'];
+      userProfileLocalInfo.gradedPlusGoogleDriveFolderPathUrl =
+          folderObject['webViewLink'];
+    } else if (folderName == "SOLVED PBIS+") {
+      userProfileLocalInfo.pbisPlusGoogleDriveFolderId = folderObject['id'];
+    } else if (folderName == "SOLVED STUDENT+") {
+      userProfileLocalInfo.studentPlusGoogleDriveFolderId = folderObject['id'];
+    }
+
+    // Update Details in localDb
+    await UserGoogleProfile.updateUserProfile(userProfileLocalInfo);
+    return true;
   }
 }

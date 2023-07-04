@@ -131,6 +131,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         kLabelSpacing: 0,
         text: 'All Courses',
         backButton: true,
+        isTrailingIcon: true,
         backButtonOnTap: () {
           widget.backOnTap();
         },
@@ -289,7 +290,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       //     errorMsg: state.error!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                      await Authentication.reAuthenticationRequired(context: context,errorMessage: state.error,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.error,
+                          scaffoldKey: _scaffoldKey);
                       pbisPlusClassroomBloc.add(PBISPlusImportRoster(
                           isGradedPlus: widget.isGradedPlus));
                     } else {
@@ -717,6 +721,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     name: ClassroomProfileName(fullName: 'All'), id: 'All'))
           ]));
     }
+
+    print("UI OPEN BOTTOM SHEET");
+    print(allClassroomCourses[0].name);
+
     var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -739,7 +747,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 headerScreenshotController: headerScreenshotController,
                 constraintDeviceHeight: constraints.maxHeight,
                 scaffoldKey: _scaffoldKey,
-                googleClassroomCourseworkList: googleClassroomCourseworkList,
+                googleClassroomCourseworkList:
+                    List<ClassroomCourse>.unmodifiable(
+                        googleClassroomCourseworkList),
                 padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
@@ -854,7 +864,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,
-                    googleClassroomCourseworkList: allClassroomCourses,
+                    googleClassroomCourseworkList:    List<ClassroomCourse>.unmodifiable( allClassroomCourses),
                     height: constraints.maxHeight < 750
                         ? MediaQuery.of(context).size.height * 0.6
                         : MediaQuery.of(context).size.height * 0.45);

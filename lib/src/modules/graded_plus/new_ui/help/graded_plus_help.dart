@@ -65,7 +65,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
           PlusScreenTitleWidget(
               kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-              text: 'Graded+ Help'),
+              text: 'GRADED+ Help'),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 1.5),
           // Padding(
           //   padding: const EdgeInsets.symmetric(

@@ -26,13 +26,15 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       gradedPlusGoogleDriveFolderId: fields[6] as String?,
       pbisPlusGoogleDriveFolderId: fields[7] as String?,
       studentPlusGoogleDriveFolderId: fields[8] as String?,
-    )..gradedPlusGoogleDriveFolderPathUrl = fields[9] as String?;
+      gradedPlusGoogleDriveFolderPathUrl: fields[9] as String?,
+      userType: fields[10] as String?,
+    );
   }
 
   @override
   void write(BinaryWriter writer, UserInformation obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.userName)
       ..writeByte(1)
@@ -52,7 +54,9 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       ..writeByte(8)
       ..write(obj.studentPlusGoogleDriveFolderId)
       ..writeByte(9)
-      ..write(obj.gradedPlusGoogleDriveFolderPathUrl);
+      ..write(obj.gradedPlusGoogleDriveFolderPathUrl)
+      ..writeByte(10)
+      ..write(obj.userType);
   }
 
   @override
