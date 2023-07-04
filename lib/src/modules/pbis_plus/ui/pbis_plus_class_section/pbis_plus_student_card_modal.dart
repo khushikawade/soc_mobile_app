@@ -116,47 +116,60 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           ValueListenableBuilder(
               valueListenable: maxLine,
               builder: (context, value, _) => TextFormField(
-                  minLines: 1,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  controller: noteController,
-                  onChanged: (value) {
-                    isNotesTextfieldEnable.value = true;
-                    if (noteController.text.isEmpty) {
-                      isNotesTextfieldEnable.value = false;
-                    }
-                  },
-                  cursorColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9),
-                  decoration: InputDecoration(
-                    // contentPadding:
-                    //     EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    filled: true,
-                    fillColor:
+                    minLines: 1,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    controller: noteController,
+                    onChanged: (value) {
+                      isNotesTextfieldEnable.value = true;
+                      if (noteController.text.isEmpty) {
+                        isNotesTextfieldEnable.value = false;
+                      }
+                    },
+                    cursorColor:
                         Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    // Color(0xffF7F8F9),
-                    hintText: 'Add Note',
-                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                    decoration: InputDecoration(
+                      // contentPadding:
+                      //     EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      filled: true,
+                      fillColor:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      // Color(0xffF7F8F9),
+                      hintText: 'Add Note',
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(
+                              fontSize: 14,
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              fontWeight: FontWeight.w400),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
+                      ),
+
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
+                      ),
+                    ),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         fontSize: 14,
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
                         fontWeight: FontWeight.w400),
-                  ),
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      fontSize: 14,
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                      fontWeight: FontWeight.w400),
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.next)),
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.next,
+                  )),
           ValueListenableBuilder(
               valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => isNotesTextfieldEnable.value
@@ -307,21 +320,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 widget.isFromDashboardPage,
                                 widget.constraint,
                                 behvaiouriconListCount),
-                            //Row
-                            //old
-                            // height: widget.isFromDashboardPage!
-                            //     ? (widget.constraint <= 115)
-                            //         ? MediaQuery.of(context).size.height * 0.4
-                            //         : MediaQuery.of(context).size.height * 0.4
-                            //     : (widget.constraint <= 115)
-                            //         ? MediaQuery.of(context).size.height * 0.48
-                            //         : MediaQuery.of(context).size.height * 0.42, //Row
-                            // height: MediaQuery.of(context).size.height * 0.6, //Coloumn
                             width: widget.isFromDashboardPage == true
                                 ? MediaQuery.of(context).size.width
                                 : MediaQuery.of(context).size.width * 0.8,
                             margin: widget.isFromDashboardPage == true
-                                ? EdgeInsets.fromLTRB(16, 36, 16, 20)
+                                ? EdgeInsets.fromLTRB(16, 40, 16, 20)
                                 : EdgeInsets.only(top: 45),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6),
@@ -486,7 +489,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       bool? isFromDashboardPage, double? constraint, itemcount) {
     double spacing = itemcount.value <= 3
         ? isFromDashboardPage!
-            ? MediaQuery.of(context).size.width * 0.2
+            ? MediaQuery.of(context).size.width * 0.1
             : MediaQuery.of(context).size.width * 0.1
         : 0;
     print(spacing);
@@ -501,29 +504,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             : isNotesTextfieldEnable.value
                 ? MediaQuery.of(context).size.height * 0.57 - spacing
                 : MediaQuery.of(context).size.height * 0.45 - spacing;
-    // double height = widget.isFromDashboardPage == true
-    //     ? widget.constraint <= 115
-    //         ? isnotestextfieldenable.value
-    //             ? MediaQuery.of(context).size.height * 0.58 - spacing
-    //             : MediaQuery.of(context).size.height * 0.51 - spacing
-    //         : isnotestextfieldenable.value
-    //             ? MediaQuery.of(context).size.height * 0.57 - spacing
-    //             : MediaQuery.of(context).size.height * 0.45 - spacing
-    //     : widget.constraint <= 115
-    //         ? MediaQuery.of(context).size.height * 0.43 - spacing
-    //         : MediaQuery.of(context).size.height * 0.37 - spacing;
+
     return height;
   }
-
-  // widget.isFromDashboardPage == true
-
-  //     : (widget.constraint <= 115)
-  //         ? isnotestextfieldenable.value
-  //             ?return MediaQuery.of(context).size.height * 0.58
-  //             :return MediaQuery.of(context).size.height * 0.51
-  //         : isnotestextfieldenable.value
-  //             ?return MediaQuery.of(context).size.height * 0.57
-  //             :return MediaQuery.of(context).size.height * 0.45;
 
 /*-------------------------------------------------------------------------------------------------------------- */
 
