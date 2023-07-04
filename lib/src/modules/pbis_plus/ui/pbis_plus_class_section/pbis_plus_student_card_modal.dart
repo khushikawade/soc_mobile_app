@@ -339,19 +339,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       child: FittedBox(child: pbisStudentProfileWidget))),
               Positioned(
                   bottom: 5,
-                  child:
-                      widget.isFromStudentPlus! || widget.isFromDashboardPage!
-                          ? SizedBox.shrink()
-                          : Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(12),
-                                  bottomRight: Radius.circular(12),
-                                ),
-                              ),
-                              alignment: Alignment.bottomRight,
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: addNotes)),
+                  child: widget.isFromStudentPlus! == true ||
+                          widget.isFromDashboardPage == true
+                      ? SizedBox.shrink()
+                      : Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
+                            ),
+                          ),
+                          alignment: Alignment.bottomRight,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: addNotes)),
               Positioned(
                   top: 0,
                   child: GestureDetector(
