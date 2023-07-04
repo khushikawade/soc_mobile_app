@@ -370,7 +370,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               Positioned(
                   bottom: 5,
                   child: widget.isFromStudentPlus == true ||
-                          widget.isFromDashboardPage!
+                          widget.isFromDashboardPage == true
                       ? SizedBox.shrink()
                       : Container(
                           decoration: BoxDecoration(
