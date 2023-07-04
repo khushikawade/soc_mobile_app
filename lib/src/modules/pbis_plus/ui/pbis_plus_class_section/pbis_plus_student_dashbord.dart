@@ -119,10 +119,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------body--------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   Widget body(BuildContext context) {
-    return ListView(
+    return Column(
       // physics: NeverScrollableScrollPhysics(),
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         widget.isFromStudentPlus != true
             ? IconButton(
