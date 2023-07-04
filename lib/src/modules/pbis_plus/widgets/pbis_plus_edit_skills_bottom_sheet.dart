@@ -4,23 +4,19 @@ import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusALLBehaviourModal? item;
+  PBISPlusCommonBehaviorModal? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
@@ -42,14 +38,14 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
 }
 
 class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
-  // ValueNotifier<String> _errorMessage = ValueNotifier<String>('');
   late PageController _pageController;
   final _formKey = GlobalKey<FormState>();
-  // final editNameController = TextEditingController();
   PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
   ValueNotifier<TextEditingController> editNameController =
       ValueNotifier<TextEditingController>(TextEditingController());
   String _errorMessage = 'Field is required.';
+  int pageValue = 0;
+
   Future<void> initController() async {
     _pageController = PageController()
       ..addListener(() {
@@ -61,16 +57,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   initState() {
     initController();
     /*-------------------------User Activity Track START----------------------------*/
-    // FirebaseAnalyticsService.addCustomAnalyticsEvent(
-    //     "pbis_plus_save_and_share_bottomsheet");
-    // FirebaseAnalyticsService.setCurrentScreen(
-    //     screenTitle: 'pbis_plus_save_and_share_bottomsheet',
-    //     screenClass: 'PBISPlusBottomSheet');
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_edit_skill_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_edit_skill_bottomsheet',
+        screenClass: 'PBISPlusEditSkillsBottomSheet');
     /*-------------------------User Activity Track END----------------------------*/
     super.initState();
   }
 
-  int pageValue = 0;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -118,35 +113,32 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         ));
   }
 
-  Widget EditAndDeleteIcon(PBISPlusALLBehaviourModal? dataList) {
+  Widget EditAndDeleteIcon(PBISPlusCommonBehaviorModal? dataList) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
           _buildCloseIcon(),
           SpacerWidget(16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              _buildCard(
-                  onTap: () {
-                    _pageController.animateToPage(1,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.ease);
-                  },
-                  iconPath: "assets/Pbis_plus/Edit.svg",
-                  tittle: "Edit Name"),
-              _buildCard(
-                  onTap: widget.onDelete,
-                  iconPath: "assets/Pbis_plus/delete.svg",
-                  tittle: "Delete"),
-            ],
-          )
-        ],
-      ),
-    );
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _buildCard(
+                    onTap: () {
+                      _pageController.animateToPage(1,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.ease);
+                    },
+                    iconPath: "assets/Pbis_plus/Edit.svg",
+                    tittle: "Edit Name"),
+                _buildCard(
+                    onTap: widget.onDelete,
+                    iconPath: "assets/Pbis_plus/delete.svg",
+                    tittle: "Delete"),
+              ])
+        ]));
   }
 
   Widget _buildCard(
@@ -170,9 +162,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                    iconPath!,
-                  ),
+                  SvgPicture.asset(iconPath!),
                   Padding(
                       padding: Globals.deviceType != 'phone'
                           ? const EdgeInsets.only(top: 14, left: 14)
@@ -187,174 +177,72 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 ])));
   }
 
-  // showPopup(
-  //     {required String message,
-  //     required String? title,
-  //     PBISPlusALLBehaviourModal? item,
-  //     PBISPlusBloc? pbisPlusClassroomBloc}) async {
-  //   var res = await Navigator.of(context).push(HeroDialogRoute(
-  //       builder: (context) => PBISPlusCommonPopup(
-  //             pbisPlusBloc: pbisPlusClassroomBloc,
-  //             item: item!,
-  //             containerIcons: widget.containerIcons,
-  //             backgroundColor:
-  //                 Theme.of(context).colorScheme.background == Color(0xff000000)
-  //                     ? Color(0xff162429)
-  //                     : null,
-  //             orientation: MediaQuery.of(context).orientation,
-  //             context: context,
-  //             message: message,
-  //             title: '',
-  //             titleStyle: Theme.of(context)
-  //                 .textTheme
-  //                 .headline1!
-  //                 .copyWith(fontWeight: FontWeight.bold),
-  //           )));
-  //   if (res == true) {
-  //     Navigator.pop(context);
-  //   }
-  // }
-
-  Widget _buildNextbutton(PBISPlusALLBehaviourModal dataList) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-      child: FloatingActionButton.extended(
-          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-          onPressed: () async {
-            if (editNameController.value.text.isNotEmpty) {
-              pbisPlusBloc.add(GetPBISSkillsUpdateName(
-                  item: dataList, newName: editNameController.value.text));
-            }
-          },
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Utility.textWidget(
-                  text: 'Save',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor)),
-            ],
-          )),
-    );
-  }
-
-  Widget _buildEditNameWidget(PBISPlusALLBehaviourModal? dataList) {
+  Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
           Container(
               alignment: Alignment.topRight,
               child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                icon: Icon(
-                  Icons.clear,
-                  color: AppTheme.kButtonColor,
-                  size: Globals.deviceType == "phone" ? 28 : 36,
-                ),
-              )),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  icon: Icon(Icons.clear,
+                      color: AppTheme.kButtonColor,
+                      size: Globals.deviceType == "phone" ? 28 : 36))),
           Center(
-            child: Utility.textWidget(
-                context: context,
-                text: "${"Edit " + "${dataList!.name}"}",
-                textTheme: Theme.of(context).textTheme.headline5!),
-          ),
+              child: Utility.textWidget(
+                  context: context,
+                  text: "${"Edit " + "${dataList!.name}"}",
+                  textTheme: Theme.of(context).textTheme.headline5!)),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
-
           Form(
-            key: _formKey,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child:
-
-                  //  TextFieldWidget(
-                  //     hintText: 'Edit Name',
-                  //     msg: "Field is required",
-                  //     keyboardType: TextInputType.text,
-                  //     controller: editNameController,
-                  //     onSaved: (String value) {})
-
-                  ValueListenableBuilder(
+              key: _formKey,
+              child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  child: ValueListenableBuilder(
                       valueListenable: editNameController,
                       builder: (context, value, _) {
                         return TextFormField(
-                          controller: editNameController.value,
-                          decoration: InputDecoration(
-                            hintText: 'Enter a value',
-                            labelText: 'Field',
-                            errorText: editNameController.value.text.isNotEmpty
-                                ? _errorMessage
-                                : "",
-                          ),
-                        );
-                      }),
-            ),
-          ),
+                            controller: editNameController.value,
+                            decoration: InputDecoration(
+                                hintText: 'Enter a value',
+                                labelText: 'Field',
+                                errorText:
+                                    editNameController.value.text.isNotEmpty
+                                        ? _errorMessage
+                                        : ""));
+                      }))),
           SpacerWidget(MediaQuery.of(context).size.width * 0.1),
           _buildSaveButton(dataList)
-
-          // BlocConsumer(
-          //     bloc: pbisPlusBloc,
-          //     builder: (context, state) {
-          //       if (state is PBISPlusLoading) {
-          //         return Container(
-          //             alignment: Alignment.center,
-          //             child: CircularProgressIndicator.adaptive(
-          //                 backgroundColor: AppTheme.kButtonColor));
-          //       } else if (state is PBISErrorState) {}
-
-          //       return _buildSaveButton(dataList);
-          //     },
-          //     listener: (context, state) async {
-          //       if (state is PBISPlusDefaultBehaviourSucess) {
-          //         Utility.currentScreenSnackBar(
-          //             "Successfully updated skills name", null);
-          //         //Close bottomsheet on success
-          //         Navigator.pop(context);
-          //       } else if (state is PBISErrorState) {
-          //         Utility.currentScreenSnackBar(
-          //             "Action cannot be performed. Please try again.", null);
-          //       }
-          //     }),
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _buildSaveButton(PBISPlusALLBehaviourModal dataList) {
+  Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-      child: FloatingActionButton.extended(
-          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-          onPressed: () async {
-            if (editNameController.value.text.isNotEmpty) {
-              // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
-              //     item: dataList, newName: editNameController.text));
-            } else {}
-          },
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+        child: FloatingActionButton.extended(
+            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+            onPressed: () async {
+              // if (editNameController.value.text.isNotEmpty) {
+              //   // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
+              //   //     item: dataList, newName: editNameController.text));
+              // } else {}
+            },
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Utility.textWidget(
                   text: 'Save',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
                       .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor)),
-            ],
-          )),
-    );
+                      .copyWith(color: Theme.of(context).backgroundColor))
+            ])));
   }
 }

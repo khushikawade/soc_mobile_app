@@ -36,7 +36,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
     pBISPlusPersistentTabController = PersistentTabController(initialIndex: 0);
 
     _checkDriveFolderExistsOrNot();
-    pBISPlusGetDefaultSchoolBehvaiour();
+    pBISPlusGetDefaultSchoolBehavior();
   }
 
   @override
@@ -136,8 +136,8 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  void pBISPlusGetDefaultSchoolBehvaiour() {
-    pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehvaiour());
+  void pBISPlusGetDefaultSchoolBehavior() {
+    pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
   }
 
   //  void backOnTap() {

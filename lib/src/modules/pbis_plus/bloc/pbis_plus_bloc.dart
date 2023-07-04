@@ -2,18 +2,17 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behvaiour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_default_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -62,10 +61,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
-        LocalDatabase<PBISPlusGenericBehaviourModal> _pbisPlusSkilllocalsDB =
-            LocalDatabase(PBISPlusOverrides.pbisPlusBehaviourGenricDB);
-        List<PBISPlusGenericBehaviourModal>? _pbisPlusSkillsLocalData =
-            await _pbisPlusSkilllocalsDB.getData();
+        // LocalDatabase<PBISPlusGenericBehaviorModal> _pbisPlusSkilllocalsDB =
+        //     LocalDatabase(PBISPlusOverrides.pbisPlusBehaviorGenricDB);
+        // List<PBISPlusGenericBehaviorModal>? _pbisPlusSkillsLocalData =
+        //     await _pbisPlusSkilllocalsDB.getData();
         // await _pbisPlusSkilllocalsDB.clear();
 
         //Clear Roster local data to manage loading issue
@@ -159,67 +158,62 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is PBISPlusGetAdditionalBehaviour) {
-      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
-          PBISPlusOverrides.PbisPlusAdditionalBehaviourLocalDbTable);
+    if (event is PBISPlusGetAdditionalBehavior) {
+      LocalDatabase<PBISPlusCommonBehaviorModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusAdditionalBehaviorLocalDbTable);
 
-      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+      List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
 
       try {
-        print(
-            "-----------------event is GetPBISPlusAdditionalBehaviour----------------------------");
-
         if (_localData.isEmpty) {
-          yield PBISPlusBehvaiourLoading(
-              demoBehaviourData: PBISPlusALLBehaviourModal.demoBehaviourData);
+          yield PBISPlusBehaviorLoading(
+              demoBehaviorData: PBISPlusCommonBehaviorModal.demoBehaviorData);
         } else {
-          yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
-              additionalbehaviourList: _localData);
+          yield PBISPlusAdditionalBehaviorSuccess(
+              additionalBehaviorList: _localData);
         }
 
-        List<PBISPlusALLBehaviourModal> list =
-            await getPBISPAdditionalBehaviour();
-// Sort the list based on the "order" key
+        List<PBISPlusCommonBehaviorModal> list =
+            await getPBISAdditionalBehavior();
+
+        // Sort the list based on the "order" key
         list = sortByOrder(list);
         await _localDb.clear();
-        list.forEach((PBISPlusALLBehaviourModal e) async {
-          print(e.behaviorTitleC);
+        list.forEach((PBISPlusCommonBehaviorModal e) async {
           await _localDb.addData(e);
         });
+
         yield PBISPlusLoading();
-        yield PBISPlusGetPBISPlusAdditionalBehaviourSuccess(
-            additionalbehaviourList: list);
+        yield PBISPlusAdditionalBehaviorSuccess(additionalBehaviorList: list);
       } catch (e) {
-        yield PBISPlusAdditionalBehaviourError(error: e.toString());
+        yield PBISPlusAdditionalBehaviorError(error: e.toString());
       }
     }
 
-    if (event is PBISPlusDeleteTeacherCustomBehvaiour) {
-      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
-          PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
-      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+    /* -------------------------------------------------------------------------- */
+    /* ------------------PBISPlusDeleteTeacherCustomBehavior-------------------- */
+    /* -------------------------------------------------------------------------- */
+    if (event is PBISPlusDeleteTeacherCustomBehavior) {
+      LocalDatabase<PBISPlusCommonBehaviorModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+      List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
       try {
-        //remove the deletd item from db
+        //remove the deleted item from db
         for (int i = 0; i < _localData.length; i++) {
-          if (_localData[i].id == event.behvaiour.id) {
-            print(
-                "---------------------------behvaiour deleted from Teacher Custom Behaviour LocalDb db");
+          if (_localData[i].id == event.behavior.id) {
             _localData.removeAt(i);
-            await _localDb.deleteAt(i);
             break;
           }
         }
-        //clean localDB AND
-        //update the new sorting index every item in localDB
-
+        //clean localDB AND //update the new sorting index every item in localDB
         await _localDb.clear();
         _localData.asMap().forEach((index, element) async {
           element.pBISBehaviorSortOrderC = (index + 1).toString();
           await _localDb.addData(element);
         });
 
-        var result = await deleteTeacherCustomBehvaiour(
-            behaviour: event.behvaiour, teacherId: Globals.teacherId ?? '');
+        var result = await deleteTeacherCustomBehavior(
+            behavior: event.behavior, teacherId: Globals.teacherId ?? '');
       } catch (e) {
         print(e);
       }
@@ -545,120 +539,110 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is PBISPlusGetDefaultSchoolBehvaiour) {
-      LocalDatabase<PBISPlusALLBehaviourModal> _localDb =
-          LocalDatabase(PBISPlusOverrides.PbisPlusDefaultBehaviourLocalDbTable);
+    if (event is PBISPlusGetDefaultSchoolBehavior) {
+      LocalDatabase<PBISPlusCommonBehaviorModal> _localDb =
+          LocalDatabase(PBISPlusOverrides.PbisPlusDefaultBehaviorLocalDbTable);
 
-      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+      List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
       try {
         if (_localData.isEmpty) {
           yield PBISPlusLoading();
         } else {
-          yield PBISPlusGetDefaultSchoolBehvaiourSuccess(
-              defaultSchoolBehaviourList: _localData);
+          yield PBISPlusGetDefaultSchoolBehaviorSuccess(
+              defaultSchoolBehaviorList: _localData);
         }
 
-        List<PBISPlusALLBehaviourModal> list =
-            await GetDefaultSchoolBehvaiour();
+        List<PBISPlusCommonBehaviorModal> list =
+            await GetDefaultSchoolBehavior();
 
         await _localDb.clear();
 
-        list.forEach((PBISPlusALLBehaviourModal e) {
+        list.forEach((PBISPlusCommonBehaviorModal e) {
           _localDb.addData(e);
         });
       } catch (e) {
         throw (e);
-        // yield PBISPlusGetDefaultSchoolBehvaiourSuccess(
-        //     defaultSchoolBehaviourList: _localData);
+        // yield PBISPlusGetDefaultSchoolBehaviorSuccess(
+        //     defaultSchoolBehaviorList: _localData);
       }
     }
 
-    if (event is PBISPlusGetTeacherCustomBehvaiour) {
-      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
-          PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
-      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+    if (event is PBISPlusGetTeacherCustomBehavior) {
+      LocalDatabase<PBISPlusCommonBehaviorModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+      List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
       yield PBISPlusLoading();
       try {
         if (_localData.isEmpty) {
-          print("_localData  is Empty");
-          yield PBISPlusBehvaiourLoading(
-              demoBehaviourData: PBISPlusALLBehaviourModal.demoBehaviourData);
+          yield PBISPlusBehaviorLoading(
+              demoBehaviorData: PBISPlusCommonBehaviorModal.demoBehaviorData);
         } else {
-          // _localData = sortByOrder(_localData);
-          print("_localData  is Empty");
-          yield PBISPlusGetTeacherCustomBehvaiourSuccess(
-              teacherCustomBehaviourList: _localData);
+          yield PBISPlusGetTeacherCustomBehaviorSuccess(
+              teacherCustomBehaviorList: _localData);
         }
 
-        List<PBISPlusALLBehaviourModal> list =
-            await getTeacherCustomBehvaiour(teacherId: Globals.teacherId ?? '');
+        List<PBISPlusCommonBehaviorModal> list =
+            await getTeacherCustomBehavior(teacherId: Globals.teacherId ?? '');
 
-//update temporary sort order will remove later
-        // list.asMap().forEach((index, element) {
-        //   element.pBISBehaviorSortOrderC = (index + 1).toString();
-        // });
-
-// Sort the list based on the "order" key
-        list = sortByOrder(list);
+        // Sort the list based on the "order" key
+        list = await sortByOrder(list);
 
         await _localDb.clear();
-        list.forEach((PBISPlusALLBehaviourModal e) async {
+        list.forEach((PBISPlusCommonBehaviorModal e) async {
           await _localDb.addData(e);
         });
+
         yield PBISPlusLoading();
-        yield PBISPlusGetTeacherCustomBehvaiourSuccess(
-            teacherCustomBehaviourList: list);
+        yield PBISPlusGetTeacherCustomBehaviorSuccess(
+            teacherCustomBehaviorList: list);
       } catch (e) {
         print(e);
       }
     }
 
-    if (event is PBISPlusAddTeacherCustomBehvaiour) {
-      LocalDatabase<PBISPlusALLBehaviourModal> _localDb = LocalDatabase(
-          PBISPlusOverrides.PbisPlusTeacherCustomBehaviourLocalDbTable);
-      List<PBISPlusALLBehaviourModal>? _localData = await _localDb.getData();
+    if (event is PBISPlusAddTeacherCustomBehavior) {
+      LocalDatabase<PBISPlusCommonBehaviorModal> _localDb = LocalDatabase(
+          PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+      List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
 
       try {
         //index null means added a new icon otherwise replce the index item
         bool isAddedNewIcon = event.index == null;
 
+        //Adding new behavior
         if (isAddedNewIcon) {
           String sortOrderC = (_localData.length + 1).toString();
-
-          event.behvaiour.pBISBehaviorSortOrderC = sortOrderC;
-
-          await _localDb.addData(event.behvaiour);
-          print("added item on position $sortOrderC");
-        } else {
+          event.behavior.pBISBehaviorSortOrderC = sortOrderC;
+          await _localDb.addData(event.behavior);
+        }
+        //Updating existing behavior
+        else {
           String sortOrderC = (event.index! + 1).toString();
-
-          event.behvaiour.pBISBehaviorSortOrderC = sortOrderC;
-          await _localDb.putAt(event.index!, event.behvaiour);
-          print("update the item of $sortOrderC position");
+          event.behavior.pBISBehaviorSortOrderC = sortOrderC;
+          await _localDb.putAt(event.index!, event.behavior);
         }
 
-        List result = await addTeacherCustomBehvaiour(
-            behvaiour: event.behvaiour,
+        List result = await addTeacherCustomBehavior(
+            behavior: event.behavior,
             schoolId: Overrides.SCHOOL_ID ?? "",
             teacherId: Globals.teacherId ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
-        if (result[0] == true && isAddedNewIcon == true) {
-          List<PBISPlusALLBehaviourModal>? _localData =
-              await _localDb.getData();
+        //Fetching updated value
+        _localData.clear();
+        _localData = await _localDb.getData();
 
+        if (result[0] == true && isAddedNewIcon == true) {
           if (_localData.isNotEmpty) {
             int updateIndex = _localData.length - 1;
-
             _localData[updateIndex].id = result[1];
-
             await _localDb.putAt(updateIndex, _localData[updateIndex]);
-
-            PBISPlusLoading();
-            yield PBISPlusGetTeacherCustomBehvaiourSuccess(
-                teacherCustomBehaviourList: _localData);
           }
         }
+
+        PBISPlusLoading();
+        yield PBISPlusGetTeacherCustomBehaviorSuccess(
+            teacherCustomBehaviorList: _localData);
       } catch (e) {
         print(e);
       }
@@ -832,11 +816,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 classroomCourseList[i].students![j].profile!.id ==
                     pbisTotalInteractionList[k].studentId) {
               //TODOPBIS:
-              // classroomCourse.students![j].profile!.behaviour1!.counter =
+              // classroomCourse.students![j].profile!.behavior1!.counter =
               //     pbisTotalInteractionList[k].engaged;
-              // classroomCourse.students![j].profile!.behaviour2!.counter =
+              // classroomCourse.students![j].profile!.behavior2!.counter =
               //     pbisTotalInteractionList[k].niceWork;
-              // classroomCourse.students![j].profile!.behaviour3!.counter =
+              // classroomCourse.students![j].profile!.behavior3!.counter =
               //     pbisTotalInteractionList[k].helpful;
               classroomCourse.students![j].profile!.engaged =
                   pbisTotalInteractionList[k].engaged;
@@ -856,9 +840,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           // If no interaction counts were found, set all counts to 0
           for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
             //TODOPBIS::
-            // classroomCourse.students![j].profile!.behaviour1?.counter = 0;
-            // classroomCourse.students![j].profile!.behaviour2?.counter = 0;
-            // classroomCourse.students![j].profile!.behaviour3?.counter = 0;
+            // classroomCourse.students![j].profile!.behavior1?.counter = 0;
+            // classroomCourse.students![j].profile!.behavior2?.counter = 0;
+            // classroomCourse.students![j].profile!.behavior3?.counter = 0;
             classroomCourse.students![j].profile!.engaged = 0;
             classroomCourse.students![j].profile!.niceWork = 0;
             classroomCourse.students![j].profile!.helpful = 0;
@@ -1213,7 +1197,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
 
-  Future<List<PBISPlusALLBehaviourModal>> getPBISPAdditionalBehaviour() async {
+  Future<List<PBISPlusCommonBehaviorModal>> getPBISAdditionalBehavior() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
@@ -1224,9 +1208,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PBISPlusALLBehaviourModal> resp = response.data['body']
-            .map<PBISPlusALLBehaviourModal>((i) =>
-                PBISPlusALLBehaviourModal.fromJsonForAdditionalBehaviour(i))
+        List<PBISPlusCommonBehaviorModal> resp = response.data['body']
+            .map<PBISPlusCommonBehaviorModal>((i) =>
+                PBISPlusCommonBehaviorModal.fromJsonForAdditionalBehavior(i))
             .toList();
 
         return resp;
@@ -1239,7 +1223,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
 
-  Future getPBISPlusBehaviourAdditionalBehaviourList() async {
+  Future getPBISPlusBehaviorAdditionalBehaviorList() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
@@ -1250,9 +1234,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PbisPlusAdditionalBehaviourList> resp = response.data['body']
-            .map<PbisPlusAdditionalBehaviourList>(
-                (i) => PbisPlusAdditionalBehaviourList.fromJson(i))
+        List<PbisPlusAdditionalBehaviorList> resp = response.data['body']
+            .map<PbisPlusAdditionalBehaviorList>(
+                (i) => PbisPlusAdditionalBehaviorList.fromJson(i))
             .toList();
 
         print(resp.length);
@@ -1267,17 +1251,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
 //-----------------------------------GET THE Deafault BEHAVIOUR List----------------------------------------//
 
-  Future<List<PBISPlusALLBehaviourModal>> GetDefaultSchoolBehvaiour() async {
+  Future<List<PBISPlusCommonBehaviorModal>> GetDefaultSchoolBehavior() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/PBIS_School_Behavior__c/"Mobile_App__c" = \'${Overrides.SCHOOL_ID}\'',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        //  print("GetDefaultSchoolBehvaiour recived");
-
-        List<PBISPlusALLBehaviourModal> _list = response.data['body']
-            .map<PBISPlusALLBehaviourModal>(
-                (i) => PBISPlusALLBehaviourModal.fromJson(i))
+        List<PBISPlusCommonBehaviorModal> _list = response.data['body']
+            .map<PBISPlusCommonBehaviorModal>(
+                (i) => PBISPlusCommonBehaviorModal.fromJson(i))
             .toList();
 
         return _list;
@@ -1289,37 +1271,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-  Future<List<PBISPlusALLBehaviourModal>> getTeacherCustomBehvaiour(
+  Future<List<PBISPlusCommonBehaviorModal>> getTeacherCustomBehavior(
       {required String teacherId}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/get-custom-behaviour/teacher/${teacherId}',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/get-custom-behavior/teacher/${teacherId}',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        List<PBISPlusALLBehaviourModal> _list = response.data['body']
-            .map<PBISPlusALLBehaviourModal>((i) =>
-                PBISPlusALLBehaviourModal.fromJsonForTeacherCustomBehaviour(i))
+        List<PBISPlusCommonBehaviorModal> _list = response.data['body']
+            .map<PBISPlusCommonBehaviorModal>((i) =>
+                PBISPlusCommonBehaviorModal.fromJsonForTeacherCustomBehavior(i))
             .toList();
 
         return _list;
       }
-
       return [];
     } catch (e) {
       throw (e);
     }
   }
 
-  Future<dynamic> deleteTeacherCustomBehvaiour(
-      {required PBISPlusALLBehaviourModal behaviour,
+  Future<dynamic> deleteTeacherCustomBehavior(
+      {required PBISPlusCommonBehaviorModal behavior,
       required String teacherId,
       int retry = 3}) async {
     try {
       print(
-          "deletcting API CALLLED ${behaviour.behaviorTitleC} and ${behaviour.id}");
+          "deletcting API CALLLED ${behavior.behaviorTitleC} and ${behavior.id}");
 
       final url =
-          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/delete-behaviour/teacher/$teacherId/behaviour/${behaviour.id}";
+          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/delete-behavior/teacher/$teacherId/behavior/${behavior.id}";
 
       final ResponseModel response = await _dbServices.deleteApi(
         url,
@@ -1328,55 +1309,53 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       if (response.statusCode == 200) {
         return true;
       } else if (retry > 0) {
-        return deleteTeacherCustomBehvaiour(
-            behaviour: behaviour, teacherId: teacherId, retry: retry - 1);
+        return deleteTeacherCustomBehavior(
+            behavior: behavior, teacherId: teacherId, retry: retry - 1);
       }
     } catch (e) {
       throw (e);
     }
   }
 
-  Future<List> addTeacherCustomBehvaiour(
-      {required PBISPlusALLBehaviourModal behvaiour,
+  Future<List> addTeacherCustomBehavior(
+      {required PBISPlusCommonBehaviorModal behavior,
       required String teacherId,
       required String schoolId,
       required bool isAddedNewIcon,
       int retry = 3}) async {
     try {
       Map body = {
-        "behaviour_name": behvaiour.behaviorTitleC,
-        "behaviour_score": "0",
-        "is_default_behaviour": "false",
-        "icon_url": behvaiour.pBISBehaviorIconURLC,
+        "behavior_name": behavior.behaviorTitleC,
+        "behavior_score": "0",
+        "is_default_behavior": "false",
+        "icon_url": behavior.pBISBehaviorIconURLC,
         "teacher_id": teacherId,
         "school_id": schoolId,
-        "sorting_order": behvaiour.pBISBehaviorSortOrderC
+        "sorting_order": behavior.pBISBehaviorSortOrderC
       };
 
+      //Add behavior id to request body in case of behavior update
       if (isAddedNewIcon == false) {
-        body.addAll({
-          "behaviour_id": behvaiour.id,
-        });
+        body.addAll({"behavior_id": behavior.id});
       }
 
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
+
       final url =
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behavior/add-behavior';
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        print(response);
-        String behaviour_id = response.data['body']['Id'].toString();
-
-        return [true, behaviour_id];
+        String behavior_id = response.data['body']['Id'].toString();
+        return [true, behavior_id];
       } else if (retry > 0) {
-        return addTeacherCustomBehvaiour(
-            behvaiour: behvaiour,
+        return addTeacherCustomBehavior(
+            behavior: behavior,
             teacherId: teacherId,
             schoolId: schoolId,
             isAddedNewIcon: isAddedNewIcon,
@@ -1388,16 +1367,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-  List<PBISPlusALLBehaviourModal> sortByOrder(
-      List<PBISPlusALLBehaviourModal> allBehaviours) {
-    allBehaviours.sort((a, b) {
+  List<PBISPlusCommonBehaviorModal> sortByOrder(
+      List<PBISPlusCommonBehaviorModal> allBehaviors) {
+    allBehaviors.sort((a, b) {
       int orderA = int.parse(a.pBISBehaviorSortOrderC ?? '');
       int orderB = int.parse(b.pBISBehaviorSortOrderC ?? '');
 
-      return orderA.compareTo(
-          orderB); // For descending order: return orderB.compareTo(orderA);
+      return orderA.compareTo(orderB);
+      // For descending order: return orderB.compareTo(orderA);
     });
-    return allBehaviours;
+    return allBehaviors;
   }
 }
 
