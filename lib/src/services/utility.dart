@@ -94,7 +94,11 @@ class Utility {
   }
 
   static doVibration() async {
-    HapticFeedback.vibrate();
+    try {
+      await HapticFeedback.vibrate();
+    } catch (e) {
+      print(e);
+    }
   }
 
   static String convertTimestampToDateFormat(

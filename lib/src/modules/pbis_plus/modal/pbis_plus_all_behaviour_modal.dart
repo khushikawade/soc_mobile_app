@@ -297,12 +297,9 @@ class PBISPlusALLBehaviourModal {
     ),
   ];
 
+// default Add Behavior Widget data
 
-// default Add Behavior Widget data 
-
-
-  static    final defaultAddBehaviorItem = PBISPlusALLBehaviourModal(
-          behaviorTitleC: "Add Behavior",
-          pBISBehaviorIconURLC: "assets/Pbis_plus/add_icon.svg");
-
+  static final defaultAddBehaviorItem = PBISPlusALLBehaviourModal(
+      behaviorTitleC: "Add Behavior",
+      pBISBehaviorIconURLC: "assets/Pbis_plus/add_icon.svg");
 }

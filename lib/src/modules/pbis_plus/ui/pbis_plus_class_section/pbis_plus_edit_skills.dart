@@ -308,7 +308,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             // print(additionalbehaviourList.value.length);
             // additionalbehaviourList.value.remove(draggedData);
             // print(additionalbehaviourList.value.length);
-            pbisPluBlocForDefaultSchoolBehvaiour
+            pbisPluBlocForTeacherCustomBehvaiour
                 .add(PBISPlusAddTeacherCustomBehvaiour(
               behvaiour: onAccepttedObj,
               // oldbehvaiour: localskillsList.value
@@ -371,7 +371,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 teacherCustomBehaviourList.value[index] = item;
                 updateBehaviourWidget.value = !updateBehaviourWidget.value;
 
-                pbisPluBlocForDefaultSchoolBehvaiour.add(
+                pbisPluBlocForTeacherCustomBehvaiour.add(
                     PBISPlusAddTeacherCustomBehvaiour(
                         behvaiour: item, index: index));
               }
@@ -632,7 +632,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   }
                 }
 
-                pbisPluBlocForDefaultSchoolBehvaiour
+                pbisPluBlocForTeacherCustomBehvaiour
                     .add(PBISPlusDeleteTeacherCustomBehvaiour(behvaiour: item));
                 updateBehaviourWidget.value = !updateBehaviourWidget.value;
                 Navigator.pop(context);
@@ -674,7 +674,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         teacherCustomBehaviourList.value[index] = currentDraggedObj;
 
         updateBehaviourWidget.value = !updateBehaviourWidget.value;
-        pbisPluBlocForDefaultSchoolBehvaiour
+        pbisPluBlocForTeacherCustomBehvaiour
             .add(PBISPlusAddTeacherCustomBehvaiour(
           index: index,
           behvaiour: currentDraggedObj,

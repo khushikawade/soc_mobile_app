@@ -679,7 +679,73 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
 
-    if (event is AddPBISInteraction) {
+    // if (event is AddPBISInteraction) {
+    //   try {
+    //     //Fetch logged in user profile
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
+
+    //     String? _objectName = "${PBISPlusOverrides.pbisStudentInteractionDB}";
+    //     LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
+    //     List<ClassroomCourse> _localData = await _localDb.getData();
+
+    //     yield PBISPlusLoading();
+    //     if (_localData.isNotEmpty) {
+    //       for (int i = 0; i < _localData.length; i++) {
+    //         for (int j = 0; j < _localData[i].students!.length; j++) {
+    //           if (_localData[i].students![j].profile!.id == event.studentId) {
+    //             ClassroomCourse obj = _localData[i];
+    //             // print(_localData[i].likeCount);
+    //             _localDb.putAt(i, obj);
+    //           }
+    //         }
+    //       }
+    //     }
+
+    //     var data = await addPBISInteraction({
+    //       "Student_Id": event.studentId!,
+    //       "Student_Email": event.studentEmail,
+    //       "Classroom_Course_Id": "${event.classroomCourseId}",
+    //       "Engaged": "${event.engaged}",
+    //       "Nice_Work": "${event.niceWork}",
+    //       "Helpful": "${event.helpful}",
+    //       "School_Id": Overrides.SCHOOL_ID,
+    //       "DBN": Globals.schoolDbnC,
+    //       "Teacher_Email": userProfileLocalData[0].userEmail,
+    //       "Teacher_Name":
+    //           userProfileLocalData[0].userName!.replaceAll('%20', ' '),
+    //       "Status": "active"
+    //     });
+
+    //     /*-------------------------User Activity Track START----------------------------*/
+    //     PlusUtility.updateLogs(
+    //         activityType: 'PBIS+',
+    //         userType: 'Teacher',
+    //         activityId: '38',
+    //         description:
+    //             'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+    //         operationResult: 'Success');
+    //     /*-------------------------User Activity Track END----------------------------*/
+
+    //     yield AddPBISInteractionSuccess(
+    //       obj: data,
+    //     );
+    //   } catch (e) {
+    //     if (e.toString().contains('NO_CONNECTION')) {
+    //       Utility.showSnackBar(
+    //           event.scaffoldKey,
+    //           'Make sure you have a proper Internet connection',
+    //           event.context,
+    //           null);
+    //     } else {
+    //       Utility.showSnackBar(
+    //           event.scaffoldKey, 'Something went wrong', event.context, null);
+    //     }
+    //     yield PBISErrorState(error: e);
+    //   }
+    // }
+
+    if (event is PbisPlusAddPBISInteraction) {
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
@@ -695,36 +761,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             for (int j = 0; j < _localData[i].students!.length; j++) {
               if (_localData[i].students![j].profile!.id == event.studentId) {
                 ClassroomCourse obj = _localData[i];
-                // print(_localData[i].likeCount);
+
                 _localDb.putAt(i, obj);
               }
             }
           }
         }
-
-        var data = await addPBISInteraction({
+        Map body = {
           "Student_Id": event.studentId!,
           "Student_Email": event.studentEmail,
           "Classroom_Course_Id": "${event.classroomCourseId}",
-          "Engaged": "${event.engaged}",
-          "Nice_Work": "${event.niceWork}",
-          "Helpful": "${event.helpful}",
           "School_Id": Overrides.SCHOOL_ID,
           "DBN": Globals.schoolDbnC,
           "Teacher_Email": userProfileLocalData[0].userEmail,
           "Teacher_Name":
               userProfileLocalData[0].userName!.replaceAll('%20', ' '),
-          "Status": "active"
-        });
+          "Status": "active",
+          "Behaviour_Id": event.behaviour?.id.toString() ?? '',
+          "Behaviour_Score": 1.toString()
+        };
+
+        var data = await addPBISInteraction(body: body);
 
         /*-------------------------User Activity Track START----------------------------*/
-        PlusUtility.updateLogs(
-            activityType: 'PBIS+',
-            userType: 'Teacher',
-            activityId: '38',
-            description:
-                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
-            operationResult: 'Success');
+        // PlusUtility.updateLogs(
+        //     activityType: 'PBIS+',
+        //     userType: 'Teacher',
+        //     activityId: '38',
+        //     description:
+        //         'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+        //     operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
         yield AddPBISInteractionSuccess(
@@ -1226,7 +1292,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  Future addPBISInteraction(body) async {
+  // Future addPBISInteraction(body) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         body: body,
+  //         isGoogleApi: true);
+  //     if (response.statusCode == 200) {
+  //       return response.data;
+  //     } else {
+  //       throw ('something_went_wrong');
+  //     }
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  Future addPBISInteraction({required Map body, int retry = 3}) async {
+    print(body);
     try {
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions',
@@ -1238,8 +1325,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isGoogleApi: true);
       if (response.statusCode == 200) {
         return response.data;
-      } else {
-        throw ('something_went_wrong');
+      } else if (retry > 0) {
+        return addPBISInteraction(body: body, retry: retry - 1);
       }
     } catch (e) {
       throw (e);

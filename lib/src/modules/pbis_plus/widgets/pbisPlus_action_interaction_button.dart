@@ -206,8 +206,37 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
+    Utility.playSound(Strings.soundPath[0]);
+    Utility.doVibration();
+
+    if (_isOffline) {
+      Utility.currentScreenSnackBar("No Internet Connection", null);
+      return isLiked;
+    }
+
+    /*-------------------------User Activity Track START----------------------------*/
+    //Postgres event track for interaction added to bloc success
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));
+    /*-------------------------User Activity Track END----------------------------*/
+
+    _showMessage.value = true;
+    Future.delayed(Duration(seconds: 1), () {
+      _showMessage.value = false;
+    });
+
+    interactionBloc.add(PbisPlusAddPBISInteraction(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        studentId: widget.studentValueNotifier.value.profile!.id,
+        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
+        classroomCourseId: widget.classroomCourseId,
+        behaviour: widget.iconData));
+
     return true;
   }
+
   // Future<bool> _onLikeButtonTapped(bool isLiked) async {
   //   Utility.playSound(Strings.soundPath[0]);
 
