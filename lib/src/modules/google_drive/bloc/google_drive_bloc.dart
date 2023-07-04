@@ -1694,9 +1694,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         String updatedNextUrlLink = '';
         try {
           updatedNextUrlLink =
-              isPagination == true || (filterType == 'Multiple Choice')
-                  ? response.data["nextLink"]
-                  : response.data['body']["nextLink"];
+              // !UNCOMMENT when add bridge api
+              // isPagination == true || (filterType == 'Multiple Choice')
+              //     ? response.data["nextLink"]
+              //     : 
+                  response.data["nextLink"];
         } catch (e) {
           updatedNextUrlLink = '';
         }

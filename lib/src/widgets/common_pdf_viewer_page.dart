@@ -16,7 +16,7 @@ import '../modules/graded_plus/widgets/common_ocr_appbar.dart';
 // ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
-  String? tittle = '';
+  String? title = '';
   String? language;
   bool? isHomePage;
   bool? isOCRFeature;
@@ -28,7 +28,7 @@ class CommonPdfViewerPage extends StatefulWidget {
       {Key? key,
       @required this.isOCRFeature,
       @required this.url,
-      @required this.tittle,
+      @required this.title,
       required this.isBottomSheet,
       required this.language,
       this.isBackButton,
@@ -72,9 +72,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   Future<File> createFileOfPdfUrl() async {
     Completer<File> completer = Completer();
-    // print("Start download file from internet!");
     try {
-      final url = widget.url!; //"http://www.pdf995.com/samples/pdf.pdf";
+      final url = widget.url!;
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();
@@ -102,7 +101,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                 : CustomAppBarWidget(
                     isSearch: false,
                     isShare: true,
-                    appBarTitle: widget.tittle!,
+                    appBarTitle: widget.title!,
                     sharedPopBodyText: widget.url.toString(),
                     sharedPopUpHeaderText: "Please check out this",
                     language: Globals.selectedLanguage),
@@ -129,7 +128,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                                             margin: EdgeInsets.only(left: 10),
                                             child: PlusScreenTitleWidget(
                                                 kLabelSpacing: 0,
-                                                text: 'Rubric PDF',
+                                                text: widget.title ?? '',
                                                 backButton: true,
                                                 backButtonOnTap: () {
                                                   Navigator.pop(context);
