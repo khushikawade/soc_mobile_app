@@ -693,7 +693,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               builder: (context, value, _) => ValueListenableBuilder(
                   valueListenable: changedIndex,
                   builder: (context, value, _) {
-                    print("PRITING THE VALUE IN ${changedIndex.value}");
+                    // print("PRITING THE VALUE IN ${changedIndex.value}");
 
                     return index == changedIndex.value &&
                             isCustomBehaviour.value == true
