@@ -4,24 +4,20 @@ import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_all_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import 'hero_dialog_route.dart';
 
 class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
   final double? height;
-  PBISPlusALLBehaviourModal? item;
+  PBISPlusCommonBehaviorModal? item;
   ValueNotifier<List<PBISPlusActionInteractionModalNew>>? containerIcons;
   BoxConstraints? constraints;
   int? index = -1;
@@ -48,8 +44,11 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final editNameController = TextEditingController();
   PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
-
   ValueNotifier<bool> _errorMessage = ValueNotifier<bool>(false);
+
+  // String _errorMessage = 'Field is required.';
+  int pageValue = 0;
+
   Future<void> initController() async {
     _pageController = PageController()
       ..addListener(() {
@@ -61,16 +60,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   initState() {
     initController();
     /*-------------------------User Activity Track START----------------------------*/
-    // FirebaseAnalyticsService.addCustomAnalyticsEvent(
-    //     "pbis_plus_save_and_share_bottomsheet");
-    // FirebaseAnalyticsService.setCurrentScreen(
-    //     screenTitle: 'pbis_plus_save_and_share_bottomsheet',
-    //     screenClass: 'PBISPlusBottomSheet');
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_edit_skill_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_edit_skill_bottomsheet',
+        screenClass: 'PBISPlusEditSkillsBottomSheet');
     /*-------------------------User Activity Track END----------------------------*/
     super.initState();
   }
 
-  int pageValue = 0;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -118,35 +116,32 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         ));
   }
 
-  Widget EditAndDeleteIcon(PBISPlusALLBehaviourModal? dataList) {
+  Widget EditAndDeleteIcon(PBISPlusCommonBehaviorModal? dataList) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
           _buildCloseIcon(),
           SpacerWidget(16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              _buildCard(
-                  onTap: () {
-                    _pageController.animateToPage(1,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.ease);
-                  },
-                  iconPath: "assets/Pbis_plus/Edit.svg",
-                  tittle: "Edit Name"),
-              _buildCard(
-                  onTap: widget.onDelete,
-                  iconPath: "assets/Pbis_plus/delete.svg",
-                  tittle: "Delete"),
-            ],
-          )
-        ],
-      ),
-    );
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _buildCard(
+                    onTap: () {
+                      _pageController.animateToPage(1,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.ease);
+                    },
+                    iconPath: "assets/Pbis_plus/Edit.svg",
+                    tittle: "Edit Name"),
+                _buildCard(
+                    onTap: widget.onDelete,
+                    iconPath: "assets/Pbis_plus/delete.svg",
+                    tittle: "Delete"),
+              ])
+        ]));
   }
 
   Widget _buildCard(
@@ -170,9 +165,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                    iconPath!,
-                  ),
+                  SvgPicture.asset(iconPath!),
                   Padding(
                       padding: Globals.deviceType != 'phone'
                           ? const EdgeInsets.only(top: 14, left: 14)
@@ -215,7 +208,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   //   }
   // }
 
-  Widget _buildNextbutton(PBISPlusALLBehaviourModal dataList) {
+  Widget _buildNextbutton(PBISPlusCommonBehaviorModal dataList) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
@@ -242,7 +235,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  Widget _buildEditNameWidget(PBISPlusALLBehaviourModal? dataList) {
+  Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 20,
@@ -378,34 +371,30 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     );
   }
 
-  Widget _buildSaveButton(PBISPlusALLBehaviourModal dataList) {
+  Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-      child: FloatingActionButton.extended(
-          backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-          onPressed: () async {
-            if (editNameController.text.isNotEmpty) {
-              _errorMessage.value = false;
-              // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
-              //     item: dataList, newName: editNameController.text));
-              widget.onEditCallBack(editNameController.text);
-            } else {
-              _errorMessage.value = true;
-            }
-          },
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+        child: FloatingActionButton.extended(
+            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+            onPressed: () async {
+              if (editNameController.text.isNotEmpty) {
+                _errorMessage.value = false;
+                // pbisPlusClassroomBloc.add(GetPBISSkillsUpdateName(
+                //     item: dataList, newName: editNameController.text));
+                widget.onEditCallBack(editNameController.text);
+              } else {
+                _errorMessage.value = true;
+              }
+            },
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Utility.textWidget(
                   text: 'Save',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
                       .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor)),
-            ],
-          )),
-    );
+                      .copyWith(color: Theme.of(context).backgroundColor))
+            ])));
   }
 }

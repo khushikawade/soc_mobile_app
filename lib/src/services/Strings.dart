@@ -69,5 +69,5 @@ class Strings {
   ];
   static final String gradedApprovedDomains = 'graded_approved_domains';
 //---------------------------PBIS PLUS-------------------------------//
-static final String isCustomBehaviour = "isCustomBehaviour";
+  static final String isCustomBehavior = "isCustomBehavior";
 }
