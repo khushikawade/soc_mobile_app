@@ -52,17 +52,4 @@ class PBISPlusHistoryModal {
     data['Title'] = this.title;
     return data;
   }
-
-  // String generateRandomDate() {
-  //   Random random = Random();
-  //   int year =
-  //       random.nextInt(100) + 1923; // Generate a year between 1923 and 2022
-  //   int month = random.nextInt(12) + 1; // Generate a month between 1 and 12
-  //   int day = random.nextInt(31) + 1; // Generate a day between 1 and 31
-
-  //   DateTime date = DateTime(year, month, day);
-  //   String formattedDate = DateFormat('dd/MM/yyyy').format(date);
-
-  //   return formattedDate;
-  // }
 }

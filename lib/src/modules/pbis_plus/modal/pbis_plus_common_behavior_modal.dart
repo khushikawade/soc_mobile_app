@@ -1,108 +1,8 @@
 import 'package:hive/hive.dart';
-part 'pbis_plus_all_behaviour_modal.g.dart';
-
-// @HiveType(typeId: 46)
-// class PBISPlusALLBehaviourModal {
-//   @HiveField(0)
-//   List<PBISPlusALLBehaviourModal>? defaultList;
-//   @HiveField(1)
-//   List<PBISPlusALLBehaviourModal>? customList;
-
-//   PBISPlusALLBehaviourModal({
-//     this.defaultList,
-//     this.customList,
-//   });
-
-//   factory PBISPlusALLBehaviourModal.fromJson(
-//     Map<String, dynamic> json,
-//   ) {
-//     return PBISPlusALLBehaviourModal(
-//       defaultList: json['defaultList'] != null
-//           ? (json['defaultList'] as List<dynamic>)
-//               .map((item) => PBISPlusALLBehaviourModal.fromJson(item))
-//               .toList()
-//           : [],
-//       customList: json['customList'] != null
-//           ? (json['customList'] as List<dynamic>)
-//               .map((item) => PBISPlusALLBehaviourModal.fromJson(item))
-//               .toList()
-//           : [],
-//     );
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'defaultList': defaultList?.map((item) => item.toJson()).toList(),
-//       'customList': customList?.map((item) => item.toJson()).toList(),
-//     };
-//   }
-// }
-
-// @HiveType(typeId: 49)
-// class PBISPlusALLBehaviourModal {
-//   @HiveField(0)
-//   int? id;
-//   @HiveField(1)
-//   String? behaviourId;
-//   @HiveField(2)
-//   String? sortingOrder;
-//   @HiveField(3)
-//   String? teacherId;
-//   @HiveField(4)
-//   String? createdAt;
-//   @HiveField(5)
-//   String? updatedAt;
-//   @HiveField(6)
-//   String? name;
-//   @HiveField(7)
-//   String? iconUrl;
-//   @HiveField(8)
-//   String? isdefault;
-
-//   PBISPlusALLBehaviourModal({
-//     required this.id,
-//     required this.behaviourId,
-//     required this.sortingOrder,
-//     required this.createdAt,
-//     required this.updatedAt,
-//     required this.teacherId,
-//     required this.name,
-//     required this.iconUrl,
-//     required this.isdefault,
-//   });
-
-//   PBISPlusALLBehaviourModal.fromJson(Map<String, dynamic> json) {
-//     id = json['Id'] ?? '';
-//     behaviourId = json['Behaviour_Id'] ?? '';
-//     sortingOrder = json["Sorting_Order"] ?? "";
-//     teacherId = json['Teacher_Id'] ?? "";
-//     iconUrl = json['Icon_URL'].toString().contains('http')
-//         ? json['Icon_URL']
-//         : 'https:' + json['iconUrlC'] ?? '';
-//     name = json['Name'] ?? '';
-//     updatedAt = json['UpdatedAt'] ?? '';
-//     createdAt = json["CreatedAt"] ?? "";
-//     isdefault = json['Default'] ?? "false";
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['Id'] = this.id;
-//     data['Behaviour_Id'] = this.behaviourId;
-//     data['Sorting_Order'] = this.sortingOrder;
-//     data['Teacher_Id'] = this.teacherId;
-//     data['Icon_URL'] = this.iconUrl;
-//     data['Name'] = this.name;
-//     data['UpdatedAt'] = this.updatedAt;
-//     data['CreatedAt'] = this.createdAt;
-//     data['UpdatedAt'] = this.updatedAt;
-//     data['Default'] = this.isdefault;
-//     return data;
-//   }
-// }
+part 'pbis_plus_common_behavior_modal.g.dart';
 
 @HiveType(typeId: 54)
-class PBISPlusALLBehaviourModal {
+class PBISPlusCommonBehaviorModal {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -126,7 +26,7 @@ class PBISPlusALLBehaviourModal {
   @HiveField(10)
   String? ownerId;
 
-  PBISPlusALLBehaviourModal(
+  PBISPlusCommonBehaviorModal(
       {this.id,
       this.activeStatusC,
       this.behaviorTitleC,
@@ -139,7 +39,7 @@ class PBISPlusALLBehaviourModal {
       this.lastModifiedById,
       this.ownerId});
 
-  PBISPlusALLBehaviourModal.fromJson(Map<String, dynamic> json) {
+  PBISPlusCommonBehaviorModal.fromJson(Map<String, dynamic> json) {
     id = json['Id'] ?? "";
     activeStatusC = json['Active_Status__c'] ?? '';
     behaviorTitleC = json['Behavior_Title__c'] ?? '';
@@ -153,7 +53,7 @@ class PBISPlusALLBehaviourModal {
     ownerId = json['OwnerId'] ?? '';
   }
 
-  PBISPlusALLBehaviourModal.fromJsonForAdditionalBehaviour(
+  PBISPlusCommonBehaviorModal.fromJsonForAdditionalBehavior(
       Map<String, dynamic> json) {
     id = json['Id'] ?? '';
     activeStatusC = json['Active_Status__c'] ?? "";
@@ -168,7 +68,7 @@ class PBISPlusALLBehaviourModal {
     ownerId = json['OwnerId'] ?? '';
   }
 
-  PBISPlusALLBehaviourModal.fromJsonForTeacherCustomBehaviour(
+  PBISPlusCommonBehaviorModal.fromJsonForTeacherCustomBehavior(
       Map<String, dynamic> json) {
     id = json['Id'].toString() ?? '';
     activeStatusC = json['Active_Status__c'] ?? "";
@@ -182,17 +82,6 @@ class PBISPlusALLBehaviourModal {
     lastModifiedById = json['UpdatedAt'] ?? '';
     ownerId = json['OwnerId'] ?? '';
   }
-
-  // {
-  //           "Id": 25,
-  //           "Name": "Behaviour-3",
-  //           "Icon_URL": "https://cdn-icons-png.flaticon.com/512/6565/6565893.png",
-  //           "Sorting_Order": "1",
-  //           "Teacher_Id": "0034W00003AwJSfQAN",
-  //           "Default": "false",
-  //           "CreatedAt": "2023-06-27T06:44:07.859Z",
-  //           "UpdatedAt": "2023-06-29T14:17:45.486Z"
-  //       },
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -210,8 +99,9 @@ class PBISPlusALLBehaviourModal {
     return data;
   }
 
-  static List<PBISPlusALLBehaviourModal> demoBehaviourData = [
-    PBISPlusALLBehaviourModal(
+//------------------------------Will be removed later on-------------------------------
+  static List<PBISPlusCommonBehaviorModal> demoBehaviorData = [
+    PBISPlusCommonBehaviorModal(
       id: '1',
       activeStatusC: 'Active',
       behaviorTitleC: 'Title',
@@ -225,7 +115,7 @@ class PBISPlusALLBehaviourModal {
       lastModifiedById: 'Modified',
       ownerId: 'Owner',
     ),
-    PBISPlusALLBehaviourModal(
+    PBISPlusCommonBehaviorModal(
       id: '2',
       activeStatusC: 'Inactive',
       behaviorTitleC: 'Title',
@@ -239,7 +129,7 @@ class PBISPlusALLBehaviourModal {
       lastModifiedById: 'Updater',
       ownerId: 'Owner',
     ),
-    PBISPlusALLBehaviourModal(
+    PBISPlusCommonBehaviorModal(
       id: '3',
       activeStatusC: 'Active',
       behaviorTitleC: 'Title',
@@ -253,7 +143,7 @@ class PBISPlusALLBehaviourModal {
       lastModifiedById: 'Modified',
       ownerId: 'Owner',
     ),
-    PBISPlusALLBehaviourModal(
+    PBISPlusCommonBehaviorModal(
       id: '4',
       activeStatusC: 'Active',
       behaviorTitleC: 'Title',
@@ -267,7 +157,7 @@ class PBISPlusALLBehaviourModal {
       lastModifiedById: 'Modified',
       ownerId: 'Owner',
     ),
-    PBISPlusALLBehaviourModal(
+    PBISPlusCommonBehaviorModal(
       id: '5',
       activeStatusC: 'Active',
       behaviorTitleC: 'Title',
@@ -281,7 +171,7 @@ class PBISPlusALLBehaviourModal {
       lastModifiedById: 'Modified',
       ownerId: 'Owner',
     ),
-    PBISPlusALLBehaviourModal(
+    PBISPlusCommonBehaviorModal(
       id: '6',
       activeStatusC: 'Active',
       behaviorTitleC: 'Title',

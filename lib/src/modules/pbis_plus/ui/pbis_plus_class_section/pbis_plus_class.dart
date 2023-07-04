@@ -132,6 +132,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         kLabelSpacing: 0,
         text: 'All Courses',
         backButton: true,
+        isTrailingIcon: true,
         backButtonOnTap: () {
           widget.backOnTap();
         },
@@ -566,11 +567,11 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       //TODOPBIS:
                       PBISPlusUtility.numberAbbreviationFormat(
                           // studentValueNotifier
-                          //         .value.profile!.behaviour1!.counter! +
+                          //         .value.profile!.behavior1!.counter! +
                           //     studentValueNotifier
-                          //         .value.profile!.behaviour2!.counter! +
+                          //         .value.profile!.behavior2!.counter! +
                           //     studentValueNotifier
-                          //         .value.profile!.behaviour2!.counter!
+                          //         .value.profile!.behavior2!.counter!
                           studentValueNotifier.value!.profile!.engaged! +
                               studentValueNotifier.value!.profile!.niceWork! +
                               studentValueNotifier.value!.profile!.helpful!),

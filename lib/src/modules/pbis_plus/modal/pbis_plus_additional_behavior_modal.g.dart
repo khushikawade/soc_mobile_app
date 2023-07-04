@@ -1,23 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'pbis_plus_additional_behvaiour_modal.dart';
+part of 'pbis_plus_additional_behavior_modal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PbisPlusAdditionalBehaviourListAdapter
-    extends TypeAdapter<PbisPlusAdditionalBehaviourList> {
+class PbisPlusAdditionalBehaviorListAdapter
+    extends TypeAdapter<PbisPlusAdditionalBehaviorList> {
   @override
   final int typeId = 48;
 
   @override
-  PbisPlusAdditionalBehaviourList read(BinaryReader reader) {
+  PbisPlusAdditionalBehaviorList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PbisPlusAdditionalBehaviourList(
+    return PbisPlusAdditionalBehaviorList(
       id: fields[0] as String?,
       activeStatusC: fields[1] as String?,
       iconUrlC: fields[2] as String?,
@@ -29,7 +29,7 @@ class PbisPlusAdditionalBehaviourListAdapter
   }
 
   @override
-  void write(BinaryWriter writer, PbisPlusAdditionalBehaviourList obj) {
+  void write(BinaryWriter writer, PbisPlusAdditionalBehaviorList obj) {
     writer
       ..writeByte(7)
       ..writeByte(0)
@@ -54,7 +54,7 @@ class PbisPlusAdditionalBehaviourListAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PbisPlusAdditionalBehaviourListAdapter &&
+      other is PbisPlusAdditionalBehaviorListAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

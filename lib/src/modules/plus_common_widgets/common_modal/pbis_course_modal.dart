@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behaviour_modal.dart';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_course_modal.g.dart';
 
@@ -113,17 +113,17 @@ class ClassroomProfile {
   @HiveField(7)
   int? helpful;
   // @HiveField(5)
-  // PBISPlusGenericBehaviourModal? behaviour1;
+  // PBISPlusGenericBehaviorModal? behavior1;
   // @HiveField(6)
-  // PBISPlusGenericBehaviourModal? behaviour2;
+  // PBISPlusGenericBehaviorModal? behavior2;
   // @HiveField(7)
-  // PBISPlusGenericBehaviourModal? behaviour3;
+  // PBISPlusGenericBehaviorModal? behavior3;
   // @HiveField(8)
-  // PBISPlusGenericBehaviourModal? behaviour4;
+  // PBISPlusGenericBehaviorModal? behavior4;
   // @HiveField(9)
-  // PBISPlusGenericBehaviourModal? behaviour5;
+  // PBISPlusGenericBehaviorModal? behavior5;
   // @HiveField(10)
-  // PBISPlusGenericBehaviourModal? behaviour6;
+  // PBISPlusGenericBehaviorModal? behavior6;
 
   @HiveField(8)
   String? courseName;
@@ -138,12 +138,12 @@ class ClassroomProfile {
       this.engaged,
       this.niceWork,
       this.helpful,
-      // this.behaviour1,
-      // this.behaviour2,
-      // this.behaviour3,
-      // this.behaviour4,
-      // this.behaviour5,
-      // this.behaviour6,
+      // this.behavior1,
+      // this.behavior2,
+      // this.behavior3,
+      // this.behavior4,
+      // this.behavior5,
+      // this.behavior6,
       this.courseName,
       this.courseId});
 
@@ -164,23 +164,23 @@ class ClassroomProfile {
         permissions!.add(new ClassroomPermissions.fromJson(v));
       });
     }
-    // behaviour1 = json['behaviour1'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior1 = json['behavior1'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
-    // behaviour2 = json['behaviour2'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior2 = json['behavior2'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
-    // behaviour3 = json['behaviou3'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior3 = json['behaviou3'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
-    // behaviour4 = json['behaviour4'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior4 = json['behavior4'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
-    // behaviour5 = json['behaviour5'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior5 = json['behavior5'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
-    // behaviour6 = json['behaviour6'] != null
-    //     ? PBISPlusGenericBehaviourModal.fromJson(json['name'])
+    // behavior6 = json['behavior6'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
     //     : null;
     engaged = 0;
     niceWork = 0;

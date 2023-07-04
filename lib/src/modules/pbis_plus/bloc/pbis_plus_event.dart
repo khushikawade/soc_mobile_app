@@ -94,20 +94,20 @@ class PBISPlusResetInteractions extends PBISPlusEvent {
   List<Object> get props => [];
 }
 
-class GetPBISPlusCustomBehaviour extends PBISPlusEvent {
-  GetPBISPlusCustomBehaviour();
+class GetPBISPlusCustomBehavior extends PBISPlusEvent {
+  GetPBISPlusCustomBehavior();
   @override
   List<bool> get props => [];
 }
 
-class PBISPlusGetAdditionalBehaviour extends PBISPlusEvent {
-  PBISPlusGetAdditionalBehaviour();
+class PBISPlusGetAdditionalBehavior extends PBISPlusEvent {
+  PBISPlusGetAdditionalBehavior();
   @override
   List<Object> get props => [];
 }
 
 class GetPBISSkillsUpdateName extends PBISPlusEvent {
-  final PBISPlusALLBehaviourModal item;
+  final PBISPlusCommonBehaviorModal item;
   final String newName;
 
   GetPBISSkillsUpdateName({required this.item, required this.newName});
@@ -117,7 +117,7 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
 }
 
 // class GetPBISSkillsDeleteItem extends PBISPlusEvent {
-//   final PBISPlusALLBehaviourModal item;
+//   final PBISPlusCommonBehaviorModal item;
 
 //   GetPBISSkillsDeleteItem({
 //     required this.item,
@@ -128,8 +128,8 @@ class GetPBISSkillsUpdateName extends PBISPlusEvent {
 // }
 
 // class GetPBISSkillsUpdateList extends PBISPlusEvent {
-//   final PBISPlusGenricBehaviourModal item;
-//   final List<PBISPlusGenricBehaviourModal> olditem;
+//   final PBISPlusGenricBehaviorModal item;
+//   final List<PBISPlusGenricBehaviorModal> olditem;
 //   int index;
 //   GetPBISSkillsUpdateList(
 //       {required this.item, required this.index, required this.olditem});
@@ -178,43 +178,43 @@ class GetPBISPlusStudentNotesList extends PBISPlusEvent {
   List<Object> get props => [studentId, teacherid, dbn];
 }
 
-class PBISPlusGetDefaultSchoolBehvaiour extends PBISPlusEvent {
-  PBISPlusGetDefaultSchoolBehvaiour();
+class PBISPlusGetDefaultSchoolBehavior extends PBISPlusEvent {
+  PBISPlusGetDefaultSchoolBehavior();
 
   @override
   List<Object> get props => [];
 }
 
-class PBISPlusGetTeacherCustomBehvaiour extends PBISPlusEvent {
-  PBISPlusGetTeacherCustomBehvaiour();
+class PBISPlusGetTeacherCustomBehavior extends PBISPlusEvent {
+  PBISPlusGetTeacherCustomBehavior();
 
   @override
   List<Object> get props => [];
 }
 
-class PBISPlusDeleteTeacherCustomBehvaiour extends PBISPlusEvent {
-  final PBISPlusALLBehaviourModal behvaiour;
+class PBISPlusDeleteTeacherCustomBehavior extends PBISPlusEvent {
+  final PBISPlusCommonBehaviorModal behavior;
 
-  PBISPlusDeleteTeacherCustomBehvaiour({
-    required this.behvaiour,
+  PBISPlusDeleteTeacherCustomBehavior({
+    required this.behavior,
   });
 
   @override
-  List<Object> get props => [behvaiour];
+  List<Object> get props => [behavior];
 }
 
-class PBISPlusAddTeacherCustomBehvaiour extends PBISPlusEvent {
-  final PBISPlusALLBehaviourModal behvaiour;
-  // final List<PBISPlusALLBehaviourModal> oldbehvaiour;
+class PBISPlusAddTeacherCustomBehavior extends PBISPlusEvent {
+  final PBISPlusCommonBehaviorModal behavior;
+  // final List<PBISPlusCommonBehaviorModal> oldbehavior;
   final int? index;
-  PBISPlusAddTeacherCustomBehvaiour({
-    required this.behvaiour,
+  PBISPlusAddTeacherCustomBehavior({
+    required this.behavior,
     this.index,
-    //required this.oldbehvaiour
+    //required this.oldbehavior
   });
 
   @override
-  List<Object> get props => [behvaiour];
+  List<Object> get props => [behavior];
 }
 
 class PbisPlusAddPBISInteraction extends PBISPlusEvent {
@@ -223,7 +223,7 @@ class PbisPlusAddPBISInteraction extends PBISPlusEvent {
   final String? studentId;
   final String? studentEmail;
   final String? classroomCourseId;
-  final PBISPlusALLBehaviourModal? behaviour;
+  final PBISPlusCommonBehaviorModal? behaviour;
 
   PbisPlusAddPBISInteraction(
       {required this.context,

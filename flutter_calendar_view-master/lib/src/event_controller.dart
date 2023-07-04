@@ -12,8 +12,8 @@ class EventController<T extends Object?> extends ChangeNotifier {
   ///
   /// This method is use full when you have recurring events.
   /// As of now this library does not support recurring events.
-  /// You can implement same behaviour in this function.
-  /// This function will overwrite default behaviour of [getEventsOnDay]
+  /// You can implement same behavior in this function.
+  /// This function will overwrite default behavior of [getEventsOnDay]
   /// function which will be used to display events on given day in
   /// [MonthView], [DayView] and [WeekView].
   ///
@@ -107,7 +107,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
   /// Returns events on given day.
   ///
-  /// To overwrite default behaviour of this function,
+  /// To overwrite default behavior of this function,
   /// provide [eventFilter] argument in [EventController] constructor.
   List<CalendarEventData<T>> getEventsOnDay(DateTime date) {
     if (eventFilter != null) return eventFilter!.call(date, this.events);
