@@ -668,6 +668,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
       List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
       yield PBISPlusLoading();
+
       try {
         if (_localData.isEmpty) {
           yield PBISPlusBehaviorLoading(
