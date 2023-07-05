@@ -1686,12 +1686,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     String? dBNc,
     String? notes,
   }) async {
+    String teacherId_1 = await OcrUtility.getTeacherId();
+
     try {
       Map<String, String>? body = {};
       body['student_id'] = studentId!;
       body['student_name'] = studentName!;
       body['student_email'] = studentEmail!;
-      body['teacher_id'] = teacherId!;
+      body['teacher_id'] = teacherId_1;
       body['school_id'] = schoolId!;
       body['DBN__c'] = dBNc!;
       body['notes'] = notes!;

@@ -587,21 +587,20 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       PBISPlusCommonBehaviorModal? item,
       PBISPlusBloc? pbisPlusClassroomBloc}) async {
     var isDeleteTapped = await Navigator.of(context).push(HeroDialogRoute(
-        builder: (context) => PBISPlusDeleteBehaviorPopup(
-            item: item!,
-            backgroundColor:
-                Theme.of(context).colorScheme.background == Color(0xff000000)
+        builder: (context) => PBISPlusDeleteBehaviorPopup(widget.constraint,
+                item: item!,
+                backgroundColor: Theme.of(context).colorScheme.background ==
+                        Color(0xff000000)
                     ? Color(0xff162429)
                     : null,
-            orientation: MediaQuery.of(context).orientation,
-            context: context,
-            message: message,
-            title: '',
-            titleStyle: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(fontWeight: FontWeight.bold),
-            onDelete: () {
+                orientation: MediaQuery.of(context).orientation,
+                context: context,
+                message: message,
+                title: '',
+                titleStyle: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(fontWeight: FontWeight.bold), onDelete: () {
               //Deleting the selected behavior from database
               for (int i = 0; i < teacherCustomBehaviorList.value.length; i++) {
                 if (teacherCustomBehaviorList.value[i].id == item.id) {

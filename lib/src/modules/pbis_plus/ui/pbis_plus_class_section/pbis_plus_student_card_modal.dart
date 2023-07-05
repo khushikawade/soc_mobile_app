@@ -531,16 +531,17 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           ? Color(0xff111C20)
                           : Color(0xffF7F8F9),
                   text: "Add Note",
-                  onClick: () {
+                  onClick: () async {
                     if (noteController.text.isNotEmpty) {
-                      pBISPlusBloc.add(AddPBISPlusStudentNotes(
+                      pBISPlusNotesBloc.add(AddPBISPlusStudentNotes(
                         studentId:
                             widget.studentValueNotifier.value.profile?.id!,
                         studentName: widget
                             .studentValueNotifier.value.profile?.name?.fullName,
                         studentEmail: widget
                             .studentValueNotifier.value.profile?.emailAddress,
-                        teacherId: OcrUtility.getTeacherId(),
+                        teacherId: Globals.teacherId,
+                        //  await OcrUtility.getTeacherId(),
                         schoolId: Overrides.SCHOOL_ID,
                         schoolDbn: Globals.schoolDbnC,
                         notes: noteController.text,
