@@ -369,7 +369,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           {required List<PBISPlusTotalInteractionModal>
               pbisStudentInteractionList}) =>
       showModalBottomSheet(
-        // useRootNavigator: true,
+        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,

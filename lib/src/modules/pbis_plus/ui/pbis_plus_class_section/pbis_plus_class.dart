@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
@@ -328,6 +330,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             height: 30,
             child: Container(
               child: ListView.builder(
+           
                 controller: null,
                 itemBuilder: (BuildContext context, int index) {
                   return chipBuilder(googleClassroomCourseList, context, index,
@@ -455,7 +458,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       final bool isScreenShimmerLoading) {
     return ScrollablePositionedList.builder(
         physics: isScreenShimmerLoading ? NeverScrollableScrollPhysics() : null,
-        padding: EdgeInsets.only(bottom: 30),
+        padding: EdgeInsets.only(bottom: Platform.isIOS?60: 30),
         shrinkWrap: true,
         itemScrollController: _itemScrollController,
         itemCount: googleClassroomCourseList.length,
