@@ -4,6 +4,9 @@ import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_login.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -15,6 +18,7 @@ import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
@@ -203,6 +207,12 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       //                         MaterialPageRoute(
       //                             builder: (BuildContext context) =>
       //                                 OpticalCharacterRecognition()));}
+    } else if (obj.typeC == "STUDENT+") {
+      pushNewScreen(
+        context,
+        screen: StudentPlusFamilyLogIn(),
+        withNavBar: false,
+      );
     } else {
       Utility.showSnackBar(
           widget.scaffoldKey, "No data available", context, null);
