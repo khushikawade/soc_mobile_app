@@ -1254,15 +1254,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .compareTo(b.profile!.name!.fullName!.toLowerCase());
       });
 
-      uniqueStudents.forEach((student) {
-        // print('ID: ${student.profile!.id}');
-        // print('Name: ${student.profile!.name!.fullName}');
-        // print('Email: ${student.profile!.emailAddress}');
-        // print('Photo URL: ${student.profile!.photoUrl}');
-        // Access and print other properties as needed
-        print('---');
-      });
-
       LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
       List<PBISPlusStudentList>? _pbisPlusStudentNotesDataList =
