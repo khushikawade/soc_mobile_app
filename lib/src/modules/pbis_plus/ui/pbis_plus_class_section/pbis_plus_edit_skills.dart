@@ -217,6 +217,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ? pbisPluCustomBehaviorBloc
                       : pbisPluDefaultBehaviorBloc,
                   builder: (context, state) {
+                    print("printing the $state ");
+
                     if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
                       return buildBehaviors(
                           state.defaultSchoolBehaviorList, false);
