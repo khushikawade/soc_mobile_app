@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -39,17 +40,20 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance!.add(GetPBISPlusNotes(
-        dbn: Globals.schoolDbnC!,
-        studentId: widget.item.studentId!,
-        teacherid: Globals.teacherId));
-
+    getStudentNotes();
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "pbis_plus_history_screen");
     // FirebaseAnalyticsService.setCurrentScreen(
     //     screenTitle: 'pbis_plus_history_screen', screenClass: 'PBISPlusNotesDetailPage');
     // /*-------------------------User Activity Track END----------------------------*/
+  }
+
+  getStudentNotes() async {
+    PBISPlusBlocInstance!.add(GetPBISPlusNotes(
+        dbn: Globals.schoolDbnC!,
+        studentId: widget.item.studentId!,
+        teacherid: await OcrUtility.getTeacherId()));
   }
 
   @override
@@ -108,7 +112,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         BlocConsumer(
             bloc: PBISPlusBlocInstance,
             builder: (context, state) {
-              print("-----state------$state------");
               if (state is PBISPlusNotesSucess) {
                 //---------------------return the filter list to UI-----------//
                 return _listBuilder(state.notesList, isShimmerLoading: false);
@@ -272,7 +275,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     PBISPlusBlocInstance!.add(GetPBISPlusNotes(
         dbn: Globals.schoolDbnC!,
         studentId: widget.item.studentId!,
-        teacherid: Globals.teacherId));
+        teacherid: await OcrUtility.getTeacherId()));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));

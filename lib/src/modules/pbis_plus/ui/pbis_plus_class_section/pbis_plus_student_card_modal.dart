@@ -1,6 +1,7 @@
 // // ignore_for_file: must_be_immutable
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 // ignore_for_file: deprecated_member_use
@@ -539,20 +540,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                             .studentValueNotifier.value.profile?.name?.fullName,
                         studentEmail: widget
                             .studentValueNotifier.value.profile?.emailAddress,
-                        teacherId: Globals.teacherId,
+                        teacherId: OcrUtility.getTeacherId(),
                         schoolId: Overrides.SCHOOL_ID,
                         schoolDbn: Globals.schoolDbnC,
                         notes: noteController.text,
                       ));
-                      print(widget.studentValueNotifier.value.profile?.id!);
-                      print(widget
-                          .studentValueNotifier.value.profile?.emailAddress);
-                      print(widget
-                          .studentValueNotifier.value.profile?.name?.fullName);
-                      print(Globals.teacherId);
-                      print(Overrides.SCHOOL_ID);
-                      print(Globals.schoolDbnC);
-                      print(noteController.text);
                     } else {
                       // noteController.clear();
                       // Navigator.pop(context);

@@ -204,7 +204,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
 
         var result = await deleteTeacherCustomBehavior(
-            behavior: event.behavior, teacherId: Globals.teacherId ?? '');
+            behavior: event.behavior,
+            teacherId: await OcrUtility.getTeacherId() ?? '');
 
         if (result == true && _localData.isNotEmpty) {
           //clean localDB AND
