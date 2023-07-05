@@ -1050,25 +1050,4 @@ class Utility {
       return utcdatetimeString;
     }
   }
-
-  static getTeacherId() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
-        return Globals.teacherId;
-      } else {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        return prefs.getString(
-          PBISPlusOverrides.teacherId,
-        );
-      }
-    } catch (e) {}
-  }
-
-  static setTeacherId(String techerId) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(PBISPlusOverrides.teacherId, techerId);
-    } catch (e) {}
-  }
 }

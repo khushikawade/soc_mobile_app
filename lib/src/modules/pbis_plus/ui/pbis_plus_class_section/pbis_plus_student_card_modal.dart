@@ -65,13 +65,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<bool> isNotesTextfieldEnable = ValueNotifier<bool>(false);
   //---------------------------------------------------------------------------------------------
   final TextEditingController noteController = TextEditingController();
-  PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
-  PBISPlusBloc pbisAddNoteBlocInstance = PBISPlusBloc();
-
-  // ValueNotifier<bool> isnotestextfieldenable = ValueNotifier<bool>(false);
-
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
-  ValueNotifier<int> behvaiouriconListCount = ValueNotifier<int>(0);
+  ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -177,30 +172,33 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.next,
                   )),
-          ValueListenableBuilder(
-              valueListenable: isNotesTextfieldEnable,
-              builder: (context, value, _) => isNotesTextfieldEnable.value
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: FittedBox(
-                          child: CustomCircularButton(
-                              size: Size(
-                                  MediaQuery.of(context).size.width * 0.26,
-                                  MediaQuery.of(context).size.width / 10),
-                              borderColor: AppTheme.kButtonColor,
-                              textColor: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                              text: "Done",
-                              onClick: () {
-                                isNotesTextfieldEnable.value = false;
-                                noteController.clear();
-                              },
-                              backgroundColor: AppTheme.kButtonColor,
-                              isBusy: false,
-                              buttonRadius: 64)))
-                  : SizedBox.shrink())
+          //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
+          BlocConsumer<PBISPlusBloc, PBISPlusState>(
+              bloc: pBISPlusBloc,
+              builder: (context, state) {
+                print(state);
+                if (state is PBISPlusLoading) {
+                  return _buildAddButton(isLoading: true);
+                }
+
+                return _buildAddButton(isLoading: false);
+              },
+              listener: (context, state) async {
+                if (state is PBISPlusAddNotesSucess) {
+                  Utility.currentScreenSnackBar(
+                      "Successfully Added Notes", null);
+                  Navigator.pop(context, true);
+                  isNotesTextfieldEnable.value = false;
+                  noteController.clear();
+                } else if (state is PBISPlusAddNotesError) {
+                  Utility.currentScreenSnackBar(
+                      "Please try again later. Unable Note was not  added  .",
+                      null);
+                  isNotesTextfieldEnable.value = false;
+                  noteController.clear();
+                  Navigator.pop(context, true);
+                }
+              }),
         ]);
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -216,7 +214,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
             if (state.teacherCustomBehaviorList.isNotEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                behvaiouriconListCount.value =
+                behvaiourIconListCount.value =
                     state.teacherCustomBehaviorList.length;
               });
 
@@ -320,13 +318,13 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               ValueListenableBuilder(
                   valueListenable: isNotesTextfieldEnable,
                   builder: (context, value, _) => ValueListenableBuilder(
-                        valueListenable: behvaiouriconListCount,
+                        valueListenable: behvaiourIconListCount,
                         builder: (context, value, _) => Container(
                             alignment: Alignment.center,
                             height: getContainerHeight(
                                 widget.isFromDashboardPage,
                                 widget.constraint,
-                                behvaiouriconListCount),
+                                behvaiourIconListCount),
                             width: widget.isFromDashboardPage == true
                                 ? MediaQuery.of(context).size.width
                                 : MediaQuery.of(context).size.width * 0.8,
@@ -380,7 +378,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               Positioned(
                   bottom: 5,
                   child: widget.isFromStudentPlus == true ||
-                          widget.isFromDashboardPage!
+                          widget.isFromDashboardPage == true
                       ? SizedBox.shrink()
                       : Container(
                           decoration: BoxDecoration(
@@ -499,7 +497,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             ? MediaQuery.of(context).size.width * 0.1
             : MediaQuery.of(context).size.width * 0.1
         : 0;
-    print(spacing);
+
     double height = widget.isFromDashboardPage == true
         ? (widget.constraint <= 115)
             ? MediaQuery.of(context).size.height * 0.43 - spacing
@@ -533,7 +531,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   text: "Add Note",
                   onClick: () {
                     if (noteController.text.isNotEmpty) {
-                      pbisAddNoteBlocInstance.add(AddPBISPlusStudentNotes(
+                      pBISPlusBloc.add(AddPBISPlusStudentNotes(
                         studentId:
                             widget.studentValueNotifier.value.profile?.id!,
                         studentName: widget

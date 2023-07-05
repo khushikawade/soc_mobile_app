@@ -295,9 +295,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                     ),
                   ),
                   onTap: (() {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PBISPlusNotesDetailPage(
-                            item: studentNotesList[index])));
+                    if (isShimmerLoading == false) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PBISPlusNotesDetailPage(
+                              item: studentNotesList[index])));
+                    }
                   })));
         });
   }

@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_add_notes_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -681,7 +682,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List result = await addTeacherCustomBehavior(
             behavior: event.behavior,
             schoolId: Overrides.SCHOOL_ID ?? "",
-            teacherId: Utility.getTeacherId() ?? "",
+            teacherId: await OcrUtility.getTeacherId() ?? "",
             isAddedNewIcon: isAddedNewIcon);
 
         //Fetching updated value
@@ -703,6 +704,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         print(e);
       }
     }
+//------------------------------GET STUDENT LIST NOTES-----------------------
     if (event is GetPBISPlusStudentList) {
       String plusClassroomDBTableName = PBISPlusOverrides.pbisPlusClassroomDB;
       try {
@@ -750,6 +752,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusStudentListSucess(studentList: list);
       }
     }
+
 //---------------------------------*GET THE STUDENT NOTES*----------------------------//
     if (event is GetPBISPlusNotes) {
       try {
@@ -1585,8 +1588,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   List<PBISPlusCommonBehaviorModal> sortByOrder(
       List<PBISPlusCommonBehaviorModal> allBehaviors) {
     allBehaviors.sort((a, b) {
-      int orderA = int.parse(a.pBISBehaviorSortOrderC ?? '');
-      int orderB = int.parse(b.pBISBehaviorSortOrderC ?? '');
+      int orderA = int.parse(
+          a.pBISBehaviorSortOrderC != '' ? a.pBISBehaviorSortOrderC! : '1');
+      int orderB = int.parse(
+          b.pBISBehaviorSortOrderC != '' ? b.pBISBehaviorSortOrderC! : '1');
 
       return orderA.compareTo(orderB);
       // For descending order: return orderB.compareTo(orderA);
