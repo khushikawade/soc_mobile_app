@@ -211,7 +211,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         builder: (contxt, state) {
           if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
             return buildBehaviorGridView(
-                behaviorList: state.defaultSchoolBehaviorList);
+                behaviorList: state.defaultSchoolBehaviorList, loading: false);
           }
           if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
             if (state.teacherCustomBehaviorList.isNotEmpty) {
@@ -221,8 +221,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               });
 
               return buildBehaviorGridView(
-                behaviorList: state.teacherCustomBehaviorList,
-              );
+                  behaviorList: state.teacherCustomBehaviorList,
+                  loading: false);
+              //  buildBehaviorGridView(
+              //   behaviorList: state.teacherCustomBehaviorList,
+              // );
             } else {
               pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
             }
@@ -459,33 +462,39 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         crossAxisSpacing: 4.0, // Adjust the spacing between items horizontally
         mainAxisSpacing: 4.0, // Adjust the spacing between items vertically
       ),
-      itemCount: behaviorList.length,
+      itemCount: loading ? 6 : behaviorList.length,
       itemBuilder: (BuildContext context, int index) {
         return FittedBox(
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: ShimmerLoading(
-              isLoading: loading,
-              child: PBISPlusActionInteractionButton(
-                size: widget.isFromDashboardPage! ? 36 : 64,
-                isShowCircle: true,
-                onValueUpdate: (updatedStudentValueNotifier) {
-                  widget.classroomCourseId = widget.classroomCourseId;
-                  widget.onValueUpdate(
-                      updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                  widget.studentValueNotifier =
-                      updatedStudentValueNotifier; // Used on current screen to update the value
-                  valueChange.value = !valueChange
-                      .value; // Update the changes on bool change detect
-                },
-                isLoading: widget.isLoading,
-                isFromStudentPlus: widget.isFromStudentPlus,
-                studentValueNotifier: widget.studentValueNotifier,
-                iconData: behaviorList[index],
-                classroomCourseId: widget.classroomCourseId,
-                scaffoldKey: widget.scaffoldKey,
-              ),
-            ),
+            child: loading == true
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.kShimmerHighlightColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    height: 24,
+                    width: 24,
+                  )
+                : PBISPlusActionInteractionButton(
+                    size: widget.isFromDashboardPage! ? 36 : 64,
+                    isShowCircle: true,
+                    onValueUpdate: (updatedStudentValueNotifier) {
+                      widget.classroomCourseId = widget.classroomCourseId;
+                      widget.onValueUpdate(
+                          updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+                      widget.studentValueNotifier =
+                          updatedStudentValueNotifier; // Used on current screen to update the value
+                      valueChange.value = !valueChange
+                          .value; // Update the changes on bool change detect
+                    },
+                    isLoading: widget.isLoading,
+                    isFromStudentPlus: widget.isFromStudentPlus,
+                    studentValueNotifier: widget.studentValueNotifier,
+                    iconData: behaviorList[index],
+                    classroomCourseId: widget.classroomCourseId,
+                    scaffoldKey: widget.scaffoldKey,
+                  ),
           ),
         );
       },

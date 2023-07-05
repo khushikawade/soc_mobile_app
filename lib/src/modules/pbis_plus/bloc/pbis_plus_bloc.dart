@@ -1654,8 +1654,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future<List<PBISStudentNotes>> getPBIStudentNotesData(
       {String? teacher_id, String? student_id, String? school_dbn}) async {
     try {
+      final teacherId = await await OcrUtility.getTeacherId();
+      print(
+          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=$school_dbn'");
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacher_id/student/$student_id?dbn=$school_dbn',
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=$school_dbn',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'

@@ -53,7 +53,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
     PBISPlusBlocInstance!.add(GetPBISPlusNotes(
         dbn: Globals.schoolDbnC!,
         studentId: widget.item.studentId!,
-        teacherid: await OcrUtility.getTeacherId()));
+        teacherid: Globals.teacherId));
   }
 
   @override
