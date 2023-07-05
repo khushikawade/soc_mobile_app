@@ -66,6 +66,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   //---------------------------------------------------------------------------------------------
   final TextEditingController noteController = TextEditingController();
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+  PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
 
   @override
@@ -174,7 +175,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   )),
           //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
           BlocConsumer<PBISPlusBloc, PBISPlusState>(
-              bloc: pBISPlusBloc,
+              bloc: pBISPlusNotesBloc,
               builder: (context, state) {
                 print(state);
                 if (state is PBISPlusLoading) {
