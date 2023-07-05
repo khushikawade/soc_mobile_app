@@ -206,6 +206,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             break;
           }
         }
+        //clean localDB AND
+        await _localDb.clear();
+
+        //update the new sorting index every item in localDB
+        _localData.asMap().forEach((index, element) async {
+          element.pBISBehaviorSortOrderC = (index + 1).toString();
+          await _localDb.addData(element);
+        });
+
+        yield PBISPlusLoading();
+        yield PBISPlusGetTeacherCustomBehaviorSuccess(
+            teacherCustomBehaviorList: _localData);
 
         var result = await deleteTeacherCustomBehavior(
             behavior: event.behavior, teacherId: Globals.teacherId ?? '');
@@ -213,24 +225,21 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         if (result == true && _localData.isNotEmpty) {
           //clean localDB AND
           //update the new sorting index every item in localDB
-          await _localDb.clear();
+          // await _localDb.clear();
 
-          _localData.asMap().forEach((index, element) async {
-            element.pBISBehaviorSortOrderC = (index + 1).toString();
-            await _localDb.addData(element);
-          });
+          // //update the new sorting index every item in localDB
+          // _localData.asMap().forEach((index, element) async {
+          //   element.pBISBehaviorSortOrderC = (index + 1).toString();
+          //   await _localDb.addData(element);
+          // });
 
-          yield PBISPlusLoading();
-          yield PBISPlusGetTeacherCustomBehaviorSuccess(
-              teacherCustomBehaviorList: _localData);
+          // yield PBISPlusLoading();
+          // yield PBISPlusGetTeacherCustomBehaviorSuccess(
+          //     teacherCustomBehaviorList: _localData);
 
           // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
           var result = await sortTheBehaviourInDB(
               allBehavior: _localData, teacherId: Globals.teacherId ?? '');
-
-          if (result != true) {
-            print("sorting API FAL");
-          }
         } else if (result != true) {
           print("item is not deleted on backend");
         }
