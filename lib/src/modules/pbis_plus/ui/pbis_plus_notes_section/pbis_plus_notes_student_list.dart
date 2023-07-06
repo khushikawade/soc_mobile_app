@@ -344,15 +344,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
 
   Widget localSimmerWidget({required double height, required double width}) {
     return ShimmerLoading(
-      isLoading: true,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: AppTheme.kShimmerBaseColor!,
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    );
+        isLoading: true,
+        child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+                color: AppTheme.kShimmerBaseColor!,
+                borderRadius: BorderRadius.circular(20))));
   }
 }
