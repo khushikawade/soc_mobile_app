@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart'
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -86,7 +86,8 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           widget.sectionType == "Student"
               ? Container()
-              : StudentPlusInfoSearchBar(
+              : PlusAppSearchBar(
+                  sectionName: 'STUDENT+',
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                   onTap: () async {

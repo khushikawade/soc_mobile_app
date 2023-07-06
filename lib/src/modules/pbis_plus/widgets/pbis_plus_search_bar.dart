@@ -62,14 +62,14 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
       //  onTap: widget.onTap,
       style: Theme.of(context).textTheme.headline5!.copyWith(
             color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
+                ? Color(0xff111C20)
+                : Color(0xffF7F8F9),
           ),
       focusNode: widget.focusNode,
       controller: widget.controller,
       cursorColor: Color(0xff000000) != Theme.of(context).backgroundColor
-          ? Color(0xffF7F8F9)
-          : Color(0xff111C20),
+          ? Color(0xff111C20)
+          : Color(0xffF7F8F9),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 16),
           focusedBorder: OutlineInputBorder(
@@ -84,13 +84,13 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
           hintStyle: Theme.of(context).textTheme.headline1!.copyWith(
                 fontWeight: FontWeight.w300,
                 color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
+                    ? Color(0xff111C20)
+                    : Color(0xffF7F8F9),
               ),
           hintText: translatedMessage.toString(),
           fillColor: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xff111C20)
-              : Color(0xffF7F8F9),
+              ? Color(0xffF7F8F9)
+              : Color(0xff111C20),
           suffixIcon: IconButton(
             onPressed: widget.iconOnTap,
             icon: Icon(
@@ -99,9 +99,7 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg)
                   : Icons.clear,
-              color: Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xffF7F8F9)
-                  : Color(0xff111C20),
+              color: Theme.of(context).colorScheme.primaryVariant,
               size: Globals.deviceType == "phone" ? 20 : 28,
             ),
           ),

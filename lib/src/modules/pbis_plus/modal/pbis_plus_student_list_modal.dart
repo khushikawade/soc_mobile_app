@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'pbis_plus_student_list_modal.g.dart';
 
 @HiveType(typeId: 45)
-class PBISPlusStudentList extends HiveObject {
+class PBISPlusNotesUniqueStudentList extends HiveObject {
   @HiveField(0)
   String? studentId;
   @HiveField(1)
@@ -11,27 +11,32 @@ class PBISPlusStudentList extends HiveObject {
   @HiveField(2)
   String? iconUrlC;
   @HiveField(3)
-  PBISStudentNotes? notes;
+  List<PBISStudentNotes>? notes;
+  @HiveField(4)
+  String? email;
 
-  PBISPlusStudentList({
+  PBISPlusNotesUniqueStudentList({
     this.studentId,
     this.names,
     this.iconUrlC,
     this.notes,
-    // this.date,
+    this.email,
   });
 
-  PBISPlusStudentList.fromJson(Map<String, dynamic> json) {
+  PBISPlusNotesUniqueStudentList.fromJson(Map<String, dynamic> json) {
     studentId = json['studentId'] ?? '';
     names =
         json['names'] != null ? new StudentName.fromJson(json['names']) : null;
     notes = json['notes'] != null
-        ? new PBISStudentNotes.fromJson(json['notes'])
+        ? [
+            PBISStudentNotes.fromJson(json['notes'])
+          ] // Wrap the object inside a list
         : null;
     ;
     iconUrlC = json['iconUrlC'].toString().contains('http')
         ? json['iconUrlC']
         : 'https:' + json['iconUrlC'] ?? '';
+    email = json['email'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -39,7 +44,7 @@ class PBISPlusStudentList extends HiveObject {
     data['studentName'] = this.names;
     data['notes'] = this.notes;
     data['iconUrlC'] = this.iconUrlC;
-    // data['date'] = this.date;
+    data['email'] = this.email;
     return data;
   }
 }
@@ -92,15 +97,15 @@ class PBISStudentNotes {
   String? weekday;
 
   PBISStudentNotes({
-    required this.id,
-    required this.studentName,
-    required this.studentEmail,
-    required this.teacherC,
-    required this.schoolAppC,
-    required this.notes,
-    required this.date,
-    required this.time,
-    required this.weekday,
+    this.id,
+    this.studentName,
+    this.studentEmail,
+    this.teacherC,
+    this.schoolAppC,
+    this.notes,
+    this.date,
+    this.time,
+    this.weekday,
   });
 
   factory PBISStudentNotes.fromJson(Map<String, dynamic> json) =>
