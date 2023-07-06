@@ -699,7 +699,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       PBISPlusBloc? pbisPlusClassroomBloc}) async {
     var isDeleteTapped = await Navigator.of(context).push(HeroDialogRoute(
         builder: (context) => PBISPlusDeleteBehaviorPopup(
-            constraint: widget.constraint!,
+            constraint: widget.constraint ?? 0,
             item: item!,
             backgroundColor:
                 Theme.of(context).colorScheme.background == Color(0xff000000)
@@ -852,7 +852,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   }
 
   void notifyUser({String? msg}) {
-    print("show screensnakbar $msg");
+    if (msg != null) {
+      msg = 'something went wrong, Try again later';
+    }
+
     Utility.currentScreenSnackBar(msg ?? 'Please wait ...', null);
   }
 
