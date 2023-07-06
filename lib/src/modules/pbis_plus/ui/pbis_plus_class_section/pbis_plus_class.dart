@@ -653,7 +653,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               ShimmerLoading(
                 isLoading: isScreenShimmerLoading,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 5),
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(3),
                   decoration: BoxDecoration(

@@ -2,6 +2,8 @@
 
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -62,6 +64,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   final TextEditingController noteController = TextEditingController();
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
+   ValueNotifier<double> cardHeight = ValueNotifier<double>(1);
 
   @override
   void initState() {
@@ -99,6 +102,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 /*-------------------------------------------------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
+
+  //----------------------------------------------NOTES TEXT FIELD-------------------------------------------//  
     final Column addNotes = Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -225,86 +230,86 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           return Container();
         });
 
-    final pbisStudentProfileWidget = Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            height:
-            widget.constraint <= 115?
-             MediaQuery.of(context).size.height * 0.13
-            :MediaQuery.of(context).size.height*0.1,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: AppTheme.kButtonColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // SpacerWidget((widget.isFromStudentPlus == true &&
-                //         widget.constraint <= 553)
-                //     ? MediaQuery.of(context).size.width * 0.11
-                //     : (widget.constraint <= 115)
-                //         ? widget.isFromDashboardPage == true
-                //             ? MediaQuery.of(context).size.width * 0.18
-                //             : MediaQuery.of(context).size.width * 0.17
-                //         : widget.isFromDashboardPage == true
-                //             ? MediaQuery.of(context).size.width * 0.13
-                //             : MediaQuery.of(context).size.width * 0.16),
-                Text(
-                  widget.studentValueNotifier.value.profile?.name?.fullName ??
-                      '',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-               widget.isFromStudentPlus== true? SizedBox.shrink() :
-               widget.constraint <= 115 ? SpacerWidget(4) :SpacerWidget(6)
-              ],
+    final pbisStudentProfileWidget = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          height:
+          widget.isFromDashboardPage == true || widget.isFromStudentPlus == true?
+          MediaQuery.of(context).size.width*0.2: MediaQuery.of(context).size.width*0.2/1.1,
+          //    Platform.isAndroid?
+          // (widget.isFromDashboardPage == true?
+          //   (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.11:
+          //    MediaQuery.of(context).size.height*0.11:
+          //  widget.isFromStudentPlus == true
+          //   ? (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.13: MediaQuery.of(context).size.height*0.15:
+          //    MediaQuery.of(context).size.height*0.1):
+            
+            //ios
+              
+          //       widget.isFromStudentPlus == true
+          //   ? (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.11: MediaQuery.of(context).size.height*0.12:
+          //    widget.isFromDashboardPage == true?
+          //   (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.12:
+          //    MediaQuery.of(context).size.height*0.09:
+       
+          //  (widget.constraint <= 115)?MediaQuery.of(context).size.height*0.11  :MediaQuery.of(context).size.height*0.1,
+       
+          width: MediaQuery.of(context).size.width,
+          // padding: widget.isFromDashboardPage==true||widget.isFromStudentPlus ==true? EdgeInsets.only(bottom: 8) :EdgeInsets.only(bottom: 4)  ,
+          decoration: BoxDecoration(
+            color:  AppTheme.kButtonColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
             ),
           ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+           mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                widget.studentValueNotifier.value.profile?.name?.fullName ??
+                    '',
+                textAlign: TextAlign.end,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              widget.isFromDashboardPage == true || widget.isFromStudentPlus == true?
+              SpacerWidget(8):SpacerWidget(4)
+            ],
+          ),
+        ),
 
-          // Row
-          // SpacerWidget(
-          //     (widget.isFromStudentPlus == true && widget.constraint <= 553)
-          //         ? MediaQuery.of(context).size.width * 0.9
-          //         : (widget.constraint <= 115)
-          //             ? widget.isFromDashboardPage == true
-          //                 ? MediaQuery.of(context).size.width * 0.06
-          //                 : MediaQuery.of(context).size.width * 0.08
-          //             : widget.isFromDashboardPage == true
-          //                 ? MediaQuery.of(context).size.width * 0.08
-          //                 : MediaQuery.of(context).size.width * 0.04),
-
-          Expanded(
-            child: 
-              ValueListenableBuilder(
-              valueListenable: isNotesTextfieldEnable,
-              builder: (context, value, _) => 
-            Container(
-                // color: Colors.red,
-                alignment: isNotesTextfieldEnable.value?Alignment.topCenter: Alignment.center,
-                padding: EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                ),
-                width: MediaQuery.of(context).size.width * 1,
-                child: ActionInteractionButtonsRowWise),
-          )),
-          widget.isFromDashboardPage == true
-              ? SizedBox.shrink()
-              :isNotesTextfieldEnable.value?  SpacerWidget(48):SpacerWidget(48)
-              // :isNotesTextfieldEnable.value? SpacerWidget(MediaQuery.of(context).size.height*0.16):SpacerWidget(MediaQuery.of(context).size.height*0.01)
-        ],
-      ),
+        
+        Expanded(
+          child: 
+            ValueListenableBuilder(
+            valueListenable: isNotesTextfieldEnable,
+            builder: (context, value, _) => 
+          Container(
+              // color: Colors.red,
+              alignment: 
+              widget.isFromDashboardPage == true || widget.isFromStudentPlus == true?Alignment.center:
+              isNotesTextfieldEnable.value?Alignment.topCenter: Alignment.center,
+              margin: isNotesTextfieldEnable.value ?EdgeInsets.only(top: 0)  :EdgeInsets.all( 0),
+              padding: EdgeInsets.only(
+                top: isNotesTextfieldEnable.value? 24 :0 ,
+                left: 10,
+                right: 10,
+              ),
+              width: MediaQuery.of(context).size.width * 1,
+              child: ActionInteractionButtonsRowWise),
+        )),
+        widget.isFromDashboardPage == true || widget.isFromStudentPlus ==true
+            ? SizedBox.shrink()
+            :isNotesTextfieldEnable.value?  SpacerWidget(48):SpacerWidget(48)
+            // :isNotesTextfieldEnable.value? SpacerWidget(MediaQuery.of(context).size.height*0.16):SpacerWidget(MediaQuery.of(context).size.height*0.01)
+      ],
     );
 
     return SingleChildScrollView(
@@ -315,132 +320,148 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             createRectTween: (begin, end) {
               return CustomRectTween(begin: begin!, end: end!);
             },
-            child: Stack(alignment: Alignment.center, children: <Widget>[
-              ValueListenableBuilder(
-                  valueListenable: isNotesTextfieldEnable,
-                  builder: (context, value, _) => ValueListenableBuilder(
-                        valueListenable: behvaiourIconListCount,
-                        builder: (context, value, _) => Container(
-                            alignment: Alignment.center,
-                            height: getContainerHeight(
-                                widget.isFromDashboardPage,
-                                widget.constraint,
-                                behvaiourIconListCount),
-                            width: widget.isFromDashboardPage == true
-                                ? MediaQuery.of(context).size.width
-                                : MediaQuery.of(context).size.width * 0.8,
-                            margin: 
-                            widget.isFromDashboardPage == true 
-                                ? EdgeInsets.fromLTRB(16, 40, 16, 20)
-                                : EdgeInsets.only(top: 45),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                Color(0xff000000) ==
-                                        Theme.of(context).backgroundColor
-                                    ? widget.isFromDashboardPage == false
-                                        ? BoxShadow(
-                                            color: AppTheme.kButtonColor
-                                                .withOpacity(0.5),
-                                            spreadRadius: 2,
-                                            blurRadius: 5,
-                                            offset: Offset(0,
-                                                3), // changes the position of the shadow
-                                          )
-                                        : BoxShadow(
-                                            color: Colors.black,
-                                            offset: Offset(0, 2),
-                                            blurRadius: 10)
-                                    : BoxShadow(
-                                        color: Colors.transparent,
-                                        offset: Offset(0, 0),
-                                        blurRadius: 0),
-                              ],
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppTheme.kButtonColor,
-                                  Color(0xff000000) !=
-                                          Theme.of(context).backgroundColor
-                                      ? Color(0xffF7F8F9)
-                                      : Color(0xff111C20),
-                                ],
-                                stops: [
-                                  widget.isFromDashboardPage! ? 0.3 : 0.2,
-                                  0.0,
-                                ],
-                              ),
-                            ),
-                            // child: FittedBox(child: pbisStudentProfileWidget)),
-                            child: pbisStudentProfileWidget),
-                      )),
+            child:
+            ValueListenableBuilder(
+                       valueListenable: cardHeight,
+                       builder: (context, value, _) => 
+            Stack(alignment: Alignment.center, children: <Widget>[
+             ValueListenableBuilder(
+                 valueListenable: isNotesTextfieldEnable,
+                 builder: (context, value, _) => ValueListenableBuilder(
+                       valueListenable: behvaiourIconListCount,
+                       builder: (context, value, _) => 
+                       
+                         Container(
+                           alignment: Alignment.center,
+                           height: getContainerHeight(
+                               widget.isFromDashboardPage,
+                               widget.constraint,
+                               behvaiourIconListCount),
+                           width: widget.isFromDashboardPage == true 
+                               ? MediaQuery.of(context).size.width
+                               : MediaQuery.of(context).size.width * 0.8,
+                           margin: 
+                             widget.isFromStudentPlus==true?
+                      //ios     EdgeInsets.only(top: MediaQuery.of(context).size.height *0.06+5):
+                       EdgeInsets.only(top: MediaQuery.of(context).size.width*0.2/1.5):
+                           widget.isFromDashboardPage == true 
+                               ? EdgeInsets.fromLTRB(16, MediaQuery.of(context).size.width*0.2/1.5, 16, 20)
+                               : EdgeInsets.only(top:  MediaQuery.of(context).size.width*0.2/1.5),
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(6),
+                             boxShadow: [
+                               Color(0xff000000) ==
+                                       Theme.of(context).backgroundColor
+                                   ?  BoxShadow(
+                                           color: Colors.black,
+                                           offset: Offset(0, 2),
+                                           blurRadius: 10)
+                                   : BoxShadow(
+                                       color: Colors.transparent,
+                                       offset: Offset(0, 0),
+                                       blurRadius: 0),
+                             ],
+                             gradient: LinearGradient(
+                               begin: Alignment.topCenter,
+                               end: Alignment.bottomCenter,
+                               colors: [
+                                 AppTheme.kButtonColor,
+                                 Color(0xff000000) !=
+                                         Theme.of(context).backgroundColor
+                                     ? Color(0xffF7F8F9)
+                                     : Color(0xff111C20),
+                               ],
+                               stops: [
+                                 0.2 ,
+                                 0.0,
+                               ],
+                             ),
+                           ),
+                           // child: FittedBox(child: pbisStudentProfileWidget)),
+                        
+                           child: pbisStudentProfileWidget
+                           
+                           ),
+                     )),
 
-              //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
-              Positioned(
-                  bottom: 5,
-                  child: widget.isFromStudentPlus == true ||
-                          widget.isFromDashboardPage == true
-                      ? SizedBox.shrink()
-                      : Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
-                            ),
-                          ),
-                          alignment: Alignment.bottomRight,
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: addNotes)),
+             //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
+             Positioned(
+                 bottom: 5,
+                 child: widget.isFromStudentPlus == true ||
+                         widget.isFromDashboardPage == true
+                     ? SizedBox.shrink()
+                     : Container(
+                         decoration: BoxDecoration(
+                           borderRadius: BorderRadius.only(
+                             bottomLeft: Radius.circular(12),
+                             bottomRight: Radius.circular(12),
+                           ),
+                         ),
+                         alignment: Alignment.bottomRight,
+                         width: MediaQuery.of(context).size.width * 0.8,
+                         child: addNotes)),
 
-              //----------------------------------------------------Profile Image-----------------------------------------------------
-              Positioned(
-                  top:0,
-                  //  widget.isFromStudentPlus==true? 
-                  //  widget.constraint <=115?-16:-8 :0,
-                                child: GestureDetector(
-                      onTap: widget.isFromStudentPlus == true ||
-                              widget.isFromDashboardPage == true
-                          ? null
-                          : () async {
-                              Navigator.of(context).pushReplacement(
-                                  HeroDialogRoute(
-                                      builder: (context) =>
-                                          PBISPlusStudentDashBoard(
-                                              constraint: widget.constraint,
-                                              scaffoldKey: widget.scaffoldKey!,
-                                              isValueChangeNotice: valueChange,
-                                              onValueUpdate:
-                                                  (updatedStudentValueNotifier) {
-                                                widget.studentValueNotifier =
-                                                    updatedStudentValueNotifier;
-                                              },
-                                              studentValueNotifier:
-                                                  widget.studentValueNotifier,
-                                              heroTag: widget.heroTag,
-                                              StudentDetailWidget:
-                                                  pbisStudentProfileWidget,
-                                              classroomCourseId:
-                                                  widget.classroomCourseId)));
-                            },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: PBISCommonProfileWidget(
-                              studentProfile: widget.studentProfile,
-                              isFromStudentPlus: widget.isFromStudentPlus,
-                              isLoading: widget.isLoading,
-                              valueChange: valueChange,
-                              countWidget: true,
-                              studentValueNotifier: widget.studentValueNotifier,
-                              profilePictureSize:
-                                 widget.constraint<=115?
-                                PBISPlusOverrides.profilePictureSize-8  :PBISPlusOverrides.profilePictureSize,
-                              imageUrl: widget.studentValueNotifier.value
-                                      .profile?.photoUrl ??
-                                  ""))))
-            ])));
+             //----------------------------------------------------Profile Image-----------------------------------------------------
+             Positioned(
+                 top:00,
+                  // widget.isFromStudentPlus==true? 
+                  // widget.constraint <=115?-MediaQuery.of(context).size.height * 0.01:-MediaQuery.of(context).size.height * 0.01 :0,
+                               child: GestureDetector(
+                     onTap: widget.isFromStudentPlus == true ||
+                             widget.isFromDashboardPage == true
+                         ? 
+                         (){
+                print(widget.constraint);        
+             widget.isFromDashboardPage == true?
+            (widget.constraint <= 115)? print(" MediaQuery.of(context).size.height * 0.12"):
+             print(" MediaQuery.of(context).size.height * 0.09"):
+           widget.isFromStudentPlus == true
+            ? (widget.constraint <= 115)? print(" MediaQuery.of(context).size.height * 0.13"): print(" MediaQuery.of(context).size.height * 0.15"):
+           (widget.constraint <= 115)?print(" MediaQuery.of(context).size.height * 0.1")  :print(" MediaQuery.of(context).size.height * 0.09");
+                         }
+                        //  null
+                         : () async {
+                             Navigator.of(context).pushReplacement(
+                                 HeroDialogRoute(
+                                     builder: (context) =>
+                                         PBISPlusStudentDashBoard(
+                                             constraint: widget.constraint,
+                                             scaffoldKey: widget.scaffoldKey!,
+                                             isValueChangeNotice: valueChange,
+                                             onValueUpdate:
+                                                 (updatedStudentValueNotifier) {
+                                               widget.studentValueNotifier =
+                                                   updatedStudentValueNotifier;
+                                             },
+                                             studentValueNotifier:
+                                                 widget.studentValueNotifier,
+                                             heroTag: widget.heroTag,
+                                             StudentDetailWidget:
+                                                 pbisStudentProfileWidget,
+                                             classroomCourseId:
+                                                 widget.classroomCourseId)));
+                           },
+                     child: Container(
+                         decoration: BoxDecoration(
+                           shape: BoxShape.circle,
+                         ),
+                         child:  PBISCommonProfileWidget(
+                               studentProfile: widget.studentProfile,
+                               isFromStudentPlus: widget.isFromStudentPlus,
+                               isLoading: widget.isLoading,
+                               valueChange: valueChange,
+                               countWidget: true,
+                               studentValueNotifier: widget.studentValueNotifier,
+                               profilePictureSize:
+                               MediaQuery.of(context).size.width*0.1,
+                                 //  widget.constraint<=115?
+                                 // PBISPlusOverrides.profilePictureSize-8  :PBISPlusOverrides.profilePictureSize,
+                               imageUrl: widget.studentValueNotifier.value
+                                       .profile?.photoUrl ??
+                                   ""),
+                         
+                                   )))
+            ]))));
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -470,7 +491,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           child: ShimmerLoading(
             isLoading: loading,
             child: PBISPlusActionInteractionButton(
-              size: widget.isFromDashboardPage ==true && widget.studentProfile ==true  ? 24 : 64,
+              size: widget.isFromDashboardPage ==true && widget.studentProfile ==true  ?  MediaQuery.of(context).size.width*0.02 : MediaQuery.of(context).size.width*0.08,
               isShowCircle: true,
               onValueUpdate: (updatedStudentValueNotifier) {
                 widget.classroomCourseId = widget.classroomCourseId;
@@ -502,21 +523,38 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     itemcount.value <= 3
         ? (widget.constraint <= 115)
             ? MediaQuery.of(context).size.width * 0.07
-            : MediaQuery.of(context).size.width * 0.1
+            : MediaQuery.of(context).size.width * 0.12
         : 0;
 
-    double height = widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
+    double height = 
+    Platform.isAndroid?
+  ( widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
         ? (widget.constraint <= 115)
-            ? MediaQuery.of(context).size.height * 0.44 - spacing
-            : MediaQuery.of(context).size.height * 0.46 - spacing
+            ? MediaQuery.of(context).size.height * 0.43 - spacing
+            : MediaQuery.of(context).size.height * 0.40- spacing
         : (widget.constraint <= 115)
             ? isNotesTextfieldEnable.value
-                ? MediaQuery.of(context).size.height * 0.64 - spacing
-                : MediaQuery.of(context).size.height * 0.51 - spacing
+                ? MediaQuery.of(context).size.height * 0.60 - spacing
+                : MediaQuery.of(context).size.height * 0.50 - spacing
             : isNotesTextfieldEnable.value
                 ? MediaQuery.of(context).size.height * 0.58 - spacing
-                : MediaQuery.of(context).size.height * 0.49 - spacing;
+                : MediaQuery.of(context).size.height * 0.49 - spacing )
+    :widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
+        ? (widget.constraint <= 115)
+            ? MediaQuery.of(context).size.height * 0.50 - spacing
+            : MediaQuery.of(context).size.height * 0.48 - spacing
+        : (widget.constraint <= 115)
+            ? isNotesTextfieldEnable.value
+                ? MediaQuery.of(context).size.height * 0.66 - spacing
+                : MediaQuery.of(context).size.height * 0.55 - spacing
+            : isNotesTextfieldEnable.value
+                ? MediaQuery.of(context).size.height * 0.58 - spacing
+                : MediaQuery.of(context).size.height * 0.55 - spacing;
 
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+                  cardHeight.value=height;
+              });
+ 
     return height;
   }
 
