@@ -19,7 +19,7 @@ import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -127,7 +127,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 widget.sectionType == "Student"
                     ? Container()
-                    : StudentPlusInfoSearchBar(
+                    : PlusAppSearchBar(
+                        sectionName: 'STUDENT+',
                         hintText:
                             '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                         isMainPage: false,

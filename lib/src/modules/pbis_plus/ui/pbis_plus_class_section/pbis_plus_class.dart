@@ -675,16 +675,14 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                             imageUrl:
                                 studentValueNotifier.value!.profile!.photoUrl!),
                         // SizedBox(height: 15),
-                        FittedBox(
-                          child: Text(
-                            studentValueNotifier.value.profile!.name!.fullName!
-                                .replaceAll(' ', '\n'),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          studentValueNotifier.value.profile!.name!.fullName!
+                              .replaceAll(' ', '\n'),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

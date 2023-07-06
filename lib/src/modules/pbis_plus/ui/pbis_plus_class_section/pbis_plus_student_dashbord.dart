@@ -121,13 +121,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   Widget body(BuildContext context) {
     return widget.isFromStudentPlus == true
         ? Column(
-            // physics: NeverScrollableScrollPhysics(),
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: children())
-        : ListView(
-            children: children(),
-          );
+        : ListView(children: children());
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -193,8 +190,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             color: Colors.white,
           ),
         ),
-        columns: PBISPlusDataTableModalNew.PBISPlusDataTableHeadingRawNew.map(
-            (PBISPlusDataTableModalNew item) {
+        columns: PBISPlusDataTableModal.PBISPlusDataTableHeadingRawNew.map(
+            (PBISPlusDataTableModal item) {
           return buildDataColumn(item, list);
         }).toList(),
         rows: List<DataRow>.generate(
@@ -204,7 +201,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   /*--------------------------------------------buildDataColumn---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
-  DataColumn buildDataColumn(PBISPlusDataTableModalNew item,
+  DataColumn buildDataColumn(PBISPlusDataTableModal item,
           List<PBISPlusTotalInteractionModal> list) =>
       DataColumn(
           label: Column(

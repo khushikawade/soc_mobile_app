@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
-  final PBISPlusStudentList item;
+  final PBISPlusNotesUniqueStudentList item;
 
   PBISPlusNotesDetailPage({
     Key? key,
@@ -36,24 +36,22 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // hide animated container
-  PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
+  PBISPlusBloc PBISPlusBlocInstance = new PBISPlusBloc();
   @override
   void initState() {
     super.initState();
-    getStudentNotes();
+    initMethod();
+  }
+
+  initMethod() async {
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "pbis_plus_history_screen");
     // FirebaseAnalyticsService.setCurrentScreen(
     //     screenTitle: 'pbis_plus_history_screen', screenClass: 'PBISPlusNotesDetailPage');
     // /*-------------------------User Activity Track END----------------------------*/
-  }
-
-  getStudentNotes() async {
-    PBISPlusBlocInstance!.add(GetPBISPlusNotes(
-        dbn: Globals.schoolDbnC!,
-        studentId: widget.item.studentId!,
-        teacherid: Globals.teacherId));
+    PBISPlusBlocInstance.add(
+        GetPBISPlusNotes(studentId: widget.item.studentId!));
   }
 
   @override
@@ -92,47 +90,39 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   }
 
   Widget body(BuildContext context) {
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        SpacerWidget(24),
-        _buildBackIcon(),
-        Padding(
-            padding: EdgeInsets.only(left: 22, right: 22),
-            child: FittedBox(
-                alignment: Alignment.centerLeft,
-                fit: BoxFit.scaleDown,
-                child: Text("${widget.item.names!.fullName!}'s" + " Notes",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.w500)))),
-        SpacerWidget(_KVertcalSpace / 5),
-        BlocConsumer(
-            bloc: PBISPlusBlocInstance,
-            builder: (context, state) {
-              if (state is PBISPlusNotesSucess) {
-                //---------------------return the filter list to UI-----------//
-                return _listBuilder(state.notesList, isShimmerLoading: false);
-              } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
-                return _listBuilder(
-                    List.generate(
-                      10,
-                      (index) => PBISStudentNotes(),
-                    ),
-                    isShimmerLoading: true);
-              } else if (state is GetPBISPlusStudentAllNotesListError) {
-                return _noDataFoundWidget();
-              }
-              //Managing shimmer loading in case of initial loading
+    return ListView(physics: NeverScrollableScrollPhysics(), children: [
+      SpacerWidget(24),
+      _buildBackIcon(),
+      Padding(
+          padding: EdgeInsets.only(left: 22, right: 22),
+          child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.scaleDown,
+              child: Text("${widget.item.names!.fullName!}'s" + " Notes",
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.w500)))),
+      SpacerWidget(_KVertcalSpace / 5),
+      BlocConsumer(
+          bloc: PBISPlusBlocInstance,
+          builder: (context, state) {
+            if (state is PBISPlusNotesSucess) {
+              //---------------------return the filter list to UI-----------//
+              return _listBuilder(state.notesList, isShimmerLoading: false);
+            } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
               return _listBuilder(
                   List.generate(10, (index) => PBISStudentNotes()),
                   isShimmerLoading: true);
-            },
-            listener: (context, state) {})
-      ],
-    );
+            } else if (state is PBISErrorState) {
+              return _noDataFoundWidget(state.error);
+            }
+            //Managing shimmer loading in case of initial loading
+            return Container();
+          },
+          listener: (context, state) {})
+    ]);
   }
 
 //-----------------Build the Notes List-----------------------------------
@@ -146,19 +136,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                 key: refreshKey,
                 onRefresh: refreshPage,
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  physics:
-                      isShimmerLoading ? NeverScrollableScrollPhysics() : null,
-                  padding: EdgeInsets.only(
-                    bottom: Platform.isIOS ? 80 : 48,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildCard(
-                        studentNotesList[index], index, isShimmerLoading);
-                  },
-                  itemCount: studentNotesList.length,
-                )))
+                    shrinkWrap: true,
+                    physics: isShimmerLoading
+                        ? NeverScrollableScrollPhysics()
+                        : null,
+                    padding: EdgeInsets.only(bottom: Platform.isIOS ? 80 : 48),
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildCard(
+                          studentNotesList[index], index, isShimmerLoading);
+                    },
+                    itemCount: studentNotesList.length)))
         : RefreshIndicator(
             color: AppTheme.kButtonColor,
             key: refreshKey,
@@ -204,13 +192,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 
 //-----------------Build the Date List-----------------------------------
   Widget _buildDateList(PBISStudentNotes item, bool isShimmerLoading) {
-    return Row(
-      children: [
-        _buildCardDateTime(item.date ?? "", true, isShimmerLoading),
-        _buildCardDateTime(item.weekday ?? "", true, isShimmerLoading),
-        _buildCardDateTime(item.time ?? "", false, isShimmerLoading)
-      ],
-    );
+    return Row(children: [
+      _buildCardDateTime(item.date ?? "", true, isShimmerLoading),
+      _buildCardDateTime(item.weekday ?? "", true, isShimmerLoading),
+      _buildCardDateTime(item.time ?? "", false, isShimmerLoading)
+    ]);
   }
 
 //-----------------Build the Date Card Item-----------------------------------
@@ -220,8 +206,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         children: <Widget>[
           isShimmerLoading
               ? localSimmerWidget(height: 15, width: 48)
-              : Text(
-                  "$item",
+              : Text("$item",
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
                       color:
@@ -229,26 +214,25 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                               ? Color(0xffA6A6A6)
                               : Color(0xff162429),
                       fontSize: 10,
-                      fontWeight: FontWeight.w500),
-                ),
+                      fontWeight: FontWeight.w500)),
           isShowDivider ? _buildVerticalDivider() : SizedBox.shrink()
         ]);
   }
 
 //-----------------NO Data Found-----------------------------------
-  Widget _noDataFoundWidget() {
+  Widget _noDataFoundWidget(String? errorMessage) {
     return Center(
         child: RefreshIndicator(
             color: AppTheme.kButtonColor,
             key: refreshKey,
             onRefresh: refreshPage,
             child: NoDataFoundErrorWidget(
-              marginTop: MediaQuery.of(context).size.height / 4,
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              errorMessage: 'No Notes Found',
-            )));
+                marginTop: MediaQuery.of(context).size.height / 4,
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                errorMessage: errorMessage //'No Notes Found',
+                )));
   }
 
 //---------------Build--Vertcial Divider-----------------------------------
@@ -272,10 +256,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance!.add(GetPBISPlusNotes(
-        dbn: Globals.schoolDbnC!,
-        studentId: widget.item.studentId!,
-        teacherid: await OcrUtility.getTeacherId()));
+    PBISPlusBlocInstance.add(
+        GetPBISPlusNotes(studentId: widget.item.studentId!));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));

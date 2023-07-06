@@ -127,7 +127,7 @@ void main() async {
           ..registerAdapter(AttachmentAdapter())
           ..registerAdapter(LinkAdapter())
           // ..registerAdapter(PBISPlusGenericBehaviorModalAdapter())
-          ..registerAdapter(PBISPlusStudentListAdapter())
+          ..registerAdapter(PBISPlusNotesUniqueStudentListAdapter())
           ..registerAdapter(StudentNameAdapter())
           ..registerAdapter(PBISStudentNotesAdapter())
           ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())

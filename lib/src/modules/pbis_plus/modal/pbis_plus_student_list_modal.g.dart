@@ -6,17 +6,18 @@ part of 'pbis_plus_student_list_modal.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
+class PBISPlusNotesUniqueStudentListAdapter
+    extends TypeAdapter<PBISPlusNotesUniqueStudentList> {
   @override
   final int typeId = 45;
 
   @override
-  PBISPlusStudentList read(BinaryReader reader) {
+  PBISPlusNotesUniqueStudentList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PBISPlusStudentList(
+    return PBISPlusNotesUniqueStudentList(
       studentId: fields[0] as String?,
       names: fields[1] as StudentName?,
       iconUrlC: fields[2] as String?,
@@ -26,7 +27,7 @@ class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
   }
 
   @override
-  void write(BinaryWriter writer, PBISPlusStudentList obj) {
+  void write(BinaryWriter writer, PBISPlusNotesUniqueStudentList obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
@@ -47,7 +48,7 @@ class PBISPlusStudentListAdapter extends TypeAdapter<PBISPlusStudentList> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PBISPlusStudentListAdapter &&
+      other is PBISPlusNotesUniqueStudentListAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

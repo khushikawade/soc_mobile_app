@@ -99,9 +99,7 @@ class _PBISPlusSearchBarState extends State<PBISPlusSearchBar> {
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg)
                   : Icons.clear,
-              color: Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xff111C20)
-                  : Color(0xffF7F8F9),
+              color: Theme.of(context).colorScheme.primaryVariant,
               size: Globals.deviceType == "phone" ? 20 : 28,
             ),
           ),

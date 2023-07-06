@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'pbis_plus_student_list_modal.g.dart';
 
 @HiveType(typeId: 45)
-class PBISPlusStudentList extends HiveObject {
+class PBISPlusNotesUniqueStudentList extends HiveObject {
   @HiveField(0)
   String? studentId;
   @HiveField(1)
@@ -15,7 +15,7 @@ class PBISPlusStudentList extends HiveObject {
   @HiveField(4)
   String? email;
 
-  PBISPlusStudentList({
+  PBISPlusNotesUniqueStudentList({
     this.studentId,
     this.names,
     this.iconUrlC,
@@ -23,7 +23,7 @@ class PBISPlusStudentList extends HiveObject {
     this.email,
   });
 
-  PBISPlusStudentList.fromJson(Map<String, dynamic> json) {
+  PBISPlusNotesUniqueStudentList.fromJson(Map<String, dynamic> json) {
     studentId = json['studentId'] ?? '';
     names =
         json['names'] != null ? new StudentName.fromJson(json['names']) : null;

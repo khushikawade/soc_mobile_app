@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_add_notes_modal.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
@@ -53,25 +52,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        // LocalDatabase<ClassroomCourse> _localDb =
-        //     LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
-
         LocalDatabase<ClassroomCourse> _localDb =
             LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
-        // LocalDatabase<PBISPlusGenericBehaviorModal> _pbisPlusSkilllocalsDB =
-        //     LocalDatabase(PBISPlusOverrides.pbisPlusBehaviorGenricDB);
-        // List<PBISPlusGenericBehaviorModal>? _pbisPlusSkillsLocalData =
-        //     await _pbisPlusSkilllocalsDB.getData();
-        // await _pbisPlusSkilllocalsDB.clear();
         if (_localData.isEmpty) {
           //Managing dummy response for shimmer loading
-          var list = await _getShimmerData();
+          var list = await _getRosterShimmerListData();
           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
-          // await getFilteredStudentList(_localData);
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
@@ -183,7 +173,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusLoading();
         yield PBISPlusAdditionalBehaviorSuccess(additionalBehaviorList: list);
       } catch (e) {
-        yield PBISPlusAdditionalBehaviorError(error: e.toString());
+        yield PBISErrorState(error: e.toString());
       }
     }
 
@@ -244,35 +234,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         print(e);
       }
     }
-// //------------pbis student list home page-------------------///
-//     if (event is GetPBISPlusStudentList) {
-//       try {
-//         yield PBISPlusLoading();
-//         if (event.studentNotesList != null &&
-//             event.studentNotesList!.length > 0) {
-//           yield PBISPlusStudentListSucess(studentList: event.studentNotesList!);
-//         }
 
-//         LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
-//             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-//         List<PBISPlusStudentList>? _pbisPlusNotesStudentDataList =
-//             await _pbisPlusStudentListDB.getData();
-
-//         _pbisPlusNotesStudentDataList = await _pbisPlusStudentListDB.getData();
-//         if (_pbisPlusNotesStudentDataList.isNotEmpty) {
-//           yield PBISPlusStudentListSucess(
-//               studentList: _pbisPlusNotesStudentDataList);
-//         } else {
-//           yield GetPBISPlusStudentsListNoData(error: "No Student found");
-//         }
-//       } catch (e) {
-//         yield GetPBISPlusStudentsListNoData(error: "No Student found");
-//       }
-//     }
-//---------------pbis student list SEARCH----- ===-----------------
-    if (event is PBISPlusNotesSearchStudentList) {
+//---------------pbis student list SEARCH-------------------------------
+    if (event is PBISPlusNotesSearchStudent) {
       try {
-        print("----------PBISPlusNotesSearchStudentList=================");
         yield PBISPlusLoading();
         if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
           final searchedList =
@@ -281,18 +246,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           if (searchedList.isNotEmpty && searchedList.length > 0) {
             yield PBISPlusStudentSearchSucess(sortedList: searchedList);
           } else {
-            yield GetPBISPlusStudentsListNoData(error: "No result found");
+            yield PBISErrorState(error: "No Student Found");
           }
         }
       } catch (e) {
-        yield GetPBISPlusStudentsListNoData(error: "No data found");
+        yield PBISErrorState(error: "No data found");
       }
     }
 
     /*----------------------------------------------------------------------------------------------*/
     /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
-
+    //:::::::::::::::::::::::::::::::::::::::::OLD way to add interaction::::::::::::::::::::::::::::::::::::::::::
     // if (event is AddPBISInteraction) {
     //   try {
     //     //Fetch logged in user profile
@@ -716,18 +681,20 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
 //------------------------------GET STUDENT LIST NOTES-----------------------
     if (event is GetPBISPlusStudentList) {
-      String plusClassroomDBTableName = PBISPlusOverrides.pbisPlusClassroomDB;
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
+        //Fetching list of student from local db stored
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(plusClassroomDBTableName);
+            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
+
+        //Returning the list locally first
         if (_localData.isEmpty) {
           yield PBISPlusLoading();
         } else {
-          List<PBISPlusStudentList> list =
-              await getFilteredStudentList(_localData);
+          List<PBISPlusNotesUniqueStudentList> list =
+              await getUniqueStudentListForNotesScreen(_localData);
           yield PBISPlusStudentListSucess(studentList: list);
         }
 
@@ -743,10 +710,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             _localDb.addData(e);
           });
 
-          yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+          // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+          yield PBISPlusLoading();
 
-          List<PBISPlusStudentList> updatedList =
-              await getFilteredStudentList(coursesList);
+          List<PBISPlusNotesUniqueStudentList> updatedList =
+              await getUniqueStudentListForNotesScreen(coursesList);
           yield PBISPlusStudentListSucess(studentList: updatedList);
         } else {
           yield PBISErrorState(
@@ -755,10 +723,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
       } catch (e) {
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(plusClassroomDBTableName);
+            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
-        List<PBISPlusStudentList> list =
-            await getFilteredStudentList(_localData);
+
+        List<PBISPlusNotesUniqueStudentList> list =
+            await getUniqueStudentListForNotesScreen(_localData);
         yield PBISPlusStudentListSucess(studentList: list);
       }
     }
@@ -766,52 +735,55 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 //---------------------------------*GET THE STUDENT NOTES*----------------------------//
     if (event is GetPBISPlusNotes) {
       try {
-        LocalDatabase<PBISPlusStudentList> _pbisPlusSNotesStudentListDB =
+        LocalDatabase<PBISPlusNotesUniqueStudentList>
+            _pbisPlusSNotesStudentListDB =
             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-        List<PBISPlusStudentList>? _pbisPlusNotesStudentsList =
+
+        List<PBISPlusNotesUniqueStudentList>? _pbisPlusNotesStudentsList =
             await _pbisPlusSNotesStudentListDB.getData();
-        yield PBISPlusLoading();
 
         // Find student data index in local db
-        int studentItemindex = _pbisPlusNotesStudentsList.indexWhere(
+        int studentItemIndex = _pbisPlusNotesStudentsList.indexWhere(
           (student) => student.studentId == event.studentId,
         );
-        // If the notes exits in the local db then return to notes  to UI
 
-        if (studentItemindex != -1 &&
-            _pbisPlusNotesStudentsList[studentItemindex].notes != null) {
+        // // //*FEED THE NOTES IN LOCAL DB
+        // PBISPlusNotesUniqueStudentList? studentToUpdate = studentItemIndex >= 0
+        //     ? _pbisPlusNotesStudentsList[studentItemIndex]
+        //     : null;
+
+        // If the notes exits in the local db then return to notes  to UI
+        if (_pbisPlusNotesStudentsList.isEmpty ||
+            _pbisPlusNotesStudentsList[studentItemIndex].notes!.isEmpty) {
+          yield PBISPlusLoading();
+        } else {
           yield PBISPlusNotesSucess(
-              notesList: _pbisPlusNotesStudentsList[studentItemindex].notes!);
+              notesList: _pbisPlusNotesStudentsList[studentItemIndex].notes!);
         }
 
-        //TODO Call the Api
-        List<PBISStudentNotes>? apidata = await getPBIStudentNotesData(
-            student_id: event.studentId,
-            school_dbn: event.dbn,
-            teacher_id: event.teacherid);
+        //Calling the API
+        List<PBISStudentNotes>? studentNotesList =
+            await getPBIStudentNotesData(student_id: event.studentId);
 
-        // //*FEED THE NOTES IN LOCAL DB
-        PBISPlusStudentList? studentToUpdate = studentItemindex != -1
-            ? _pbisPlusNotesStudentsList[studentItemindex]
-            : null;
+        if (studentItemIndex >= 0 &&
+            studentNotesList != null &&
+            studentNotesList.isNotEmpty) {
+          // Assuming want to update the notes with the first API data
+          _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
+          // //Updating the notes data in local db
+          // _pbisPlusNotesStudentsList.removeAt(studentItemIndex);
+          // _pbisPlusNotesStudentsList.insert(
+          //     studentItemIndex, _pbisPlusNotesStudentsList[studentItemIndex]);
 
-        if (studentToUpdate != null) {
-          // Student found, update the notes
-          if (apidata != null && apidata.isNotEmpty) {
-            // Assuming want to update the notes with the first API data
-            studentToUpdate.notes = apidata;
-            _pbisPlusNotesStudentsList.removeAt(studentItemindex);
-            _pbisPlusNotesStudentsList.insert(
-                studentItemindex, studentToUpdate);
-          }
+          //Updating the notes data in local db
           await _pbisPlusSNotesStudentListDB.clear();
           _pbisPlusNotesStudentsList.forEach((element) async {
             await _pbisPlusSNotesStudentListDB.addData(element);
           });
         }
-        yield PBISPlusNotesSucess(notesList: apidata);
+        yield PBISPlusNotesSucess(notesList: studentNotesList);
       } catch (e) {
-        yield GetPBISPlusStudentAllNotesListError(error: "No Notes Found");
+        yield PBISErrorState(error: "No Notes Found");
       }
     }
 
@@ -820,25 +792,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       try {
         yield PBISPlusLoading();
 
-        //TODO SEND THE LOCAL DB DATA
-        PbisPlusAddNotes? apidata = await addPBIStudentNotes(
-          studentId: event.studentId,
-          studentName: event.studentName,
-          studentEmail: event.studentEmail,
-          teacherId: event.teacherId,
-          schoolId: event.schoolId,
-          dBNc: event.schoolDbn,
-          notes: event.notes,
-        );
-        if (apidata != null) {
-          yield PBISPlusAddNotesSucess(note: apidata);
+        bool apiData = await addPBIStudentNotes(
+            studentId: event.studentId,
+            studentName: event.studentName,
+            studentEmail: event.studentEmail,
+            schoolId: event.schoolId,
+            notes: event.notes);
+
+        if (apiData == true) {
+          yield PBISPlusAddNotesSucess();
         } else {
-          yield PBISPlusAddNotesError(
-              error: "Note was not added  Please try again later.");
+          yield PBISErrorState(
+              error: "Failed to add the note. Please try again later.");
         }
       } catch (e) {
-        yield PBISPlusAddNotesError(
-            error: "Note was not  added  Please try again later.");
+        yield PBISErrorState(
+            error: "Failed to add the note. Please try again later.");
       }
     }
   }
@@ -1324,12 +1293,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /* --------Function to manage the shimmer loading for classroom courses------ */
   /* -------------------------------------------------------------------------- */
 
-  Future<List<ClassroomCourse>> _getShimmerData() async {
+  Future<List<ClassroomCourse>> _getRosterShimmerListData() async {
     try {
       final String response = await rootBundle.loadString(
-          'lib/src/modules/pbis_plus/pbis_plus_asset/pbis_plus_classroom_loading_data.json'
-          // 'assets/pbis_plus_asset/pbis_plus_classroom_loading_data.json'
-          );
+          'lib/src/modules/pbis_plus/pbis_plus_asset/pbis_plus_classroom_shimmer_loading_data.json');
 
       final data = await json.decode(response);
 
@@ -1343,42 +1310,46 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   }
 
   //------------FILTER THE STUDENT LIST FROM THE ROASTER DATA SAVE TO LOCAL DB------For NotesPage----///
-  Future<List<PBISPlusStudentList>> getFilteredStudentList(
-      List<ClassroomCourse> allClassroomCourses) async {
+  Future<List<PBISPlusNotesUniqueStudentList>>
+      getUniqueStudentListForNotesScreen(
+          List<ClassroomCourse> allClassroomCourses) async {
     try {
+      LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
+          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
+          await _pbisPlusStudentListDB.getData();
+
+      List<PBISPlusNotesUniqueStudentList> list = [];
+
       final uniqueStudents = <ClassroomStudents>[];
-      for (final course in allClassroomCourses) {
-        for (final student in course?.students ?? []) {
-          final isStudentUnique =
-              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
-          if (isStudentUnique) {
+      //Creating the unique student list
+      for (final ClassroomCourse course in allClassroomCourses) {
+        for (final ClassroomStudents student in course?.students ?? []) {
+          if (!uniqueStudents
+              .any((s) => s.profile?.id == student.profile?.id)) {
             student.profile!.courseName = course.name;
             uniqueStudents.add(student);
           }
         }
       }
-
-      uniqueStudents.sort((a, b) {
-        return a.profile!.name!.fullName!
-            .toLowerCase()
-            .compareTo(b.profile!.name!.fullName!.toLowerCase());
-      });
-
-      LocalDatabase<PBISPlusStudentList> _pbisPlusStudentListDB =
-          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-      List<PBISPlusStudentList>? _pbisPlusStudentNotesDataList =
-          await _pbisPlusStudentListDB.getData();
-      List<PBISPlusStudentList> list = [];
+      //Sorting the unique student list in alphabetically order
+      uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
+          .toLowerCase()
+          .compareTo(b.profile!.name!.fullName!.toLowerCase()));
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
       if (_pbisPlusStudentNotesDataList.isNotEmpty) {
+        //--------------------Adding notes of student to their unique object--------------------------
+        //unique student list
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
-          PBISPlusStudentList existingStudent = _pbisPlusStudentNotesDataList
-              .firstWhere((e) => e.studentId == item.profile?.id);
-          List<PBISStudentNotes>? notes =
-              existingStudent != null ? existingStudent.notes : null;
-          return PBISPlusStudentList(
+          PBISPlusNotesUniqueStudentList existingStudent =
+              _pbisPlusStudentNotesDataList
+                  .firstWhere((e) => e.studentId == item.profile?.id);
+
+          List<PBISStudentNotes>? notes = existingStudent?.notes;
+
+          return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
             names: StudentName(
               familyName: item.profile!.name!.familyName!,
@@ -1392,7 +1363,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }).toList();
       } else {
         list = uniqueStudents
-            .map((item) => PBISPlusStudentList(
+            .map((item) => PBISPlusNotesUniqueStudentList(
                 email: item.profile!.emailAddress!,
                 names: StudentName(
                     familyName: item.profile!.name!.familyName!,
@@ -1403,6 +1374,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 notes: null))
             .toList();
       }
+
       await _pbisPlusStudentListDB.clear();
       list.forEach((element) async {
         await _pbisPlusStudentListDB.addData(element);
@@ -1652,17 +1624,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
   //============-----------------------------------------GET STUDENT ALL NOTES -----------------//
   Future<List<PBISStudentNotes>> getPBIStudentNotesData(
-      {String? teacher_id, String? student_id, String? school_dbn}) async {
+      {String? teacher_id, String? student_id}) async {
     try {
       final teacherId = await await OcrUtility.getTeacherId();
-      print(
-          "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=$school_dbn'");
+
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=$school_dbn',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-          },
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
+          headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1680,25 +1648,20 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
   //---------------------------------ADD THE STUDENT NOTES---------------------------------
 
-  Future addPBIStudentNotes({
-    String? studentId,
-    String? studentName,
-    String? studentEmail,
-    String? teacherId,
-    String? schoolId,
-    String? dBNc,
-    String? notes,
-  }) async {
-    String teacherId_1 = await OcrUtility.getTeacherId();
-
+  Future<bool> addPBIStudentNotes(
+      {String? studentId,
+      String? studentName,
+      String? studentEmail,
+      String? schoolId,
+      String? notes}) async {
     try {
       Map<String, String>? body = {};
       body['student_id'] = studentId!;
       body['student_name'] = studentName!;
       body['student_email'] = studentEmail!;
-      body['teacher_id'] = teacherId_1;
+      body['teacher_id'] = await OcrUtility.getTeacherId();
       body['school_id'] = schoolId!;
-      body['DBN__c'] = dBNc!;
+      body['DBN__c'] = Globals.schoolDbnC!;
       body['notes'] = notes!;
 
       final ResponseModel response = await _dbServices.postApi(
@@ -1711,11 +1674,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        final data = response.data as Map<String, dynamic>;
-        final listData = PbisPlusAddNotes.fromJson(data['body']);
-        return listData;
+        // final data = response.data as Map<String, dynamic>;
+        // final listData = PbisPlusAddNotes.fromJson(data['body']);
+        return true;
       }
-      return null;
+      return false;
     } catch (e) {
       print(e);
       throw (e);
@@ -1726,9 +1689,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*----------------------------------------------------------------------------------------------*/
 /*---------------------------------------Function searchNotesList-------------------------------*/
 /*----------------------------------------------------------------------------------------------*/
-List<PBISPlusStudentList> searchNotesList(
-    List<PBISPlusStudentList> notesList, String keyword) {
-  List<PBISPlusStudentList> searchResults = [];
+List<PBISPlusNotesUniqueStudentList> searchNotesList(
+    List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
+  List<PBISPlusNotesUniqueStudentList> searchResults = [];
 
   for (var note in notesList) {
     if (note.names != null && note.names!.fullName != null) {
@@ -1737,6 +1700,5 @@ List<PBISPlusStudentList> searchNotesList(
       }
     }
   }
-
   return searchResults;
 }
