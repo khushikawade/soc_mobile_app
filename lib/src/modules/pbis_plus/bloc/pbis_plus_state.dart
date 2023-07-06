@@ -165,19 +165,21 @@ class PBISPlusStudentNotesSucess extends PBISPlusState {
 
 class PBISPlusGetDefaultSchoolBehaviorSuccess extends PBISPlusState {
   final List<PBISPlusCommonBehaviorModal> defaultSchoolBehaviorList;
+  final String? caughtError;
 
   PBISPlusGetDefaultSchoolBehaviorSuccess(
-      {required this.defaultSchoolBehaviorList});
+      {required this.defaultSchoolBehaviorList, this.caughtError});
 
   @override
   List<Object> get props => [defaultSchoolBehaviorList];
 }
 
 class PBISPlusGetTeacherCustomBehaviorSuccess extends PBISPlusState {
+  final String? caughtError;
   final List<PBISPlusCommonBehaviorModal> teacherCustomBehaviorList;
 
   PBISPlusGetTeacherCustomBehaviorSuccess(
-      {required this.teacherCustomBehaviorList});
+      {required this.teacherCustomBehaviorList, this.caughtError});
 
   @override
   List<Object> get props => [teacherCustomBehaviorList];

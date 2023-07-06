@@ -193,7 +193,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                   alignment: Alignment.centerLeft,
                   child: Utility.textWidget(
                       context: context,
-                      text: "${"Edit " + "${dataList!.name}"}",
+                      text: "${"Edit " + "${dataList!.behaviorTitleC}"}",
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline5!
