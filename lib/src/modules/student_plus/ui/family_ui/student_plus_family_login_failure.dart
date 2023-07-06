@@ -9,14 +9,16 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
-class StudentPlusFamilyLogIn extends StatefulWidget {
-  const StudentPlusFamilyLogIn({Key? key}) : super(key: key);
+class StudentPlusFamilyLogInFailure extends StatefulWidget {
+  const StudentPlusFamilyLogInFailure({Key? key}) : super(key: key);
 
   @override
-  State<StudentPlusFamilyLogIn> createState() => _StudentPlusFamilyLogInState();
+  State<StudentPlusFamilyLogInFailure> createState() =>
+      _StudentPlusFamilyLogInFailureState();
 }
 
-class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
+class _StudentPlusFamilyLogInFailureState
+    extends State<StudentPlusFamilyLogInFailure> {
   TextEditingController emailEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -24,36 +26,35 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context:context),
+          backgroundColor: Colors.red.withOpacity(0.2),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
-                SpacerWidget(MediaQuery.of(context).size.height * 0.06),
-                FamilyLoginCommonWidget.titleAndDesWidget(
-                    context: context,
-                    title: 'Email',
-                    description:
-                        'Enter your email below to receive a one-time password.'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.1),
+                FamilyLoginCommonWidget.titleAndDesWidget(
+                  context: context,
+                  title: 'Not Verified',
+                ),
+                SpacerWidget(MediaQuery.of(context).size.height * 0.05),
                 FamilyLoginCommonWidget.familyCircularIcon(
                     context: context,
-                    assetImageUrl: 'assets/images/login_lock.png'),
-                SpacerWidget(40),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  child: Utility.textWidget(
-                      context: context,
-                      text: 'Enter your email',
-                      textTheme: Theme.of(context).textTheme.headline3),
-                ),
-                SpacerWidget(20),
-                textFormFieldWidget(),
-                SpacerWidget(20),
+                    assetImageUrl: 'assets/images/failure_lock.png'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.05),
-                SpacerWidget(60),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  child: Center(
+                    child: Utility.textWidget(
+                        context: context,
+                        textAlign: TextAlign.center,
+                        text:
+                            'Uh oh! We couldn\'t verify the provided email address. You can try again with another email address.',
+                        textTheme: Theme.of(context).textTheme.headline3),
+                  ),
+                ),
+                SpacerWidget(MediaQuery.of(context).size.height * 0.1),
               ],
             ),
           ),
@@ -70,8 +71,6 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       child: TextFormField(
-        scrollPadding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         autofocus: false,
         style: Theme.of(context).textTheme.headline3,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -144,7 +143,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
   Widget fabButton() {
     return GradedPlusCustomFloatingActionButton(
       isExtended: true,
-      fabWidth: MediaQuery.of(context).size.width * 0.75,
+      fabWidth: MediaQuery.of(context).size.width * 0.7,
       title: 'Generate OTP',
       onPressed: () async {
         Navigator.push(

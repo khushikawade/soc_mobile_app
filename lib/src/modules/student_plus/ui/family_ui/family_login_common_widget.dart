@@ -1,4 +1,6 @@
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -20,22 +22,39 @@ class FamilyLoginCommonWidget {
         SpacerWidget(10),
         Utility.textWidget(
             textAlign: TextAlign.center,
-            text: 'Enter your email below to receive a one-time password.',
+            text: description ?? '',
             context: context,
             textTheme: Theme.of(context).textTheme.headline3)
       ]),
     );
   }
 
-  static Widget familyCircularIcon({required BuildContext context, required String assetImageUrl}) {
+  static Widget familyCircularIcon(
+      {required BuildContext context, required String assetImageUrl}) {
     return Container(
       height: MediaQuery.of(context).size.width * 0.5,
       // width: MediaQuery.of(context).size.width * 0.4,
       decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/login_lock.png')),
+          image: DecorationImage(image: AssetImage(assetImageUrl)),
           color: Colors.black,
           shape: BoxShape.circle),
+    );
+  }
+
+  static PreferredSizeWidget familyLoginAppBar({required BuildContext context}) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      leading: IconButton(
+        icon: Icon(
+          IconData(0xe80d,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }
