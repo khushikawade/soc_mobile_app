@@ -165,11 +165,12 @@ class PBISPlusDeleteTeacherCustomBehavior extends PBISPlusEvent {
   List<Object> get props => [behavior];
 }
 
-class PBISPlusAddTeacherCustomBehavior extends PBISPlusEvent {
+class PBISPlusAddAndUpdateTeacherCustomBehavior extends PBISPlusEvent {
   final PBISPlusCommonBehaviorModal behavior;
   // final List<PBISPlusCommonBehaviorModal> oldbehavior;
   final int? index;
-  PBISPlusAddTeacherCustomBehavior({required this.behavior, this.index});
+  PBISPlusAddAndUpdateTeacherCustomBehavior(
+      {required this.behavior, this.index});
 
   @override
   List<Object> get props => [behavior];

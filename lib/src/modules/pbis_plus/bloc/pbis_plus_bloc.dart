@@ -701,13 +701,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     //   }
     // }
 
-    if (event is PBISPlusAddTeacherCustomBehavior) {
+    if (event is PBISPlusAddAndUpdateTeacherCustomBehavior) {
       LocalDatabase<PBISPlusCommonBehaviorModal> _localDb = LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
       List<PBISPlusCommonBehaviorModal>? _localData = await _localDb.getData();
 
       try {
-        print(_localData);
         //index null means added a new icon otherwise replce the index item
         bool isAddedNewIcon = event.index == null;
 
@@ -716,15 +715,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           String sortOrderC = (_localData.length + 1).toString();
           event.behavior.pBISBehaviorSortOrderC = sortOrderC;
           // await _localDb.addData(event.behavior);
-        }
-        //Updating existing behavior SortOrder
-        else {
-          print("printing replce  skill with ${event.behavior.behaviorTitleC}");
-          print(
-              "printing replce  skill with ${event.behavior.pBISBehaviorSortOrderC}");
-          // String sortOrderC = (event.index! + 1).toString();
-          // event.behavior.pBISBehaviorSortOrderC = sortOrderC;
-          //  await _localDb.putAt(event.index!, event.behavior);
         }
 
         List result = await addTeacherCustomBehavior(
@@ -740,13 +730,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             event.behavior.id = result[1];
             _localData.add(event.behavior);
             await _localDb.addData(event.behavior);
-          } else if (event.index != null) {
+          }
+          //Updating existing behaviour //icon//name
+          else if (event.index != null) {
             //Updating existing behavior
             _localData[event.index!] = event.behavior;
             await _localDb.putAt(event.index!, event.behavior);
           }
-        } else {
-          print("Add teacher custom behaviour failure");
         }
 
         yield PBISPlusLoading();
