@@ -143,6 +143,7 @@ flutter:
     - assets/images/
     - assets/ocr_result_section_bottom_button_icons/
     - lib/src/modules/pbis_plus/bloc/
+    - lib/src/modules/pbis_plus/pbis_plus_asset/
     - assets/Pbis_plus/
     - assets/pbis_sound/sound1.wav
 

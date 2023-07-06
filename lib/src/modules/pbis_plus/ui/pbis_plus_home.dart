@@ -69,7 +69,6 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
             _isFABVisible.value = false;
             break;
           case 3: //To go back to the staff screen of standard app
-
             backOnTap();
             break;
           default:

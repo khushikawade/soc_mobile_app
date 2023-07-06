@@ -699,6 +699,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       PBISPlusBloc? pbisPlusClassroomBloc}) async {
     var isDeleteTapped = await Navigator.of(context).push(HeroDialogRoute(
         builder: (context) => PBISPlusDeleteBehaviorPopup(
+            constraint: widget.constraint!,
             item: item!,
             backgroundColor:
                 Theme.of(context).colorScheme.background == Color(0xff000000)
