@@ -293,10 +293,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 //------------------------------for filter call bottom sheet"-------------------//
   filterBottomSheet(context) {
     showModalBottomSheet(
-<<<<<<< HEAD
         useRootNavigator: true,
-=======
->>>>>>> pbis_main
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: false,
