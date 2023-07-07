@@ -824,6 +824,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         // If the notes exits in the local db then return to notes  to UI
         if (_pbisPlusNotesStudentsList.isEmpty ||
+            _pbisPlusNotesStudentsList[studentItemIndex].notes == null ||
             _pbisPlusNotesStudentsList[studentItemIndex].notes!.isEmpty) {
           yield PBISPlusLoading();
         } else {
