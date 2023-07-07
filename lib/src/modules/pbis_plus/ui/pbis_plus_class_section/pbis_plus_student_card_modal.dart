@@ -403,9 +403,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           child: GestureDetector(
                               onTap: widget.isFromStudentPlus == true ||
                                       widget.isFromDashboardPage == true
-                                  ? () {
-                                      print(widget.constraint);
-                                    }
+                                  ? () {}
                                   //  null
                                   : () async {
                                       Navigator.of(context).pushReplacement(

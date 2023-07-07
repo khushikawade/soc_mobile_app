@@ -612,7 +612,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             widget.isGradedPlus == true) {
           return;
         }
-        // print(heroTag);
+
         await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
@@ -751,9 +751,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           ]));
     }
 
-    // print("UI OPEN BOTTOM SHEET");
-    // print(allClassroomCourses[0].name);
-
     var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -768,7 +765,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               // Set the maximum height of the bottom sheet based on the screen size
-              // print(constraints.maxHeight);
+
               return PBISPlusBottomSheet(
                 fromClassScreen: true,
                 isClassPage: true,
