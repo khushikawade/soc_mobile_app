@@ -200,8 +200,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 padding: EdgeInsets.all(16),
                 child: Text(
                   isCustomBehavior.value
-                      ? "Teacher Behavior"
-                      : "School Behavior",
+                      ? "Teacher Behaviors"
+                      : "School Behaviors",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline5!.copyWith(
                       color:

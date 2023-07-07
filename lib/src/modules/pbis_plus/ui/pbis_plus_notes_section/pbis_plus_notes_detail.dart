@@ -173,20 +173,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   ? localSimmerWidget(
                       height: MediaQuery.of(context).size.width * 0.3,
                       width: MediaQuery.of(context).size.width * 0.9)
-                  : Text(
-                      "${obj.notes ?? ""}",
+                  : Text("${obj.notes ?? ""}",
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            color: Color(0xff000000) ==
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffFFFFFF)
-                                : Color(0xff162429),
-                            fontSize: 12,
-                          ),
-                    ),
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff162429),
+                          fontSize: 12)),
               SpacerWidget(24),
               _buildDateList(obj, isShimmerLoading),
-              SpacerWidget(24),
+              SpacerWidget(24)
             ])));
   }
 
@@ -238,18 +235,15 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 //---------------Build--Vertcial Divider-----------------------------------
   Widget _buildVerticalDivider() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      height: 12,
-      width: 1, // Adjust the width as needed
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: Color(0xFFAAAAAA), // Replace with your desired color
-            width: 1, // Adjust the width as needed
-          ),
-        ),
-      ),
-    );
+        margin: EdgeInsets.symmetric(horizontal: 4),
+        height: 12,
+        width: 1, // Adjust the width as needed
+        decoration: BoxDecoration(
+            border: Border(
+                right: BorderSide(
+                    color: Color(0xFFAAAAAA), // Replace with your desired color
+                    width: 1 // Adjust the width as needed
+                    ))));
   }
 //---------------Build--Refresh-------Function-----------------------------------
 
