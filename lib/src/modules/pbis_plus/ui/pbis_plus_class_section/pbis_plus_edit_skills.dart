@@ -150,9 +150,17 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*------------------------------------------------_buildIconBar------------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildIconBar() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_buildBackIcon(), _buildToggleButton()]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Row(children: [
+        _buildBackIcon(),
+        Utility.textWidget(
+            textAlign: TextAlign.left,
+            text: 'Edit Behaviors',
+            context: context,
+            textTheme: Theme.of(context).textTheme.headline1)
+      ]),
+      _buildToggleButton()
+    ]);
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -464,12 +472,25 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         children: [
                           Padding(
                               padding: const EdgeInsets.only(top: 16, left: 16),
-                              child: Text("Additional Behaviors",
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(fontWeight: FontWeight.bold))),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Additional Behaviors",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold)),
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.left,
+                                        text: 'Hold and drag',
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall)
+                                  ])),
                           SpacerWidget(16),
                           BlocConsumer(
                               bloc: pbisPluAdditionalBehaviorBloc,
