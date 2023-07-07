@@ -17,18 +17,19 @@ class PBISPlusDeleteBehaviorPopup extends StatefulWidget {
   final Color? backgroundColor;
   final PBISPlusCommonBehaviorModal item;
   void Function() onDelete;
-
-  PBISPlusDeleteBehaviorPopup(
-      {Key? key,
-      required this.orientation,
-      required this.context,
-      required this.message,
-      required this.title,
-      required this.titleStyle,
-      required this.backgroundColor,
-      required this.item,
-      required this.onDelete})
-      : super(key: key);
+  final double constraint;
+  PBISPlusDeleteBehaviorPopup({
+    Key? key,
+    required this.orientation,
+    required this.context,
+    required this.message,
+    required this.title,
+    required this.titleStyle,
+    required this.backgroundColor,
+    required this.item,
+    required this.onDelete,
+    required this.constraint,
+  }) : super(key: key);
 
   @override
   State<PBISPlusDeleteBehaviorPopup> createState() =>
@@ -60,7 +61,9 @@ class _PBISPlusDeleteBehaviorPopupState
   Widget body() {
     return Stack(children: <Widget>[
       Container(
-          height: MediaQuery.of(context).size.height * 0.26,
+          height: (widget.constraint <= 115)
+              ? MediaQuery.of(context).size.height * 0.28
+              : MediaQuery.of(context).size.height * 0.26,
           padding: EdgeInsets.only(left: 16, top: 54, right: 16, bottom: 16),
           margin: EdgeInsets.only(top: 54),
           decoration: BoxDecoration(

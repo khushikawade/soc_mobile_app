@@ -62,6 +62,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
   Widget _buildUnselectedMenus(PersistentBottomNavBarItem item, bool isSelected,
       double height, BuildContext context, int index) {
     return Container(
+      padding: EdgeInsets.only(top: 5),
       width: 120,
       height: height,
       color: Colors.transparent,
@@ -74,13 +75,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           Flexible(
             child: IconTheme(
               data: IconThemeData(
-                  size: index == 3
-                      ? isSelected
-                          ? 33
-                          : 28.0
-                      : isSelected
-                          ? 28
-                          : 22.0,
+                  size: isSelected ? 28 : 22.0,
                   color: isSelected
                       ? item.activeColorPrimary
                       : item.inactiveColorPrimary),
@@ -88,7 +83,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: index == 3 ? 1 : 5,
+            height: 5,
           ),
           Container(
             child: Align(
@@ -192,32 +187,29 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
         if (item.title == null)
           const SizedBox.shrink()
         else
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Material(
-                type: MaterialType.transparency,
-                child: TranslationWidget(
-                  shimmerHeight: 8,
-                  message: item.title!,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => FittedBox(
-                    child: Text(
-                      translatedMessage.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: Theme.of(context).textTheme.headline4!.copyWith(
-                            fontSize: isSelected
-                                ? Theme.of(context)
-                                        .textTheme
-                                        .headline4!
-                                        .fontSize! +
-                                    3
-                                : null,
-                          ),
-                    ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Material(
+              type: MaterialType.transparency,
+              child: TranslationWidget(
+                shimmerHeight: 8,
+                message: item.title!,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => FittedBox(
+                  child: Text(
+                    translatedMessage.toString(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          fontSize: isSelected
+                              ? Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .fontSize! +
+                                  3
+                              : null,
+                        ),
                   ),
                 ),
               ),

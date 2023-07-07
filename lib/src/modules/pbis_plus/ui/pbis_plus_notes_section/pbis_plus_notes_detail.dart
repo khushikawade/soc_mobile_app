@@ -1,6 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -14,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
-  final PBISPlusStudentList item;
+  final PBISPlusNotesUniqueStudentList item;
 
   PBISPlusNotesDetailPage({
     Key? key,
@@ -27,30 +30,28 @@ class PBISPlusNotesDetailPage extends StatefulWidget {
 
 class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   static const double _KVertcalSpace = 60.0;
-  // used for space between the widgets
-  static const double _kLabelSpacing = 20.0;
-  PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
+
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   FocusNode searchFocusNode = new FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<String> filterNotifier =
-      ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
-  // search text editing controller
-  final _searchController = TextEditingController();
-  // hide animated container
-  final ValueNotifier<bool> moveToTopNotifier = ValueNotifier<bool>(false);
 
+  // hide animated container
+  PBISPlusBloc PBISPlusBlocInstance = new PBISPlusBloc();
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(studentNotesList: null));
+    initMethod();
+  }
 
+  initMethod() async {
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     "pbis_plus_history_screen");
     // FirebaseAnalyticsService.setCurrentScreen(
     //     screenTitle: 'pbis_plus_history_screen', screenClass: 'PBISPlusNotesDetailPage');
     // /*-------------------------User Activity Track END----------------------------*/
+    PBISPlusBlocInstance.add(
+        GetPBISPlusNotes(studentId: widget.item.studentId!));
   }
 
   @override
@@ -89,80 +90,63 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   }
 
   Widget body(BuildContext context) {
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        SpacerWidget(24),
-        _buildBackIcon(),
-        // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 20),
-        Padding(
-            padding: EdgeInsets.only(left: 22),
-            child: FittedBox(
-                child: Text("${widget.item.names!.fullName!}'s" + " Notes",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1!
-                        .copyWith(fontSize: 28, fontWeight: FontWeight.w600)))),
-        SpacerWidget(_KVertcalSpace / 5),
-        ValueListenableBuilder(
-            valueListenable: filterNotifier,
-            builder: (BuildContext context, String value, Widget? child) {
-              return BlocConsumer(
-                  bloc: PBISPlusBlocInstance,
-                  builder: (context, state) {
-                    if (state is PBISPlusStudentNotesSucess) {
-                      //---------------------return the filter list to UI-----------//
-                      return _listBuilder(state.studentNotes,
-                          isShimmerLoading: false);
-                    } else if (state is PBISPlusLoading ||
-                        state is PBISPlusInitial) {
-                      return _listBuilder(
-                          List.generate(10, (index) => PBISPlusStudentList()),
-                          isShimmerLoading: true);
-                    } else if (state is PBISPlusStudentNotesError) {
-                      return _noDataFoundWidget();
-                    }
-
-                    //Managing shimmer loading in case of initial loading
-                    return _noDataFoundWidget();
-                  },
-                  listener: (context, state) {});
-            }),
-      ],
-    );
+    return ListView(physics: NeverScrollableScrollPhysics(), children: [
+      SpacerWidget(24),
+      _buildBackIcon(),
+      Padding(
+          padding: EdgeInsets.only(left: 22, right: 22),
+          child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.scaleDown,
+              child: Text("${widget.item.names!.fullName!}'s" + " Notes",
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.w500)))),
+      SpacerWidget(_KVertcalSpace / 5),
+      BlocConsumer(
+          bloc: PBISPlusBlocInstance,
+          builder: (context, state) {
+            if (state is PBISPlusNotesSucess) {
+              //---------------------return the filter list to UI-----------//
+              return _listBuilder(state.notesList, isShimmerLoading: false);
+            } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
+              return _listBuilder(
+                  List.generate(10, (index) => PBISStudentNotes()),
+                  isShimmerLoading: true);
+            } else if (state is PBISErrorState) {
+              return _noDataFoundWidget(state.error);
+            }
+            //Managing shimmer loading in case of initial loading
+            return Container();
+          },
+          listener: (context, state) {})
+    ]);
   }
 
-  Widget _listBuilder(List<PBISPlusStudentList> studentNotesList,
+//-----------------Build the Notes List-----------------------------------
+  Widget _listBuilder(List<PBISStudentNotes> studentNotesList,
       {required final bool isShimmerLoading}) {
     return studentNotesList.length > 0
         ? Container(
             height: MediaQuery.of(context).size.height * 0.8,
-            // color: Colors.red,
-            child: ValueListenableBuilder(
-                valueListenable: filterNotifier,
-                builder: (BuildContext context, String value, Widget? child) {
-                  return RefreshIndicator(
-                      color: AppTheme.kButtonColor,
-                      key: refreshKey,
-                      onRefresh: refreshPage,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: isShimmerLoading
-                            ? NeverScrollableScrollPhysics()
-                            : null,
-                        padding: EdgeInsets.only(
-                          bottom: 20,
-                        ),
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildCard(
-                              studentNotesList[index], index, isShimmerLoading);
-                        },
-                        itemCount: studentNotesList.length,
-                      ));
-                }),
-          )
+            child: RefreshIndicator(
+                color: AppTheme.kButtonColor,
+                key: refreshKey,
+                onRefresh: refreshPage,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: isShimmerLoading
+                        ? NeverScrollableScrollPhysics()
+                        : null,
+                    padding: EdgeInsets.only(bottom: Platform.isIOS ? 80 : 48),
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildCard(
+                          studentNotesList[index], index, isShimmerLoading);
+                    },
+                    itemCount: studentNotesList.length)))
         : RefreshIndicator(
             color: AppTheme.kButtonColor,
             key: refreshKey,
@@ -170,83 +154,88 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             child: NoDataFoundErrorWidget(
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
+//-----------------Build the Notes List Card-----------------------------------
 
-  Widget _noDataFoundWidget() {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.all(8),
-        alignment: Alignment.center,
-        child: Text(
-          "No Data Found",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard(
-      PBISPlusStudentList obj, index, final bool isShimmerLoading) {
+  Widget _buildCard(PBISStudentNotes obj, index, final bool isShimmerLoading) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 4),
-      color: Theme.of(context).backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-        child: Column(
-          children: [
-            SpacerWidget(24),
-            Text(
-              "${obj.notes!.notes ?? ""}  Sed euismod eros non ante lacinia condimentum. Pellentesque est lacus, rutrum ac arcu et, accumsan pharetra neque. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc vel lectus rutrum, mollis dui ac, molestie neque. Quisque sit amet lacus vulputate, varius leo eu, elementum dui. Curabitur condimentum facilisis nisi, a pretium risus malesuada et. Mauris non leo",
-              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at nisilorem. Donec augue eros, molestie a risus quis, consectetur eleifend leo. Cras sit amet nibh tincidunt, pellentesque massa vel, finibus",
-              textAlign: TextAlign.left,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color:
-                        Color(0xff000000) == Theme.of(context).backgroundColor
-                            ? Color(0xffFFFFFF)
-                            : Color(0xff162429),
-                    fontSize: 12,
-                  ),
-            ),
-            SpacerWidget(24),
-            _buildDateList(obj),
-            SpacerWidget(24),
-          ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
         ),
-      ),
-    );
+        margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 4),
+        color: Theme.of(context).backgroundColor,
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SpacerWidget(24),
+              isShimmerLoading
+                  ? localSimmerWidget(
+                      height: MediaQuery.of(context).size.width * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.9)
+                  : Text(
+                      "${obj.notes ?? ""}",
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Color(0xff000000) ==
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffFFFFFF)
+                                : Color(0xff162429),
+                            fontSize: 12,
+                          ),
+                    ),
+              SpacerWidget(24),
+              _buildDateList(obj, isShimmerLoading),
+              SpacerWidget(24),
+            ])));
   }
 
-  Widget _buildDateList(PBISPlusStudentList item) {
-    return Row(
-      children: [
-        _buildCardDateTime(item.notes!.date ?? "", true),
-        _buildCardDateTime("Monday", true),
-        _buildCardDateTime("10:30 PM", false)
-      ],
-    );
+//-----------------Build the Date List-----------------------------------
+  Widget _buildDateList(PBISStudentNotes item, bool isShimmerLoading) {
+    return Row(children: [
+      _buildCardDateTime(item.date ?? "", true, isShimmerLoading),
+      _buildCardDateTime(item.weekday ?? "", true, isShimmerLoading),
+      _buildCardDateTime(item.time ?? "", false, isShimmerLoading)
+    ]);
   }
 
-  Widget _buildCardDateTime(item, bool isShowDivider) {
+//-----------------Build the Date Card Item-----------------------------------
+  Widget _buildCardDateTime(item, bool isShowDivider, bool isShimmerLoading) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            "$item",
-            textAlign: TextAlign.left,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                color: Color(0xff000000) == Theme.of(context).backgroundColor
-                    ? Color(0xffA6A6A6)
-                    : Color(0xff162429),
-                fontSize: 10,
-                fontWeight: FontWeight.w500),
-          ),
+          isShimmerLoading
+              ? localSimmerWidget(height: 15, width: 48)
+              : Text("$item",
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color:
+                          Color(0xff000000) == Theme.of(context).backgroundColor
+                              ? Color(0xffA6A6A6)
+                              : Color(0xff162429),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500)),
           isShowDivider ? _buildVerticalDivider() : SizedBox.shrink()
         ]);
   }
 
+//-----------------NO Data Found-----------------------------------
+  Widget _noDataFoundWidget(String? errorMessage) {
+    return Center(
+        child: RefreshIndicator(
+            color: AppTheme.kButtonColor,
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: NoDataFoundErrorWidget(
+                marginTop: MediaQuery.of(context).size.height / 4,
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                errorMessage: errorMessage //'No Notes Found',
+                )));
+  }
+
+//---------------Build--Vertcial Divider-----------------------------------
   Widget _buildVerticalDivider() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4),
@@ -262,11 +251,13 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
       ),
     );
   }
+//---------------Build--Refresh-------Function-----------------------------------
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
-    PBISPlusBlocInstance.add(GetPBISPlusStudentNotes(studentNotesList: null));
+    PBISPlusBlocInstance.add(
+        GetPBISPlusNotes(studentId: widget.item.studentId!));
     // /*-------------------------User Activity Track START----------------------------*/
     // FirebaseAnalyticsService.addCustomAnalyticsEvent(
     //     'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
@@ -274,18 +265,16 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   }
 
 //------------------------------for filter call bottom sheet"-------------------//
-
   Widget localSimmerWidget({required double height, required double width}) {
     return ShimmerLoading(
-      isLoading: true,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: AppTheme.kShimmerBaseColor!,
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    );
+        isLoading: true,
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: AppTheme.kShimmerHighlightColor!,
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ));
   }
 }
