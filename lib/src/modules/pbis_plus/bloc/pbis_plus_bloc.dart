@@ -247,12 +247,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 //---------------pbis student list SEARCH-------------------------------
     if (event is PBISPlusNotesSearchStudent) {
       try {
+        print("-----------INSIDE THE SEARCH EVENT ------------------");
         yield PBISPlusLoading();
-        if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
+        if (event.searchKey.isNotEmpty) {
           final searchedList =
               await searchNotesList(event.studentNotes, event.searchKey);
-
-          if (searchedList.isNotEmpty && searchedList.length > 0) {
+          print("-----------INSIDE THE SEARCH EVENT ------------------");
+          if (searchedList != null && searchedList.isNotEmpty) {
             yield PBISPlusStudentSearchSucess(sortedList: searchedList);
           } else {
             yield PBISErrorState(error: "No Student Found");
@@ -824,6 +825,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         // If the notes exits in the local db then return to notes  to UI
         if (_pbisPlusNotesStudentsList.isEmpty ||
+            _pbisPlusNotesStudentsList[studentItemIndex].notes == null ||
             _pbisPlusNotesStudentsList[studentItemIndex].notes!.isEmpty) {
           yield PBISPlusLoading();
         } else {
@@ -1783,14 +1785,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*----------------------------------------------------------------------------------------------*/
 List<PBISPlusNotesUniqueStudentList> searchNotesList(
     List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
-  List<PBISPlusNotesUniqueStudentList> searchResults = [];
-
-  for (var note in notesList) {
-    if (note.names != null && note.names!.fullName != null) {
-      if (note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase())) {
-        searchResults.add(note);
-      }
-    }
-  }
-  return searchResults;
+  return notesList
+      .where((note) =>
+          note.names != null &&
+          note.names!.fullName != null &&
+          note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase()))
+      .toList();
 }
