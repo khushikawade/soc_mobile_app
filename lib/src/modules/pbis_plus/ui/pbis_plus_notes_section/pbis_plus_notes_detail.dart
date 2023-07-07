@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
@@ -16,8 +17,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
   final PBISPlusNotesUniqueStudentList item;
+  final IconData titleIconData;
 
-  PBISPlusNotesDetailPage({Key? key, required this.item}) : super(key: key);
+  PBISPlusNotesDetailPage(
+      {Key? key, required this.item, required this.titleIconData})
+      : super(key: key);
 
   @override
   State<PBISPlusNotesDetailPage> createState() => _PBISPlusHistoryState();
@@ -59,6 +63,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             extendBody: true,
+            appBar: PBISPlusUtility.pbisAppBar(
+              context: context,
+              titleIconData: widget.titleIconData,
+              title: 'Notes Deatils',
+              scaffoldKey: _scaffoldKey,
+            ),
             body: body(context)),
       )
     ]);

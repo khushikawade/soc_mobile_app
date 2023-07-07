@@ -250,8 +250,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
         textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
-        textWidget('Edit Behavior', AppTheme.kButtonColor),
-        textWidget('Edit Behavior', Color(0xff111C20)),
+        // textWidget('Edit Behavior', AppTheme.kButtonColor),
+        // textWidget('Edit Behavior', Color(0xff111C20)),
       ],
     );
   }

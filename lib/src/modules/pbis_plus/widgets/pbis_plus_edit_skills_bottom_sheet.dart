@@ -196,12 +196,18 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                       text: "${"Edit " + "${dataList!.behaviorTitleC}"}",
                       textTheme: Theme.of(context)
                           .textTheme
-                          .headline5!
+                          .headline6!
                           .copyWith(fontWeight: FontWeight.bold))),
               Form(
                   key: _formKey,
                   child: Container(
                     child: TextFieldWidget(
+                        context: context,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(
+                                fontWeight: FontWeight.w600, fontSize: 18),
                         msg: "Field is required",
                         controller: editNameController,
                         onSaved: (String value) {}),
