@@ -144,7 +144,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         PlusScreenTitleWidget(
           kLabelSpacing: 0,
-          text: 'Answer Key',
+          text: 'Select Answer Key',
           backButton: true,
         ),
         SpacerWidget(StudentPlusOverrides.kSymmetricPadding),

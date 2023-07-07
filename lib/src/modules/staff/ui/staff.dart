@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -17,6 +19,7 @@ import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -366,7 +369,7 @@ class _StaffPageState extends State<StaffPage> {
   }
 
 //--------------------------------------------------------------------------------------------------------
-  navigatorToScreen({required String actionName}) {
+  navigatorToScreen({required String actionName}) async {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => GradedLandingPage()));
@@ -380,12 +383,14 @@ class _StaffPageState extends State<StaffPage> {
             description: 'Graded+ Accessed(Login)/Login Id:',
             operationResult: 'Success');
 
+        // Check User is First Time or old user
+        HiveDbServices _hiveDbServices = HiveDbServices();
+        var isOldUser =
+            await _hiveDbServices.getSingleData('new_user', 'new_user');
         pushNewScreen(
           context,
-          screen: StartupPage(
-            isOcrSection: true, //since always opens OCR
-            isMultipleChoice: false,
-          ),
+          screen:
+              isOldUser == true ? GradedPlusNavBarHome() : CustomIntroWidget(),
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {

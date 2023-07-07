@@ -129,12 +129,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       title: PlusScreenTitleWidget(
         kLabelSpacing: 0,
-        text: 'All Courses',
-        backButton: true,
+        text: 'All Classes',
+        backButton: false,
         isTrailingIcon: true,
-        backButtonOnTap: () {
-          widget.backOnTap();
-        },
+        // backButtonOnTap: () {
+        //   widget.backOnTap();
+        // },
       ),
       trailing: widget.isGradedPlus == true
           ? Container(
@@ -864,7 +864,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,
-                    googleClassroomCourseworkList:    List<ClassroomCourse>.unmodifiable( allClassroomCourses),
+                    googleClassroomCourseworkList:
+                        List<ClassroomCourse>.unmodifiable(allClassroomCourses),
                     height: constraints.maxHeight < 750
                         ? MediaQuery.of(context).size.height * 0.6
                         : MediaQuery.of(context).size.height * 0.45);

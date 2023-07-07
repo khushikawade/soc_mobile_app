@@ -1418,8 +1418,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               isImageField: false,
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
-                  ? 'Student Email'
-                  : 'Student Id/Student Email',
+                  ? 'STUDENT EMAIL'
+                  : 'STUDENT ID/STUDENT EMAIL',
               textFileTitleThree:
                   //   widget.isMcqSheet == true
                   // ? "Student Selection"

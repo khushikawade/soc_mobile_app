@@ -84,6 +84,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                titleIconCode: null,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 isSuccessState: ValueNotifier<bool>(true),
