@@ -239,26 +239,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   widget.isFromStudentPlus == true
               ? MediaQuery.of(context).size.width * 0.2
               : MediaQuery.of(context).size.width * 0.2 / 1.1,
-          //    Platform.isAndroid?
-          // (widget.isFromDashboardPage == true?
-          //   (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.11:
-          //    MediaQuery.of(context).size.height*0.11:
-          //  widget.isFromStudentPlus == true
-          //   ? (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.13: MediaQuery.of(context).size.height*0.15:
-          //    MediaQuery.of(context).size.height*0.1):
-
-          //ios
-
-          //       widget.isFromStudentPlus == true
-          //   ? (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.11: MediaQuery.of(context).size.height*0.12:
-          //    widget.isFromDashboardPage == true?
-          //   (widget.constraint <= 115)? MediaQuery.of(context).size.height * 0.12:
-          //    MediaQuery.of(context).size.height*0.09:
-
-          //  (widget.constraint <= 115)?MediaQuery.of(context).size.height*0.11  :MediaQuery.of(context).size.height*0.1,
-
           width: MediaQuery.of(context).size.width,
-          // padding: widget.isFromDashboardPage==true||widget.isFromStudentPlus ==true? EdgeInsets.only(bottom: 8) :EdgeInsets.only(bottom: 4)  ,
           decoration: BoxDecoration(
             color: AppTheme.kButtonColor,
             borderRadius: BorderRadius.only(
@@ -286,12 +267,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             ],
           ),
         ),
-
         Expanded(
             child: ValueListenableBuilder(
           valueListenable: isNotesTextfieldEnable,
           builder: (context, value, _) => Container(
-              // color: Colors.red,
               alignment: widget.isFromDashboardPage == true ||
                       widget.isFromStudentPlus == true
                   ? Alignment.center
@@ -311,10 +290,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         )),
         widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
             ? SizedBox.shrink()
-            : isNotesTextfieldEnable.value
-                ? SpacerWidget(48)
-                : SpacerWidget(48)
-        // :isNotesTextfieldEnable.value? SpacerWidget(MediaQuery.of(context).size.height*0.16):SpacerWidget(MediaQuery.of(context).size.height*0.01)
+            : SpacerWidget(48)
       ],
     );
 
@@ -346,9 +322,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                         : MediaQuery.of(context).size.width *
                                             0.8,
                                     margin: widget.isFromStudentPlus == true
-                                        ?
-                                        //ios     EdgeInsets.only(top: MediaQuery.of(context).size.height *0.06+5):
-                                        EdgeInsets.only(
+                                        ? EdgeInsets.only(
                                             top: MediaQuery.of(context)
                                                     .size
                                                     .width *
@@ -402,11 +376,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                         ],
                                       ),
                                     ),
-                                    // child: FittedBox(child: pbisStudentProfileWidget)),
-    
                                     child: pbisStudentProfileWidget),
                               )),
-    
+
                       //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
                       Positioned(
                           bottom: 5,
@@ -424,34 +396,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.8,
                                   child: addNotes)),
-    
+
                       //----------------------------------------------------Profile Image-----------------------------------------------------
                       Positioned(
                           top: 00,
-                          // widget.isFromStudentPlus==true?
-                          // widget.constraint <=115?-MediaQuery.of(context).size.height * 0.01:-MediaQuery.of(context).size.height * 0.01 :0,
                           child: GestureDetector(
                               onTap: widget.isFromStudentPlus == true ||
                                       widget.isFromDashboardPage == true
                                   ? () {
                                       print(widget.constraint);
-                                      widget.isFromDashboardPage == true
-                                          ? (widget.constraint <= 115)
-                                              ? print(
-                                                  " MediaQuery.of(context).size.height * 0.12")
-                                              : print(
-                                                  " MediaQuery.of(context).size.height * 0.09")
-                                          : widget.isFromStudentPlus == true
-                                              ? (widget.constraint <= 115)
-                                                  ? print(
-                                                      " MediaQuery.of(context).size.height * 0.13")
-                                                  : print(
-                                                      " MediaQuery.of(context).size.height * 0.15")
-                                              : (widget.constraint <= 115)
-                                                  ? print(
-                                                      " MediaQuery.of(context).size.height * 0.1")
-                                                  : print(
-                                                      " MediaQuery.of(context).size.height * 0.09");
                                     }
                                   //  null
                                   : () async {
@@ -492,8 +445,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                         widget.studentValueNotifier,
                                     profilePictureSize:
                                         MediaQuery.of(context).size.width * 0.1,
-                                    //  widget.constraint<=115?
-                                    // PBISPlusOverrides.profilePictureSize-8  :PBISPlusOverrides.profilePictureSize,
                                     imageUrl: widget.studentValueNotifier.value
                                             .profile?.photoUrl ??
                                         ""),
@@ -528,10 +479,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               child: ShimmerLoading(
                 isLoading: loading,
                 child: PBISPlusActionInteractionButton(
-                  size: widget.isFromDashboardPage == true &&
+                  size: widget.isFromDashboardPage == true ||
                           widget.studentProfile == true
-                      ? MediaQuery.of(context).size.width * 0.02
-                      : MediaQuery.of(context).size.width * 0.08,
+                      ? 48
+                      : 64,
                   isShowCircle: true,
                   onValueUpdate: (updatedStudentValueNotifier) {
                     widget.classroomCourseId = widget.classroomCourseId;
