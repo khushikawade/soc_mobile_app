@@ -151,7 +151,7 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
-      case 'Go to Presentation':
+      case 'Open Presentation':
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }

@@ -186,7 +186,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 noteController.clear();
                 if (state is PBISPlusAddNotesSucess) {
                   Utility.currentScreenSnackBar(
-                      "Note added Successfully", null);
+                      "Note added successfully", null);
                   Navigator.pop(context, true);
                 } else if (state is PBISErrorState) {
                   Utility.currentScreenSnackBar(state.error.toString(), null);
