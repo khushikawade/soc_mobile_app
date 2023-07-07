@@ -96,35 +96,39 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackgroundImgWidget(),
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
-        extendBody: true,
-        backgroundColor: Colors.transparent,
-        appBar: PBISPlusUtility.pbisAppBar(
-            context: context,
-            titleIconData: widget.titleIconData,
-            title: 'Class',
-            scaffoldKey: _scaffoldKey,
-            isGradedPlus: widget.isGradedPlus),
-        floatingActionButton: widget.isGradedPlus == true
-            ? null
-            : ValueListenableBuilder(
-                valueListenable: courseLength,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return courseLength.value > 0
-                      ? saveAndShareFAB(
-                          context,
-                        )
-                      : Container();
-                }),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        body: body(),
-      )
-    ]);
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: Stack(children: [
+          CommonBackgroundImgWidget(),
+          Scaffold(
+            resizeToAvoidBottomInset: false,
+            key: _scaffoldKey,
+            extendBody: true,
+            backgroundColor: Colors.transparent,
+            appBar: PBISPlusUtility.pbisAppBar(
+                context: context,
+                titleIconData: widget.titleIconData,
+                title: 'Class',
+                scaffoldKey: _scaffoldKey,
+                isGradedPlus: widget.isGradedPlus),
+            floatingActionButton: widget.isGradedPlus == true
+                ? null
+                : ValueListenableBuilder(
+                    valueListenable: courseLength,
+                    child: Container(),
+                    builder:
+                        (BuildContext context, dynamic value, Widget? child) {
+                      return courseLength.value > 0
+                          ? saveAndShareFAB(
+                              context,
+                            )
+                          : Container();
+                    }),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniEndFloat,
+            body: body(),
+          )
+        ]));
   }
 
   Widget headerListTile() {
@@ -330,7 +334,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             height: 30,
             child: Container(
               child: ListView.builder(
-           
                 controller: null,
                 itemBuilder: (BuildContext context, int index) {
                   return chipBuilder(googleClassroomCourseList, context, index,
@@ -458,7 +461,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       final bool isScreenShimmerLoading) {
     return ScrollablePositionedList.builder(
         physics: isScreenShimmerLoading ? NeverScrollableScrollPhysics() : null,
-        padding: EdgeInsets.only(bottom: Platform.isIOS?60: 30),
+        padding: EdgeInsets.only(bottom: Platform.isIOS ? 60 : 30),
         shrinkWrap: true,
         itemScrollController: _itemScrollController,
         itemCount: googleClassroomCourseList.length,

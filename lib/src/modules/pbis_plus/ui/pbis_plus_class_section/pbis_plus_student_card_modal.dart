@@ -403,10 +403,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                       ),
                                     ),
                                     // child: FittedBox(child: pbisStudentProfileWidget)),
-
+    
                                     child: pbisStudentProfileWidget),
                               )),
-
+    
                       //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
                       Positioned(
                           bottom: 5,
@@ -424,7 +424,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.8,
                                   child: addNotes)),
-
+    
                       //----------------------------------------------------Profile Image-----------------------------------------------------
                       Positioned(
                           top: 00,
