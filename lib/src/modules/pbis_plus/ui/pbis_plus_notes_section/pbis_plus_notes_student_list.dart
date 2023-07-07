@@ -239,34 +239,27 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                       top: 12.0, bottom: 12.0, left: 12, right: 16),
                   leading: isShimmerLoading
                       ? Container(
-                          margin: EdgeInsets.only(
-                            left: 12,
-                          ),
+                          margin: EdgeInsets.only(left: 12),
                           width: 40,
                           height: 40,
                           child: localSimmerWidget(height: 40, width: 40))
                       : Container(
-                          width: 72,
+                          width: 50,
                           height: 50,
                           child: CachedNetworkImage(
-                            placeholder: (context, url) => SizedBox(
-                              height: 8,
-                              width: 8,
-                              child: Center(
-                                  child: CircularProgressIndicator.adaptive(
-                                backgroundColor: AppTheme.kButtonColor,
-                              )),
-                            ),
-                            imageUrl: studentNotesList[index].iconUrlC ?? '',
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                              radius: 56,
-                              backgroundImage: imageProvider,
-                            ),
-                          ),
-                        ),
+                              fit: BoxFit.contain,
+                              placeholder: (context, url) => SizedBox(
+                                  height: 8,
+                                  width: 8,
+                                  child: Center(
+                                      child: CircularProgressIndicator.adaptive(
+                                          backgroundColor:
+                                              AppTheme.kButtonColor))),
+                              imageUrl: studentNotesList[index].iconUrlC ?? '',
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              imageBuilder: (context, imageProvider) => CircleAvatar(
+                                  radius: 56, backgroundImage: imageProvider))),
                   title: isShimmerLoading == true
                       ? localSimmerWidget(height: 20, width: 30)
                       : Utility.textWidget(
@@ -276,17 +269,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                               .textTheme
                               .headline2!
                               .copyWith(fontWeight: FontWeight.w500)),
-                  trailing: ShimmerLoading(
-                    isLoading: isShimmerLoading,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: Globals.deviceType == "phone" ? 12 : 20,
-                        color: AppTheme.kPrimaryColor,
-                      ),
-                    ),
-                  ),
+                  trailing:
+                      ShimmerLoading(isLoading: isShimmerLoading, child: Padding(padding: const EdgeInsets.only(right: 12), child: Icon(Icons.arrow_forward_ios_rounded, size: Globals.deviceType == "phone" ? 12 : 20, color: AppTheme.kPrimaryColor))),
                   onTap: (() {
                     if (isShimmerLoading == false) {
                       Navigator.of(context).push(MaterialPageRoute(
