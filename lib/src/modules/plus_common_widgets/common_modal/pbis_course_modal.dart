@@ -129,6 +129,8 @@ class ClassroomProfile {
   String? courseName;
   @HiveField(9)
   String? courseId;
+  @HiveField(10)
+  List<BehaviorList>? behaviorList;
   ClassroomProfile(
       {this.id,
       this.name,
@@ -145,7 +147,8 @@ class ClassroomProfile {
       // this.behavior5,
       // this.behavior6,
       this.courseName,
-      this.courseId});
+      this.courseId,
+      this.behaviorList});
 
   ClassroomProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -187,6 +190,7 @@ class ClassroomProfile {
     helpful = 0;
     courseName = '';
     courseId = '';
+    behaviorList = [];
   }
 
   Map<String, dynamic> toJson() {
@@ -258,6 +262,29 @@ class ClassroomPermissions {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['permission'] = this.permission;
+    return data;
+  }
+}
+
+@HiveType(typeId: 44)
+class BehaviorList {
+  String? id;
+  String? name;
+  int? score;
+
+  BehaviorList({this.id, this.name, this.score});
+
+  BehaviorList.fromJson(Map<String, dynamic> json) {
+    id = json['Id'];
+    name = json['Name'];
+    score = json['Score'] ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    data['Score'] = this.score;
     return data;
   }
 }

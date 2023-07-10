@@ -174,7 +174,7 @@ class PBISPlusActionInteractionButtonState
                                             .copyWith(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 18))
-                                    : _getCounts());
+                                    : buildCounts());
                           }),
                     )
                   ],
@@ -225,13 +225,7 @@ class PBISPlusActionInteractionButtonState
       _showMessage.value = false;
     });
 
-    interactionBloc.add(PbisPlusAddPBISInteraction(
-        context: context,
-        scaffoldKey: widget.scaffoldKey,
-        studentId: widget.studentValueNotifier.value.profile!.id,
-        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
-        classroomCourseId: widget.classroomCourseId,
-        behaviour: widget.iconData));
+    updateCountsId(widget.iconData);
 
     return true;
   }
@@ -295,22 +289,41 @@ class PBISPlusActionInteractionButtonState
   //   return !isLiked;
   // }
 
-  _getCounts() {
-    String title = widget.iconData.behaviorTitleC!;
-    var map = {
-      //TODOPBIS:
-      'Engaged': widget.studentValueNotifier.value.profile!.engaged,
-      'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
-      'Helpful': widget.studentValueNotifier.value.profile!.helpful,
-      'Participation': ++participation.value,
-      'Collaboration': ++collaboration.value,
-      'Listening': ++listening.value,
+  // _getCounts() {
+  //   String title = widget.iconData.behaviorTitleC!;
+  //   var map = {
+  //     //TODOPBIS:
+  //     'Engaged': widget.studentValueNotifier.value.profile!.engaged,
+  //     'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
+  //     'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+  //     'Participation': ++participation.value,
+  //     'Collaboration': ++collaboration.value,
+  //     'Listening': ++listening.value,
 
-      // widget.studentValueNotifier.value.profile!.niceWork,
-      // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
-    };
+  //     // widget.studentValueNotifier.value.profile!.niceWork,
+  //     // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+  //   };
 
-    int viewCount = map[title] ?? 0;
+  //   int viewCount = map[title] ?? 0;
+  //   // return viewCount;
+  //   return Padding(
+  //     padding: Globals.deviceType != 'phone'
+  //         ? EdgeInsets.zero
+  //         // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
+  //         : EdgeInsets.zero,
+  //     child: Utility.textWidget(
+  //         text: viewCount.toString(),
+  //         context: context,
+  //         textAlign: TextAlign.center,
+  //         textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+  //             color: Color(0xff000000) == Theme.of(context).backgroundColor
+  //                 ? Color(0xff111C20)
+  //                 : Color(0xff111C20),
+  //             fontSize: 12)),
+  //   );
+  // }
+
+  buildCounts() {
     // return viewCount;
     return Padding(
       padding: Globals.deviceType != 'phone'
@@ -318,7 +331,7 @@ class PBISPlusActionInteractionButtonState
           // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
           : EdgeInsets.zero,
       child: Utility.textWidget(
-          text: viewCount.toString(),
+          text: getCountsById(widget.iconData.id ?? '').toString(),
           context: context,
           textAlign: TextAlign.center,
           textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -327,5 +340,34 @@ class PBISPlusActionInteractionButtonState
                   : Color(0xff111C20),
               fontSize: 12)),
     );
+  }
+
+  int? getCountsById(String id) {
+    for (BehaviorList item
+        in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
+      if (item.id == id) {
+        return item.score ?? 0;
+      }
+    }
+    return 0; // Return null if the ID is not found
+  }
+
+  void updateCountsId(PBISPlusCommonBehaviorModal iconData) {
+    bool isAlready = false;
+
+    for (BehaviorList item
+        in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
+      if (item.id == iconData.id) {
+        isAlready = true;
+        item.score = item.score! + 1;
+      }
+    }
+    if (isAlready == false) {
+      widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
+          id: iconData.id, name: iconData.behaviorTitleC, score: 1));
+    }
+    print("isAlready $isAlready");
+    onTapDetect.value =
+        !onTapDetect.value; //Update interaction text count in card
   }
 }

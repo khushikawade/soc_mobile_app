@@ -122,13 +122,14 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       helpful: fields[7] as int?,
       courseName: fields[8] as String?,
       courseId: fields[9] as String?,
+      behaviorList: (fields[10] as List?)?.cast<BehaviorList>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassroomProfile obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -148,7 +149,9 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       ..writeByte(8)
       ..write(obj.courseName)
       ..writeByte(9)
-      ..write(obj.courseId);
+      ..write(obj.courseId)
+      ..writeByte(10)
+      ..write(obj.behaviorList);
   }
 
   @override
@@ -232,6 +235,35 @@ class ClassroomPermissionsAdapter extends TypeAdapter<ClassroomPermissions> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ClassroomPermissionsAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class BehaviorListAdapter extends TypeAdapter<BehaviorList> {
+  @override
+  final int typeId = 44;
+
+  @override
+  BehaviorList read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return BehaviorList();
+  }
+
+  @override
+  void write(BinaryWriter writer, BehaviorList obj) {
+    writer.writeByte(0);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BehaviorListAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
