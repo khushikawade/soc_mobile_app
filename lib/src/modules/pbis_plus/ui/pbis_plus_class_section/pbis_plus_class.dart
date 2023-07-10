@@ -130,12 +130,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       title: PlusScreenTitleWidget(
         kLabelSpacing: 0,
-        text: 'All Courses',
-        backButton: true,
+        text: 'All Classes',
+        backButton: false,
         isTrailingIcon: true,
-        backButtonOnTap: () {
-          widget.backOnTap();
-        },
+        // backButtonOnTap: () {
+        //   widget.backOnTap();
+        // },
       ),
       trailing: widget.isGradedPlus == true
           ? Container(

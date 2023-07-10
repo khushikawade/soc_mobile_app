@@ -88,6 +88,9 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
               titleIconCode: 0xe891,
+              refresh: (v) {
+                setState(() {});
+              },
             ),
             body: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {

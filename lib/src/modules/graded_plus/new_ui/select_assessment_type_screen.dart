@@ -62,6 +62,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      iconData: Icons.add,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone

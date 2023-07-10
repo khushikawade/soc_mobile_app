@@ -53,7 +53,9 @@ class _StudentPlusGradesDetailPageState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: StudentPlusAppBar(titleIconCode: 0xe883),
+          appBar: StudentPlusAppBar(titleIconCode: 0xe883,refresh: (v) {
+                setState(() {});
+              },),
           body: Container(
             padding: EdgeInsets.symmetric(
                 horizontal: StudentPlusOverrides.kSymmetricPadding),

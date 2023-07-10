@@ -130,7 +130,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       //     &&
       // Overrides.STANDALONE_GRADED_APP != true)
       ? [
-          'Google Sheet',
+          'Google Sheets',
           'Google Slides',
           'Google Classroom',
           '${Globals.schoolDbnC} Dashboard'
@@ -264,6 +264,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  iconData: Icons.add,
                   plusAppName: 'GRADED+',
                   fromGradedPlus: true,
                   hideStateSelection: true,

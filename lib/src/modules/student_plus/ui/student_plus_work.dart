@@ -90,9 +90,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           appBar: StudentPlusAppBar(
             titleIconCode: 0xe885,
             isWorkPage: true,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+            refresh: (v) {
+              setState(() {});
+            },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(

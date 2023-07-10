@@ -69,10 +69,10 @@ class individual extends State<StudentPlusGradesPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
-            titleIconCode: 0xe883,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+            titleIconCode: 0xe823,
+            refresh: (v) {
+              setState(() {});
+            },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(
