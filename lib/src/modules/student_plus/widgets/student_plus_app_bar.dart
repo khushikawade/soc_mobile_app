@@ -23,11 +23,11 @@ import 'package:open_apps_settings/settings_enum.dart';
 class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
-  //final ValueChanged? refresh;
+  final ValueChanged? refresh;
   StudentPlusAppBar({
     Key? key,
     this.titleIconCode,
-    // required this.refresh,
+    required this.refresh,
     this.isWorkPage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -171,7 +171,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // widget.refresh!(true);
+              widget.refresh!(true);
             }
           });
         },
@@ -245,7 +245,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
   Widget allScreenIconWidget() {
     return Container(
-      padding: EdgeInsets.only(right: 7),
+      padding: EdgeInsets.only(right: widget.titleIconCode == 0xe881 ? 0 : 7),
       child: Icon(
         IconData(
           widget.titleIconCode!,

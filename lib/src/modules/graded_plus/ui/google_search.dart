@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/graded_plus/ui/google_file_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,11 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              iconData: IconData(
+          0xe824,
+          fontFamily: Overrides.kFontFam,
+          fontPackage: Overrides.kFontPkg,
+        ),
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {

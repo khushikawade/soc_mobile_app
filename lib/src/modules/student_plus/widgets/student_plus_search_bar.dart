@@ -21,19 +21,20 @@ class StudentPlusInfoSearchBar extends StatefulWidget {
   // final bool? isCommonCore;
   // final bool? isSearchPage;
   // final bool? isSubLearningPage;
-  // final bool? readOnly;
-  const StudentPlusInfoSearchBar({
-    Key? key,
-    required this.hintText,
-    this.onTap,
-    this.onItemChanged,
-    this.iconOnTap,
-    required this.isMainPage,
-    required this.autoFocus,
-    required this.kLabelSpacing,
-    required this.controller,
-    required this.focusNode,
-  }) : super(key: key);
+  final bool? readOnly;
+  const StudentPlusInfoSearchBar(
+      {Key? key,
+      required this.hintText,
+      this.onTap,
+      this.onItemChanged,
+      this.iconOnTap,
+      required this.isMainPage,
+      required this.autoFocus,
+      required this.kLabelSpacing,
+      required this.controller,
+      required this.focusNode,
+      this.readOnly})
+      : super(key: key);
 
   @override
   State<StudentPlusInfoSearchBar> createState() =>
@@ -132,6 +133,7 @@ class _StudentPlusInfoSearchBarState extends State<StudentPlusInfoSearchBar> {
       // TextStyle(
       //     color: Theme.of(context).colorScheme.primaryVariant),
       focusNode: widget.focusNode,
+      readOnly: true,
       controller: widget.controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(

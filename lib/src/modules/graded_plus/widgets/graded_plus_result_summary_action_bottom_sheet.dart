@@ -120,8 +120,10 @@ class _GradedPlusResultOptionBottomSheetState
                   : null,
             ),
           ),
-          title: Utility.textWidget(  
-              text: "${Globals.schoolDbnC} ${element.title!}",
+          title: Utility.textWidget(
+              text: element.title == "Dashboard"
+                  ? "${Globals.schoolDbnC} ${element.title}"
+                  : "${element.title}",
               context: context,
               textTheme: Theme.of(context).textTheme.headline3!),
           onTap: () {

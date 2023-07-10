@@ -94,6 +94,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 backgroundColor: Colors.transparent,
                 appBar: widget.isFromStudentPlus == true
                     ? StudentPlusAppBar(
+                        refresh: (v) {
+                          setState(() {});
+                        },
                         isWorkPage: false,
                         titleIconCode: 0xe825,
                       ) as PreferredSizeWidget

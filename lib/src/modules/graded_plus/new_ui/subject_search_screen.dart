@@ -183,7 +183,7 @@ class _GradedPlusSearchScreenPageState
                           Container(
                               padding: EdgeInsets.only(bottom: 10),
                               child: Utility.textWidget(
-                                  text: 'Recent Search',
+                                  text: 'Recent Searches',
                                   context: context,
                                   textTheme: Theme.of(context)
                                       .textTheme
@@ -218,7 +218,7 @@ class _GradedPlusSearchScreenPageState
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Utility.textWidget(
-                                            text: 'Recent Search',
+                                            text: 'Recent Searches',
                                             context: context,
                                             textTheme: Theme.of(context)
                                                 .textTheme
@@ -1061,6 +1061,7 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            iconData: Icons.add,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {

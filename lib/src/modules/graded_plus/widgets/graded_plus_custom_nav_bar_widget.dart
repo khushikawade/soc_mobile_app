@@ -22,6 +22,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      height: Globals.deviceType == "phone" ? 60 : 70,
       decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.only(

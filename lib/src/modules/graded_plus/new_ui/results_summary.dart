@@ -209,6 +209,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+
+              iconData: Icons.add,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {

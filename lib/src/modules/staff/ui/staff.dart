@@ -354,9 +354,24 @@ class _StaffPageState extends State<StaffPage> {
       }
     } else {
       if (_profileData[0].userType != "Teacher") {
-        popupModal(
-            message:
-                "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
+     
+        staffActionIconsOnTap(actionName: actionName);
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
