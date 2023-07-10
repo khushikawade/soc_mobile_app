@@ -626,7 +626,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           Color(0xff000000) != Theme.of(context).backgroundColor
                               ? Color(0xffF7F8F9)
                               : Color(0xff111C20),
-                      elevation: 10, 
+                      elevation: 10,
                       child: Container(
                         padding: EdgeInsets.only(bottom: 80),
                         child: _buildDataTable(
