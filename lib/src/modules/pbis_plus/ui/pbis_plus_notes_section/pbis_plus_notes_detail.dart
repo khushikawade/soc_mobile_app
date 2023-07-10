@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dar
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -96,7 +97,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 
   Widget body(BuildContext context) {
     return ListView(physics: NeverScrollableScrollPhysics(), children: [
-      SpacerWidget(24),
+      SpacerWidget(StudentPlusOverrides.KVerticalSpace / 8),
       Row(children: [
         _buildBackIcon(),
         FittedBox(
@@ -164,8 +165,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         margin: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 4),
         color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.secondary
-            : Theme.of(context).colorScheme.background,
+            ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                ? Color(0xff162429)
+                : Color(0xffF7F8F9) //Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.background == Color(0xff000000)
+                ? Color(0xff111C20)
+                : Color(0xffE9ECEE),
         // color: Theme.of(context).backgroundColor,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -179,11 +184,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   : Text("${obj.notes ?? ""}",
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Color(0xff000000) ==
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffFFFFFF)
-                              : Color(0xff162429),
-                          fontSize: 12)),
+                            color: Color(0xff000000) ==
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffFFFFFF)
+                                : Color(0xff162429),
+                          )),
               SpacerWidget(24),
               _buildDateList(obj, isShimmerLoading),
               SpacerWidget(24)
