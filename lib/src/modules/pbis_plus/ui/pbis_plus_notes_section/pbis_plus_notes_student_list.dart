@@ -229,8 +229,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                   ),
                   borderRadius: BorderRadius.circular(0.0),
                   color: (index % 2 == 0)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Theme.of(context).colorScheme.background),
+                      ? Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff162429)
+                          : Color(
+                              0xffF7F8F9) //Theme.of(context).colorScheme.background
+                      : Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff111C20)
+                          : Color(0xffE9ECEE)
+                          
+                          ),
               child: ListTile(
                   visualDensity: VisualDensity(horizontal: 0, vertical: 0),
                   horizontalTitleGap: 24,
@@ -265,10 +274,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                       : Utility.textWidget(
                           text: studentNotesList[index].names!.fullName ?? '',
                           context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(fontWeight: FontWeight.w500)),
+                          textTheme: Theme.of(context).textTheme.headline2!),
                   trailing:
                       ShimmerLoading(isLoading: isShimmerLoading, child: Padding(padding: const EdgeInsets.only(right: 12), child: Icon(Icons.arrow_forward_ios_rounded, size: Globals.deviceType == "phone" ? 12 : 20, color: AppTheme.kPrimaryColor))),
                   onTap: (() {
