@@ -1395,9 +1395,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       final uniqueStudents = <ClassroomStudents>[];
       //Creating the unique student list
       for (final ClassroomCourse course in allClassroomCourses) {
-        for (final ClassroomStudents student in course?.students ?? []) {
-          if (!uniqueStudents
-              .any((s) => s.profile?.id == student.profile?.id)) {
+        for (final ClassroomStudents student in course.students ?? []) {
+          if (uniqueStudents.any((s) => s.profile?.id == student.profile?.id)) {
             student.profile!.courseName = course.name;
             uniqueStudents.add(student);
           }
@@ -1418,7 +1417,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               _pbisPlusStudentNotesDataList
                   .firstWhere((e) => e.studentId == item.profile?.id);
 
-          List<PBISStudentNotes>? notes = existingStudent?.notes;
+          List<PBISStudentNotes>? notes = existingStudent.notes;
 
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,

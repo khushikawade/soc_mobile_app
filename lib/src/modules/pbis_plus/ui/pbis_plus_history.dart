@@ -82,10 +82,10 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       physics: NeverScrollableScrollPhysics(),
       children: [
-        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           PlusScreenTitleWidget(
-              kLabelSpacing: StudentPlusOverrides.kLabelSpacing / 10,
+              kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'History'),
           Stack(
             alignment: Alignment.topRight,

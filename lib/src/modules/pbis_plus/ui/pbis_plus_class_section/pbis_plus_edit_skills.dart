@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -99,12 +100,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(18),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           _buildIconBar(),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           buildTargetBehaviorWidget(),
-          SpacerWidget(18),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           _buildAdditionalBehaviorWidget(),
-          SpacerWidget(48)
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2),
         ]);
   }
 
@@ -113,7 +115,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildToggleButton() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ValueListenableBuilder(
           valueListenable: isCustomBehavior,
           builder: (context, value, _) => Transform.scale(
@@ -376,7 +379,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: imageProvider,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -467,10 +470,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                         children: [
                           Padding(
                               padding: const EdgeInsets.only(top: 16, left: 16),
-                              child:
-                              
-                              
-                               Text("Additional Behaviors",
+                              child: Text("Additional Behaviors",
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme

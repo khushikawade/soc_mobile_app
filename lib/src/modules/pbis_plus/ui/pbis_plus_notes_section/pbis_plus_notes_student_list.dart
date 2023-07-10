@@ -98,9 +98,10 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 8),
           Padding(
             padding: EdgeInsets.symmetric(
+                // horizontal: StudentPlusOverrides.KVerticalSpace / 10,
                 vertical: StudentPlusOverrides.KVerticalSpace / 5),
             child: PlusScreenTitleWidget(
-                kLabelSpacing: StudentPlusOverrides.kLabelSpacing / 10,
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
                 text: 'Student Notes'),
           ),
           // SpacerWidget(_KVertcalSpace / 5),
@@ -148,24 +149,21 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
 
   /* ----------- Search Widget ---------- */
   Widget searchBarWidget() {
-    return Container(
-      color: Colors.amberAccent,
-      child: PlusAppSearchBar(
-          iconOnTap: () {
-            _searchController.clear();
-            onItemChanged("");
-          },
-          sectionName: 'PBIS+',
-          hintText: StudentPlusOverrides.searchHintText,
-          isMainPage: false,
-          autoFocus: !_searchController.text.isEmpty,
-          controller: _searchController,
-          kLabelSpacing: 1,
-          // _kLabelSpacing,
-          focusNode: searchFocusNode,
-          onTap: () {},
-          onItemChanged: onItemChanged),
-    );
+    return PlusAppSearchBar(
+        iconOnTap: () {
+          _searchController.clear();
+          onItemChanged("");
+        },
+        sectionName: 'PBIS+',
+        hintText: StudentPlusOverrides.searchHintText,
+        isMainPage: false,
+        autoFocus: !_searchController.text.isEmpty,
+        controller: _searchController,
+        kLabelSpacing: 1,
+        // _kLabelSpacing,
+        focusNode: searchFocusNode,
+        onTap: () {},
+        onItemChanged: onItemChanged);
   }
 
   /* ----------- Widget to show error related to maximum three digit ---------- */
