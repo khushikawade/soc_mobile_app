@@ -289,9 +289,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         height: MediaQuery.of(context).size.height / 5,
         margin: EdgeInsets.all(8),
         alignment: Alignment.center,
-        child: Text("Behavior Not Found",
+        child: Utility.textWidget(
+            text: 'Behavior Not Found',
+            context: context,
             textAlign: TextAlign.center,
-            style:
+            textTheme:
                 Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16)));
   }
 
@@ -474,9 +476,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Additional Behaviors",
+                                    Utility.textWidget(
+                                        text: 'Additional Behaviors',
+                                        context: context,
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context)
+                                        textTheme: Theme.of(context)
                                             .textTheme
                                             .headline1!
                                             .copyWith(
@@ -630,7 +634,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         ),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             child: isIconDisabled
                 ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
                 : _buildIcons(item: item),
@@ -663,6 +667,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           required final VoidCallback onDelete,
           required void Function(String) onEditCallBack}) =>
       showModalBottomSheet(
+          useRootNavigator: true,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           isScrollControlled: true,
           isDismissible: true,

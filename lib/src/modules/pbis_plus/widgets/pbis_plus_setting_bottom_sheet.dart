@@ -63,7 +63,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   int pageValue = 0;
   String sectionName = '';
   get heightMap => {
-        0: widget.height! * 1.1,
+        // 0: widget.height! * 1.1,
+        0: widget.height! * 0.9,
         1: widget.height! * 1.2,
         2: widget.height! * 1.2,
         // 3: widget.height! / 1.5,

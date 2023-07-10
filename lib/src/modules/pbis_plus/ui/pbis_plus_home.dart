@@ -51,6 +51,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: body(),
       // floatingActionButton:
       //     floatingActionButton(context, PBISPlusPersistentTabController),

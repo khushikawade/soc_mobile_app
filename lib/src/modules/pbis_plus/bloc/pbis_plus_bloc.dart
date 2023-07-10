@@ -1798,7 +1798,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
           headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
-
+      print(
+        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
+      );
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PBISStudentNotes> listData = response.data['body']
             .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))

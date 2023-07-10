@@ -173,15 +173,17 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
 
   Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+        padding: EdgeInsets.only(left: 16),
+        // color: Colors.amberAccent,
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               Container(
                   alignment: Alignment.topRight,
                   child: IconButton(
+                      padding: EdgeInsets.all(0),
                       onPressed: () {
                         Navigator.pop(context);
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -196,22 +198,24 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                       text: "${"Edit " + "${dataList!.behaviorTitleC}"}",
                       textTheme: Theme.of(context)
                           .textTheme
-                          .headline6!
+                          .headline5!
                           .copyWith(fontWeight: FontWeight.bold))),
-              Form(
-                  key: _formKey,
-                  child: Container(
-                    child: TextFieldWidget(
-                        context: context,
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(
-                                fontWeight: FontWeight.w600, fontSize: 18),
-                        msg: "Field is required",
-                        controller: editNameController,
-                        onSaved: (String value) {}),
-                  )),
+              Expanded(
+                child: Form(
+                    key: _formKey,
+                    child: Container(
+                      child: TextFieldWidget(
+                          context: context,
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(
+                                  fontWeight: FontWeight.w600, fontSize: 18),
+                          msg: "Field is required",
+                          controller: editNameController,
+                          onSaved: (String value) {}),
+                    )),
+              ),
               ValueListenableBuilder(
                   valueListenable: _errorMessage,
                   builder: (context, value, _) {
@@ -231,9 +235,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                                 })
                             : null);
                   }),
-              SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+              SpacerWidget(18),
               _buildSaveButton(dataList)
-            ])));
+            ]));
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
