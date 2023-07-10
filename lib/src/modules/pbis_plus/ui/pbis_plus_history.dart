@@ -1,5 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ffi';
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -131,6 +134,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           ]),
           // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVertcalSpace / 5),
+
           ValueListenableBuilder(
               valueListenable: filterNotifier,
               builder: (BuildContext context, String value, Widget? child) {
@@ -168,7 +172,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     return historyList.length > 0
         ? Container(
             color: Colors.transparent,
-            height: MediaQuery.of(context).size.height * 0.7,
+            height: MediaQuery.of(context).size.height * 0.8,
             child: ValueListenableBuilder(
                 valueListenable: filterNotifier,
                 builder: (BuildContext context, String value, Widget? child) {
@@ -181,7 +185,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                           physics: isShimmerLoading
                               ? NeverScrollableScrollPhysics()
                               : null,
-                          padding: EdgeInsets.only(bottom: 40),
+                          padding: EdgeInsets.only(bottom: 70),
                           scrollDirection: Axis.vertical,
                           itemBuilder: (BuildContext context, int index) {
                             return listTile(
@@ -302,6 +306,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 //------------------------------for filter call bottom sheet"-------------------//
   filterBottomSheet(context) {
     showModalBottomSheet(
+        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: false,

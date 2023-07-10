@@ -425,7 +425,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                               height: 24,
                               width: 24)
                           : PBISPlusActionInteractionButton(
-                              size: widget.isFromDashboardPage! ? 36 : 64,
+                              size: widget.isFromDashboardPage! ? 36 : 60,
                               isShowCircle: true,
                               onValueUpdate: (updatedStudentValueNotifier) {
                                 widget.classroomCourseId =
