@@ -404,7 +404,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               index: index,
               //  pbisPlusBloc: pbisPlusClassroomBloc,
               onDelete: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
+
                 showDeletePopup(
                     message:
                         "You are about to delete the ${item.behaviorTitleC} behavior. Continue?",
@@ -412,7 +413,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     item: item);
               },
               onEditCallBack: (String? editedName) {
-                Navigator.pop(context);
+                // Navigator.pop(context);
                 if (editedName != null && editedName.isNotEmpty) {
                   //update the current obj with new name
                   item.behaviorTitleC = editedName;

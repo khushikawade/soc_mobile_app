@@ -128,7 +128,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     iconPath: "assets/Pbis_plus/Edit.svg",
                     tittle: "Edit Name"),
                 _buildCard(
-                    onTap: widget.onDelete,
+                    onTap: () {
+                      widget.onDelete(); // Call the onDelete callback
+                      Navigator.pop(context); // Close the bottom sheet
+                    },
                     iconPath: "assets/Pbis_plus/delete.svg",
                     tittle: "Delete")
               ])
@@ -250,6 +253,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
               if (editNameController.text.isNotEmpty) {
                 _errorMessage.value = false;
                 widget.onEditCallBack(editNameController.text);
+                Navigator.pop(context);
               } else {
                 _errorMessage.value = true;
               }
