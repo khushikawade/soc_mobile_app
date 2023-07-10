@@ -207,7 +207,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
       DataTable(
-          headingRowHeight: Globals.deviceType == 'phone' ? 100 : 60,
+          headingRowHeight: Globals.deviceType == 'phone' ? 70 : 40,
           dataRowHeight: Globals.deviceType == 'phone' ? 80 : 40,
           dataTextStyle: Theme.of(context).textTheme.headline2,
           showBottomBorder: false,
@@ -233,7 +233,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             );
           }).toList(),
           rows: List<DataRow>.generate(
-            50,
+            list.length,
             (index) => buildDataRow(
                 index: index,
                 list: list,
@@ -290,6 +290,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   DataColumn buildDataColumn({required PBISPlusCommonBehaviorModal item}) =>
       DataColumn(
           label: Container(
+        padding: EdgeInsets.all(5),
         child: FittedBox(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -321,8 +322,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         )
                       : item.pBISBehaviorIconURLC!.isNotEmpty
                           ? CachedNetworkImage(
-                              height: Globals.deviceType == 'phone' ? 35 : 25,
-                              width: Globals.deviceType == 'phone' ? 35 : 25,
+                              // height: Globals.deviceType == 'phone' ? 35 : 25,
+                              // width: Globals.deviceType == 'phone' ? 35 : 25,
                               imageUrl: item.pBISBehaviorIconURLC!,
                               placeholder: (context, url) => ShimmerLoading(
                                 isLoading: true,
