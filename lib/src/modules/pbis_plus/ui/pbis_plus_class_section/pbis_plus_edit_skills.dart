@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -99,12 +100,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(18),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           _buildIconBar(),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           buildTargetBehaviorWidget(),
-          SpacerWidget(18),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           _buildAdditionalBehaviorWidget(),
-          SpacerWidget(48)
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2),
         ]);
   }
 
@@ -113,7 +115,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildToggleButton() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ValueListenableBuilder(
           valueListenable: isCustomBehavior,
           builder: (context, value, _) => Transform.scale(
@@ -150,15 +153,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*------------------------------------------------_buildIconBar------------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildIconBar() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Row(children: [
-        _buildBackIcon(),
-        Utility.textWidget(
-            textAlign: TextAlign.left,
-            text: 'Edit Behaviors',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline1)
-      ]),
+    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+      // _buildBackIcon(),
       _buildToggleButton()
     ]);
   }
@@ -205,28 +201,30 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             color: Theme.of(context).backgroundColor,
             child: Column(children: [
               Container(
-                width: MediaQuery.of(context).size.height * 0.80,
-                decoration: BoxDecoration(
-                  color: AppTheme.kButtonColor,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8.0),
-                    topLeft: Radius.circular(8.0),
+                  width: MediaQuery.of(context).size.height * 0.80,
+                  decoration: BoxDecoration(
+                    color: AppTheme.kButtonColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8.0),
+                      topLeft: Radius.circular(8.0),
+                    ),
                   ),
-                ),
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  isCustomBehavior.value
-                      ? "Teacher Behaviors"
-                      : "School Behaviors",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline5!.copyWith(
-                      color:
-                          Color(0xff000000) == Theme.of(context).backgroundColor
-                              ? Color(0xffFFFFFF)
-                              : Color(0xff000000),
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+                  padding: EdgeInsets.all(16),
+                  child: Utility.textWidget(
+                      textAlign: TextAlign.center,
+                      context: context,
+                      text: isCustomBehavior.value
+                          ? "Teacher Behaviors"
+                          : "School Behaviors",
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(
+                              color: Color(0xff000000) ==
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffFFFFFF)
+                                  : Color(0xff000000),
+                              fontWeight: FontWeight.bold))),
               SpacerWidget(18),
               BlocConsumer<PBISPlusBloc, PBISPlusState>(
                   bloc: isCustomBehavior.value
@@ -291,9 +289,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         height: MediaQuery.of(context).size.height / 5,
         margin: EdgeInsets.all(8),
         alignment: Alignment.center,
-        child: Text("Behavior Not Found",
+        child: Utility.textWidget(
+            text: 'Behavior Not Found',
+            context: context,
             textAlign: TextAlign.center,
-            style:
+            textTheme:
                 Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16)));
   }
 
@@ -381,7 +381,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: imageProvider,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -476,9 +476,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Additional Behaviors",
+                                    Utility.textWidget(
+                                        text: 'Additional Behaviors',
+                                        context: context,
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context)
+                                        textTheme: Theme.of(context)
                                             .textTheme
                                             .headline1!
                                             .copyWith(
@@ -632,7 +634,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         ),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             child: isIconDisabled
                 ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
                 : _buildIcons(item: item),
@@ -665,6 +667,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           required final VoidCallback onDelete,
           required void Function(String) onEditCallBack}) =>
       showModalBottomSheet(
+          useRootNavigator: true,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           isScrollControlled: true,
           isDismissible: true,

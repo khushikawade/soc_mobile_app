@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -72,77 +73,77 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackgroundImgWidget(),
-      Scaffold(
-          resizeToAvoidBottomInset: true,
-          key: _scaffoldKey,
-          backgroundColor: Colors.transparent,
-          appBar: PBISPlusUtility.pbisAppBar(
-            context: context,
-            titleIconData: widget.titleIconData,
-            title: 'Notes',
-            scaffoldKey: _scaffoldKey,
-          ),
-          extendBody: true,
-          body: body(context))
+      WillPopScope(
+          onWillPop: () async => false,
+          child: Scaffold(
+              key: _scaffoldKey,
+              backgroundColor: Colors.transparent,
+              appBar: PBISPlusUtility.pbisAppBar(
+                context: context,
+                titleIconData: widget.titleIconData,
+                title: 'Notes',
+                scaffoldKey: _scaffoldKey,
+              ),
+              extendBody: true,
+              body: body(context)))
     ]);
   }
 
   Widget body(BuildContext context) {
-    return Column(
-      children: [
-        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
+      child: Column(
+        children: [
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 8),
           Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: _kHorizontalLabelSpacing),
-              child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Utility.textWidget(
-                      text: "Student Notes",
-                      context: context,
-                      textAlign: TextAlign.left,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.w700))))
-        ]),
-        searchBarWidget(),
-        validationMessageWidget(),
-        SpacerWidget(_KVertcalSpace / 5),
-        BlocConsumer(
-            bloc: PBISPlusBlocInstance,
-            builder: (context, state) {
-              if (state is PBISPlusStudentListSucess) {
-                //---------------------return the filter list to UI-----------//
-                if (state.studentList.isNotEmpty) {
-                  //Storing the data in another list to use in search student functionality
-                  studentLocalList = state.studentList;
-                  return _listBuilder(state.studentList,
+            padding: EdgeInsets.symmetric(
+                // horizontal: StudentPlusOverrides.KVerticalSpace / 10,
+                vertical: StudentPlusOverrides.KVerticalSpace / 5),
+            child: PlusScreenTitleWidget(
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                text: 'Student Notes'),
+          ),
+          // SpacerWidget(_KVertcalSpace / 5),
+          searchBarWidget(),
+          validationMessageWidget(),
+          SpacerWidget(_KVertcalSpace / 5),
+          BlocConsumer(
+              bloc: PBISPlusBlocInstance,
+              builder: (context, state) {
+                if (state is PBISPlusStudentListSucess) {
+                  //---------------------return the filter list to UI-----------//
+                  if (state.studentList.isNotEmpty) {
+                    //Storing the data in another list to use in search student functionality
+                    studentLocalList = state.studentList;
+                    return _listBuilder(state.studentList,
+                        isShimmerLoading: false);
+                  } else {
+                    return _noDataFoundWidget();
+                  }
+                } else if (state is PBISPlusLoading ||
+                    state is PBISPlusInitial) {
+                  return _listBuilder(
+                      List.generate(
+                          10, (index) => PBISPlusNotesUniqueStudentList()),
+                      isShimmerLoading: true);
+                } else if (state is PBISPlusStudentSearchSucess) {
+                  return _listBuilder(state.sortedList,
                       isShimmerLoading: false);
-                } else {
+                } else if (state is PBISErrorState) {
                   return _noDataFoundWidget();
                 }
-              } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
-                return _listBuilder(
-                    List.generate(
-                        10, (index) => PBISPlusNotesUniqueStudentList()),
-                    isShimmerLoading: true);
-              } else if (state is PBISPlusStudentSearchSucess) {
-                return _listBuilder(state.sortedList, isShimmerLoading: false);
-              } else if (state is PBISErrorState) {
-                return _noDataFoundWidget();
-              }
-              //Managing shimmer loading in case of initial loading
-              return Container();
-            },
-            listener: (context, state) {
-              if (state is PBISPlusImportRosterSuccess) {
-                PBISPlusBlocInstance.add(
-                    GetPBISPlusStudentList(studentNotesList: null));
-              }
-            })
-      ],
+                //Managing shimmer loading in case of initial loading
+                return Container();
+              },
+              listener: (context, state) {
+                if (state is PBISPlusImportRosterSuccess) {
+                  PBISPlusBlocInstance.add(
+                      GetPBISPlusStudentList(studentNotesList: null));
+                }
+              })
+        ],
+      ),
     );
   }
 
@@ -158,7 +159,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
         isMainPage: false,
         autoFocus: !_searchController.text.isEmpty,
         controller: _searchController,
-        kLabelSpacing: _kLabelSpacing,
+        kLabelSpacing: 1,
+        // _kLabelSpacing,
         focusNode: searchFocusNode,
         onTap: () {},
         onItemChanged: onItemChanged);
@@ -273,6 +275,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                     if (isShimmerLoading == false) {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => PBISPlusNotesDetailPage(
+                              titleIconData: widget.titleIconData,
                               item: studentNotesList[index])));
                     }
                   })));

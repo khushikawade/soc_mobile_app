@@ -30,10 +30,10 @@ class PBISPlusOverrides {
       "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/";
 
 //for reseting bottom sheet items titles
-  static const String kresetOptionOnetitle = 'All Courses & Students';
+  static const String kresetOptionOnetitle = 'All Classes & Students';
   static const String kresetOptionTwotitle = 'Select Students';
-  static const String kresetOptionThreetitle = 'Select Courses';
-  static const String kresetOptionFourtitle = 'Select Students by Course';
+  static const String kresetOptionThreetitle = 'Select Classes';
+  static const String kresetOptionFourtitle = 'Select Students by Classes';
 
 //PBIS custom behavior local DBs
   static final String PbisPlusDefaultBehaviorLocalDbTable =

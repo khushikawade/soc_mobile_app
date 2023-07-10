@@ -129,7 +129,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       title: PlusScreenTitleWidget(
-        kLabelSpacing: 0,
+        kLabelSpacing: 18,
         text: 'All Classes',
         backButton: false,
         isTrailingIcon: true,
@@ -777,7 +777,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.43,
-                title: 'Save and Share',
+                // title: 'Save and Share',
+                title: '',
               );
             },
           );

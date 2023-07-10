@@ -1381,45 +1381,119 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   }
 
   //------------FILTER THE STUDENT LIST FROM THE ROASTER DATA SAVE TO LOCAL DB------For NotesPage----///
+  // Future<List<PBISPlusNotesUniqueStudentList>>
+  //     getUniqueStudentListForNotesScreen(
+  //         List<ClassroomCourse> allClassroomCourses) async {
+  //   try {
+  //     LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
+  //         LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+  //     List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
+  //         await _pbisPlusStudentListDB.getData();
+
+  //     List<PBISPlusNotesUniqueStudentList> list = [];
+
+  //     final uniqueStudents = <ClassroomStudents>[];
+  //     //Creating the unique student list
+  //     for (final ClassroomCourse course in allClassroomCourses) {
+  //       for (final ClassroomStudents student in course.students ?? []) {
+  //         if (uniqueStudents.any((s) => s.profile?.id == student.profile?.id)) {
+  //           student.profile!.courseName = course.name;
+  //           uniqueStudents.add(student);
+  //         }
+  //       }
+  //     }
+  //     //Sorting the unique student list in alphabetically order
+  //     uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
+  //         .toLowerCase()
+  //         .compareTo(b.profile!.name!.fullName!.toLowerCase()));
+
+  //     //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
+  //     if (_pbisPlusStudentNotesDataList.isNotEmpty) {
+  //       //--------------------Adding notes of student to their unique object--------------------------
+  //       //unique student list
+  //       list = uniqueStudents.map((item) {
+  //         // Check if the student already exists in the local database
+  //         PBISPlusNotesUniqueStudentList existingStudent =
+  //             _pbisPlusStudentNotesDataList
+  //                 .firstWhere((e) => e.studentId == item.profile?.id);
+
+  //         List<PBISStudentNotes>? notes = existingStudent.notes;
+
+  //         return PBISPlusNotesUniqueStudentList(
+  //           email: item.profile!.emailAddress!,
+  //           names: StudentName(
+  //             familyName: item.profile!.name!.familyName!,
+  //             fullName: item.profile!.name!.fullName!,
+  //             givenName: item.profile!.name!.givenName!,
+  //           ),
+  //           iconUrlC: item.profile?.photoUrl!,
+  //           studentId: item.profile?.id,
+  //           notes: notes, // Assign the existing notes or null
+  //         );
+  //       }).toList();
+  //     } else {
+  //       list = uniqueStudents
+  //           .map((item) => PBISPlusNotesUniqueStudentList(
+  //               email: item.profile!.emailAddress!,
+  //               names: StudentName(
+  //                   familyName: item.profile!.name!.familyName!,
+  //                   fullName: item.profile!.name!.fullName!,
+  //                   givenName: item.profile!.name!.givenName!),
+  //               iconUrlC: item.profile?.photoUrl!,
+  //               studentId: item.profile?.id,
+  //               notes: null))
+  //           .toList();
+  //     }
+
+  //     await _pbisPlusStudentListDB.clear();
+  //     list.forEach((element) async {
+  //       await _pbisPlusStudentListDB.addData(element);
+  //     });
+
+  //     return list;
+  //     // return newList;
+  //   } catch (e) {
+  //     print('INSIDE EXPECTION IN THE STUDENT LIST  $e');
+  //     throw (e);
+  //   }
+  // }
   Future<List<PBISPlusNotesUniqueStudentList>>
       getUniqueStudentListForNotesScreen(
           List<ClassroomCourse> allClassroomCourses) async {
     try {
-      LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
-          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
-          await _pbisPlusStudentListDB.getData();
-
-      List<PBISPlusNotesUniqueStudentList> list = [];
-
       final uniqueStudents = <ClassroomStudents>[];
-      //Creating the unique student list
       for (final ClassroomCourse course in allClassroomCourses) {
-        for (final ClassroomStudents student in course?.students ?? []) {
-          if (!uniqueStudents
-              .any((s) => s.profile?.id == student.profile?.id)) {
+        for (ClassroomStudents student in course.students ?? []) {
+          final isStudentUnique =
+              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
+          if (isStudentUnique) {
             student.profile!.courseName = course.name;
             uniqueStudents.add(student);
           }
         }
       }
-      //Sorting the unique student list in alphabetically order
-      uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
-          .toLowerCase()
-          .compareTo(b.profile!.name!.fullName!.toLowerCase()));
+
+      uniqueStudents.sort((a, b) {
+        return a.profile!.name!.fullName!
+            .toLowerCase()
+            .compareTo(b.profile!.name!.fullName!.toLowerCase());
+      });
+
+      LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
+          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
+          await _pbisPlusStudentListDB.getData();
+      List<PBISPlusNotesUniqueStudentList> list = [];
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
       if (_pbisPlusStudentNotesDataList.isNotEmpty) {
-        //--------------------Adding notes of student to their unique object--------------------------
-        //unique student list
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
           PBISPlusNotesUniqueStudentList existingStudent =
               _pbisPlusStudentNotesDataList
                   .firstWhere((e) => e.studentId == item.profile?.id);
-
-          List<PBISStudentNotes>? notes = existingStudent?.notes;
-
+          List<PBISStudentNotes>? notes =
+              existingStudent != null ? existingStudent.notes : null;
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
             names: StudentName(
@@ -1445,7 +1519,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 notes: null))
             .toList();
       }
-
       await _pbisPlusStudentListDB.clear();
       list.forEach((element) async {
         await _pbisPlusStudentListDB.addData(element);
@@ -1725,7 +1798,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
           headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
-
+      print(
+        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
+      );
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PBISStudentNotes> listData = response.data['body']
             .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
