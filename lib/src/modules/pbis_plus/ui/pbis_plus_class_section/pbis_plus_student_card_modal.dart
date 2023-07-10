@@ -441,7 +441,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 valueChange.value = !valueChange.value;
                                 // Update the changes on bool change detect
                               },
-                              isLoading: widget.isLoading,
+                              isLoading: widget.isFromStudentPlus == true
+                                  ? true
+                                  : widget.isLoading,
                               isFromStudentPlus: widget.isFromStudentPlus,
                               studentValueNotifier: widget.studentValueNotifier,
                               iconData: behaviorList[index],

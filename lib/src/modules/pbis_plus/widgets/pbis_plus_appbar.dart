@@ -24,13 +24,18 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool? isGradedPlus;
+
+  final Widget? titleWidget;
+  final Widget? leadingWidget;
   PBISPlusAppBar(
       {Key? key,
       this.titleIconData,
       this.backButton,
       required this.title,
       required this.scaffoldKey,
-      this.isGradedPlus = false})
+      this.isGradedPlus = false,
+      this.titleWidget,
+      this.leadingWidget})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
@@ -42,14 +47,15 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading = Container(
-      child: Row(
-        children: [
-          _translateButton(setState, context),
-          _openAccessibility(context),
-        ],
-      ),
-    );
+    Widget leading = widget.leadingWidget ??
+        Container(
+          child: Row(
+            children: [
+              _translateButton(setState, context),
+              _openAccessibility(context),
+            ],
+          ),
+        );
 
     List<Widget>? actions = [
       FutureBuilder(
@@ -123,7 +129,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       leading: leading,
       title: widget.isGradedPlus == true
           ? gradedLogoBuilder(context)
-          : titleBuilder(context, widget.titleIconData),
+          : widget.titleWidget ?? titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
