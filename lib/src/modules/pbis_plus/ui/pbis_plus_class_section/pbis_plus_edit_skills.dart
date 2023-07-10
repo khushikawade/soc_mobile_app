@@ -693,14 +693,16 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackgroundImgWidget(),
-      Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: PBISPlusAppBar(
-              title: "", backButton: true, scaffoldKey: _scaffoldKey),
-          body: body(context))
-    ]);
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: Stack(children: [
+          CommonBackgroundImgWidget(),
+          Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: PBISPlusAppBar(
+                  title: "", backButton: true, scaffoldKey: _scaffoldKey),
+              body: body(context))
+        ]));
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
