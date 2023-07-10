@@ -1457,18 +1457,20 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   //     throw (e);
   //   }
   // }
-  Future<List<PBISPlusNotesUniqueStudentList>>
-      getUniqueStudentListForNotesScreen(
-          List<ClassroomCourse> allClassroomCourses) async {
+  // Future<List<PBISPlusNotesUniqueStudentList>>
+  Future getUniqueStudentListForNotesScreen(
+      List<ClassroomCourse> allClassroomCourses) async {
     try {
       final uniqueStudents = <ClassroomStudents>[];
       for (final ClassroomCourse course in allClassroomCourses) {
         for (ClassroomStudents student in course.students ?? []) {
-          final isStudentUnique =
-              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
-          if (isStudentUnique) {
-            student.profile!.courseName = course.name;
-            uniqueStudents.add(student);
+          if (uniqueStudents.isNotEmpty) {
+            final isStudentUnique = !uniqueStudents
+                .any((s) => s.profile?.id == student.profile?.id);
+            if (isStudentUnique != null && isStudentUnique) {
+              student.profile!.courseName = course.name;
+              uniqueStudents.add(student);
+            }
           }
         }
       }
@@ -1478,7 +1480,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .toLowerCase()
             .compareTo(b.profile!.name!.fullName!.toLowerCase());
       });
-
+      print("=========OUTSIDE ETHE FOR LOOP-------------------$uniqueStudents");
       LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
       List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
@@ -1525,6 +1527,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       });
 
       return list;
+
       // return newList;
     } catch (e) {
       print('INSIDE EXPECTION IN THE STUDENT LIST  $e');
@@ -1836,7 +1839,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
