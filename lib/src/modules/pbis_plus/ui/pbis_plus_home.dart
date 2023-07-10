@@ -51,6 +51,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: body(),
       // floatingActionButton:
@@ -106,6 +107,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       onWillPop: (context) async {
         return false;
       },
+
       screenTransitionAnimation: ScreenTransitionAnimation(
         animateTabTransition: false,
         curve: Curves.ease,

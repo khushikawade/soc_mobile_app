@@ -53,6 +53,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          backgroundColor: Colors.transparent,
           appBar: appBar(),
           body: body(),
         )
