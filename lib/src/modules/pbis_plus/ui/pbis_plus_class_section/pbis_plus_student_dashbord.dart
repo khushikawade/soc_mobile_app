@@ -354,8 +354,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         }),
         cells: List<DataCell>.generate(
           pBISPlusCommonBehaviorList.length,
-          (int cellIndex) =>
-              dataCell(pBISPlusCommonBehaviorList[cellIndex].behaviorTitleC),
+          (int cellIndex) => dataCell(cellIndex == 0
+              ? PBISPlusUtility.convertDateString(list[index].createdAt ?? '')
+              :  (list[index].engaged ?? 0).toString()),
         ),
 
         // [
