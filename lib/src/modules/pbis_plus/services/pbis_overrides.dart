@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:flutter/widgets.dart';
 
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
@@ -42,4 +43,6 @@ class PBISPlusOverrides {
       'pbis_plus_additional_behavior';
   static final String PbisPlusTeacherCustomBehaviorLocalDbTable =
       'pbis_plus_custom_behavior';
+  static final ValueNotifier<bool> isCustomBehavior =
+      ValueNotifier<bool>(false);
 }

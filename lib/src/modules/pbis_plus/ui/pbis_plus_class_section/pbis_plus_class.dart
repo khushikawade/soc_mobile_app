@@ -83,6 +83,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           vsync: this,
           duration: const Duration(seconds: 1),
           animationBehavior: AnimationBehavior.normal);
+    } else {
+      PBISPlusUtility.isCustomBehaviour();
     }
   }
 

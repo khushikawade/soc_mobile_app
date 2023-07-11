@@ -1,7 +1,10 @@
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PBISPlusUtility {
   static final _digitRoundOffAbbreviations = ['k', 'M', 'B', 'T'];
@@ -63,5 +66,18 @@ class PBISPlusUtility {
       //  print(e);
       return "0";
     }
+  }
+
+/*-------------------------------------------------------------------------------------------------------------- */
+/*-------------------------------------------------getCustomValue----------------------------------------------- */
+/*-------------------------------------------------------------------------------------------------------------- */
+  static isCustomBehaviour() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final storedValue = pref.getBool(Strings.isCustomBehavior);
+      if (storedValue != null) {
+        PBISPlusOverrides.isCustomBehavior.value = storedValue;
+      }
+    } catch (e) {}
   }
 }

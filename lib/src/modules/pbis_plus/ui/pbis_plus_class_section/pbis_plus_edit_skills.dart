@@ -2,6 +2,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
@@ -23,7 +25,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Soc/src/services/Strings.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
-  PBISPlusEditSkills({Key? key, this.constraint}) : super(key: key) {}
+  PBISPlusEditSkills({
+    Key? key,
+    this.constraint,
+  }) : super(key: key) {}
   final double? constraint;
 
   @override
@@ -33,7 +38,7 @@ class PBISPlusEditSkills extends StatefulWidget {
 class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   //changedIndex////Used to show edit icon on tap
   ValueNotifier<int> changedIndex = ValueNotifier<int>(-1);
-  ValueNotifier<bool> isCustomBehavior = ValueNotifier<bool>(false);
+  // ValueNotifier<bool> isCustomBehavior = ValueNotifier<bool>(false);
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   ValueNotifier<List<PBISPlusCommonBehaviorModal>> teacherCustomBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
@@ -64,21 +69,21 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     pbisPluAdditionalBehaviorBloc.add(PBISPlusGetAdditionalBehavior());
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
 
-    getCustomValue();
+    // PBISPlusUtility.getCustomValue();
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*-------------------------------------------------getCustomValue----------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-  void getCustomValue() async {
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      final storedValue = pref.getBool(Strings.isCustomBehavior);
-      if (storedValue != null) {
-        isCustomBehavior.value = storedValue;
-      }
-    } catch (e) {}
-  }
+  // void getCustomValue() async {
+  //   try {
+  //     SharedPreferences pref = await SharedPreferences.getInstance();
+  //     final storedValue = pref.getBool(Strings.isCustomBehavior);
+  //     if (storedValue != null) {
+  //       isCustomBehavior.value = storedValue;
+  //     }
+  //   } catch (e) {}
+  // }
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*-------------------------------------------------setToggleValue----------------------------------------------- */
@@ -87,7 +92,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   void setToggleValue({bool? value}) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setBool(Strings.isCustomBehavior, value ?? isCustomBehavior.value);
+      pref.setBool(Strings.isCustomBehavior,
+          value ?? PBISPlusOverrides.isCustomBehavior.value);
     } catch (e) {}
   }
 
@@ -118,26 +124,26 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ValueListenableBuilder(
-          valueListenable: isCustomBehavior,
+          valueListenable: PBISPlusOverrides.isCustomBehavior,
           builder: (context, value, _) => Transform.scale(
                 transformHitTests: false,
                 scale: 0.8, // Adjust the scale factor as needed
                 child: CupertinoSwitch(
-                  value: isCustomBehavior.value,
+                  value: PBISPlusOverrides.isCustomBehavior.value,
                   onChanged: (value) {
                     if (isWait.value == true) {
                       notifyUser();
                       return;
                     }
                     changedIndex.value = -1;
-                    isCustomBehavior.value = value;
+                    PBISPlusOverrides.isCustomBehavior.value = value;
                     setToggleValue(value: value);
                   },
                   trackColor:
                       Color(0xff000000) == Theme.of(context).backgroundColor
                           ? AppTheme.klistTilePrimaryLight.withOpacity(0.1)
                           : Color(0xff000000).withOpacity(0.5),
-                  thumbColor: isCustomBehavior.value
+                  thumbColor: PBISPlusOverrides.isCustomBehavior.value
                       ? AppTheme.GreenColor
                       : AppTheme.klistTilePrimaryLight,
                   activeColor:
@@ -181,7 +187,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget buildTargetBehaviorWidget() {
     return ValueListenableBuilder(
-        valueListenable: isCustomBehavior,
+        valueListenable: PBISPlusOverrides.isCustomBehavior,
         builder: (context, value, _) => Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -203,7 +209,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   child: Utility.textWidget(
                       textAlign: TextAlign.center,
                       context: context,
-                      text: isCustomBehavior.value
+                      text: PBISPlusOverrides.isCustomBehavior.value
                           ? "Teacher Behaviors"
                           : "School Behaviors",
                       textTheme: Theme.of(context)
@@ -217,7 +223,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                               fontWeight: FontWeight.bold))),
               SpacerWidget(18),
               BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                  bloc: isCustomBehavior.value
+                  bloc: PBISPlusOverrides.isCustomBehavior.value
                       ? pbisPluCustomBehaviorBloc
                       : pbisPluDefaultBehaviorBloc,
                   builder: (context, state) {
@@ -290,7 +296,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   Widget buildUsedBehaviors(
       List<PBISPlusCommonBehaviorModal> skillsList, bool loading) {
     return IgnorePointer(
-      ignoring: !isCustomBehavior.value,
+      ignoring: !PBISPlusOverrides.isCustomBehavior.value,
       child: DragTarget<PBISPlusCommonBehaviorModal>(
         builder: (context, candidateData, rejectedData) {
           return GridView.builder(
@@ -444,8 +450,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildAdditionalBehaviorWidget() {
     return ValueListenableBuilder(
-        valueListenable: isCustomBehavior,
-        builder: (context, value, _) => isCustomBehavior.value
+        valueListenable: PBISPlusOverrides.isCustomBehavior,
+        builder: (context, value, _) => PBISPlusOverrides.isCustomBehavior.value
             ? Expanded(
                 child: Card(
                     shape: RoundedRectangleBorder(
@@ -873,7 +879,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 valueListenable: changedIndex,
                 builder: (context, value, _) {
                   return index == changedIndex.value &&
-                          isCustomBehavior.value == true
+                          PBISPlusOverrides.isCustomBehavior.value == true
                       ? _showEditIconWidget(item, index)
                       : ShimmerLoading(
                           isLoading: loading,
