@@ -369,5 +369,8 @@ class PBISPlusActionInteractionButtonState
     print("isAlready $isAlready");
     onTapDetect.value =
         !onTapDetect.value; //Update interaction text count in card
+
+    widget.onValueUpdate(
+        widget.studentValueNotifier); //return updated count to other screens
   }
 }

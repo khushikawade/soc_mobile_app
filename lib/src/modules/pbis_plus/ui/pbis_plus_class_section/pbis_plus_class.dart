@@ -569,9 +569,11 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           //         .value.profile!.behavior2!.counter! +
                           //     studentValueNotifier
                           //         .value.profile!.behavior2!.counter!
-                          studentValueNotifier.value!.profile!.engaged! +
-                              studentValueNotifier.value!.profile!.niceWork! +
-                              studentValueNotifier.value!.profile!.helpful!),
+                          // studentValueNotifier.value!.profile!.engaged! +
+                          //     studentValueNotifier.value!.profile!.niceWork! +
+                          //     studentValueNotifier.value!.profile!.helpful!
+                          PBISPlusUtility.getStudentTotalCounts(
+                              studentValueNotifier.value)),
                       style: TextStyle(
                         color: Theme.of(context).backgroundColor,
                         fontWeight: FontWeight.bold,

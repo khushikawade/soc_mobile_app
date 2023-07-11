@@ -147,8 +147,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                 child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: ValueListenableBuilder(
-                        valueListenable:
-                            widget?.valueChange ?? ValueNotifier(false),
+                        valueListenable: widget.valueChange,
                         builder: (BuildContext context, value, Widget? child) {
                           return ValueListenableBuilder<ClassroomStudents>(
                             valueListenable: widget.studentValueNotifier,
@@ -177,12 +176,8 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                     //       .behavior2!.counter! +
                                     //   widget.studentValueNotifier.value.profile!
                                     //       .behavior3!.counter!
-                                    widget.studentValueNotifier.value.profile!
-                                            .engaged! +
-                                        widget.studentValueNotifier.value
-                                            .profile!.niceWork! +
-                                        widget.studentValueNotifier.value
-                                            .profile!.helpful!),
+                                    PBISPlusUtility.getStudentTotalCounts(
+                                        widget.studentValueNotifier.value)),
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1!

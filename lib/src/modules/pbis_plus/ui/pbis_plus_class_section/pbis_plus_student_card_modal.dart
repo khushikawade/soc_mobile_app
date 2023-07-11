@@ -432,9 +432,12 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                     widget.classroomCourseId;
                                 widget.onValueUpdate(
                                     updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+
                                 widget.studentValueNotifier =
                                     updatedStudentValueNotifier; // Used on current screen to update the value
+
                                 valueChange.value = !valueChange.value;
+
                                 // Update the changes on bool change detect
                               },
                               isLoading: widget.isLoading,

@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,5 +49,19 @@ class PBISPlusUtility {
         : DateTime.now();
 
     return outputFormat.format(date);
+  }
+
+  static String getStudentTotalCounts(ClassroomStudents student) {
+    try {
+      // Get the total counts
+      int? totalCounts = student.profile!.behaviorList!
+          .map((behavior) => behavior.score ?? 0)
+          .reduce((sum, count) => sum + count);
+
+      return totalCounts?.toString() ?? "0";
+    } catch (e) {
+      print(e);
+      return "0";
+    }
   }
 }
