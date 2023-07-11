@@ -658,6 +658,18 @@ class OcrUtility {
       prefs.setString(OcrOverrides.teacherId, techerId);
     } catch (e) {}
   }
+
+  static hideScreenKeyboard(BuildContext context) {
+    try {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+      // FocusManager.instance.primaryFocus?.unfocus();
+    } catch (e) {
+      print("-----------------");
+    }
+  }
 }
 
 /*------------------------------------------------------------------------------------------------*/
