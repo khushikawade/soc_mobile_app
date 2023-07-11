@@ -1461,19 +1461,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future getUniqueStudentListForNotesScreen(
       List<ClassroomCourse> allClassroomCourses) async {
     try {
-      final uniqueStudents = <ClassroomStudents>[];
-      for (final ClassroomCourse course in allClassroomCourses) {
-        for (ClassroomStudents student in course.students ?? []) {
-          if (uniqueStudents.isNotEmpty) {
-            final isStudentUnique = !uniqueStudents
-                .any((s) => s.profile?.id == student.profile?.id);
-            if (isStudentUnique != null && isStudentUnique) {
-              student.profile!.courseName = course.name;
-              uniqueStudents.add(student);
-            }
-          }
-        }
-      }
+      List<ClassroomStudents> uniqueStudents = <ClassroomStudents>[];
+      List<PBISPlusNotesUniqueStudentList> list = [];
+      LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
+          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
+          await _pbisPlusStudentListDB.getData();
+
+      uniqueStudents = await filteruniqueStudentList(allClassroomCourses);
 
       uniqueStudents.sort((a, b) {
         return a.profile!.name!.fullName!
@@ -1481,18 +1476,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .compareTo(b.profile!.name!.fullName!.toLowerCase());
       });
       print("=========OUTSIDE ETHE FOR LOOP-------------------$uniqueStudents");
-      LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
-          LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
-          await _pbisPlusStudentListDB.getData();
-      List<PBISPlusNotesUniqueStudentList> list = [];
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
-      if (_pbisPlusStudentNotesDataList.isNotEmpty) {
+      if (_pbisPlusStudentDataList.isNotEmpty) {
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
           PBISPlusNotesUniqueStudentList existingStudent =
-              _pbisPlusStudentNotesDataList
+              _pbisPlusStudentDataList
                   .firstWhere((e) => e.studentId == item.profile?.id);
           List<PBISStudentNotes>? notes =
               existingStudent != null ? existingStudent.notes : null;
@@ -1527,12 +1517,32 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       });
 
       return list;
-
-      // return newList;
     } catch (e) {
       print('INSIDE EXPECTION IN THE STUDENT LIST  $e');
       throw (e);
     }
+  }
+
+  Future<List<ClassroomStudents>> filteruniqueStudentList(
+      List<ClassroomCourse> allClassroomCourses) async {
+    List<ClassroomStudents> uniqueStudents = <ClassroomStudents>[];
+    try {
+      for (final ClassroomCourse course in allClassroomCourses) {
+        for (ClassroomStudents student in course.students ?? []) {
+          final isStudentUnique =
+              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
+          if (isStudentUnique != null && isStudentUnique) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+      return uniqueStudents;
+    } catch (e) {
+      print(
+          "----------------INSIDE THE EXPECTION ------------filteruniqueStudentList--------------------------");
+    }
+    return uniqueStudents;
   }
 
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//

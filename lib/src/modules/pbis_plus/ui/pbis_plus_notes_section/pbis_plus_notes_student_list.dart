@@ -237,9 +237,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                       : Theme.of(context).colorScheme.background ==
                               Color(0xff000000)
                           ? Color(0xff111C20)
-                          : Color(0xffE9ECEE)
-                          
-                          ),
+                          : Color(0xffE9ECEE)),
               child: ListTile(
                   visualDensity: VisualDensity(horizontal: 0, vertical: 0),
                   horizontalTitleGap: 24,
