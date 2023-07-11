@@ -218,7 +218,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             ),
           ),
           child: CircleAvatar(
-            radius: widget.profilePictureSize,
+            radius: widget.profilePictureSize ,
             backgroundColor: Colors.transparent,
             child: Icon(
               Icons.person,

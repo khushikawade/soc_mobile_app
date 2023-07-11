@@ -233,10 +233,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           builder: (translatedMessage) {
                             return Text(translatedMessage,
                                 style: TextStyle(
-                                  color: AppTheme.kButtonColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ));
+                                    color: AppTheme.kButtonColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18));
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();

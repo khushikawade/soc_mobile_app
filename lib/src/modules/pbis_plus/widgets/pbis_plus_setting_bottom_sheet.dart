@@ -63,7 +63,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   int pageValue = 0;
   String sectionName = '';
   get heightMap => {
-        0: widget.height! * 1.1,
+        // 0: widget.height! * 1.1,
+        0: widget.height! * 0.9,
         1: widget.height! * 1.2,
         2: widget.height! * 1.2,
         // 3: widget.height! / 1.5,
@@ -250,8 +251,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
         textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
-        textWidget('Edit Behavior', AppTheme.kButtonColor),
-        textWidget('Edit Behavior', Color(0xff111C20)),
+        // textWidget('Edit Behavior', AppTheme.kButtonColor),
+        // textWidget('Edit Behavior', Color(0xff111C20)),
       ],
     );
   }
@@ -276,7 +277,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           sectionName = text ?? '';
           selectedRecords.clear();
           selectedStudentList.clear();
-          print(text);
           switch (text) {
             case PBISPlusOverrides.kresetOptionOnetitle:
               PlusUtility.updateLogs(
@@ -404,7 +404,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Courses',
+              text: 'Select Classes',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -751,7 +751,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
   Container blocListener() {
-    print("UI STATE------------BlocConsumer ");
     return Container(
       height: 0,
       width: 0,
@@ -760,14 +759,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           BlocConsumer<GoogleDriveBloc, GoogleDriveState>(
             bloc: googleDriveBloc,
             builder: (context, state) {
-              print("UI STATE------------GOOGLE STATE $state");
               return Container(
                 height: 0,
               );
             },
             listener: (context, state) async {
-              print("UI STATE------------GOOGLE STATE $state");
-
               if (state is GoogleFolderCreated) {
                 //In case of Folder Id received
                 _exportDataToSpreadSheet();
@@ -813,7 +809,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             bloc: pbisBloc,
             child: EmptyContainer(),
             listener: (context, state) async {
-              print("UI STATE------------pbisBloc STATE $state");
               if (state is PBISErrorState) {
                 Navigator.of(context).pop();
                 Utility.currentScreenSnackBar(

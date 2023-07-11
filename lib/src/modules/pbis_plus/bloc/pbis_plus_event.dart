@@ -183,6 +183,7 @@ class PbisPlusAddPBISInteraction extends PBISPlusEvent {
   final String? studentEmail;
   final String? classroomCourseId;
   final PBISPlusCommonBehaviorModal? behaviour;
+  final bool? isCustomBehavior;
 
   PbisPlusAddPBISInteraction(
       {required this.context,
@@ -190,7 +191,8 @@ class PbisPlusAddPBISInteraction extends PBISPlusEvent {
       required this.studentId,
       required this.studentEmail,
       required this.classroomCourseId,
-      required this.behaviour});
+      required this.behaviour,
+      required this.isCustomBehavior});
 
   @override
   List<Object> get props => [studentId!, classroomCourseId!, behaviour!];
