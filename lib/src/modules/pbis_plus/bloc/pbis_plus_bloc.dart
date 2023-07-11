@@ -1394,24 +1394,38 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
           await _pbisPlusStudentListDB.getData();
 
-      uniqueStudents = await getUniqueStudentList(allClassroomCourses);
-
-      uniqueStudents.sort((a, b) {
-        return a.profile!.name!.fullName!
-            .toLowerCase()
-            .compareTo(b.profile!.name!.fullName!.toLowerCase());
-      });
+      //Creating the unique student list
+      for (final ClassroomCourse course in allClassroomCourses) {
+        for (final ClassroomStudents student in course?.students ?? []) {
+          if (student.profile != null &&
+              !uniqueStudents
+                  .any((s) => s.profile?.id == student.profile?.id)) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+      //Sorting the unique student list in alphabetically order
+      uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
+          .toLowerCase()
+          .compareTo(b.profile!.name!.fullName!.toLowerCase()));
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
       if (_pbisPlusStudentDataList.isNotEmpty) {
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
           PBISPlusNotesUniqueStudentList existingStudent =
-              _pbisPlusStudentDataList
-                  .firstWhere((e) => e.studentId == item.profile?.id);
-
-          List<PBISStudentNotes>? notes = existingStudent.notes;
-
+              PBISPlusNotesUniqueStudentList();
+          List<PBISStudentNotes>? notes;
+          try {
+            existingStudent = _pbisPlusStudentDataList.firstWhere(
+              (e) => e.studentId == item.profile?.id,
+              orElse: () => PBISPlusNotesUniqueStudentList(),
+            );
+            notes = existingStudent.notes ?? null;
+          } catch (e) {
+            notes = null;
+          }
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
             names: StudentName(
