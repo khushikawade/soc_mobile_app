@@ -193,8 +193,6 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
               break;
           }
 
-          //String text = '${value.toInt().toString()}';
-          print(meta);
           return Container(
             margin: EdgeInsets.only(top: 10),
             child: Column(
@@ -242,8 +240,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
         //reservedSize: 25,
         getTitlesWidget: (value, meta) {
           String text = '';
-          print(meta);
-          // print(meta);
+
           switch (value.toString()) {
             case '0.0':
               text = '21-22' + "\n" + ' EOY';

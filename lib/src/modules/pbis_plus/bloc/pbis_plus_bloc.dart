@@ -377,7 +377,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             userType: 'Teacher',
             activityId: '38',
             description:
-                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+                '${event.isCustomBehavior == true ? 'Custom' : 'Default'} User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
@@ -869,7 +869,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentEmail: event.studentEmail,
             schoolId: event.schoolId,
             notes: event.notes);
-
+        print("-----------API DATA--------------$apiData");
         if (apiData == true) {
           yield PBISPlusAddNotesSucess();
         } else {
@@ -1381,16 +1381,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   }
 
   //------------FILTER THE STUDENT LIST FROM THE ROASTER DATA SAVE TO LOCAL DB------For NotesPage----///
-  Future<List<PBISPlusNotesUniqueStudentList>>
-      getUniqueStudentListForNotesScreen(
-          List<ClassroomCourse> allClassroomCourses) async {
+
+  Future getUniqueStudentListForNotesScreen(
+      List<ClassroomCourse> allClassroomCourses) async {
     try {
+      List<ClassroomStudents> uniqueStudents = <ClassroomStudents>[];
+      List<PBISPlusNotesUniqueStudentList> list = [];
+
       LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentNotesDataList =
+      List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
           await _pbisPlusStudentListDB.getData();
-      List<PBISPlusNotesUniqueStudentList> list = [];
-      final uniqueStudents = <ClassroomStudents>[];
+
       //Creating the unique student list
       for (final ClassroomCourse course in allClassroomCourses) {
         for (final ClassroomStudents student in course?.students ?? []) {
@@ -1408,16 +1410,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           .compareTo(b.profile!.name!.fullName!.toLowerCase()));
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
-      if (_pbisPlusStudentNotesDataList.isNotEmpty) {
-        //--------------------Adding notes of student to their unique object--------------------------
-        //unique student list
+      if (_pbisPlusStudentDataList.isNotEmpty) {
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
           PBISPlusNotesUniqueStudentList existingStudent =
               PBISPlusNotesUniqueStudentList();
           List<PBISStudentNotes>? notes;
           try {
-            existingStudent = _pbisPlusStudentNotesDataList.firstWhere(
+            existingStudent = _pbisPlusStudentDataList.firstWhere(
               (e) => e.studentId == item.profile?.id,
               orElse: () => PBISPlusNotesUniqueStudentList(),
             );
@@ -1457,11 +1457,33 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       });
 
       return list;
-      // return newList;
     } catch (e) {
       print('INSIDE EXPECTION IN THE STUDENT LIST  $e');
       throw (e);
     }
+  }
+
+  Future<List<ClassroomStudents>> getUniqueStudentList(
+      List<ClassroomCourse> allClassroomCourses) async {
+    List<ClassroomStudents> uniqueStudents = [];
+
+    try {
+      for (final ClassroomCourse course in allClassroomCourses) {
+        for (ClassroomStudents student in course.students ?? []) {
+          final isStudentUnique =
+              !uniqueStudents.any((s) => s.profile?.id == student.profile?.id);
+
+          if (isStudentUnique) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+    } catch (e) {
+      print("An exception occurred in getUniqueStudentList :$e");
+    }
+
+    return uniqueStudents;
   }
 
 //-----------------------------------GET THE  ADDITIONAL BEHAVIOUR List----------------------------------------//
@@ -1730,7 +1752,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
           headers: {'Content-Type': 'application/json;charset=UTF-8'},
           isCompleteUrl: true);
-
+      print(
+        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
+      );
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PBISStudentNotes> listData = response.data['body']
             .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
@@ -1766,7 +1790,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
