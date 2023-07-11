@@ -198,7 +198,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                           if (_animationControllerForSync!.isAnimating ==
                               true) {
                             Utility.currentScreenSnackBar(
-                                'Courses synced successfully', null,
+                                'Classes synced successfully', null,
                                 marginFromBottom: 90);
                             _animationControllerForSync!.stop();
                           }
@@ -966,7 +966,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 context: context,
                 textAlign: TextAlign.center,
                 text:
-                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still want to continue?',
+                    'This action will reset \'All Classes and Students\' PBIS scores. Do you still want to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
