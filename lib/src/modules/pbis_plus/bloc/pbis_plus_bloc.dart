@@ -377,7 +377,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             userType: 'Teacher',
             activityId: '38',
             description:
-                'User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
+                '${event.isCustomBehavior == true ? 'Custom' : 'Default'} User Interaction PBIS+ ${data['body']['Id'].toString()} for student ${event.studentId}',
             operationResult: 'Success');
         /*-------------------------User Activity Track END----------------------------*/
 
@@ -869,7 +869,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentEmail: event.studentEmail,
             schoolId: event.schoolId,
             notes: event.notes);
-
+        print("-----------API DATA--------------$apiData");
         if (apiData == true) {
           yield PBISPlusAddNotesSucess();
         } else {

@@ -231,7 +231,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ? pbisPluCustomBehaviorBloc
                       : pbisPluDefaultBehaviorBloc,
                   builder: (context, state) {
-                    //   print("printing the $state ");
+            
 
                     if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
                       return buildUsedBehaviors(
@@ -239,7 +239,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     }
 
                     if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
-                      //  print("recived-----------");
+                  
                       teacherCustomBehaviorList.value =
                           state.teacherCustomBehaviorList;
                       return ValueListenableBuilder(
@@ -342,7 +342,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return !IsBehaviorAlreadyAvailable(draggedData!, skillsList);
         },
         onAccept: (PBISPlusCommonBehaviorModal draggedData) {
-          // print("onAccept on GridView DragTarget widget");
+     
           if (skillsList.length == 6) {
             return;
           }

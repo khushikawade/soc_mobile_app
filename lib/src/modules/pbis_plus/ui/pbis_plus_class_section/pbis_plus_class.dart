@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
@@ -94,35 +96,39 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackgroundImgWidget(),
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
-        extendBody: true,
-        backgroundColor: Colors.transparent,
-        appBar: PBISPlusUtility.pbisAppBar(
-            context: context,
-            titleIconData: widget.titleIconData,
-            title: 'Class',
-            scaffoldKey: _scaffoldKey,
-            isGradedPlus: widget.isGradedPlus),
-        floatingActionButton: widget.isGradedPlus == true
-            ? null
-            : ValueListenableBuilder(
-                valueListenable: courseLength,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return courseLength.value > 0
-                      ? saveAndShareFAB(
-                          context,
-                        )
-                      : Container();
-                }),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        body: body(),
-      )
-    ]);
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: Stack(children: [
+          CommonBackgroundImgWidget(),
+          Scaffold(
+            resizeToAvoidBottomInset: false,
+            key: _scaffoldKey,
+            extendBody: true,
+            backgroundColor: Colors.transparent,
+            appBar: PBISPlusUtility.pbisAppBar(
+                context: context,
+                titleIconData: widget.titleIconData,
+                title: 'Class',
+                scaffoldKey: _scaffoldKey,
+                isGradedPlus: widget.isGradedPlus),
+            floatingActionButton: widget.isGradedPlus == true
+                ? null
+                : ValueListenableBuilder(
+                    valueListenable: courseLength,
+                    child: Container(),
+                    builder:
+                        (BuildContext context, dynamic value, Widget? child) {
+                      return courseLength.value > 0
+                          ? saveAndShareFAB(
+                              context,
+                            )
+                          : Container();
+                    }),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniEndFloat,
+            body: body(),
+          )
+        ]));
   }
 
   Widget headerListTile() {
@@ -455,7 +461,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       final bool isScreenShimmerLoading) {
     return ScrollablePositionedList.builder(
         physics: isScreenShimmerLoading ? NeverScrollableScrollPhysics() : null,
-        padding: EdgeInsets.only(bottom: 30),
+        padding: EdgeInsets.only(bottom: Platform.isIOS ? 60 : 30),
         shrinkWrap: true,
         itemScrollController: _itemScrollController,
         itemCount: googleClassroomCourseList.length,
@@ -606,7 +612,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             widget.isGradedPlus == true) {
           return;
         }
-        // print(heroTag);
+
         await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
@@ -650,7 +656,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               ShimmerLoading(
                 isLoading: isScreenShimmerLoading,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 5),
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(3),
                   decoration: BoxDecoration(
@@ -745,9 +751,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           ]));
     }
 
-    // print("UI OPEN BOTTOM SHEET");
-    // print(allClassroomCourses[0].name);
-
     var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -762,7 +765,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               // Set the maximum height of the bottom sheet based on the screen size
-              // print(constraints.maxHeight);
+
               return PBISPlusBottomSheet(
                 fromClassScreen: true,
                 isClassPage: true,
