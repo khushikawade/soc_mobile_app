@@ -101,7 +101,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2.9),
           PlusScreenTitleWidget(
-              kLabelSpacing: StudentPlusOverrides.kLabelSpacing / 6,
+              kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'Student Notes'),
           SpacerWidget(_KVertcalSpace / 2),
           searchBarWidget(),

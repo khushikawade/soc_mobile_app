@@ -87,7 +87,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             PlusScreenTitleWidget(
-                kLabelSpacing: StudentPlusOverrides.kLabelSpacing / 5,
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
                 text: 'History'),
             Stack(alignment: Alignment.topRight, children: [
               IconButton(
