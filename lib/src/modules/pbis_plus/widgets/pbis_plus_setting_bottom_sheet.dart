@@ -63,7 +63,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   int pageValue = 0;
   String sectionName = '';
   get heightMap => {
-        0: widget.height! * 1.1,
+        // 0: widget.height! * 1.1,
+        0: widget.height! * 0.9,
         1: widget.height! * 1.2,
         2: widget.height! * 1.2,
         // 3: widget.height! / 1.5,
@@ -198,7 +199,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                           if (_animationControllerForSync!.isAnimating ==
                               true) {
                             Utility.currentScreenSnackBar(
-                                'Courses synced successfully', null,
+                                'Classes synced successfully', null,
                                 marginFromBottom: 90);
                             _animationControllerForSync!.stop();
                           }
@@ -250,8 +251,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
         textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
-        textWidget('Edit Behavior', AppTheme.kButtonColor),
-        textWidget('Edit Behavior', Color(0xff111C20)),
+        // textWidget('Edit Behavior', AppTheme.kButtonColor),
+        // textWidget('Edit Behavior', Color(0xff111C20)),
       ],
     );
   }
@@ -403,7 +404,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Courses',
+              text: 'Select Classes',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -960,7 +961,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 context: context,
                 textAlign: TextAlign.center,
                 text:
-                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still want to continue?',
+                    'This action will reset \'All Classes and Students\' PBIS scores. Do you still want to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!

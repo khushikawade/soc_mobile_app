@@ -115,7 +115,7 @@ class PBISStudentNotes {
           studentEmail: json["Student_Email"],
           teacherC: json["Teacher__c"],
           schoolAppC: json["School_App__c"],
-          notes: json["Notes"],
+          notes: Utility.utf8convert(json["Notes"]),
           date: Utility.getTimefromUtc(json["CreatedAt"], "D"),
           time: Utility.getTimefromUtc(json["CreatedAt"], "T"),
           weekday: Utility.getTimefromUtc(json["CreatedAt"], "WD"));

@@ -3059,9 +3059,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         {
           'updateSheetProperties': {
             'properties': {'sheetId': 0, 'title': classroomCourseList[0].name},
-            'fields': 'title',
-          },
-        },
+            'fields': 'title'
+          }
+        }
       ];
 
       /*--------------------------------------------START OF SHEET FORMATTING---------------------------------------------*/

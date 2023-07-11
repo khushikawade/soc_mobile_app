@@ -1,5 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ffi';
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -81,11 +84,11 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             horizontal: StudentPlusOverrides.kSymmetricPadding),
         physics: NeverScrollableScrollPhysics(),
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             PlusScreenTitleWidget(
                 kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                text: ' History'),
+                text: 'History'),
             Stack(alignment: Alignment.topRight, children: [
               IconButton(
                   padding: EdgeInsets.all(0),
@@ -131,6 +134,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           ]),
           // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVertcalSpace / 5),
+
           ValueListenableBuilder(
               valueListenable: filterNotifier,
               builder: (BuildContext context, String value, Widget? child) {
@@ -167,7 +171,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       {required final bool isShimmerLoading}) {
     return historyList.length > 0
         ? Container(
-            height: MediaQuery.of(context).size.height * 0.7,
+            color: Colors.transparent,
+            height: MediaQuery.of(context).size.height * 0.8,
             child: ValueListenableBuilder(
                 valueListenable: filterNotifier,
                 builder: (BuildContext context, String value, Widget? child) {
@@ -180,7 +185,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                           physics: isShimmerLoading
                               ? NeverScrollableScrollPhysics()
                               : null,
-                          padding: EdgeInsets.only(bottom: 40),
+                          padding: EdgeInsets.only(bottom: 70),
                           scrollDirection: Axis.vertical,
                           itemBuilder: (BuildContext context, int index) {
                             return listTile(
@@ -201,12 +206,18 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       PBISPlusHistoryModal obj, index, final bool isShimmerLoading) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(
-              color: Theme.of(context).colorScheme.background, width: 0.65),
+          // border: Border.all(
+          //     color: Theme.of(context).colorScheme.background, width: 0.65),
           borderRadius: BorderRadius.circular(0.0),
           color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
+              ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                  ? Color(0xff162429)
+                  : Color(0xffF7F8F9) //Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.background == Color(0xff000000)
+                  ? Color(0xff111C20)
+                  : Color(0xffE9ECEE),
+          // ? Theme.of(context).colorScheme.background
+          // : Theme.of(context).colorScheme.secondary,
         ),
         child: ListTile(
             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
@@ -225,10 +236,12 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 : Utility.textWidget(
                     text: obj.title ?? '',
                     context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(fontWeight: FontWeight.bold)),
+                    textTheme: Theme.of(context).textTheme.headline2!,
+                    // Theme.of(context)
+                    //     .textTheme
+                    //     .headline3!
+                    //     .copyWith(fontWeight: FontWeight.bold)
+                  ),
             subtitle: Row(children: [
               isShimmerLoading == true
                   ? localSimmerWidget(height: 10, width: 30)
