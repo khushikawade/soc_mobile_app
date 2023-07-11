@@ -41,8 +41,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   final ValueNotifier<bool> showErrorInSearch = ValueNotifier<bool>(false);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ValueNotifier<String> filterNotifier =
-      ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
   // search text editing controller
   final _searchController = TextEditingController();
   final _deBouncer = Debouncer(milliseconds: 500);
@@ -189,22 +187,18 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   Widget _listBuilder(List<PBISPlusNotesUniqueStudentList> studentNotesList,
       {required final bool isShimmerLoading}) {
     return Expanded(
-      child: ValueListenableBuilder(
-          valueListenable: filterNotifier,
-          builder: (BuildContext context, String value, Widget? child) {
-            return _searchController.text.isEmpty
-                ? RefreshIndicator(
-                    color: AppTheme.kButtonColor,
-                    key: refreshKey,
-                    onRefresh: refreshPage,
-                    child: studentNotesList.length > 0
-                        ? _buildListItem(studentNotesList, isShimmerLoading)
-                        : NoDataFoundErrorWidget(
-                            isResultNotFoundMsg: true,
-                            isNews: false,
-                            isEvents: false))
-                : _buildListItem(studentNotesList, isShimmerLoading);
-          }),
+      child: _searchController.text.isEmpty
+          ? RefreshIndicator(
+              color: AppTheme.kButtonColor,
+              key: refreshKey,
+              onRefresh: refreshPage,
+              child: studentNotesList.length > 0
+                  ? _buildListItem(studentNotesList, isShimmerLoading)
+                  : NoDataFoundErrorWidget(
+                      isResultNotFoundMsg: true,
+                      isNews: false,
+                      isEvents: false))
+          : _buildListItem(studentNotesList, isShimmerLoading),
     );
   }
 
