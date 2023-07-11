@@ -101,7 +101,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
-          _buildIconBar(),
+          _buildToggleButton(),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           buildTargetBehaviorWidget(),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
@@ -147,16 +147,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 ),
               )),
     );
-  }
-
-/*-------------------------------------------------------------------------------------------------------------- */
-/*------------------------------------------------_buildIconBar------------------------------------------------- */
-/*-------------------------------------------------------------------------------------------------------------- */
-  Widget _buildIconBar() {
-    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      // _buildBackIcon(),
-      _buildToggleButton()
-    ]);
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -231,15 +221,12 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       ? pbisPluCustomBehaviorBloc
                       : pbisPluDefaultBehaviorBloc,
                   builder: (context, state) {
-            
-
                     if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
                       return buildUsedBehaviors(
                           state.defaultSchoolBehaviorList, false);
                     }
 
                     if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
-                  
                       teacherCustomBehaviorList.value =
                           state.teacherCustomBehaviorList;
                       return ValueListenableBuilder(
@@ -342,7 +329,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           return !IsBehaviorAlreadyAvailable(draggedData!, skillsList);
         },
         onAccept: (PBISPlusCommonBehaviorModal draggedData) {
-     
           if (skillsList.length == 6) {
             return;
           }

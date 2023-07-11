@@ -659,16 +659,13 @@ class OcrUtility {
     } catch (e) {}
   }
 
-  static hideScreenKeyboard(BuildContext context) {
+  static focusUnfocusScreenContent(BuildContext context) {
     try {
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
       }
-      // FocusManager.instance.primaryFocus?.unfocus();
-    } catch (e) {
-      print("-----------------");
-    }
+    } catch (e) {}
   }
 }
 

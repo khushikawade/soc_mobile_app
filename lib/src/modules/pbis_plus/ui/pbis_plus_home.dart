@@ -1,15 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_custom_nav_bar_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_custom_nav_bar_widget.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_bottomnavbar.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 

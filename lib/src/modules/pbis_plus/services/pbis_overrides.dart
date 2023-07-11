@@ -33,7 +33,7 @@ class PBISPlusOverrides {
   static const String kresetOptionOnetitle = 'All Classes & Students';
   static const String kresetOptionTwotitle = 'Select Students';
   static const String kresetOptionThreetitle = 'Select Classes';
-  static const String kresetOptionFourtitle = 'Select Students by Classes';
+  static const String kresetOptionFourtitle = 'Select Students by Class';
 
 //PBIS custom behavior local DBs
   static final String PbisPlusDefaultBehaviorLocalDbTable =

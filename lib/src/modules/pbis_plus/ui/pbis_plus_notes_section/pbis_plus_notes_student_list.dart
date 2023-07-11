@@ -93,7 +93,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
 
   Widget body(BuildContext context) {
     return GestureDetector(
-      onTap: () => OcrUtility.hideScreenKeyboard(context),
+      onTap: () => OcrUtility.focusUnfocusScreenContent(context),
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: StudentPlusOverrides.kSymmetricPadding),
