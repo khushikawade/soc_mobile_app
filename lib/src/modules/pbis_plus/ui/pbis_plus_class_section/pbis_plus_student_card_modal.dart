@@ -240,6 +240,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     widget.isFromStudentPlus == true
                 ? MediaQuery.of(context).size.width * 0.2
                 : MediaQuery.of(context).size.width * 0.2 / 1.1,
+
+            ///1.1,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 color: AppTheme.kButtonColor,
@@ -260,33 +262,35 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                         .bodyText1!
                         .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  widget.isFromDashboardPage == true ||
-                          widget.isFromStudentPlus == true
-                      ? SpacerWidget(8)
-                      : SpacerWidget(4)
+                  // widget.isFromDashboardPage == true ||
+                  //         widget.isFromStudentPlus == true
+                  //     ? SpacerWidget(8)
+                  //     : SpacerWidget(4)
                 ])),
         Expanded(
             child: ValueListenableBuilder(
                 valueListenable: isNotesTextfieldEnable,
                 builder: (context, value, _) => Container(
-                    // alignment: widget.isFromDashboardPage == true ||
-                    //         widget.isFromStudentPlus == true
-                    //     ? Alignment.center
-                    //     : isNotesTextfieldEnable.value
-                    //         ? Alignment.topCenter
-                    //         : Alignment.center,
-                    // margin: isNotesTextfieldEnable.value
-                    //     ? EdgeInsets.only(top: 0)
-                    //     : EdgeInsets.all(0),
-                    // padding: EdgeInsets.only(
-                    //     top: isNotesTextfieldEnable.value ? 24 : 0,
-                    //     left: 10,
-                    //     right: 10),
+                    alignment:
+                        // widget.isFromDashboardPage == true ||
+                        //         widget.isFromStudentPlus == true
+                        //     ?
+                        Alignment.center,
+                    // : isNotesTextfieldEnable.value
+                    //     ? Alignment.topCenter
+                    //     : Alignment.center,
+                    margin: isNotesTextfieldEnable.value
+                        ? EdgeInsets.only(top: 0)
+                        : EdgeInsets.all(0),
+                    padding: EdgeInsets.only(
+                        // top: isNotesTextfieldEnable.value ? 24 : 0,
+                        left: 10,
+                        right: 10),
                     width: MediaQuery.of(context).size.width * 1,
                     child: ActionInteractionButtonsRowWise))),
-        widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
-            ? SizedBox.shrink()
-            : SpacerWidget(48)
+        // widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
+        //     ? SizedBox.shrink()
+        //     : SpacerWidget(48)
       ],
     );
 
