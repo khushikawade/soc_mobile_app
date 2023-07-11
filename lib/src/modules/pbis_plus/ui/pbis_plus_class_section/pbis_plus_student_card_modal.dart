@@ -65,17 +65,23 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<bool> isNotesTextfieldEnable = ValueNotifier<bool>(false);
   //---------------------------------------------------------------------------------------------
   final TextEditingController noteController = TextEditingController();
-  PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+  // PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
   PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
   ValueNotifier<double> cardHeight = ValueNotifier<double>(1);
   bool? isCustomBehavior = false;
 
+  PBISPlusBloc pbisPluDefaultBehaviorBloc = PBISPlusBloc();
+  PBISPlusBloc pbisPluCustomBehaviorBloc = PBISPlusBloc();
+
   @override
   void initState() {
     super.initState();
-    getTeacherSelectedToggleValue();
+    // getTeacherSelectedToggleValue();
     trackUserActivity();
+
+    pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
+    pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
   }
 
   @override
@@ -87,20 +93,20 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*--------------------------------------------getTeacherSelectedToggleValue------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-  void getTeacherSelectedToggleValue() async {
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      isCustomBehavior = await pref.getBool(Strings.isCustomBehavior);
-      PBISPlusEvent event;
+  // void getTeacherSelectedToggleValue() async {
+  //   try {
+  //     SharedPreferences pref = await SharedPreferences.getInstance();
+  //     isCustomBehavior = await pref.getBool(Strings.isCustomBehavior);
+  //     PBISPlusEvent event;
 
-      if (isCustomBehavior == true) {
-        event = PBISPlusGetTeacherCustomBehavior();
-      } else {
-        event = PBISPlusGetDefaultSchoolBehavior();
-      }
-      pBISPlusBloc.add(event);
-    } catch (e) {}
-  }
+  //     if (isCustomBehavior == true) {
+  //       event = PBISPlusGetTeacherCustomBehavior();
+  //     } else {
+  //       event = PBISPlusGetDefaultSchoolBehavior();
+  //     }
+  //     pBISPlusBloc.add(event);
+  //   } catch (e) {}
+  // }
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*---------------------------------------------------------MAIN METHOD------------------------------------------ */
@@ -199,36 +205,45 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------ActionInteractionButtonsRowWise------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-    Widget ActionInteractionButtonsRowWise = BlocBuilder(
-        bloc: pBISPlusBloc,
-        builder: (contxt, state) {
-          if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
-            return buildBehaviorGridView(
-                behaviorList: state.defaultSchoolBehaviorList, loading: false);
-          }
-          if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
-            if (state.teacherCustomBehaviorList.isNotEmpty) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                behvaiourIconListCount.value =
-                    state.teacherCustomBehaviorList.length;
+    Widget ActionInteractionButtonsRowWise = ValueListenableBuilder(
+        valueListenable: PBISPlusOverrides.isCustomBehavior,
+        builder: (context, value, _) {
+
+          return BlocBuilder(
+              bloc: PBISPlusOverrides.isCustomBehavior.value == true
+                  ? pbisPluCustomBehaviorBloc
+                  : pbisPluDefaultBehaviorBloc,
+              builder: (contxt, state) {
+                if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+                  return buildBehaviorGridView(
+                      behaviorList: state.defaultSchoolBehaviorList,
+                      loading: false);
+                }
+                if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
+                  if (state.teacherCustomBehaviorList.isNotEmpty) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      behvaiourIconListCount.value =
+                          state.teacherCustomBehaviorList.length;
+                    });
+
+                    return buildBehaviorGridView(
+                        behaviorList: state.teacherCustomBehaviorList,
+                        loading: false);
+                    //  buildBehaviorGridView(
+                    //   behaviorList: state.teacherCustomBehaviorList,
+                    // );
+                  } else {
+                    pbisPluCustomBehaviorBloc
+                        .add(PBISPlusGetDefaultSchoolBehavior());
+                  }
+                }
+
+                if (state is PBISPlusBehaviorLoading) {
+                  return buildBehaviorGridView(
+                      behaviorList: state.demoBehaviorData, loading: true);
+                }
+                return Container();
               });
-
-              return buildBehaviorGridView(
-                  behaviorList: state.teacherCustomBehaviorList,
-                  loading: false);
-              //  buildBehaviorGridView(
-              //   behaviorList: state.teacherCustomBehaviorList,
-              // );
-            } else {
-              pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-            }
-          }
-
-          if (state is PBISPlusBehaviorLoading) {
-            return buildBehaviorGridView(
-                behaviorList: state.demoBehaviorData, loading: true);
-          }
-          return Container();
         });
 
     final pbisStudentProfileWidget = Column(

@@ -68,6 +68,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       ScreenshotController(); // screenshot of whole list
   PBISPlusBloc pbisBloc = PBISPlusBloc();
   AnimationController? _animationController;
+
   @override
   void initState() {
     super.initState();
@@ -84,6 +85,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           duration: const Duration(seconds: 1),
           animationBehavior: AnimationBehavior.normal);
     } else {
+
       PBISPlusUtility.isCustomBehaviour();
     }
   }
