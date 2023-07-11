@@ -69,6 +69,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
   ValueNotifier<double> cardHeight = ValueNotifier<double>(1);
+  bool? isCustomBehavior = false;
 
   @override
   void initState() {
@@ -89,10 +90,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   void getTeacherSelectedToggleValue() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      final storedValue = pref.getBool(Strings.isCustomBehavior);
+      isCustomBehavior = await pref.getBool(Strings.isCustomBehavior);
       PBISPlusEvent event;
 
-      if (storedValue == true) {
+      if (isCustomBehavior == true) {
         event = PBISPlusGetTeacherCustomBehavior();
       } else {
         event = PBISPlusGetDefaultSchoolBehavior();
@@ -476,7 +477,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               padding: const EdgeInsets.all(4.0),
               child: ShimmerLoading(
                 isLoading: loading,
-                child: PBISPlusActionInteractionButton(
+                child: PBISPlusActionInteractionButton(isCustomBehavior: isCustomBehavior,
                   size: widget.isFromDashboardPage == true ||
                           widget.studentProfile == true
                       ? 48
