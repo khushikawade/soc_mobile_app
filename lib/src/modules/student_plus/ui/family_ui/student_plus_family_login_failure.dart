@@ -1,13 +1,16 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_otp.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusFamilyLogInFailure extends StatefulWidget {
   const StudentPlusFamilyLogInFailure({Key? key}) : super(key: key);
@@ -144,11 +147,16 @@ class _StudentPlusFamilyLogInFailureState
     return GradedPlusCustomFloatingActionButton(
       isExtended: true,
       fabWidth: MediaQuery.of(context).size.width * 0.7,
-      title: 'Generate OTP',
+      title: 'Try Again',
       onPressed: () async {
-        Navigator.push(
+        pushNewScreen(
           context,
-          MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
+          screen: StudentPlusHome(
+            sectionType: "Family",
+            studentPlusStudentInfo: StudentPlusDetailsModel(),
+            index: 0,
+          ),
+          withNavBar: false,
         );
       },
     );
