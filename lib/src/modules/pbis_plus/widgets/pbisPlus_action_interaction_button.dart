@@ -24,22 +24,23 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   final bool? isShowCircle;
   final double? size;
-  // final Size
-  // final Future<bool?> Function(bool)? onTapCallback;
+  final bool? isCustomBehavior;
 
-  PBISPlusActionInteractionButton({
-    Key? key,
-    this.isLoading,
-    this.isFromStudentPlus,
-    required this.iconData,
-    required this.studentValueNotifier,
-    required this.scaffoldKey,
-    required this.classroomCourseId,
-    required this.onValueUpdate,
-    required this.isShowCircle,
-    required this.size,
-    // required this.onTapCallback,
-  }) : super(key: key);
+  PBISPlusActionInteractionButton(
+      {Key? key,
+      this.isLoading,
+      this.isFromStudentPlus,
+      required this.iconData,
+      required this.studentValueNotifier,
+      required this.scaffoldKey,
+      required this.classroomCourseId,
+      required this.onValueUpdate,
+      required this.isShowCircle,
+      required this.size,
+      required this.isCustomBehavior
+      // required this.onTapCallback,
+      })
+      : super(key: key);
 
   @override
   State<PBISPlusActionInteractionButton> createState() =>
@@ -72,125 +73,112 @@ class PBISPlusActionInteractionButtonState
           onTap: () {},
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LikeButton(
-                      padding: EdgeInsets.only(
-                          top: widget.isFromStudentPlus == true ? 15 : 20,
-                          bottom: widget.isFromStudentPlus == true ? 0 : 14,
-                          left: 15,
-                          right: 5),
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      likeCountAnimationType: LikeCountAnimationType.none,
-                      likeCountPadding: const EdgeInsets.only(left: 0.0),
-                      animationDuration: Duration(
-                          milliseconds:
-                              widget.isFromStudentPlus == true ? 0 : 1000),
-                      countPostion: CountPostion.right,
-                      isLiked: null,
-                      size: widget.size!,
-                      onTap: widget.isLoading == true
-                          ?
-                          // Interaction should not be tappable in STUDENT+ module
-                          (bool isLiked) async {
-                              return false;
-                            }
-                          : _onLikeButtonTapped,
-                      circleColor: CircleColor(
-                        start: AppTheme.kButtonColor,
-                        end: AppTheme.kButtonColor,
-                      ),
-                      bubblesColor: BubblesColor(
-                        dotPrimaryColor: AppTheme.kButtonColor,
-                        dotSecondaryColor: AppTheme.kButtonColor,
-                      ),
-                      likeBuilder: (bool isLiked) {
-                        return CachedNetworkImage(
-                          imageUrl: widget.iconData.pBISBehaviorIconURLC!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LikeButton(
+                    padding: EdgeInsets.only(
+                        top: widget.isFromStudentPlus == true ? 15 : 20,
+                        bottom: widget.isFromStudentPlus == true ? 0 : 14,
+                        left: 15,
+                        right: 5),
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    likeCountAnimationType: LikeCountAnimationType.none,
+                    likeCountPadding: const EdgeInsets.only(left: 0.0),
+                    animationDuration: Duration(
+                        milliseconds:
+                            widget.isFromStudentPlus == true ? 0 : 1000),
+                    countPostion: CountPostion.right,
+                    isLiked: null,
+                    size: widget.size!,
+                    onTap: widget.isLoading == true
+                        ?
+                        // Interaction should not be tappable in STUDENT+ module
+                        (bool isLiked) async {
+                            return false;
+                          }
+                        : _onLikeButtonTapped,
+                    circleColor: CircleColor(
+                      start: AppTheme.kButtonColor,
+                      end: AppTheme.kButtonColor,
+                    ),
+                    bubblesColor: BubblesColor(
+                      dotPrimaryColor: AppTheme.kButtonColor,
+                      dotSecondaryColor: AppTheme.kButtonColor,
+                    ),
+                    likeBuilder: (bool isLiked) {
+                      return CachedNetworkImage(
+                        imageUrl: widget.iconData.pBISBehaviorIconURLC!,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          placeholder: (context, url) => ShimmerLoading(
-                            isLoading: true,
-                            child: Container(),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        );
-
-                        //  SvgPicture.asset(
-                        //   widget.iconData.imagePath,
-                        //   height: widget.size,
-                        //   width: widget.size,
-                        //   // height: Globals.deviceType == 'phone' ? 64 : 74,
-                        //   // width: Globals.deviceType == 'phone' ? 64 : 74,
-                        // );
-
-                        // Icon(widget.iconData.iconData,
-                        //     color: widget.iconData.color,
-                        //     size: Globals.deviceType == 'phone' ? 64 : 74);
-                      },
+                        ),
+                        placeholder: (context, url) => ShimmerLoading(
+                          isLoading: true,
+                          child: Container(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: widget.isFromStudentPlus == true ? 15 : 15,
+                      bottom: widget.isFromStudentPlus == true ? 0 : 5,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        // top: widget.isFromStudentPlus == true ? 15 : 0,
-                        // bottom: widget.isFromStudentPlus == true ? 0 : 5,
-                        top: widget.isFromStudentPlus == true ? 15 : 15,
-                        bottom: widget.isFromStudentPlus == true ? 0 : 5,
-                      ),
-                      child: ValueListenableBuilder(
-                          valueListenable: onTapDetect,
-                          builder: (BuildContext context, dynamic value,
-                              Widget? child) {
-                            return Container(
-                                height: 24,
-                                width: 24,
-                                alignment: Alignment.center,
-                                // padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: widget.isShowCircle!
-                                      ? Colors.grey[300]
-                                      : Colors.transparent,
-                                ),
-                                child: widget.isLoading == true
-                                    ? Utility.textWidget(
-                                        text: '0',
-                                        context: context,
-                                        textTheme: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18))
-                                    : buildCounts());
-                          }),
-                    )
-                  ],
-                ),
+                    child: ValueListenableBuilder(
+                        valueListenable: onTapDetect,
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return Container(
+                              height: 24,
+                              width: 24,
+                              alignment: Alignment.center,
+                              // padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: widget.isShowCircle!
+                                    ? Colors.grey[300]
+                                    : Colors.transparent,
+                              ),
+                              child: widget.isLoading == true
+                                  ? Utility.textWidget(
+                                      text: '0',
+                                      textAlign: TextAlign.center,
+                                      context: context,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18))
+                                  : buildCounts());
+                        }),
+                  )
+                ],
               ),
-              Padding(
-                padding: Globals.deviceType != 'phone'
-                    ? const EdgeInsets.all(0.0)
-                    : EdgeInsets.zero,
-                child: Utility.textWidget(
-                    text: widget.iconData.behaviorTitleC!,
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 15, fontWeight: FontWeight.w600)),
+              Center(
+                child: Padding(
+                  padding: Globals.deviceType != 'phone'
+                      ? const EdgeInsets.all(0.0)
+                      : EdgeInsets.zero,
+                  child: Utility.textWidget(
+                      textAlign: TextAlign.center,
+                      text: widget.iconData.behaviorTitleC!,
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontSize: 15, fontWeight: FontWeight.w600)),
+                ),
               ),
             ],
           ),

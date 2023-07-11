@@ -212,13 +212,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     classroomLoader = false;
                     _pageController.jumpToPage(2);
                   }),
-              Container(
-                padding: EdgeInsets.only(right: 16),
-                child: Divider(
-                  thickness: 1.0,
-                  color: Colors.grey,
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.only(right: 16),
+              //   child: Divider(
+              //     thickness: 1.0,
+              //     color: Colors.grey,
+              //   ),
+              // ),
             ],
             _listTileMenu(
                 leading: Icon(
@@ -440,6 +440,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   horizontal: 20,
                 ),
                 child: TextFieldWidget(
+                    context: context,
                     hintText: 'Points Possible',
                     msg: "Field is required",
                     keyboardType: TextInputType.number,
