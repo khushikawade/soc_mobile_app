@@ -93,62 +93,22 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   }
 
   Widget body(BuildContext context) {
-    return GestureDetector(
-      onTap: () => OcrUtility.focusUnfocusScreenContent(context),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: StudentPlusOverrides.kSymmetricPadding),
-        child: Column(
-          children: [
-            SpacerWidget(StudentPlusOverrides.KVerticalSpace / 8),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  // horizontal: StudentPlusOverrides.KVerticalSpace / 10,
-                  vertical: StudentPlusOverrides.KVerticalSpace / 5),
-              child: PlusScreenTitleWidget(
-                  kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                  text: 'Student Notes'),
-            ),
-            // SpacerWidget(_KVertcalSpace / 5),
-            searchBarWidget(),
-            validationMessageWidget(),
-            SpacerWidget(_KVertcalSpace / 5),
-            BlocConsumer(
-                bloc: PBISPlusBlocInstance,
-                builder: (context, state) {
-                  if (state is PBISPlusStudentListSucess) {
-                    //---------------------return the filter list to UI-----------//
-                    if (state.studentList.isNotEmpty) {
-                      //Storing the data in another list to use in search student functionality
-                      studentLocalList = state.studentList;
-                      return _listBuilder(state.studentList,
-                          isShimmerLoading: false);
-                    } else {
-                      return _noDataFoundWidget();
-                    }
-                  } else if (state is PBISPlusLoading ||
-                      state is PBISPlusInitial) {
-                    return _listBuilder(
-                        List.generate(
-                            10, (index) => PBISPlusNotesUniqueStudentList()),
-                        isShimmerLoading: true);
-                  } else if (state is PBISPlusStudentSearchSucess) {
-                    return _listBuilder(state.sortedList,
-                        isShimmerLoading: false);
-                  } else if (state is PBISErrorState) {
-                    return _noDataFoundWidget();
-                  }
-                  //Managing shimmer loading in case of initial loading
-                  return Container();
-                },
-                listener: (context, state) {
-                  if (state is PBISPlusImportRosterSuccess) {
-                    PBISPlusBlocInstance.add(
-                        GetPBISPlusStudentList(studentNotesList: null));
-                  }
-                })
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2.9),
+          PlusScreenTitleWidget(
+              kLabelSpacing: StudentPlusOverrides.kLabelSpacing / 6,
+              text: 'Student Notes'),
+          SpacerWidget(_KVertcalSpace / 2),
+          searchBarWidget(),
+          validationMessageWidget(),
+          SpacerWidget(_KVertcalSpace / 5),
+          _buildStudentList()
+        ],
       ),
     );
   }
@@ -246,7 +206,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
               isMainPage: false,
               autoFocus: !_searchController.text.isEmpty,
               controller: _searchController,
-              kLabelSpacing: _kLabelSpacing,
+              kLabelSpacing: 1,
               focusNode: searchFocusNode,
               onTap: () {},
               onItemChanged: onItemChanged);

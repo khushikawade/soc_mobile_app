@@ -1096,7 +1096,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             contentPadding: EdgeInsets.symmetric(horizontal: 0),
             title: Utility.textWidget(
                 context: context,
-                text: 'Select Students by Course',
+                text: 'Select Students by Classes',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
