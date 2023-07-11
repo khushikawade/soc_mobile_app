@@ -437,6 +437,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                         // height: MediaQuery.of(context).size.height * 0.6,
                         child: Center(
                           child: Container(
+                            
                             alignment: Alignment.center,
                             child: CircularProgressIndicator.adaptive(
                               backgroundColor: AppTheme.kButtonColor,
