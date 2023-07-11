@@ -658,6 +658,15 @@ class OcrUtility {
       prefs.setString(OcrOverrides.teacherId, techerId);
     } catch (e) {}
   }
+
+  static focusUnfocusScreenContent(BuildContext context) {
+    try {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    } catch (e) {}
+  }
 }
 
 /*------------------------------------------------------------------------------------------------*/

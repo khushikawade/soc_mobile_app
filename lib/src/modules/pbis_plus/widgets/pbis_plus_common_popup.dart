@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -92,9 +93,11 @@ class _PBISPlusDeleteBehaviorPopupState
                 SpacerWidget(MediaQuery.of(context).size.height / 40),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text("Are you sure you want to delete this item?",
+                    child: Utility.textWidget(
+                        context: context,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
+                        text: ("Are you sure you want to delete this item?"),
+                        textTheme: Theme.of(context)
                             .textTheme
                             .bodyText1!
                             .copyWith(fontSize: 16))),
