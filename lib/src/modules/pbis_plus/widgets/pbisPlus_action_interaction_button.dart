@@ -24,22 +24,23 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   final bool? isShowCircle;
   final double? size;
-  // final Size
-  // final Future<bool?> Function(bool)? onTapCallback;
+  final bool? isCustomBehavior;
 
-  PBISPlusActionInteractionButton({
-    Key? key,
-    this.isLoading,
-    this.isFromStudentPlus,
-    required this.iconData,
-    required this.studentValueNotifier,
-    required this.scaffoldKey,
-    required this.classroomCourseId,
-    required this.onValueUpdate,
-    required this.isShowCircle,
-    required this.size,
-    // required this.onTapCallback,
-  }) : super(key: key);
+  PBISPlusActionInteractionButton(
+      {Key? key,
+      this.isLoading,
+      this.isFromStudentPlus,
+      required this.iconData,
+      required this.studentValueNotifier,
+      required this.scaffoldKey,
+      required this.classroomCourseId,
+      required this.onValueUpdate,
+      required this.isShowCircle,
+      required this.size,
+      required this.isCustomBehavior
+      // required this.onTapCallback,
+      })
+      : super(key: key);
 
   @override
   State<PBISPlusActionInteractionButton> createState() =>
@@ -231,7 +232,8 @@ class PBISPlusActionInteractionButtonState
         studentId: widget.studentValueNotifier.value.profile!.id,
         studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
         classroomCourseId: widget.classroomCourseId,
-        behaviour: widget.iconData));
+        behaviour: widget.iconData,
+        isCustomBehavior: widget.isCustomBehavior));
 
     return true;
   }

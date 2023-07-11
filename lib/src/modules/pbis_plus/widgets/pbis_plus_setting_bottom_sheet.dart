@@ -276,7 +276,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           sectionName = text ?? '';
           selectedRecords.clear();
           selectedStudentList.clear();
-          print(text);
           switch (text) {
             case PBISPlusOverrides.kresetOptionOnetitle:
               PlusUtility.updateLogs(
@@ -751,7 +750,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
   Container blocListener() {
-    print("UI STATE------------BlocConsumer ");
     return Container(
       height: 0,
       width: 0,
@@ -760,14 +758,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           BlocConsumer<GoogleDriveBloc, GoogleDriveState>(
             bloc: googleDriveBloc,
             builder: (context, state) {
-              print("UI STATE------------GOOGLE STATE $state");
               return Container(
                 height: 0,
               );
             },
             listener: (context, state) async {
-              print("UI STATE------------GOOGLE STATE $state");
-
               if (state is GoogleFolderCreated) {
                 //In case of Folder Id received
                 _exportDataToSpreadSheet();
@@ -813,7 +808,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             bloc: pbisBloc,
             child: EmptyContainer(),
             listener: (context, state) async {
-              print("UI STATE------------pbisBloc STATE $state");
               if (state is PBISErrorState) {
                 Navigator.of(context).pop();
                 Utility.currentScreenSnackBar(
