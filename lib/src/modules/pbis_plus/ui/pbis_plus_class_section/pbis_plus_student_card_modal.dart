@@ -401,6 +401,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           HeroDialogRoute(
                                               builder: (context) =>
                                                   PBISPlusStudentDashBoard(
+                                                      pBISPlusBloc:
+                                                          pBISPlusBloc,
                                                       constraint:
                                                           widget.constraint,
                                                       scaffoldKey:
