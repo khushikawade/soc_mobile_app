@@ -152,6 +152,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           ? StudentPlusAppBar(
                               isWorkPage: false,
                               titleIconCode: 0xe825,
+                              refresh: (value) {},
                             )
                           : appBar(),
                       body: pbisPlusBody(context),

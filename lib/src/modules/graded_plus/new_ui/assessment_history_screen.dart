@@ -108,6 +108,11 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                iconData: IconData(
+          0xe824,
+          fontFamily: Overrides.kFontFam,
+          fontPackage: Overrides.kFontPkg,
+        ),
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {

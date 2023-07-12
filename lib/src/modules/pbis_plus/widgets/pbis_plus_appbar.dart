@@ -126,9 +126,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: widget.isGradedPlus == true
-          ? gradedLogoBuilder(context)
-          : widget.titleWidget ?? titleBuilder(context, widget.titleIconData),
+      title:
+          // widget.isGradedPlus == true
+          //     ? gradedLogoBuilder(context)
+          //     :
+          titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
