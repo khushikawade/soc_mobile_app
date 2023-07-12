@@ -59,6 +59,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   final ValueNotifier<bool> screenShotNotifier = ValueNotifier<bool>(false);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final double profilePictureSize = 30;
   static const double _KVerticalSpace = 60.0;
@@ -641,6 +642,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               heroTag: heroTag,
               classroomCourseId: classroomCourseId,
               scaffoldKey: _scaffoldKey,
+              pBISPlusNotesBloc: pBISPlusNotesBloc,
             )),
           ),
         );
@@ -696,13 +698,22 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 ),
               ),
               if (widget.isGradedPlus != true)
-                Positioned(
-                    top: 0,
-                    right: 0,
-                    child: ShimmerLoading(
-                        isLoading: isStudentInteractionLoading ||
-                            isScreenShimmerLoading,
-                        child: BuildStudentCountIndicator)),
+                BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                    bloc: pBISPlusNotesBloc,
+                    builder: (context, state) {
+                      return SizedBox.shrink();
+                    },
+                    listener: (context, state) async {
+                      if (state is PBISPlusAddNotesSucess) {
+                        Utility.currentScreenSnackBar(
+                            "Note added successfully", null);
+                        Navigator.pop(context, true);
+                      } else if (state is PBISErrorState) {
+                        Utility.currentScreenSnackBar(
+                            state.error.toString(), null);
+                        Navigator.pop(context, true);
+                      }
+                    })
             ],
           )),
     );
