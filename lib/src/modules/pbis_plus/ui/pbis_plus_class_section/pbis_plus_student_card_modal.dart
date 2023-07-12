@@ -219,7 +219,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         }
         return Container();
       },
-    listener: (contxt, state) {
+      listener: (contxt, state) {
         //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
         if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
           if (state.teacherCustomBehaviorList.isNotEmpty) {
@@ -232,7 +232,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           }
         }
       },
-    
     );
 
     final pbisStudentProfileWidget = Column(
@@ -473,6 +472,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     child: ShimmerLoading(
                         isLoading: loading,
                         child: PBISPlusActionInteractionButton(
+                            index: index,
                             isCustomBehavior: isCustomBehavior,
                             size: widget.isFromDashboardPage == true ||
                                     widget.studentProfile == true

@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,5 +49,13 @@ class PBISPlusUtility {
         : DateTime.now();
 
     return outputFormat.format(date);
+  }
+
+  static playSound(String audioPath) {
+    try {
+      AudioPlayer().play(AssetSource(audioPath));
+    } catch (e) {
+      print(e);
+    }
   }
 }
