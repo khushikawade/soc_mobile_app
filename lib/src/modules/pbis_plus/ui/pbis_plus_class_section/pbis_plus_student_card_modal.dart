@@ -561,14 +561,13 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   dynamic getContainerHeight(
       bool? isFromDashboardPage, double? constraint, itemcount) {
-    double spacing = MediaQuery.of(context).size.width * 0.2;
-    itemcount.value <= 3
+    double spacing = itemcount.value <= 3
         ? (widget.constraint <= 115)
             ? MediaQuery.of(context).size.width * 0.09
             : MediaQuery.of(context).size.width * 0.2
         // MediaQuery.of(context).size.width * 0.12
         : 0;
-
+    print(spacing);
     double height = Platform.isAndroid
         ? (widget.isFromDashboardPage == true ||
                 widget.isFromStudentPlus == true
