@@ -37,6 +37,7 @@ class individual extends State<StudentPlusGradesPage> {
   final _controller = TextEditingController(); // textController for search
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('');
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -87,8 +88,8 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+                widget.sectionType == "Student" ||
+                        widget.sectionType == 'Family'
                     ? Container()
                     : StudentPlusInfoSearchBar(
                         hintText:
@@ -133,22 +134,24 @@ class individual extends State<StudentPlusGradesPage> {
                             backgroundColor: AppTheme.kButtonColor,
                           ));
                     } else if (state is StudentPlusGradeSuccess) {
-                      return state.obj.length > 0 || state.courseList.length > 0
-                          ? GradesWidget(
+                      return
+                          // state.obj.length > 0 || state.courseList.length > 0
+                          //     ?
+                          GradesWidget(
                               chipList: state.chipList,
                               obj: state.obj,
-                              courseList: state.courseList)
-                          : Expanded(
-                              child: NoDataFoundErrorWidget(
-                                errorMessage:
-                                    StudentPlusOverrides.gradesErrorMessage,
-                                //  marginTop: 0,
-                                isResultNotFoundMsg: false,
-                                isNews: false,
-                                isEvents: false,
-                                isSearchpage: true,
-                              ),
-                            );
+                              courseList: state.courseList);
+                      // : Expanded(
+                      //     child: NoDataFoundErrorWidget(
+                      //       errorMessage:
+                      //           StudentPlusOverrides.gradesErrorMessage,
+                      //       //  marginTop: 0,
+                      //       isResultNotFoundMsg: false,
+                      //       isNews: false,
+                      //       isEvents: false,
+                      //       isSearchpage: true,
+                      //     ),
+                      //   );
                     } else {
                       return Container();
                     }
@@ -171,10 +174,10 @@ class individual extends State<StudentPlusGradesPage> {
       valueListenable: selectedValue,
       builder: (context, value, child) {
         return Container(
-          height: widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
-              ? MediaQuery.of(context).size.height * 0.75
-              : MediaQuery.of(context).size.height * 0.62,
+          height:
+              widget.sectionType == "Student" || widget.sectionType == 'Family'
+                  ? MediaQuery.of(context).size.height * 0.75
+                  : MediaQuery.of(context).size.height * 0.62,
           child: Column(
             // shrinkWrap: true,
             children: [
@@ -185,9 +188,13 @@ class individual extends State<StudentPlusGradesPage> {
               SpacerWidget(_kLabelSpacing / 2),
               HeaderTitle(), // widget to show header of list
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-              gradesListSectionWidget(
-                  list: obj,
-                  courseList: courseList) // widget to show grades class wise
+              Container(
+                height: widget.sectionType == "Student"
+                    ? MediaQuery.of(context).size.height * 0.56
+                    : MediaQuery.of(context).size.height * 0.46,
+                child:
+                    gradesListSectionWidget(list: obj, courseList: courseList),
+              ) // widget to show grades class wise
             ],
           ),
         );
@@ -263,9 +270,11 @@ class individual extends State<StudentPlusGradesPage> {
       }
     }
     return updatedList.length > 0 || courseList.length > 0
-        ? Expanded(
+        ? RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
             child: ListView.builder(
-              shrinkWrap: true,
+              //shrinkWrap: true,
               padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
               scrollDirection: Axis.vertical,
               itemCount: selectedValue.value == "Current"
@@ -282,14 +291,18 @@ class individual extends State<StudentPlusGradesPage> {
             ),
           )
         : Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: NoDataFoundErrorWidget(
-              marginTop: MediaQuery.of(context).size.height * 0.1,
-              errorMessage: StudentPlusOverrides.gradesErrorMessage,
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              isSearchpage: true,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: RefreshIndicator(
+              key: refreshKey,
+              onRefresh: refreshPage,
+              child: NoDataFoundErrorWidget(
+                marginTop: MediaQuery.of(context).size.height * 0.1,
+                errorMessage: StudentPlusOverrides.gradesErrorMessage,
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                isSearchpage: true,
+              ),
             ),
           );
   }
@@ -442,5 +455,16 @@ class individual extends State<StudentPlusGradesPage> {
         ),
       ),
     );
+  }
+
+  /* ------------------------- function call when pull to refresh perform ------------------------- */
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
+            widget.sectionType == 'Family'
+        ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
+        : FetchStudentGradesWithClassroomEvent(
+            studentId: widget.studentDetails.studentIdC));
   }
 }

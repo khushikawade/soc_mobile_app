@@ -1,13 +1,23 @@
 import 'package:Soc/src/globals.dart';
+
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
+
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
+
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_success.dart';
+
 import 'package:Soc/src/modules/student_plus/widgets/timer_animated_widget.dart';
+
 import 'package:Soc/src/overrides.dart';
+
 import 'package:Soc/src/services/utility.dart';
+
 import 'package:Soc/src/styles/theme.dart';
+
 import 'package:Soc/src/widgets/spacer_widget.dart';
+
 import 'package:flutter/material.dart';
 
 class StudentPlusFamilyOtp extends StatefulWidget {
@@ -20,8 +30,11 @@ class StudentPlusFamilyOtp extends StatefulWidget {
 class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
     with TickerProviderStateMixin {
   TextEditingController emailEditingController = TextEditingController();
+
   int _counter = 0;
+
   AnimationController? _controller;
+
   int levelClock = 60;
 
   @override
@@ -31,17 +44,20 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         duration: Duration(
             seconds:
                 levelClock) // gameData.levelClock is a user entered number elsewhere in the applciation
+
         );
 
     _controller!.forward();
 
     // TODO: implement initState
+
     super.initState();
   }
 
   @override
   void dispose() {
     _controller!.dispose();
+
     super.dispose();
   }
 
@@ -52,31 +68,44 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-         appBar: FamilyLoginCommonWidget.familyLoginAppBar(context:context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.06),
+
                 FamilyLoginCommonWidget.titleAndDesWidget(
                     context: context,
                     title: 'Enter Your Passcode',
                     description:
                         'Enter the one-time password we just sent to your email address.'),
-                SpacerWidget(MediaQuery.of(context).size.height * 0.1),
+
+                SpacerWidget(MediaQuery.of(context).size.height * 0.07),
+
                 FamilyLoginCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/otp_lock.png'),
+
                 SpacerWidget(20),
+
                 otpWidget(),
+
                 SpacerWidget(30),
+
                 timerWidget(),
+
                 SpacerWidget(10),
+
                 reSendButtonTextWidget(),
+
                 SpacerWidget(30),
+
                 // Container(
+
                 //     margin: EdgeInsets.symmetric(horizontal: 20),
+
                 //     child: fabButton())
               ],
             ),
@@ -137,6 +166,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         Countdown(
           animation: StepTween(
             begin: levelClock, // THIS IS A USER ENTERED NUMBER
+
             end: 0,
           ).animate(_controller!),
         ),
@@ -145,6 +175,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   }
 
   /* ----------------------------- widget to show generate otp button ----------------------------- */
+
   Widget fabButton() {
     return GradedPlusCustomFloatingActionButton(
       isExtended: true,
@@ -163,33 +194,36 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   Widget _buildOtpField(GlobalKey<FormFieldState<String>> fieldKey, int index) {
     return Container(
       width: 60.0,
-      child: TextFormField(
-        key: fieldKey,
-        textAlignVertical: TextAlignVertical.center,
-        maxLength: 1,
-        onChanged: (value) => _onOtpChanged(index, value),
-        keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headline5,
-        showCursor: false,
-        decoration: InputDecoration(
-            fillColor: Colors.transparent,
-            labelStyle: Theme.of(context).textTheme.headline3,
-            hintText: '-',
-            counterText: "",
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppTheme.kButtonColor, width: 1),
-            ),
-            focusedErrorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.red, width: 1),
-            ),
-            errorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.red, width: 1),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey, width: 1),
-            ),
-            border: new UnderlineInputBorder(
-                borderSide: new BorderSide(color: Colors.red))),
+      child: Center(
+        child: TextFormField(
+          key: fieldKey,
+          maxLength: 1,
+          onChanged: (value) => _onOtpChanged(index, value),
+          keyboardType: TextInputType.number,
+          style: Theme.of(context).textTheme.headline5,
+          textAlign: TextAlign.center,
+          showCursor: true,
+          cursorColor: Theme.of(context).colorScheme.primaryVariant,
+          decoration: InputDecoration(
+              fillColor: Colors.transparent,
+              labelStyle: Theme.of(context).textTheme.headline3,
+              hintText: '-',
+              counterText: "",
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.kButtonColor, width: 1),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red, width: 1),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red, width: 1),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 1),
+              ),
+              border: new UnderlineInputBorder(
+                  borderSide: new BorderSide(color: Colors.red))),
+        ),
       ),
     );
   }
@@ -203,21 +237,22 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   List<String> otp = List.filled(4, '');
 
   final otpFieldKey1 = GlobalKey<FormFieldState<String>>();
+
   final otpFieldKey2 = GlobalKey<FormFieldState<String>>();
+
   final otpFieldKey3 = GlobalKey<FormFieldState<String>>();
+
   final otpFieldKey4 = GlobalKey<FormFieldState<String>>();
 
   void _onOtpChanged(int index, String value) {
-    if (value.length == 1) {
+    if (value == '') {
+      FocusScope.of(context).previousFocus();
+    } else if (value.length == 1) {
       if (index < otp.length - 1) {
         FocusScope.of(context).nextFocus();
       } else {
         FocusScope.of(context).unfocus();
       }
     }
-
-    setState(() {
-      otp[index] = value;
-    });
   }
 }

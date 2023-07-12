@@ -1,13 +1,15 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_otp.dart';
-import 'package:Soc/src/overrides.dart';
+
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusFamilyLogIn extends StatefulWidget {
   const StudentPlusFamilyLogIn({Key? key}) : super(key: key);
@@ -17,15 +19,18 @@ class StudentPlusFamilyLogIn extends StatefulWidget {
 }
 
 class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
+  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
   TextEditingController emailEditingController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context:context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
@@ -61,7 +66,42 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        familyLoginBlocListener()
       ],
+    );
+  }
+
+  /* ------------------------- bloc listener widget to manage family login ------------------------- */
+
+  Widget familyLoginBlocListener() {
+    return BlocListener(
+      bloc: studentPlusBloc,
+      child: Container(),
+      listener: (context, state) {
+        if (state is FamilyLoginOtpSendSuccess) {
+          Utility.showSnackBar(
+              _scaffoldKey, "Otp Send Successfully", context, null);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
+          );
+        } else if (state is FamilyLoginOtpSendFailure) {
+          Utility.showSnackBar(
+              _scaffoldKey,
+              "User is not authorized to access student plus in family section",
+              context,
+              null);
+          Navigator.pop(context);
+        } else if (state is FamilyLoginErrorReceived) {
+          Utility.showSnackBar(
+              _scaffoldKey, "Something Went Wrong", context, null);
+          Navigator.pop(context);
+        } else if (state is FamilyLoginLoading) {
+          Utility.showLoadingDialog(
+              context: context, msg: 'Please wait', isOCR: false);
+        }
+      },
     );
   }
 
@@ -113,16 +153,22 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
                 color: AppTheme.kButtonColor,
               ),
             ),
-            suffixIcon: IconButton(
-              onPressed: () {
-                emailEditingController.clear();
-              },
-              icon: Icon(
-                Icons.clear,
-                color: Theme.of(context).colorScheme.primaryVariant,
-                size: Globals.deviceType == "phone" ? 20 : 28,
-              ),
-            ),
+            suffixIcon: isValidEmail(emailEditingController.text)
+                ? Icon(
+                    Icons.check_circle_sharp,
+                    color: AppTheme.kButtonColor,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  )
+                : IconButton(
+                    onPressed: () {
+                      emailEditingController.clear();
+                    },
+                    icon: Icon(
+                      Icons.clear,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ),
+                  ),
             prefix: SizedBox(
               width: 20,
             )),
@@ -135,7 +181,9 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           }
           return null;
         },
-        onChanged: (value) {},
+        // onChanged: (value) {
+        //   emailEditingController.text = value;
+        // },
       ),
     );
   }
@@ -147,10 +195,10 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       fabWidth: MediaQuery.of(context).size.width * 0.75,
       title: 'Generate OTP',
       onPressed: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
-        );
+        if (isValidEmail(emailEditingController.text)) {
+          studentPlusBloc
+              .add(SendOtpFamilyLogin(emailId: emailEditingController.text));
+        }
       },
     );
   }

@@ -119,3 +119,36 @@ class FetchStudentGradesWithClassroomEvent extends StudentPlusEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $studentId}';
 }
+
+/* ---------------- Event use to trigger get otp for family login --------------- */
+class SendOtpFamilyLogin extends StudentPlusEvent {
+  final String emailId;
+  SendOtpFamilyLogin({required this.emailId});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
+/* ---------------- Event use to trigger Check otp for family login --------------- */
+class CheckOtpFamilyLogin extends StudentPlusEvent {
+  final String emailId;
+  final String otp;
+  CheckOtpFamilyLogin({required this.emailId, required this.otp});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
+/* ---------------- Event use to trigger get student list for family login --------------- */
+class GetStudentListFamilyLogin extends StudentPlusEvent {
+  final String familyAuthToken;
+  GetStudentListFamilyLogin({required this.familyAuthToken});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
+
