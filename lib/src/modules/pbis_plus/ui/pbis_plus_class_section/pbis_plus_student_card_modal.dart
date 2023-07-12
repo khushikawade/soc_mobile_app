@@ -208,7 +208,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     Widget ActionInteractionButtonsRowWise = ValueListenableBuilder(
         valueListenable: PBISPlusOverrides.isCustomBehavior,
         builder: (context, value, _) {
-
           return BlocBuilder(
               bloc: PBISPlusOverrides.isCustomBehavior.value == true
                   ? pbisPluCustomBehaviorBloc
@@ -224,11 +223,19 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       behvaiourIconListCount.value =
                           state.teacherCustomBehaviorList.length;
+                      PBISPlusOverrides.teacherCustomBehaviorList.value =
+                          state.teacherCustomBehaviorList;
                     });
 
-                    return buildBehaviorGridView(
-                        behaviorList: state.teacherCustomBehaviorList,
-                        loading: false);
+                    return ValueListenableBuilder(
+                        valueListenable:
+                            PBISPlusOverrides.teacherCustomBehaviorList,
+                        builder: (context, value, _) {
+                          return buildBehaviorGridView(
+                              behaviorList: PBISPlusOverrides
+                                  .teacherCustomBehaviorList.value,
+                              loading: false);
+                        });
                     //  buildBehaviorGridView(
                     //   behaviorList: state.teacherCustomBehaviorList,
                     // );

@@ -82,7 +82,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     /*-------------------------User Activity Track END----------------------------*/
 
     super.initState();
-
   }
 
   /*--------------------------------------------------------------------------------------------------------*/

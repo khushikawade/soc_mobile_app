@@ -147,44 +147,71 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                 child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: ValueListenableBuilder(
-                        valueListenable: widget.valueChange,
+                        valueListenable: PBISPlusOverrides.isCustomBehavior,
                         builder: (BuildContext context, value, Widget? child) {
-                          return ValueListenableBuilder<ClassroomStudents>(
-                            valueListenable: widget.studentValueNotifier,
-                            builder: (BuildContext context,
-                                ClassroomStudents value, Widget? child) {
-                              return
-                                  // widget.isLoading == true
-                                  //     ? ShimmerLoading(
-                                  //         child: Container(
-                                  //           height: 10,
-                                  //           width: 10,
-                                  //           color: Colors.black,
-                                  //         ),
-                                  //         isLoading: widget.isLoading)
-                                  //     :
-                                  //TODOPBIS:
-                                  Text(
-                                PBISPlusUtility.numberAbbreviationFormat(
-                                    // widget
-                                    //       .studentValueNotifier
-                                    //       .value
-                                    //       .profile!
-                                    //       .behavior1!
-                                    //       .counter! +
-                                    //   widget.studentValueNotifier.value.profile!
-                                    //       .behavior2!.counter! +
-                                    //   widget.studentValueNotifier.value.profile!
-                                    //       .behavior3!.counter!
-                                    PBISPlusUtility.getStudentTotalCounts(
-                                        widget.studentValueNotifier.value)),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              );
-                            },
-                          );
+                          return ValueListenableBuilder(
+                              valueListenable:
+                                  PBISPlusOverrides.teacherCustomBehaviorList,
+                              builder:
+                                  (BuildContext context, value, Widget? child) {
+                                return ValueListenableBuilder(
+                                    valueListenable: widget.valueChange,
+                                    builder: (BuildContext context, value,
+                                        Widget? child) {
+                                      return ValueListenableBuilder<
+                                          ClassroomStudents>(
+                                        valueListenable:
+                                            widget.studentValueNotifier,
+                                        builder: (BuildContext context,
+                                            ClassroomStudents value,
+                                            Widget? child) {
+                                          return
+                                              // widget.isLoading == true
+                                              //     ? ShimmerLoading(
+                                              //         child: Container(
+                                              //           height: 10,
+                                              //           width: 10,
+                                              //           color: Colors.black,
+                                              //         ),
+                                              //         isLoading: widget.isLoading)
+                                              //     :
+                                              //TODOPBIS:
+                                              Text(
+                                            PBISPlusUtility
+                                                .numberAbbreviationFormat(
+                                                    // widget
+                                                    //       .studentValueNotifier
+                                                    //       .value
+                                                    //       .profile!
+                                                    //       .behavior1!
+                                                    //       .counter! +
+                                                    //   widget.studentValueNotifier.value.profile!
+                                                    //       .behavior2!.counter! +
+                                                    //   widget.studentValueNotifier.value.profile!
+                                                    //       .behavior3!.counter!
+                                                    PBISPlusUtility.getStudentTotalCounts(
+                                                        student: widget
+                                                            .studentValueNotifier
+                                                            .value,
+                                                        isCustomBehavior:
+                                                            PBISPlusOverrides
+                                                                .isCustomBehavior
+                                                                .value,
+                                                        teacherCustomBehaviorList:
+                                                            PBISPlusOverrides
+                                                                .teacherCustomBehaviorList
+                                                                .value)),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          );
+                                        },
+                                      );
+                                    });
+                              });
                         })),
               ),
             ),
@@ -213,7 +240,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             ),
           ),
           child: CircleAvatar(
-            radius: widget.profilePictureSize ,
+            radius: widget.profilePictureSize,
             backgroundColor: Colors.transparent,
             child: Icon(
               Icons.person,

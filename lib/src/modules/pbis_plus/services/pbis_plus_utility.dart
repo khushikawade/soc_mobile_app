@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -54,12 +55,29 @@ class PBISPlusUtility {
     return outputFormat.format(date);
   }
 
-  static String getStudentTotalCounts(ClassroomStudents student) {
+  static String getStudentTotalCounts(
+      {required ClassroomStudents student,
+      required bool? isCustomBehavior,
+      required List<PBISPlusCommonBehaviorModal> teacherCustomBehaviorList}) {
     try {
-      // Get the total counts
-      int? totalCounts = student.profile!.behaviorList!
-          .map((behavior) => behavior.score ?? 0)
-          .reduce((sum, count) => sum + count);
+      int totalCounts = 0;
+
+      if (isCustomBehavior == true) {
+        for (PBISPlusCommonBehaviorModal CustomBehavior
+            in teacherCustomBehaviorList) {
+          for (BehaviorList Behavior in student.profile!.behaviorList ?? []) {
+            if (Behavior.id == CustomBehavior.id) {
+              var score = Behavior.score ?? 0;
+              totalCounts += score;
+              break;
+            }
+          }
+        }
+      } else {
+        totalCounts = student.profile!.behaviorList!
+            .map((behavior) => behavior.score ?? 0)
+            .reduce((sum, count) => sum + count);
+      }
 
       return totalCounts?.toString() ?? "0";
     } catch (e) {
@@ -81,3 +99,22 @@ class PBISPlusUtility {
     } catch (e) {}
   }
 }
+
+List list1 = [
+  {"id": "1", "name": "music", "score": " 10"},
+  {"id": "2", "name": "value", "score": " 6"},
+  {"id": "3", "name": "ctr", "score": " 5"},
+  {"id": "4", "name": "variable", "score": " 4"},
+  {"id": "5", "name": "car", "score": " 8"},
+  {"id": "6", "name": "bike", "score": " 0"},
+];
+List list2 = [
+  {
+    "id": "4",
+    "name": "music",
+  },
+  {
+    "id": "5",
+    "name": "value",
+  },
+];

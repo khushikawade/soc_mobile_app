@@ -85,7 +85,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           duration: const Duration(seconds: 1),
           animationBehavior: AnimationBehavior.normal);
     } else {
-
       PBISPlusUtility.isCustomBehaviour();
     }
   }
@@ -582,8 +581,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           // studentValueNotifier.value!.profile!.engaged! +
                           //     studentValueNotifier.value!.profile!.niceWork! +
                           //     studentValueNotifier.value!.profile!.helpful!
-                          PBISPlusUtility.getStudentTotalCounts(
-                              studentValueNotifier.value)),
+                          // PBISPlusUtility.getStudentTotalCounts(
+                          //    studentValueNotifier.value)
+                          "0"),
                       style: TextStyle(
                         color: Theme.of(context).backgroundColor,
                         fontWeight: FontWeight.bold,

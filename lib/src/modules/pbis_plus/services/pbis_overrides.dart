@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:flutter/widgets.dart';
 
 class PBISPlusOverrides {
@@ -45,4 +46,7 @@ class PBISPlusOverrides {
       'pbis_plus_custom_behavior';
   static final ValueNotifier<bool> isCustomBehavior =
       ValueNotifier<bool>(false);
+  static final ValueNotifier<List<PBISPlusCommonBehaviorModal>>
+      teacherCustomBehaviorList =
+      ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
 }
