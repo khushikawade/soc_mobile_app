@@ -15,6 +15,11 @@ class FetchGoogleSheet {
               studentAssessmentInfo.studentId =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
+            case 'ID':
+              studentAssessmentInfo.studentId =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+
             case 'Email Id':
               studentAssessmentInfo.studentId =
                   fields[j][i].toString().replaceFirst(" ", "");
@@ -42,11 +47,20 @@ class FetchGoogleSheet {
               studentAssessmentInfo.questionImgUrl =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
+            case 'Assignment Image':
+              studentAssessmentInfo.questionImgUrl =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+
             case 'Grade':
               studentAssessmentInfo.grade =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
             case 'Class Name':
+              studentAssessmentInfo.className =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+            case 'Class':
               studentAssessmentInfo.className =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
@@ -93,12 +107,27 @@ class FetchGoogleSheet {
               }
 
               break;
+            case 'Student Assignment Image':
+              if (Overrides.STANDALONE_GRADED_APP == true) {
+                studentAssessmentInfo.questionImgUrl =
+                    fields[j][i].toString().replaceFirst(" ", "");
+              } else {
+                studentAssessmentInfo.assessmentImage =
+                    fields[j][i].toString().replaceFirst(" ", "");
+              }
+
+              break;
             case 'Student Work Image':
               studentAssessmentInfo.assessmentImage =
                   fields[j][i].toString().replaceFirst(" ", "");
 
               break;
             case 'Presentation URL':
+              studentAssessmentInfo.googleSlidePresentationURL =
+                  fields[j][i].toString().replaceFirst(" ", "");
+
+              break;
+            case 'Assignment Presentation':
               studentAssessmentInfo.googleSlidePresentationURL =
                   fields[j][i].toString().replaceFirst(" ", "");
 
