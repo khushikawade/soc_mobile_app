@@ -713,7 +713,7 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorizontalSpacerWidget(_kLabelSpacing / 2),
         TranslationWidget(
-          message: "Recent Search",
+          message: "Recent Searches",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(

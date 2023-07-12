@@ -5,16 +5,12 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
-
 import 'package:Soc/src/services/user_profile.dart';
-
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +22,11 @@ import 'package:open_apps_settings/settings_enum.dart';
 class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
-  //final ValueChanged? refresh;
+  final ValueChanged? refresh;
   StudentPlusAppBar({
     Key? key,
     this.titleIconCode,
-    // required this.refresh,
+    required this.refresh,
     this.isWorkPage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -174,7 +170,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // widget.refresh!(true);
+              widget.refresh!(true);
             }
           });
         },
@@ -248,7 +244,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
   Widget allScreenIconWidget() {
     return Container(
-      padding: EdgeInsets.only(right: 7),
+      padding: EdgeInsets.only(right: widget.titleIconCode == 0xe881 ? 0 : 7),
       child: Icon(
         IconData(
           widget.titleIconCode!,

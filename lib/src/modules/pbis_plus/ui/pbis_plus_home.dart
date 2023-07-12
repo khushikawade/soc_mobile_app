@@ -105,6 +105,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       onWillPop: (context) async {
         return false;
       },
+
       screenTransitionAnimation: ScreenTransitionAnimation(
         animateTabTransition: false,
         curve: Curves.ease,
