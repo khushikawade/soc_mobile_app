@@ -42,7 +42,7 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
   ValueNotifier<bool> isValueChangeNotice = ValueNotifier<bool>(false);
-  PBISPlusBloc? pBISPlusBloc;
+  PBISPlusBloc pBISPlusBloc;
 
   PBISPlusStudentDashBoard(
       {Key? key,
@@ -109,8 +109,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   @override
   void dispose() {
-    _scrollController!.removeListener(_handleScroll);
+     if (widget.isFromStudentPlus != true) {
+         _scrollController!.removeListener(_handleScroll);
     _scrollController!.dispose();
+     }
+ 
     super.dispose();
   }
 
