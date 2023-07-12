@@ -513,52 +513,51 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       {required List<PBISPlusCommonBehaviorModal> behaviorList,
       bool loading = false}) {
     return GridView.builder(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: widget.isFromDashboardPage == true ? 1.1 : 0.9,
-          // Adjust this value to change item aspect ratio
-          crossAxisSpacing: 4.0,
-          // Adjust the spacing between items horizontally
-          mainAxisSpacing: 4.0
-          // Adjust the spacing between items vertically
-          ),
-      itemCount: behaviorList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return FittedBox(
-            child: Center(
-                child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ShimmerLoading(
-                        isLoading: loading,
-                        child: PBISPlusActionInteractionButton(
-                            index: index,
-                            isCustomBehavior: isCustomBehavior,
-                            size: widget.isFromDashboardPage == true ||
-                                    widget.studentProfile == true
-                                ? 48
-                                : 64,
-                            isShowCircle: true,
-                            onValueUpdate: (updatedStudentValueNotifier) {
-                              widget.classroomCourseId =
-                                  widget.classroomCourseId;
-                              widget.onValueUpdate(
-                                  updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                              widget.studentValueNotifier =
-                                  updatedStudentValueNotifier; // Used on current screen to update the value
-                              valueChange.value = !valueChange
-                                  .value; // Update the changes on bool change detect
-                            },
-                            isLoading: widget.isLoading,
-                            isFromStudentPlus: widget.isFromStudentPlus,
-                            studentValueNotifier: widget.studentValueNotifier,
-                            iconData: behaviorList[index],
-                            classroomCourseId: widget.classroomCourseId,
-                            scaffoldKey: widget.scaffoldKey)))));
-      },
-    );
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: widget.isFromDashboardPage == true ? 1.1 : 0.9,
+            // Adjust this value to change item aspect ratio
+            crossAxisSpacing: 4.0,
+            // Adjust the spacing between items horizontally
+            mainAxisSpacing: 4.0
+            // Adjust the spacing between items vertically
+            ),
+        itemCount: behaviorList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return FittedBox(
+              child: Center(
+                  child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ShimmerLoading(
+                          isLoading: loading,
+                          child: PBISPlusActionInteractionButton(
+                              index: index,
+                              isCustomBehavior: isCustomBehavior,
+                              size: widget.isFromDashboardPage == true ||
+                                      widget.studentProfile == true
+                                  ? 48
+                                  : 64,
+                              isShowCircle: true,
+                              onValueUpdate: (updatedStudentValueNotifier) {
+                                widget.classroomCourseId =
+                                    widget.classroomCourseId;
+                                widget.onValueUpdate(
+                                    updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+                                widget.studentValueNotifier =
+                                    updatedStudentValueNotifier; // Used on current screen to update the value
+                                valueChange.value = !valueChange
+                                    .value; // Update the changes on bool change detect
+                              },
+                              isLoading: widget.isLoading,
+                              isFromStudentPlus: widget.isFromStudentPlus,
+                              studentValueNotifier: widget.studentValueNotifier,
+                              iconData: behaviorList[index],
+                              classroomCourseId: widget.classroomCourseId,
+                              scaffoldKey: widget.scaffoldKey)))));
+        });
   }
 
   dynamic getContainerHeight(
