@@ -416,17 +416,17 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     if (event is VerifyOtpFamilyLogin) {
       try {
         yield FamilyLoginLoading();
-        var result = await verifyOtpFamilyLogin(emailId: event.emailId);
+        var result =
+            await verifyOtpFamilyLogin(emailId: event.emailId, otp: event.otp);
         if (result) {
-          yield FamilyLoginOtpSendSuccess();
+          yield FamilyLoginOtpVerifySuccess(authToken: result.toString());
         } else {
-          yield FamilyLoginOtpSendFailure();
+          yield FamilyLoginOtpVerifyFailure();
         }
       } catch (e) {
         yield FamilyLoginErrorReceived(err: e);
       }
     }
-    
   }
 
   /* -------------------------------------------------------------------------- */
@@ -442,8 +442,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           body: {"email": emailId, "schoolId": "${Globals.appSetting.id}"},
           isGoogleApi: true);
 
-      if (response.statusCode == 200 &&
-          response.data["statusCode"] == 200) {
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
         return true;
       } else {
         return false;
@@ -453,19 +452,22 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-
   /* --------------- Function to send otp family login -------------- */
-  Future<bool> verifyOtpFamilyLogin({required String emailId, required }) async {
+  Future<bool> verifyOtpFamilyLogin(
+      {required String emailId, required String otp}) async {
     try {
       final ResponseModel response = await _dbServices.postApi(
-          "${FamilyLoginOverride.familyLoginUrl}/parent-login",
+          "${FamilyLoginOverride.familyLoginUrl}/parent-otp-verify",
           headers: {"Content-Type": "application/json"},
-          body: {"email": emailId, "schoolId": "${Globals.appSetting.id}"},
+          body: {
+            "email": emailId,
+            "schoolId": "${Globals.appSetting.id}",
+            "otp": otp
+          },
           isGoogleApi: true);
 
-      if (response.statusCode == 200 &&
-          response.data["statusCode"] == 200) {
-        return true;
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        return response.statusCode["authToken"];
       } else {
         return false;
       }
