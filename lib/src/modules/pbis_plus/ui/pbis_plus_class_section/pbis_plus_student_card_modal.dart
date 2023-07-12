@@ -121,101 +121,105 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   @override
   Widget build(BuildContext context) {
     //----------------------------------------------NOTES TEXT FIELD-------------------------------------------//
-    final Column addNotes = Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          isNotesTextfieldEnable.value == true
-              ? SizedBox.shrink()
-              : Container(
-                  height: 0.1,
-                  width: double.infinity,
-                  color: Color(0xff000000) != Theme.of(context).backgroundColor
-                      ? Color(0xff111C20)
-                      : Color(0xffF7F8F9)),
-          ValueListenableBuilder(
-              valueListenable: isNotesTextfieldEnable,
-              builder: (context, value, _) => TextFormField(
-                    minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                    maxLines: 7,
-                    focusNode: _focusNode,
-                    autofocus: isNotesTextfieldEnable.value,
-                    textAlign: isNotesTextfieldEnable.value
-                        ? TextAlign.start
-                        : TextAlign.center,
-                    controller: noteController,
-                    onChanged: (value) {
-                      isNotesTextfieldEnable.value = true;
-                      // if (noteController.text.isEmpty) {
-                      //   isNotesTextfieldEnable.value = false;
-                      // }
-                    },
-                    cursorColor:
+    final addNotes = Container(
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            isNotesTextfieldEnable.value == true
+                ? SizedBox.shrink()
+                : Container(
+                    height: 0.1,
+                    width: double.infinity,
+                    color:
                         Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
-                            : Color(0xffF7F8F9),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor:
+                            : Color(0xffF7F8F9)),
+            ValueListenableBuilder(
+                valueListenable: isNotesTextfieldEnable,
+                builder: (context, value, _) => TextFormField(
+                      minLines: isNotesTextfieldEnable.value == true ? null : 1,
+                      maxLines: 7,
+                      focusNode: _focusNode,
+                      autofocus: isNotesTextfieldEnable.value,
+                      textAlign: isNotesTextfieldEnable.value
+                          ? TextAlign.start
+                          : TextAlign.center,
+                      controller: noteController,
+                      onChanged: (value) {
+                        isNotesTextfieldEnable.value = true;
+                        // if (noteController.text.isEmpty) {
+                        //   isNotesTextfieldEnable.value = false;
+                        // }
+                      },
+                      cursorColor:
                           Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      // Color(0xffF7F8F9),
-                      hintText: isNotesTextfieldEnable.value ? "" : "Add Note",
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(
-                              fontSize: 14,
-                              color: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                              fontWeight: FontWeight.w400),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 0.0, color: Colors.transparent),
-                      ),
-
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 0.0, color: Colors.transparent),
-                      ),
-                    ),
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        fontSize: 14,
-                        color: Color(0xff000000) !=
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
-                            ? Color(0xff111C20)
-                            : Color(0xffF7F8F9),
-                        fontWeight: FontWeight.w400),
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.next,
-                  )),
-          //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
-          BlocConsumer<PBISPlusBloc, PBISPlusState>(
-              bloc: widget.pBISPlusNotesBloc,
-              builder: (context, state) {
-                if (state is PBISPlusLoading) {
-                  return _buildAddButton(isLoading: true);
-                }
-                return _buildAddButton(isLoading: false);
-              },
-              listener: (context, state) async {
-                // if (state is PBISPlusAddNotesSucess) {
-                //   isNotesTextfieldEnable.value = false;
-                //   noteController.clear();
-                //   Utility.currentScreenSnackBar(
-                //       "Note added successfully", null);
-                //   Navigator.pop(context, true);
-                // } else if (state is PBISErrorState) {
-                //   isNotesTextfieldEnable.value = false;
-                //   noteController.clear();
-                //   Utility.currentScreenSnackBar(state.error.toString(), null);
-                //   Navigator.pop(context, true);
-                // }
-              })
-        ]);
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                        // Color(0xffF7F8F9),
+                        hintText:
+                            isNotesTextfieldEnable.value ? "" : "Add Note",
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(
+                                fontSize: 14,
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xff111C20)
+                                    : Color(0xffF7F8F9),
+                                fontWeight: FontWeight.w400),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0.0, color: Colors.transparent),
+                        ),
+
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0.0, color: Colors.transparent),
+                        ),
+                      ),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          fontSize: 14,
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9),
+                          fontWeight: FontWeight.w400),
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.next,
+                    )),
+            //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
+            BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                bloc: widget.pBISPlusNotesBloc,
+                builder: (context, state) {
+                  if (state is PBISPlusLoading) {
+                    return _buildAddButton(isLoading: true);
+                  }
+                  return _buildAddButton(isLoading: false);
+                },
+                listener: (context, state) async {
+                  // if (state is PBISPlusAddNotesSucess) {
+                  //   isNotesTextfieldEnable.value = false;
+                  //   noteController.clear();
+                  //   Utility.currentScreenSnackBar(
+                  //       "Note added successfully", null);
+                  //   Navigator.pop(context, true);
+                  // } else if (state is PBISErrorState) {
+                  //   isNotesTextfieldEnable.value = false;
+                  //   noteController.clear();
+                  //   Utility.currentScreenSnackBar(state.error.toString(), null);
+                  //   Navigator.pop(context, true);
+                  // }
+                })
+          ]),
+    );
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------ActionInteractionButtonsRowWise------------------------------------- */
@@ -255,42 +259,39 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     );
 
     final pbisStudentProfileWidget = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        isNotesTextfieldEnable.value == true
-            ? Expanded(
-                child: ValueListenableBuilder(
-                    valueListenable: isNotesTextfieldEnable,
-                    builder: (context, value, _) => Container(
-                        // margin: isNotesTextfieldEnable.value
-                        //     ? EdgeInsets.only(top: 16)
-                        //     : EdgeInsets.zero,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            bottomRight: Radius.circular(12),
-                          ),
-                        ),
-                        alignment: Alignment.bottomRight,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: addNotes)),
-              )
-            : Expanded(
-                child: ValueListenableBuilder(
-                    valueListenable: isNotesTextfieldEnable,
-                    builder: (context, value, _) => Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(
-                            top: widget.isFromDashboardPage == true ||
-                                    widget.isFromStudentPlus == true
-                                ? MediaQuery.of(context).size.height * 0.1
-                                : MediaQuery.of(context).size.width * 0.1),
-                        padding: EdgeInsets.only(left: 10, right: 10),
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: ActionInteractionButtonsRowWise)))
-      ],
-    );
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          isNotesTextfieldEnable.value == true
+              ? Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: isNotesTextfieldEnable,
+                      builder: (context, value, _) => Container(
+                          // margin: isNotesTextfieldEnable.value
+                          //     ? EdgeInsets.only(top: 16)
+                          //     : EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12),
+                                  bottomRight: Radius.circular(12))),
+                          alignment: Alignment.bottomRight,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: addNotes)),
+                )
+              : Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: isNotesTextfieldEnable,
+                      builder: (context, value, _) => Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(
+                              top: widget.isFromDashboardPage == true ||
+                                      widget.isFromStudentPlus == true
+                                  ? MediaQuery.of(context).size.height * 0.1
+                                  : MediaQuery.of(context).size.width * 0.1),
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          width: MediaQuery.of(context).size.width * 1,
+                          child: ActionInteractionButtonsRowWise)))
+        ]);
 
     return SingleChildScrollView(
         reverse: true, // this is new
