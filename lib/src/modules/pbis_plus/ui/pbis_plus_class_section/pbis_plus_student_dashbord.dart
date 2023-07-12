@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 
 import 'package:Soc/src/globals.dart';
@@ -140,13 +142,12 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   Widget build(BuildContext context) {
     return widget.isFromStudentPlus == true
         ? studentPlusBody(context)
-        : Stack(
-            children: [
-              CommonBackgroundImgWidget(),
-              ValueListenableBuilder(
-                  valueListenable: isScrolledUp,
-                  builder: (context, value, child) {
-                    return Scaffold(
+        : Stack(children: [
+            CommonBackgroundImgWidget(),
+            ValueListenableBuilder(
+                valueListenable: isScrolledUp,
+                builder: (context, value, child) {
+                  return Scaffold(
                       backgroundColor: Colors.transparent,
                       appBar: widget.isFromStudentPlus == true
                           ? StudentPlusAppBar(
@@ -158,11 +159,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       body: pbisPlusBody(context),
                       floatingActionButton: floatingActionButton(context),
                       floatingActionButtonLocation:
-                          FloatingActionButtonLocation.miniEndDocked,
-                    );
-                  }),
-            ],
-          );
+                          FloatingActionButtonLocation.miniEndDocked);
+                })
+          ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -178,24 +177,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return Column(
-      children: [
-        sectionHeader(),
-        Flexible(
+    return Column(children: [
+      sectionHeader(),
+      Flexible(
           child: CustomScrollView(controller: _scrollController, slivers: [
-            // A flexible app bar
-            buildSliverAppBar(),
-
-            SliverFillRemaining(
-              child: buildTableSection(),
-            )
-          ]
-              // body: buildTableSection()
-
-              ),
-        ),
-      ],
-    );
+        // A flexible app bar
+        buildSliverAppBar(),
+        SliverFillRemaining(child: buildTableSection())
+      ]))
+    ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -214,10 +204,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       helpful = helpful + (pbisHistoryData[i].helpful ?? 0);
       niceWork = niceWork + (pbisHistoryData[i].niceWork ?? 0);
     }
-    // TODOPBIS:
-    // widget.studentValueNotifier.value.profile!.behavior1!.counter = engaged;
-    // widget.studentValueNotifier.value.profile!.behavior2!.counter = helpful;
-    // widget.studentValueNotifier.value.profile!.behavior3!.counter = niceWork;
+
     widget.studentValueNotifier.value.profile!.engaged = engaged;
     widget.studentValueNotifier.value.profile!.helpful = helpful;
     widget.studentValueNotifier.value.profile!.niceWork = niceWork;
@@ -258,26 +245,20 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               ),
           dividerThickness: 5.0,
           border: TableBorder(
-            horizontalInside: BorderSide(
-              width: 2.0,
-              color: Colors.white,
-            ),
-          ),
+              horizontalInside: BorderSide(width: 2.0, color: Colors.white)),
           columns:
               getList(pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList)
                   .map((PBISPlusCommonBehaviorModal item) {
-            return buildDataColumn(
-              item: item,
-            );
+            return buildDataColumn(item: item);
           }).toList(),
           rows: List<DataRow>.generate(
-            list.length,
-            (index) => buildDataRow(
-                index: index,
-                list: list,
-                pBISPlusCommonBehaviorList: getList(
-                    pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList)),
-          ));
+              list.length,
+              (index) => buildDataRow(
+                  index: index,
+                  list: list,
+                  pBISPlusCommonBehaviorList: getList(
+                      pBISPlusCommonBehaviorList:
+                          pBISPlusCommonBehaviorList))));
 
   /*--------------------------------------------------------------------------------------------------------*/
   /*--------------------------------------------buildDataColumn---------------------------------------------*/
@@ -328,53 +309,49 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   DataColumn buildDataColumn({required PBISPlusCommonBehaviorModal item}) =>
       DataColumn(
           label: Container(
-        padding: EdgeInsets.all(5),
-        child: FittedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                  // widthFactor: item.behaviorTitleC == 'Date' ? 2.45 : null,
-                  // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
-                  child: item.behaviorTitleC == 'Date' ||
-                          item.behaviorTitleC == 'Total'
-                      ? Utility.textWidget(
-                          context: context,
-                          text: item.behaviorTitleC ?? '',
-                          textAlign: TextAlign.center,
-                          textTheme: Globals.deviceType == 'phone'
-                              ? Theme.of(context).textTheme.headline5!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(
-                                      0xff000000,
-                                    ),
-                                  )
-                              : Theme.of(context).textTheme.headline1!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(
-                                    0xff000000,
-                                  ),
-                                  fontSize: 16),
-                        )
-                      : item.pBISBehaviorIconURLC!.isNotEmpty
-                          ? CachedNetworkImage(
-                              // height: Globals.deviceType == 'phone' ? 35 : 25,
-                              // width: Globals.deviceType == 'phone' ? 35 : 25,
-                              imageUrl: item.pBISBehaviorIconURLC!,
-                              placeholder: (context, url) => ShimmerLoading(
-                                isLoading: true,
-                                child: Container(),
-                              ),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            )
-                          : SizedBox.shrink()),
-            ],
-          ),
-        ),
-      ));
+              padding: EdgeInsets.all(5),
+              child: FittedBox(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                    Center(
+                        // widthFactor: item.behaviorTitleC == 'Date' ? 2.45 : null,
+                        // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
+                        child: item.behaviorTitleC == 'Date' ||
+                                item.behaviorTitleC == 'Total'
+                            ? Utility.textWidget(
+                                context: context,
+                                text: item.behaviorTitleC ?? '',
+                                textAlign: TextAlign.center,
+                                textTheme: Globals.deviceType == 'phone'
+                                    ? Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff000000))
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff000000),
+                                            fontSize: 16))
+                            : item.pBISBehaviorIconURLC!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    // height: Globals.deviceType == 'phone' ? 35 : 25,
+                                    // width: Globals.deviceType == 'phone' ? 35 : 25,
+                                    imageUrl: item.pBISBehaviorIconURLC!,
+                                    placeholder: (context, url) =>
+                                        ShimmerLoading(
+                                            isLoading: true,
+                                            child: Container()),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error))
+                                : SizedBox.shrink()),
+                  ]))));
 
   /*--------------------------------------------------------------------------------------------------------*/
   /*---------------------------------------------buildDataRow-----------------------------------------------*/
@@ -455,64 +432,49 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   DataCell dataCell(String? text) {
     return DataCell(Center(
-      child: Utility.textWidget(
-        text: text!,
-        context: context,
-        textAlign: TextAlign.center,
-        textTheme: Globals.deviceType == 'phone'
-            ? Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold)
-            : Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-    ));
+        child: Utility.textWidget(
+            text: text!,
+            context: context,
+            textAlign: TextAlign.center,
+            textTheme: Globals.deviceType == 'phone'
+                ? Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold)
+                : Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 16))));
   }
 
   totalDataCell(String? text) {
-    return DataCell(
-      Container(
+    return DataCell(Container(
         padding: Globals.deviceType == 'phone'
             ? EdgeInsets.symmetric(horizontal: 10, vertical: 5)
             : EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
         margin: EdgeInsets.only(left: 2),
         decoration: BoxDecoration(
-          boxShadow: [],
-          color: Color.fromRGBO(148, 148, 148, 1),
-          borderRadius: BorderRadius.circular(20),
-        ),
+            boxShadow: [],
+            color: Color.fromRGBO(148, 148, 148, 1),
+            borderRadius: BorderRadius.circular(20)),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Utility.textWidget(
-              context: context,
-              text: text ?? "0",
-
-              //  sumOfInteraction(
-              //   engaged: list[index].engaged ?? 0,
-              //   niceWork: list[index].niceWork ?? 0,
-              //   helpful: list[index].helpful ?? 0,
-              // ),
-
-              textAlign: TextAlign.center,
-              textTheme: Globals.deviceType == 'phone'
-                  ? Theme.of(context)
-                      .textTheme
-                      .headline5!
-                      .copyWith(fontWeight: FontWeight.bold)
-                  : Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-            )
-          ],
-        ),
-      ),
-    );
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Utility.textWidget(
+                  context: context,
+                  text: text ?? "0",
+                  textAlign: TextAlign.center,
+                  textTheme: Globals.deviceType == 'phone'
+                      ? Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontWeight: FontWeight.bold)
+                      : Theme.of(context)
+                          .textTheme
+                          .headline1!
+                          .copyWith(fontWeight: FontWeight.bold, fontSize: 16))
+            ])));
   }
   /*--------------------------------------------------------------------------------------------------------*/
   /*-------------------------------------------sumOfInteraction---------------------------------------------*/
@@ -619,35 +581,31 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 // state.pbisStudentInteractionList.length > 0
                 //     ?
                 RefreshIndicator(
-              color: AppTheme.kButtonColor,
-              key: refreshKey,
-              onRefresh: refreshPage,
-              child: ListView(
-                physics: widget.isFromStudentPlus == true
-                    ? null
-                    : NeverScrollableScrollPhysics(),
-                children: [
-                  FittedBox(
-                      child: Screenshot(
-                    controller: screenshotController,
-                    child: Material(
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      elevation: 10,
-                      child: Container(
-                        padding: EdgeInsets.only(bottom: 80),
-                        child: _buildDataTable(
-                            pBISPlusCommonBehaviorList:
-                                pBISPlusCommonBehaviorList,
-                            list: state.pbisStudentInteractionList),
-                      ),
-                    ),
-                  )),
-                ],
-              ),
-            );
+                    color: AppTheme.kButtonColor,
+                    key: refreshKey,
+                    onRefresh: refreshPage,
+                    child: ListView(
+                        physics: widget.isFromStudentPlus == true
+                            ? null
+                            : NeverScrollableScrollPhysics(),
+                        children: [
+                          FittedBox(
+                              child: Screenshot(
+                                  controller: screenshotController,
+                                  child: Material(
+                                      color: Color(0xff000000) !=
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xffF7F8F9)
+                                          : Color(0xff111C20),
+                                      elevation: 10,
+                                      child: Container(
+                                          padding: EdgeInsets.only(bottom: 80),
+                                          child: _buildDataTable(
+                                              pBISPlusCommonBehaviorList:
+                                                  pBISPlusCommonBehaviorList,
+                                              list: state
+                                                  .pbisStudentInteractionList)))))
+                        ]));
             // : RefreshIndicator(
             //     key: refreshKey,
             //     onRefresh: refreshPage,
@@ -770,64 +728,26 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     );
   }
 
-  // backButtonSection() {
-  //   return widget.isFromStudentPlus != true
-  //       ? Row(
-  //           children: [
-  //             IconButton(
-  //               alignment: Alignment.centerLeft,
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               icon: Icon(
-  //                   IconData(0xe80d,
-  //                       fontFamily: Overrides.kFontFam,
-  //                       fontPackage: Overrides.kFontPkg),
-  //                   color: AppTheme.kButtonColor),
-  //             ),
-  //           ],
-  //         )
-  //       : Container();
-  // }
+ 
 
   buildSliverAppBar() {
     return SliverAppBar(
-      backgroundColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      expandedHeight: MediaQuery.of(context).size.height / 1.8,
-      flexibleSpace: FlexibleSpaceBar(
-        background: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Column(children: [
-            // widget.isFromStudentPlus == true
-            buildBehaviourSection(),
-            // to remove hero widget for STUDENT+
-          ]),
-        ),
-      ),
-    );
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        expandedHeight: MediaQuery.of(context).size.height / 1.8,
+        flexibleSpace: FlexibleSpaceBar(
+            background: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: buildBehaviourSection())));
   }
 
   appBar() {
     return PBISPlusAppBar(
-      // titleWidget: isScrolledUp.value == true
-      //     ? Text(
-      //         widget.studentValueNotifier.value.profile?.name?.fullName ?? '',
-      //         textAlign: TextAlign.center,
-      //         style: Theme.of(context)
-      //             .textTheme
-      //             .bodyText1!
-      //             .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-      //       )
-      //     : null,
-
-      // leadingWidget: isScrolledUp.value == true ? backButtonSection() : null,
-      titleIconData: IconData(0xe825,
-          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-      title: "Dashboard",
-      backButton: true,
-      scaffoldKey: _scaffoldKey,
-    );
+        titleIconData: IconData(0xe825,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        title: "Dashboard",
+        backButton: true,
+        scaffoldKey: _scaffoldKey);
   }
 
   sectionHeader() {
@@ -836,45 +756,42 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  alignment: Alignment.centerLeft,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                      IconData(0xe80d,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kButtonColor),
-                ),
-              ),
-              if (isScrolledUp.value == true)
                 Expanded(
-                  flex: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 23),
-                        child: Text(
-                          widget.studentValueNotifier.value.profile?.name
-                                  ?.fullName ??
-                              '',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
+                  flex: 1,
+                  child: IconButton(
+                    alignment: Alignment.centerLeft,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                        IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor),
                   ),
-                )
-            ],
-          )
+                ),
+                if (isScrolledUp.value == true)
+                  Expanded(
+                      flex: 3,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(left: 23),
+                                child: Text(
+                                  widget.studentValueNotifier.value.profile
+                                          ?.name?.fullName ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                ))
+                          ]))
+              ])
         : Container();
   }
 }
