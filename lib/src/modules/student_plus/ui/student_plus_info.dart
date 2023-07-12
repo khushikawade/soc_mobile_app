@@ -84,7 +84,8 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentInfoPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student"
+          widget.sectionType == "Student"||
+            widget.sectionType == 'Family'
               ? Container()
               : PlusAppSearchBar(
                   sectionName: 'STUDENT+',

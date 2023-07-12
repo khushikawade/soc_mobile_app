@@ -117,7 +117,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student"
+          widget.sectionType == "Student" || widget.sectionType == 'Family'
               ? Container()
               : PlusAppSearchBar(
                   sectionName: 'STUDENT+',

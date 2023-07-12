@@ -110,7 +110,8 @@ class _StudentPageState extends State<StudentPage> {
     }
 
     /* --------------------------- START // Condition to check Student Plus Section -------------------------- */
-    if (obj.typeC != null && obj.typeC == 'Student+') {
+    if (obj.typeC != null &&
+        (obj.typeC == 'Student+' || obj.typeC == 'STUDENT+')) {
       studentPlusLogin();
       return;
     }
