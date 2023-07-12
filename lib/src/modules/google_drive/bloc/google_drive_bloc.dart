@@ -425,16 +425,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         assessmentData.insert(
             0,
             StudentAssessmentInfo(
-                studentId:
-                    Overrides.STANDALONE_GRADED_APP == true ? "Email Id" : "Id",
+                studentId: Overrides.STANDALONE_GRADED_APP == true
+                    ? "Email Id"
+                    : "ID", //"Id",
                 studentName: "Name",
                 studentGrade: "Points Earned",
                 pointPossible: "Point Possible",
                 questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
                     ? "Assessment Image"
-                    : "Assessment Question Img",
+                    : "Assignment Image", // "Assessment Question Img",
                 grade: "Grade",
-                className: "Class Name",
+                className: "Class", //"Class Name",
                 subject: "Subject",
                 learningStandard:
                     "Domain", // Update as shared by client "Learning Standard",
@@ -445,10 +446,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 standardDescription: "Standard Description",
                 assessmentImage: Overrides.STANDALONE_GRADED_APP == true
                     ? "Student Work Image"
-                    : "Assessment Image",
+                    : "Student Assignment Image", //"Assessment Image",
                 //googleSlidepresentationLink: "Presentation URL",
                 answerKey: 'Answer Key',
-                googleSlidePresentationURL: 'Presentation URL',
+                googleSlidePresentationURL:
+                    "Assignment Presentation", //'Presentation URL',
                 studentResponseKey: 'Student Selection'));
 
         //Generating excel file locally with all the result data
@@ -1526,24 +1528,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: (isMcqSheet == true ? 6 : 4),
-            endColumnIndex: (isMcqSheet == true ? 7 : 5),
+            startColumnIndex: (isMcqSheet == true ? 6 : 7),
+            endColumnIndex: (isMcqSheet == true ? 7 : 8),
             sheetId: sheetID,
             imageLink: assessmentData[1].questionImgUrl));
       }
 
-      // To make custom rubric image url hyperlinked //Same for all students
-      if (assessmentData[1].customRubricImage != 'NA') {
-        //Property Update in Excel Sheet // URL Hyperlink and Heading Bold
-        data.add(_updateFieldExcelSheetRequestBody(
-            isHyperLink: true,
-            startRowIndex: 1,
-            endRowIndex: assessmentData.length,
-            startColumnIndex: (isMcqSheet == true ? 14 : 12),
-            endColumnIndex: (isMcqSheet == true ? 15 : 13),
-            sheetId: sheetID,
-            imageLink: assessmentData[1].customRubricImage));
-      }
+      // // To make custom rubric image url hyperlinked //Same for all students
+      // if (assessmentData[1].customRubricImage != 'NA') {
+      //   //Property Update in Excel Sheet // URL Hyperlink and Heading Bold
+      //   data.add(_updateFieldExcelSheetRequestBody(
+      //       isHyperLink: true,
+      //       startRowIndex: 1,
+      //       endRowIndex: assessmentData.length,
+      //       startColumnIndex: (isMcqSheet == true ? 14 : 12),
+      //       endColumnIndex: (isMcqSheet == true ? 15 : 13),
+      //       sheetId: sheetID,
+      //       imageLink: assessmentData[1].customRubricImage));
+      // }
 
       // To make presentation image url hyperlinked //Same for all students
       if (assessmentData[1].googleSlidePresentationURL != 'NA') {
@@ -1551,8 +1553,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: 1,
             endRowIndex: assessmentData.length,
-            startColumnIndex: (isMcqSheet == true ? 16 : 14),
-            endColumnIndex: (isMcqSheet == true ? 17 : 15),
+            startColumnIndex: (isMcqSheet == true ? 15 : 13),
+            endColumnIndex: (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
             imageLink: assessmentData[1].googleSlidePresentationURL));
       }
@@ -1563,8 +1565,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isHyperLink: true,
             startRowIndex: i,
             endRowIndex: i + 1,
-            startColumnIndex: (isMcqSheet == true ? 15 : 13),
-            endColumnIndex: (isMcqSheet == true ? 16 : 14),
+            startColumnIndex: (isMcqSheet == true ? 14 : 6),
+            endColumnIndex: (isMcqSheet == true ? 15 : 7),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));
       }
