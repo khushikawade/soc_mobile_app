@@ -100,7 +100,10 @@ class CustomCircularButton extends StatelessWidget {
                           child: Icon(
                             iconData,
                             size: iconSize,
-                            color: AppTheme.kBlackColor,
+                            color: Color(0xff000000) ==
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xff111C20)
+                                : Color(0xffF7F8F9),
                           ),
                         ),
                   Utility.textWidget(

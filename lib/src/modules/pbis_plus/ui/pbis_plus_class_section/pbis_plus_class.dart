@@ -697,23 +697,28 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
+              BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                  bloc: pBISPlusNotesBloc,
+                  builder: (context, state) {
+                    return SizedBox.shrink();
+                  },
+                  listener: (context, state) async {
+                    if (state is PBISPlusAddNotesSucess) {
+                      Utility.currentScreenSnackBar(
+                          "Note added successfully", null);
+                    } else if (state is PBISErrorState) {
+                      Utility.currentScreenSnackBar(
+                          state.error.toString(), null);
+                    }
+                  }),
               if (widget.isGradedPlus != true)
-                BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                    bloc: pBISPlusNotesBloc,
-                    builder: (context, state) {
-                      return SizedBox.shrink();
-                    },
-                    listener: (context, state) async {
-                      if (state is PBISPlusAddNotesSucess) {
-                        Utility.currentScreenSnackBar(
-                            "Note added successfully", null);
-                        Navigator.pop(context, true);
-                      } else if (state is PBISErrorState) {
-                        Utility.currentScreenSnackBar(
-                            state.error.toString(), null);
-                        Navigator.pop(context, true);
-                      }
-                    })
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: ShimmerLoading(
+                        isLoading: isStudentInteractionLoading ||
+                            isScreenShimmerLoading,
+                        child: BuildStudentCountIndicator)),
             ],
           )),
     );

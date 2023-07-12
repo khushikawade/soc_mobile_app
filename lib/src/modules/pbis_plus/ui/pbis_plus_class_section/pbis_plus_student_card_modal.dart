@@ -591,7 +591,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: FittedBox(
                   child: CustomCircularButton(
-                      iconSize: Globals.deviceType == "phone" ? 16 : 24,
+                      iconSize: Globals.deviceType == "phone" ? 20 : 28,
                       iconData: IconData(
                         0xe895,
                         fontFamily: Overrides.kFontFam,
@@ -601,7 +601,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           MediaQuery.of(context).size.width / 10),
                       borderColor: AppTheme.kButtonColor,
                       textColor:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
+                          Color(0xff000000) == Theme.of(context).backgroundColor
                               ? Color(0xff111C20)
                               : Color(0xffF7F8F9),
                       text: "Add Note",
