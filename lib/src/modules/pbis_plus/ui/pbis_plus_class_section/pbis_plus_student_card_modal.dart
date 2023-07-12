@@ -534,6 +534,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     child: ShimmerLoading(
                         isLoading: loading,
                         child: PBISPlusActionInteractionButton(
+                            index: index,
                             isCustomBehavior: isCustomBehavior,
                             size: widget.isFromDashboardPage == true ||
                                     widget.studentProfile == true
