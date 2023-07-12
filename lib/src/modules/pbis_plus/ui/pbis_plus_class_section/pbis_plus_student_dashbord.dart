@@ -176,17 +176,24 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return CustomScrollView(controller: _scrollController, slivers: [
-      // A flexible app bar
-      buildSliverAppBar(),
+    return Column(
+      children: [
+        sectionHeader(),
+        Flexible(
+          child: CustomScrollView(controller: _scrollController, slivers: [
+            // A flexible app bar
+            buildSliverAppBar(),
 
-      SliverFillRemaining(
-        child: buildTableSection(),
-      )
-    ]
-        // body: buildTableSection()
+            SliverFillRemaining(
+              child: buildTableSection(),
+            )
+          ]
+              // body: buildTableSection()
 
-        );
+              ),
+        ),
+      ],
+    );
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -761,31 +768,28 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     );
   }
 
-  backButtonSection() {
-    return widget.isFromStudentPlus != true
-        ? Row(
-            children: [
-              IconButton(
-                alignment: Alignment.centerLeft,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                    IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor),
-              ),
-            ],
-          )
-        : Container();
-  }
+  // backButtonSection() {
+  //   return widget.isFromStudentPlus != true
+  //       ? Row(
+  //           children: [
+  //             IconButton(
+  //               alignment: Alignment.centerLeft,
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               icon: Icon(
+  //                   IconData(0xe80d,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                   color: AppTheme.kButtonColor),
+  //             ),
+  //           ],
+  //         )
+  //       : Container();
+  // }
 
   buildSliverAppBar() {
     return SliverAppBar(
-      onStretchTrigger: () {
-        return Future<void>.value();
-      },
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
       expandedHeight: MediaQuery.of(context).size.height / 1.8,
@@ -793,7 +797,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         background: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
           child: Column(children: [
-            backButtonSection(),
             // widget.isFromStudentPlus == true
             buildBehaviourSection(),
             // to remove hero widget for STUDENT+
@@ -805,20 +808,71 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   appBar() {
     return PBISPlusAppBar(
-      titleWidget: isScrolledUp.value == true
-          ? Text(
-              widget.studentValueNotifier.value.profile?.name?.fullName ?? '',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-            )
-          : null,
-      leadingWidget: isScrolledUp.value == true ? backButtonSection() : null,
+      // titleWidget: isScrolledUp.value == true
+      //     ? Text(
+      //         widget.studentValueNotifier.value.profile?.name?.fullName ?? '',
+      //         textAlign: TextAlign.center,
+      //         style: Theme.of(context)
+      //             .textTheme
+      //             .bodyText1!
+      //             .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+      //       )
+      //     : null,
+
+      // leadingWidget: isScrolledUp.value == true ? backButtonSection() : null,
+      titleIconData: IconData(0xe825,
+          fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       title: "Dashboard",
       backButton: true,
       scaffoldKey: _scaffoldKey,
     );
+  }
+
+  sectionHeader() {
+    return widget.isFromStudentPlus != true
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  alignment: Alignment.centerLeft,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                      IconData(0xe80d,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor),
+                ),
+              ),
+              if (isScrolledUp.value == true)
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 13),
+                        child: Text(
+                          widget.studentValueNotifier.value.profile?.name
+                                  ?.fullName ??
+                              '',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+            ],
+          )
+        : Container();
   }
 }
