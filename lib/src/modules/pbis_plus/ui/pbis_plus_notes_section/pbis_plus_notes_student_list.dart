@@ -122,8 +122,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
               ? BlocConsumer(
                   bloc: PBISPlusBlocSearchInstance,
                   builder: (context, state) {
-                    print(
-                        "--------state -------  $state------------ INSIDE SEARCH BLOC--------------------------------");
                     if (state is PBISPlusStudentSearchSucess) {
                       //---------------------return the filter list to UI-----------//
                       if (state.sortedList.isNotEmpty) {
@@ -155,8 +153,6 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
               : BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
-                    print(
-                        "--------state   $state---------------INSIDE LIST BLOC-----------------------------");
                     if (state is PBISPlusStudentListSucess) {
                       //---------------------return the filter list to UI-----------//
                       if (state.studentList.isNotEmpty) {
@@ -372,14 +368,13 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   onItemChanged(String value) {
     _deBouncer.run(() {
       if (_searchController.text.isEmpty) {
-        print("--------CONTROLLER IS EMPTY ----------");
+       
         //Fetching all student list again to restore the student list from local db only
         PBISPlusBlocInstance.add(
             GetPBISPlusStudentList(studentNotesList: studentLocalList));
         showSearchList.value = false;
         showErrorInSearch.value = false;
-      } else if (_searchController.text.length >= 3) {
-        print("--------call the serch EVENT ----------");
+      } else if (_searchController.text.length >= 3) {     
 
         PBISPlusBlocSearchInstance.add(PBISPlusNotesSearchStudent(
             searchKey: _searchController.text,

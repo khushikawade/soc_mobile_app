@@ -110,7 +110,8 @@ class _StudentPageState extends State<StudentPage> {
     }
 
     /* --------------------------- START // Condition to check Student Plus Section -------------------------- */
-    if (obj.typeC != null && obj.typeC == 'Student+') {
+    if (obj.typeC != null &&
+        (obj.typeC == 'Student+' || obj.typeC == 'STUDENT+')) {
       studentPlusLogin();
       return;
     }
@@ -672,7 +673,8 @@ class _StudentPageState extends State<StudentPage> {
         return;
       }
 
-      await Authentication.refreshAuthenticationToken(refreshToken: _profileData[0].refreshToken??'');
+      await Authentication.refreshAuthenticationToken(
+          refreshToken: _profileData[0].refreshToken ?? '');
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
       navigateToStudentPlus();
     }

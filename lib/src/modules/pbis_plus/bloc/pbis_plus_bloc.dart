@@ -247,12 +247,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 //---------------pbis student list SEARCH-------------------------------
     if (event is PBISPlusNotesSearchStudent) {
       try {
-        print("-----------INSIDE THE SEARCH EVENT ------------------");
         yield PBISPlusLoading();
         if (event.searchKey.isNotEmpty) {
           final searchedList =
-              await searchNotesList(event.studentNotes, event.searchKey);
-          print("-----------INSIDE THE SEARCH EVENT ------------------");
+              await searchStudentList(event.studentNotes, event.searchKey);
+
           if (searchedList != null && searchedList.isNotEmpty) {
             yield PBISPlusStudentSearchSucess(sortedList: searchedList);
           } else {
@@ -842,10 +841,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentNotesList.isNotEmpty) {
           // Assuming want to update the notes with the first API data
           _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
-          // //Updating the notes data in local db
-          // _pbisPlusNotesStudentsList.removeAt(studentItemIndex);
-          // _pbisPlusNotesStudentsList.insert(
-          //     studentItemIndex, _pbisPlusNotesStudentsList[studentItemIndex]);
 
           //Updating the notes data in local db
           await _pbisPlusSNotesStudentListDB.clear();
@@ -1417,15 +1412,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           PBISPlusNotesUniqueStudentList existingStudent =
               PBISPlusNotesUniqueStudentList();
           List<PBISStudentNotes>? notes;
+
           try {
             existingStudent = _pbisPlusStudentDataList.firstWhere(
-              (e) => e.studentId == item.profile?.id,
-              orElse: () => PBISPlusNotesUniqueStudentList(),
-            );
+                (e) => e.studentId == item.profile?.id,
+                orElse: () => PBISPlusNotesUniqueStudentList());
             notes = existingStudent.notes ?? null;
           } catch (e) {
             notes = null;
           }
+
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
             names: StudentName(
@@ -1493,7 +1489,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1518,7 +1517,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1751,11 +1753,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
-      print(
-        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
-      );
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PBISStudentNotes> listData = response.data['body']
             .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
@@ -1791,7 +1794,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
@@ -1812,7 +1815,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*----------------------------------------------------------------------------------------------*/
 /*---------------------------------------Function searchNotesList-------------------------------*/
 /*----------------------------------------------------------------------------------------------*/
-List<PBISPlusNotesUniqueStudentList> searchNotesList(
+List<PBISPlusNotesUniqueStudentList> searchStudentList(
     List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
   return notesList
       .where((note) =>
