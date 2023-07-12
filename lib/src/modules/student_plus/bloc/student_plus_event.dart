@@ -131,10 +131,10 @@ class SendOtpFamilyLogin extends StudentPlusEvent {
 }
 
 /* ---------------- Event use to trigger Check otp for family login --------------- */
-class CheckOtpFamilyLogin extends StudentPlusEvent {
+class VerifyOtpFamilyLogin extends StudentPlusEvent {
   final String emailId;
   final String otp;
-  CheckOtpFamilyLogin({required this.emailId, required this.otp});
+  VerifyOtpFamilyLogin({required this.emailId, required this.otp});
   @override
   List<Object> get props => [];
   @override

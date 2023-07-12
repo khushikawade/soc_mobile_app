@@ -135,6 +135,9 @@ class FamilyLoginOtpVerifySuccess extends StudentPlusState {
   List<Object> get props => [];
 }
 
+/* ---------------- State use to send otp failure family login --------------- */
+class FamilyLoginOtpVerifyFailure extends StudentPlusState {}
+
 /* ------------------------ state use to return family login Error ----------------------- */
 class FamilyLoginErrorReceived extends StudentPlusState {
   final err;

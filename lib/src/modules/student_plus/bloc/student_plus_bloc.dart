@@ -411,6 +411,22 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield FamilyLoginErrorReceived(err: e);
       }
     }
+
+    /* ----------------------------- Event to send otp family login ---------------------------- */
+    if (event is VerifyOtpFamilyLogin) {
+      try {
+        yield FamilyLoginLoading();
+        var result = await verifyOtpFamilyLogin(emailId: event.emailId);
+        if (result) {
+          yield FamilyLoginOtpSendSuccess();
+        } else {
+          yield FamilyLoginOtpSendFailure();
+        }
+      } catch (e) {
+        yield FamilyLoginErrorReceived(err: e);
+      }
+    }
+    
   }
 
   /* -------------------------------------------------------------------------- */
@@ -419,6 +435,27 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
   /* --------------- Function to send otp family login -------------- */
   Future<bool> sendOtpFamilyLogin({required String emailId}) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+          "${FamilyLoginOverride.familyLoginUrl}/parent-login",
+          headers: {"Content-Type": "application/json"},
+          body: {"email": emailId, "schoolId": "${Globals.appSetting.id}"},
+          isGoogleApi: true);
+
+      if (response.statusCode == 200 &&
+          response.data["statusCode"] == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+
+  /* --------------- Function to send otp family login -------------- */
+  Future<bool> verifyOtpFamilyLogin({required String emailId, required }) async {
     try {
       final ResponseModel response = await _dbServices.postApi(
           "${FamilyLoginOverride.familyLoginUrl}/parent-login",
