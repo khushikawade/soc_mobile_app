@@ -1,8 +1,3 @@
-import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_success.dart';
 import 'package:Soc/src/modules/student_plus/widgets/timer_animated_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -13,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusFamilyOtp extends StatefulWidget {
-  const StudentPlusFamilyOtp({Key? key}) : super(key: key);
+  final String emailId;
+  const StudentPlusFamilyOtp({Key? key, required this.emailId})
+      : super(key: key);
 
   @override
   State<StudentPlusFamilyOtp> createState() => _StudentPlusFamilyOtpState();
@@ -109,6 +106,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        familyLoginBlocListener()
       ],
     );
   }
@@ -145,6 +143,10 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         _buildOtpField(otpFieldKey3, 2),
         SizedBox(width: 16.0),
         _buildOtpField(otpFieldKey4, 3),
+        SizedBox(width: 16.0),
+        _buildOtpField(otpFieldKey5, 4),
+        SizedBox(width: 16.0),
+        _buildOtpField(otpFieldKey6, 5),
       ],
     );
   }
@@ -177,18 +179,14 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       fabWidth: MediaQuery.of(context).size.width * 0.7,
       title: 'Verify Passcode',
       onPressed: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => StudentPlusFamilyLogInSuccess()),
-        );
+        _verifyOtp();
       },
     );
   }
 
   Widget _buildOtpField(GlobalKey<FormFieldState<String>> fieldKey, int index) {
     return Container(
-      width: 60.0,
+      width: 40.0,
       child: Center(
         child: TextFormField(
           key: fieldKey,
@@ -230,20 +228,18 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       bloc: studentPlusBloc,
       child: Container(),
       listener: (context, state) {
-        if (state is FamilyLoginOtpSendSuccess) {
+        if (state is FamilyLoginOtpVerifySuccess) {
           Utility.showSnackBar(
-              _scaffoldKey, "Otp Send Successfully", context, null);
+              _scaffoldKey, "Otp Verify Successfully", context, null);
           Navigator.pop(context);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
+            MaterialPageRoute(
+                builder: (context) => StudentPlusFamilyLogInSuccess()),
           );
-        } else if (state is FamilyLoginOtpSendFailure) {
+        } else if (state is FamilyLoginOtpVerifyFailure) {
           Utility.showSnackBar(
-              _scaffoldKey,
-              "User is not authorized to access student plus in family section",
-              context,
-              null);
+              _scaffoldKey, "Please Enter Valid Otp", context, null);
           Navigator.pop(context);
         } else if (state is FamilyLoginErrorReceived) {
           Utility.showSnackBar(
@@ -259,19 +255,21 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
 
   void _verifyOtp() {
     String enteredOtp = otp.join();
-
+    if (enteredOtp.length == 6) {
+      studentPlusBloc
+          .add(VerifyOtpFamilyLogin(emailId: widget.emailId, otp: enteredOtp));
+    }
     print('Entered OTP: $enteredOtp');
   }
 
-  List<String> otp = List.filled(4, '');
+  List<String> otp = List.filled(6, '');
 
   final otpFieldKey1 = GlobalKey<FormFieldState<String>>();
-
   final otpFieldKey2 = GlobalKey<FormFieldState<String>>();
-
   final otpFieldKey3 = GlobalKey<FormFieldState<String>>();
-
   final otpFieldKey4 = GlobalKey<FormFieldState<String>>();
+  final otpFieldKey5 = GlobalKey<FormFieldState<String>>();
+  final otpFieldKey6 = GlobalKey<FormFieldState<String>>();
 
   void _onOtpChanged(int index, String value) {
     if (value == '') {

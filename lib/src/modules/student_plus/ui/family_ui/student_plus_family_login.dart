@@ -84,7 +84,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Navigator.pop(context);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
+            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp(emailId: emailEditingController.text)),
           );
         } else if (state is FamilyLoginOtpSendFailure) {
           Utility.showSnackBar(
