@@ -75,6 +75,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       ScreenshotController(); // screenshot for header widget
   ScrollController? _scrollController;
   final ValueNotifier<bool> isScrolledUp = ValueNotifier<bool>(false);
+
   void initState() {
     //  Event call to get dashboard details of interaction
     _bloc.add(GetPBISPlusStudentDashboardLogs(
@@ -855,7 +856,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 25),
+                        padding: const EdgeInsets.only(left: 23),
                         child: Text(
                           widget.studentValueNotifier.value.profile?.name
                                   ?.fullName ??
