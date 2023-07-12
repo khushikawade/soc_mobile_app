@@ -1478,7 +1478,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1503,7 +1506,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1736,7 +1742,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
       print(
         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
@@ -1776,6 +1785,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
