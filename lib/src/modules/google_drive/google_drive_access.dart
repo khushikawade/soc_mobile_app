@@ -9,7 +9,6 @@ class GoogleDriveAccess {
   static Future generateExcelSheetLocally(
       {required List<StudentAssessmentInfo> data,
       required String name,
-    
       bool? isMcqSheet}) async {
     try {
       var excel = Excel.createExcel();
@@ -27,12 +26,12 @@ class GoogleDriveAccess {
             .value = data[row].studentName;
 
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 2: 4), rowIndex: row))
                 .value =
             data[row].studentGrade != '' ? data[row].studentGrade : '2';
 
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 3:5), rowIndex: row))
                 .value =
             row == 0 ? data[row].pointPossible : data[1].pointPossible ?? '2';
 
@@ -54,7 +53,7 @@ class GoogleDriveAccess {
               .value = data[row].studentResponseKey ?? 'NA';
         }
 
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 6 : 4), rowIndex: row)).value =
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 6 : 7), rowIndex: row)).value =
             row == 0
                 ? data[row].questionImgUrl
                 : data[1]?.questionImgUrl?.isNotEmpty ?? false
@@ -63,22 +62,22 @@ class GoogleDriveAccess {
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex: (isMcqSheet == true ? 7 : 5), rowIndex: row))
+                columnIndex: (isMcqSheet == true ? 7 : 2), rowIndex: row))
             .value = row == 0 ? data[row].grade : data[1].grade;
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex: (isMcqSheet == true ? 8 : 6), rowIndex: row))
+                columnIndex: (isMcqSheet == true ? 8 : 3), rowIndex: row))
             .value = row == 0 ? data[row].className : data[1].className;
         // sheet
         //     .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
         //     .value = data[row].className;
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex: (isMcqSheet == true ? 9 : 7), rowIndex: row))
+                columnIndex: (isMcqSheet == true ? 9 : 8), rowIndex: row))
             .value = row == 0 ? data[row].subject : data[1].subject;
 
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 10 : 8), rowIndex: row)).value =
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 10 : 9), rowIndex: row)).value =
             row == 0
                 ? data[row].learningStandard == "" ||
                         data[row].learningStandard == null
@@ -91,12 +90,12 @@ class GoogleDriveAccess {
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: (isMcqSheet == true ? 11 : 9), rowIndex: row))
+                    columnIndex: (isMcqSheet == true ? 11 : 10), rowIndex: row))
                 .value =
             row == 0
                 ? data[row].subLearningStandard
                 : data[1].subLearningStandard;
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 12 : 10), rowIndex: row)).value =
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: (isMcqSheet == true ? 12 : 11), rowIndex: row)).value =
             row == 0
                 ? data[row].standardDescription == "" ||
                         data[row].standardDescription == null
@@ -108,24 +107,24 @@ class GoogleDriveAccess {
                     : data[1].standardDescription;
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex: (isMcqSheet == true ? 13 : 11), rowIndex: row))
+                columnIndex: (isMcqSheet == true ? 13 : 12), rowIndex: row))
             .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
 
-        sheet
-                .cell(CellIndex.indexByColumnRow(
-                    columnIndex: (isMcqSheet == true ? 14 : 12),
-                    rowIndex: row)) //.isFormula
-                .value =
-            row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
+        // sheet
+        //         .cell(CellIndex.indexByColumnRow(
+        //             columnIndex: (isMcqSheet == true ? 14 : 12),
+        //             rowIndex: row)) //.isFormula
+        //         .value =
+        //     row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex: (isMcqSheet == true ? 15 : 13), rowIndex: row))
+                columnIndex: (isMcqSheet == true ? 14 : 6), rowIndex: row))
             .value = data[row].assessmentImage;
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: (isMcqSheet == true ? 16 : 14), rowIndex: row))
+                    columnIndex: (isMcqSheet == true ? 15 : 13), rowIndex: row))
                 .value =
             row == 0
                 ? data[row].googleSlidePresentationURL

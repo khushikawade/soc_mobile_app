@@ -127,6 +127,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      iconData: Icons.add,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
@@ -144,7 +145,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         PlusScreenTitleWidget(
           kLabelSpacing: 0,
-          text: 'Answer Key',
+          text: 'Select Answer Key',
           backButton: true,
         ),
         SpacerWidget(StudentPlusOverrides.kSymmetricPadding),

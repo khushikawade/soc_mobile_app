@@ -209,6 +209,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              iconData: Icons.add,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
@@ -233,10 +234,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           builder: (translatedMessage) {
                             return Text(translatedMessage,
                                 style: TextStyle(
-                                  color: AppTheme.kButtonColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ));
+                                    color: AppTheme.kButtonColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18));
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -1419,13 +1419,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
-                  : 'Student Id/Student Email',
-              textFileTitleThree:
-                  //   widget.isMcqSheet == true
-                  // ? "Student Selection"
-                  // /// : "Student Grade",
-                  // :
-                  'Points Earned',
+                  : 'Student ID/Student Email',
+              textFileTitleThree: 'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,

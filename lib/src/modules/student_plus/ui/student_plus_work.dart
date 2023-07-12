@@ -19,7 +19,7 @@ import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -90,9 +90,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           appBar: StudentPlusAppBar(
             titleIconCode: 0xe885,
             isWorkPage: true,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+            refresh: (v) {
+              setState(() {});
+            },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(
@@ -128,7 +128,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 widget.sectionType == "Student"||
             widget.sectionType == 'Family'
                     ? Container()
-                    : StudentPlusInfoSearchBar(
+                    : PlusAppSearchBar(
+                        sectionName: 'STUDENT+',
                         hintText:
                             '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                         isMainPage: false,
@@ -505,7 +506,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         widget.studentDetails.studentGooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
-          title: 'Go to Presentation',
+          title: 'Open Presentation',
           svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
         ),
       );

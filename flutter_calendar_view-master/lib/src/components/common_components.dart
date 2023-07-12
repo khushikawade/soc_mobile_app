@@ -9,7 +9,6 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../typedefs.dart';
 
-
 class CalendarPageHeader extends StatefulWidget {
   /// When user taps on right arrow.
   final VoidCallback? onNextDay;

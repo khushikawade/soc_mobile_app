@@ -53,6 +53,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          backgroundColor: Colors.transparent,
           appBar: appBar(),
           body: body(),
         )
@@ -62,6 +63,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      iconData: Icons.add,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone

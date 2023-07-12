@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,6 +72,7 @@ class Authentication {
 
       return userInfo.length < 1 ? '' : userInfo[0].authorizationToken ?? '';
     }
+
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;
 
@@ -81,6 +80,7 @@ class Authentication {
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
+
     try {
       final UserCredential userCredential =
           await auth.signInWithCredential(credential);
@@ -244,7 +244,7 @@ class Authentication {
       String userType) async {
     // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
-
+    await UserGoogleProfile.clearUserProfile();
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
         userEmail: user.email,

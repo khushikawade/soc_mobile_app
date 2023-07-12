@@ -61,7 +61,7 @@
 //   final OnTap? onLinkTap;
 
 //   /// A function that defines what to do when an anchor link is tapped. When this value is set,
-//   /// the default anchor behaviour is overwritten.
+//   /// the default anchor behavior is overwritten.
 //   final OnTap? onAnchorTap;
 
 //   /// An API that allows you to customize the entire process of image rendering.

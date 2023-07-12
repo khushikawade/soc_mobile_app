@@ -46,6 +46,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
+      iconData: Icons.add,
         plusAppName: 'GRADED+',
         fromGradedPlus: true,
         isSuccessState: ValueNotifier<bool>(true),

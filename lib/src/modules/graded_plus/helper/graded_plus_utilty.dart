@@ -12,6 +12,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../google_classroom/services/google_classroom_globals.dart';
 
 class OcrUtility {
@@ -638,14 +639,39 @@ class OcrUtility {
       },
     );
   }
+
+  static getTeacherId() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
+        return Globals.teacherId;
+      } else {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        return prefs.getString(OcrOverrides.teacherId);
+      }
+    } catch (e) {}
+  }
+
+  static setTeacherId(String techerId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(OcrOverrides.teacherId, techerId);
+    } catch (e) {}
+  }
+
+  static focusUnfocusScreenContent(BuildContext context) {
+    try {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    } catch (e) {}
+  }
 }
-
-
 
 /*------------------------------------------------------------------------------------------------*/
 /*----------------------------getResultSummaryCardDetailsAndBarSize-------------------------------*/
 /*------------------------------------------------------------------------------------------------*/
-
 
 //   static Future<List<ResultSummeryDetailModel>>
 //       getResultSummaryCardDetailsAndBarSize(

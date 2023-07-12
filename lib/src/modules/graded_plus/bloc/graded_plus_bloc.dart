@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -1265,9 +1266,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         } else {
           Globals.teacherId = data['Id'];
-
+          OcrUtility.setTeacherId(data['Id']);
           if (data['Assessment_App_User__c'] != 'true') {
             Globals.teacherId = data['Id'];
+
+            OcrUtility.setTeacherId(data['Id']);
             bool result = await updateContactToSalesforce(recordId: data['Id']);
             if (!result) {
               await updateContactToSalesforce(recordId: data['Id']);
@@ -1319,9 +1322,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        // print(response.data["body"]);
         Globals.teacherId = response.data["body"]["id"];
-        // print(response.data["body"]["id"]);
+        OcrUtility.setTeacherId(response.data["body"]["id"]);
         return true;
       } else {
         return false;

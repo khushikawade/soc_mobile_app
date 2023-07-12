@@ -622,7 +622,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
-      print(body);
+      // print(body);
       print(
           "saveStudentGooglePresentationWorkEvent api response rec. ${response.statusCode}");
       if (response.statusCode == 200) {
