@@ -57,7 +57,7 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.constraint,
       this.studentProfile,
       // this.pBISPlusCommonBehaviorList,
-      this.pBISPlusBloc})
+      required this.pBISPlusBloc})
       : super(key: key);
 
   @override
@@ -78,6 +78,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   ScrollController? _scrollController;
   final ValueNotifier<bool> isScrolledUp = ValueNotifier<bool>(false);
 
+  PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+
   void initState() {
     //  Event call to get dashboard details of interaction
     _bloc.add(GetPBISPlusStudentDashboardLogs(
@@ -96,7 +98,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     /*-------------------------User Activity Track END----------------------------*/
 
     if (widget.isFromStudentPlus == true) {
-      widget.pBISPlusBloc = PBISPlusBloc();
       getTeacherSelectedToggleValue();
     } else {
       _scrollController = ScrollController();
@@ -727,8 +728,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           }),
     );
   }
-
- 
 
   buildSliverAppBar() {
     return SliverAppBar(
