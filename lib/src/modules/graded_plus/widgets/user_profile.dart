@@ -1,19 +1,11 @@
 import 'dart:ui';
-import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/warning_popup_model.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../globals.dart';
 import '../../../styles/theme.dart';
-import '../../google_classroom/modal/google_classroom_list.dart';
-import '../../../services/user_profile.dart';
-import '../../home/ui/home.dart';
 import '../modal/student_assessment_info_modal.dart';
 
 class CustomDialogBox extends StatefulWidget {
@@ -121,9 +113,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                 ]),
             child: widget.isUserInfoPop == true
                 ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    SizedBox(
-                      height: Globals.deviceType == 'phone' ? 2 : 10,
-                    ),
+                    SizedBox(height: Globals.deviceType == 'phone' ? 2 : 10),
                     FittedBox(
                       child: Utility.textWidget(
                         context: context,

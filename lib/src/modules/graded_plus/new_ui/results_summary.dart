@@ -209,7 +209,6 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-
               iconData: Icons.add,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
@@ -1419,14 +1418,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               isImageField: false,
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
-                  ? 'STUDENT EMAIL'
-                  : 'STUDENT ID/STUDENT EMAIL',
-              textFileTitleThree:
-                  //   widget.isMcqSheet == true
-                  // ? "Student Selection"
-                  // /// : "Student Grade",
-                  // :
-                  'Points Earned',
+                  ? 'Student Email'
+                  : 'Student ID/Student Email',
+              textFileTitleThree: 'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
