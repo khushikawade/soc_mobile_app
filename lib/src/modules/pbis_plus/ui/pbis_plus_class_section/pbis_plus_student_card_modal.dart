@@ -604,7 +604,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   child: CustomCircularButton(
                       iconSize: Globals.deviceType == "phone" ? 20 : 28,
                       iconData: IconData(
-                        0xe895,
+                        0xe896,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg,
                       ),

@@ -174,7 +174,7 @@ class PbisPlusBottomNavBar {
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       PBISPlusEditSkills(),
       PBISPlusNotesStudentList(
-          titleIconData: IconData(0xe892,
+          titleIconData: IconData(0xe895,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       PBISPlusStaff(titleIconData: getStaffIconCode()),
     ];
@@ -254,7 +254,7 @@ class PbisPlusBottomNavBar {
           inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
           icon: bottomNavBarIcons(
-              iconData: IconData(0xe892,
+              iconData: IconData(0xe895,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg)),
           title: ('Notes'),
