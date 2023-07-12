@@ -21,67 +21,46 @@ class PlusCustomNavBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-<<<<<<< HEAD
-      color: Color(0xff000000) != Theme.of(context).backgroundColor
-          ? Color(0xffF7F8F9)
-          : Color(0xff111C20),
-      child: Container(
-=======
->>>>>>> pbis_main
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(25),
-              topLeft: Radius.circular(25),
-            ),
-            boxShadow: [
-              BoxShadow(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.1),
-                  blurRadius: 5.0,
-                  offset: Offset(0, -8)),
-            ]),
-        // height: 140.0,
-        child: Row(
-<<<<<<< HEAD
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: items.map((item) {
-            int index = items.indexOf(item);
-            return Flexible(
-              child: GestureDetector(
-                onTap: () {
-                  this.onItemSelected(index);
-                },
-                child: index == 2
-                    ? _buildSelectedMenu(
-                        item, selectedIndex == index, 50, context)
-                    : _buildUnselectedMenus(
-                        item, selectedIndex == index, 140, context, index),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-=======
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: items.map((item) {
-              int index = items.indexOf(item);
-              return Flexible(
-                  child: GestureDetector(
-                      onTap: () {
-                        this.onItemSelected(index);
-                      },
-                      child: index == 2
-                          ? _buildSelectedMenu(
-                              item, selectedIndex == index, 50, context)
-                          : _buildUnselectedMenus(item, selectedIndex == index,
-                              140, context, index)));
-            }).toList()));
->>>>>>> pbis_main
+        color: Color(0xff000000) != Theme.of(context).backgroundColor
+            ? Color(0xffF7F8F9)
+            : Color(0xff111C20),
+        child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(25),
+                  topLeft: Radius.circular(25),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryVariant
+                          .withOpacity(0.1),
+                      blurRadius: 5.0,
+                      offset: Offset(0, -8)),
+                ]),
+            // height: 140.0,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: items.map((item) {
+                  int index = items.indexOf(item);
+                  return Flexible(
+                      child: GestureDetector(
+                          onTap: () {
+                            this.onItemSelected(index);
+                          },
+                          child: index == 2
+                              ? _buildSelectedMenu(
+                                  item, selectedIndex == index, 50, context)
+                              : _buildUnselectedMenus(
+                                  item,
+                                  selectedIndex == index,
+                                  140,
+                                  context,
+                                  index)));
+                }).toList())));
   }
 
   Widget _buildUnselectedMenus(PersistentBottomNavBarItem item, bool isSelected,

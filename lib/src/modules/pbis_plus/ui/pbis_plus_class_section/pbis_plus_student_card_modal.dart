@@ -445,56 +445,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   Widget buildBehaviorGridView(
       {required List<PBISPlusCommonBehaviorModal> behaviorList,
       bool loading = false}) {
-<<<<<<< HEAD
-    return Center(
-        child: GridView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: widget.isFromDashboardPage == true ? 1.1 : 0.9,
-              // Adjust this value to change item aspect ratio
-              crossAxisSpacing: 4.0,
-              // Adjust the spacing between items horizontally
-              mainAxisSpacing: 4.0,
-              // Adjust the spacing between items vertically
-            ),
-            itemCount: loading ? 6 : behaviorList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return FittedBox(
-                  child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: loading == true
-                          ? Container(
-                              decoration: BoxDecoration(
-                                  color: AppTheme.kShimmerHighlightColor,
-                                  borderRadius: BorderRadius.circular(8)),
-                              height: 24,
-                              width: 24)
-                          : PBISPlusActionInteractionButton(
-                              size: widget.isFromDashboardPage! ? 36 : 60,
-                              isShowCircle: true,
-                              onValueUpdate: (updatedStudentValueNotifier) {
-                                widget.classroomCourseId =
-                                    widget.classroomCourseId;
-                                widget.onValueUpdate(
-                                    updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                                widget.studentValueNotifier =
-                                    updatedStudentValueNotifier; // Used on current screen to update the value
-                                valueChange.value = !valueChange.value;
-                                // Update the changes on bool change detect
-                              },
-                              isLoading: widget.isFromStudentPlus == true
-                                  ? true
-                                  : widget.isLoading,
-                              isFromStudentPlus: widget.isFromStudentPlus,
-                              studentValueNotifier: widget.studentValueNotifier,
-                              iconData: behaviorList[index],
-                              classroomCourseId: widget.classroomCourseId,
-                              scaffoldKey: widget.scaffoldKey)));
-            }));
-=======
     return GridView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
@@ -541,7 +491,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                             scaffoldKey: widget.scaffoldKey)))));
       },
     );
->>>>>>> pbis_main
   }
 
   dynamic getContainerHeight(
