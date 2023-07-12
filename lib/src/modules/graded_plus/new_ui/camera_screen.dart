@@ -324,7 +324,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       //     errorMsg: state.errorMsg!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                       await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.errorMsg!,
+                          scaffoldKey: _scaffoldKey);
                       _driveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
                           // questionImage: widget.questionImageLink ?? 'NA',
@@ -455,7 +458,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       //     errorMsg: state.errorMsg!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                        await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.errorMsg!,
+                          scaffoldKey: _scaffoldKey);
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(

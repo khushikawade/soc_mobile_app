@@ -44,4 +44,20 @@ class GradedIntroContentModal {
             ? 'assets/images/onboarding_image5_individual.png'
             : 'assets/images/onboarding_image5.png')
   ];
+
+  static List<GradedIntroContentModal> onBoardingMainPagesInfoList = [
+    GradedIntroContentModal(
+        title: 'STEP 1',
+        msgBody:
+            'Assign students a one-question Assignment and have them complete it on any paper handout (blank, notebook, graph, etc.).',
+        imgURL: 'assets/images/onboarding_image1.jpg'),
+    GradedIntroContentModal(
+        title: 'STEP 2',
+        msgBody: Overrides.STANDALONE_GRADED_APP == true
+            ? 'Ensure students write their name and Google Classroom email anywhere on the Assignment paper handout. '
+            : 'Ensure students write their name and 9-digit NYCDOE student Id number anywhere on the Assignment paper handout. ',
+        imgURL: Overrides.STANDALONE_GRADED_APP == true
+            ? 'assets/images/onboarding_image2_individual.png'
+            : 'assets/images/onboarding_image2.png'),
+  ];
 }
