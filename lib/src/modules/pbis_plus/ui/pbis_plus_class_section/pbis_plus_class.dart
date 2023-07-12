@@ -135,7 +135,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       title: PlusScreenTitleWidget(
-        kLabelSpacing: 18,
+        kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
         text: 'All Classes',
         backButton: false,
         isTrailingIcon: true,
