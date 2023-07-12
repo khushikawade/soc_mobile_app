@@ -228,21 +228,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               behaviorList: state.defaultSchoolBehaviorList, loading: false);
         }
 
-<<<<<<< HEAD
-              return buildBehaviorGridView(
-                  behaviorList: state.teacherCustomBehaviorList,
-                  loading: false);
-            } else {
-              pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-            }
-          }
-=======
         if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
             state.teacherCustomBehaviorList.isNotEmpty) {
           return buildBehaviorGridView(
               behaviorList: state.teacherCustomBehaviorList, loading: false);
         }
->>>>>>> dev_quarter2_2k23
 
         if (state is PBISPlusBehaviorLoading) {
           return buildBehaviorGridView(
