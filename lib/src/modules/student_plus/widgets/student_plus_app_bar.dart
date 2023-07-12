@@ -128,9 +128,11 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
       // leading: leading,
       leadingWidth: 110,
 
-      title: widget.isWorkPage == true
-          ? wordScreenIconWidget()
-          : widget.titleIconCode != null
+      title: 
+      // widget.isWorkPage == true
+      //     ? wordScreenIconWidget()
+      //     :
+           widget.titleIconCode != null
               ? allScreenIconWidget()
               : Container(),
 
