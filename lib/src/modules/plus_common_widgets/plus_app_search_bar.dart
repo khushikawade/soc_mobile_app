@@ -90,7 +90,8 @@ class _PlusAppSearchBarState extends State<PlusAppSearchBar> {
             suffixIcon: IconButton(
                 onPressed: widget.iconOnTap,
                 icon: Icon(
-                    widget.controller.text == ''
+                    widget.controller.text == '' ||
+                            widget.controller.text.isEmpty
                         ? const IconData(0xe805,
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg)

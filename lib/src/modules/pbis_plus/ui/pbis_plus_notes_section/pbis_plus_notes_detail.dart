@@ -3,11 +3,11 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -18,11 +18,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PBISPlusNotesDetailPage extends StatefulWidget {
   final PBISPlusNotesUniqueStudentList item;
+  final IconData titleIconData;
 
-  PBISPlusNotesDetailPage({
-    Key? key,
-    required this.item,
-  }) : super(key: key);
+  PBISPlusNotesDetailPage(
+      {Key? key, required this.item, required this.titleIconData})
+      : super(key: key);
 
   @override
   State<PBISPlusNotesDetailPage> createState() => _PBISPlusHistoryState();
@@ -64,65 +64,72 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             extendBody: true,
+            appBar: PBISPlusUtility.pbisAppBar(
+              context: context,
+              titleIconData: widget.titleIconData,
+              title: 'Notes Deatils',
+              scaffoldKey: _scaffoldKey,
+            ),
             body: body(context)),
       )
     ]);
   }
 
   Widget _buildBackIcon() {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-              IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == 'phone' ? 24 : 32,
-              color: AppTheme.kButtonColor),
-        ),
-      ),
+    return IconButton(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.all(0),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: Icon(
+          IconData(0xe80d,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          size: Globals.deviceType == 'phone' ? 24 : 32,
+          color: AppTheme.kButtonColor),
     );
   }
 
   Widget body(BuildContext context) {
-    return ListView(physics: NeverScrollableScrollPhysics(), children: [
-      SpacerWidget(24),
-      _buildBackIcon(),
-      Padding(
-          padding: EdgeInsets.only(left: 22, right: 22),
-          child: FittedBox(
-              alignment: Alignment.centerLeft,
-              fit: BoxFit.scaleDown,
-              child: Text("${widget.item.names!.fullName!}'s" + " Notes",
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.w500)))),
-      SpacerWidget(_KVertcalSpace / 5),
-      BlocConsumer(
-          bloc: PBISPlusBlocInstance,
-          builder: (context, state) {
-            if (state is PBISPlusNotesSucess) {
-              //---------------------return the filter list to UI-----------//
-              return _listBuilder(state.notesList, isShimmerLoading: false);
-            } else if (state is PBISPlusLoading || state is PBISPlusInitial) {
-              return _listBuilder(
-                  List.generate(10, (index) => PBISStudentNotes()),
-                  isShimmerLoading: true);
-            } else if (state is PBISErrorState) {
-              return _noDataFoundWidget(state.error);
-            }
-            //Managing shimmer loading in case of initial loading
-            return Container();
-          },
-          listener: (context, state) {})
-    ]);
+    return ListView(
+        padding: EdgeInsets.symmetric(
+            horizontal: StudentPlusOverrides.kSymmetricPadding),
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            _buildBackIcon(),
+            // SizedBox(width: StudentPlusOverrides.KVerticalSpace / 5),
+            Expanded(
+                // alignment: Alignment.centerLeft,
+                // fit: BoxFit.fill,
+                child: Text("${widget.item.names!.fullName!}'s" + " Notes",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5!
+                        .copyWith(fontWeight: FontWeight.w700)))
+          ]),
+          SpacerWidget(_KVertcalSpace / 5),
+          BlocConsumer(
+              bloc: PBISPlusBlocInstance,
+              builder: (context, state) {
+                if (state is PBISPlusNotesSucess) {
+                  //---------------------return the filter list to UI-----------//
+                  return _listBuilder(state.notesList, isShimmerLoading: false);
+                } else if (state is PBISPlusLoading ||
+                    state is PBISPlusInitial) {
+                  return _listBuilder(
+                      List.generate(10, (index) => PBISStudentNotes()),
+                      isShimmerLoading: true);
+                } else if (state is PBISErrorState) {
+                  return _noDataFoundWidget(state.error);
+                }
+                //Managing shimmer loading in case of initial loading
+                return Container();
+              },
+              listener: (context, state) {})
+        ]);
   }
 
 //-----------------Build the Notes List-----------------------------------
@@ -147,12 +154,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                           studentNotesList[index], index, isShimmerLoading);
                     },
                     itemCount: studentNotesList.length)))
-        : RefreshIndicator(
-            color: AppTheme.kButtonColor,
-            key: refreshKey,
-            onRefresh: refreshPage,
-            child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: true, isNews: false, isEvents: false));
+        : _noDataFoundWidget('No Notes Found');
   }
 //-----------------Build the Notes List Card-----------------------------------
 
@@ -161,11 +163,18 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 4),
-        color: Theme.of(context).backgroundColor,
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+        color: (index % 2 == 0)
+            ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                ? Color(0xff162429)
+                : Color(0xffF7F8F9) //Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.background == Color(0xff000000)
+                ? Color(0xff111C20)
+                : Color(0xffE9ECEE),
+        // color: Theme.of(context).backgroundColor,
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: StudentPlusOverrides.kSymmetricPadding),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               SpacerWidget(24),
@@ -173,20 +182,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   ? localSimmerWidget(
                       height: MediaQuery.of(context).size.width * 0.3,
                       width: MediaQuery.of(context).size.width * 0.9)
-                  : Text(
-                      "${obj.notes ?? ""}",
+                  : Text("${obj.notes ?? ""}",
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: Color(0xff000000) ==
                                     Theme.of(context).backgroundColor
                                 ? Color(0xffFFFFFF)
                                 : Color(0xff162429),
-                            fontSize: 12,
-                          ),
-                    ),
+                          )),
               SpacerWidget(24),
               _buildDateList(obj, isShimmerLoading),
-              SpacerWidget(24),
+              SpacerWidget(24)
             ])));
   }
 
@@ -238,18 +244,15 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 //---------------Build--Vertcial Divider-----------------------------------
   Widget _buildVerticalDivider() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      height: 12,
-      width: 1, // Adjust the width as needed
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: Color(0xFFAAAAAA), // Replace with your desired color
-            width: 1, // Adjust the width as needed
-          ),
-        ),
-      ),
-    );
+        margin: EdgeInsets.symmetric(horizontal: 4),
+        height: 12,
+        width: 1, // Adjust the width as needed
+        decoration: BoxDecoration(
+            border: Border(
+                right: BorderSide(
+                    color: Color(0xFFAAAAAA), // Replace with your desired color
+                    width: 1 // Adjust the width as needed
+                    ))));
   }
 //---------------Build--Refresh-------Function-----------------------------------
 

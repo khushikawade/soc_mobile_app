@@ -125,7 +125,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   ],
                 ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"
+                widget.sectionType == "Student"||
+            widget.sectionType == 'Family'
                     ? Container()
                     : PlusAppSearchBar(
                         sectionName: 'STUDENT+',
@@ -505,7 +506,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         widget.studentDetails.studentGooglePresentationUrl != '') {
       resultSummaryIconsModalList.add(
         ResultSummaryIcons(
-          title: 'Go to Presentation',
+          title: 'Open Presentation',
           svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
         ),
       );

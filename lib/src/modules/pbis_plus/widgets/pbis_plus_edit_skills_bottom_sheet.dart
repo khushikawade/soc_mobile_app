@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -128,7 +127,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                     iconPath: "assets/Pbis_plus/Edit.svg",
                     tittle: "Edit Name"),
                 _buildCard(
-                    onTap: widget.onDelete,
+                    onTap: () {
+                      widget.onDelete(); // Call the onDelete callback
+                      Navigator.pop(context); // Close the bottom sheet
+                    },
                     iconPath: "assets/Pbis_plus/delete.svg",
                     tittle: "Delete")
               ])
@@ -173,15 +175,17 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
 
   Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+        padding: EdgeInsets.only(left: 16),
+        // color: Colors.amberAccent,
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               Container(
                   alignment: Alignment.topRight,
                   child: IconButton(
+                      padding: EdgeInsets.all(0),
                       onPressed: () {
                         Navigator.pop(context);
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -198,14 +202,22 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                           .textTheme
                           .headline5!
                           .copyWith(fontWeight: FontWeight.bold))),
-              Form(
-                  key: _formKey,
-                  child: Container(
-                    child: TextFieldWidget(
-                        msg: "Field is required",
-                        controller: editNameController,
-                        onSaved: (String value) {}),
-                  )),
+              Expanded(
+                child: Form(
+                    key: _formKey,
+                    child: Container(
+                      child: TextFieldWidget(
+                          context: context,
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(
+                                  fontWeight: FontWeight.w600, fontSize: 18),
+                          msg: "Field is required",
+                          controller: editNameController,
+                          onSaved: (String value) {}),
+                    )),
+              ),
               ValueListenableBuilder(
                   valueListenable: _errorMessage,
                   builder: (context, value, _) {
@@ -225,9 +237,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                                 })
                             : null);
                   }),
-              SpacerWidget(MediaQuery.of(context).size.width * 0.1),
+              SpacerWidget(18),
               _buildSaveButton(dataList)
-            ])));
+            ]));
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
@@ -240,6 +252,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
               if (editNameController.text.isNotEmpty) {
                 _errorMessage.value = false;
                 widget.onEditCallBack(editNameController.text);
+                Navigator.pop(context);
               } else {
                 _errorMessage.value = true;
               }
