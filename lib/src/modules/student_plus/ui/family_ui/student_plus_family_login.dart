@@ -97,6 +97,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Utility.showSnackBar(
               _scaffoldKey, "Something Went Wrong", context, null);
           Navigator.pop(context);
+          
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
               context: context, msg: 'Please wait', isOCR: false);
