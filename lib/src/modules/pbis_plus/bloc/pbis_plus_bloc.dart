@@ -247,12 +247,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 //---------------pbis student list SEARCH-------------------------------
     if (event is PBISPlusNotesSearchStudent) {
       try {
-        print("-----------INSIDE THE SEARCH EVENT ------------------");
         yield PBISPlusLoading();
         if (event.searchKey.isNotEmpty) {
           final searchedList =
-              await searchNotesList(event.studentNotes, event.searchKey);
-          print("-----------INSIDE THE SEARCH EVENT ------------------");
+              await searchStudentList(event.studentNotes, event.searchKey);
+
           if (searchedList != null && searchedList.isNotEmpty) {
             yield PBISPlusStudentSearchSucess(sortedList: searchedList);
           } else {
@@ -842,10 +841,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentNotesList.isNotEmpty) {
           // Assuming want to update the notes with the first API data
           _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
-          // //Updating the notes data in local db
-          // _pbisPlusNotesStudentsList.removeAt(studentItemIndex);
-          // _pbisPlusNotesStudentsList.insert(
-          //     studentItemIndex, _pbisPlusNotesStudentsList[studentItemIndex]);
 
           //Updating the notes data in local db
           await _pbisPlusSNotesStudentListDB.clear();
@@ -1417,15 +1412,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           PBISPlusNotesUniqueStudentList existingStudent =
               PBISPlusNotesUniqueStudentList();
           List<PBISStudentNotes>? notes;
+
           try {
             existingStudent = _pbisPlusStudentDataList.firstWhere(
-              (e) => e.studentId == item.profile?.id,
-              orElse: () => PBISPlusNotesUniqueStudentList(),
-            );
+                (e) => e.studentId == item.profile?.id,
+                orElse: () => PBISPlusNotesUniqueStudentList());
             notes = existingStudent.notes ?? null;
           } catch (e) {
             notes = null;
           }
+
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
             names: StudentName(
@@ -1819,7 +1815,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*----------------------------------------------------------------------------------------------*/
 /*---------------------------------------Function searchNotesList-------------------------------*/
 /*----------------------------------------------------------------------------------------------*/
-List<PBISPlusNotesUniqueStudentList> searchNotesList(
+List<PBISPlusNotesUniqueStudentList> searchStudentList(
     List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
   return notesList
       .where((note) =>
