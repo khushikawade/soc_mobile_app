@@ -171,22 +171,16 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         ? Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: children())
-        : ListView(children: children());
+            children: bodyFrameWidget())
+        : ListView(children: bodyFrameWidget());
   }
 
   Widget pbisPlusBody(BuildContext context) {
     return CustomScrollView(controller: _scrollController, slivers: [
       // A flexible app bar
       buildSliverAppBar(),
-
-      SliverFillRemaining(
-        child: buildTableSection(),
-      )
-    ]
-        // body: buildTableSection()
-
-        );
+      SliverFillRemaining(child: buildTableSection())
+    ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -580,7 +574,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         },
       );
 
-  List<Widget> children() {
+  List<Widget> bodyFrameWidget() {
     return [buildBehaviourSection(), buildTableSection()];
   }
 
@@ -626,7 +620,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           Color(0xff000000) != Theme.of(context).backgroundColor
                               ? Color(0xffF7F8F9)
                               : Color(0xff111C20),
-                      elevation: 10, 
+                      elevation: 10,
                       child: Container(
                         padding: EdgeInsets.only(bottom: 80),
                         child: _buildDataTable(
@@ -783,24 +777,21 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildSliverAppBar() {
     return SliverAppBar(
-      onStretchTrigger: () {
-        return Future<void>.value();
-      },
-      backgroundColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      expandedHeight: MediaQuery.of(context).size.height / 1.8,
-      flexibleSpace: FlexibleSpaceBar(
-        background: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Column(children: [
-            backButtonSection(),
-            // widget.isFromStudentPlus == true
-            buildBehaviourSection(),
-            // to remove hero widget for STUDENT+
-          ]),
-        ),
-      ),
-    );
+        onStretchTrigger: () {
+          return Future<void>.value();
+        },
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        expandedHeight: MediaQuery.of(context).size.height / 1.8,
+        flexibleSpace: FlexibleSpaceBar(
+            background: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: Column(children: [
+                  backButtonSection(),
+                  // widget.isFromStudentPlus == true
+                  buildBehaviourSection(),
+                  // to remove hero widget for STUDENT+
+                ]))));
   }
 
   appBar() {
