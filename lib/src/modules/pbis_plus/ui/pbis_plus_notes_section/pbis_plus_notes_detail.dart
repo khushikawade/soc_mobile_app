@@ -77,6 +77,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
 
   Widget _buildBackIcon() {
     return IconButton(
+      alignment: Alignment.centerLeft,
       padding: EdgeInsets.all(0),
       onPressed: () {
         Navigator.pop(context);
@@ -96,12 +97,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         physics: NeverScrollableScrollPhysics(),
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
-          Row(children: [
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             _buildBackIcon(),
-            SizedBox(width: StudentPlusOverrides.KVerticalSpace / 5),
-            FittedBox(
-                alignment: Alignment.centerLeft,
-                fit: BoxFit.scaleDown,
+            // SizedBox(width: StudentPlusOverrides.KVerticalSpace / 5),
+            Expanded(
+                // alignment: Alignment.centerLeft,
+                // fit: BoxFit.fill,
                 child: Text("${widget.item.names!.fullName!}'s" + " Notes",
                     textAlign: TextAlign.left,
                     style: Theme.of(context)
