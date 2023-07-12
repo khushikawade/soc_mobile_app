@@ -199,37 +199,39 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------ActionInteractionButtonsRowWise------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
-    Widget ActionInteractionButtonsRowWise = BlocBuilder(
-        bloc: pBISPlusBloc,
-        builder: (contxt, state) {
-          if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
-            return buildBehaviorGridView(
-                behaviorList: state.defaultSchoolBehaviorList, loading: false);
-          }
-          if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
-            if (state.teacherCustomBehaviorList.isNotEmpty) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                behvaiourIconListCount.value =
-                    state.teacherCustomBehaviorList.length;
-              });
+    Widget ActionInteractionButtonsRowWise = BlocConsumer(
+      bloc: pBISPlusBloc,
+      builder: (contxt, state) {
+        if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+          return buildBehaviorGridView(
+              behaviorList: state.defaultSchoolBehaviorList, loading: false);
+        }
 
-              return buildBehaviorGridView(
-                  behaviorList: state.teacherCustomBehaviorList,
-                  loading: false);
-              //  buildBehaviorGridView(
-              //   behaviorList: state.teacherCustomBehaviorList,
-              // );
-            } else {
-              pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-            }
-          }
+        if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+            state.teacherCustomBehaviorList.isNotEmpty) {
+          return buildBehaviorGridView(
+              behaviorList: state.teacherCustomBehaviorList, loading: false);
+        }
 
-          if (state is PBISPlusBehaviorLoading) {
-            return buildBehaviorGridView(
-                behaviorList: state.demoBehaviorData, loading: true);
-          }
-          return Container();
-        });
+        if (state is PBISPlusBehaviorLoading) {
+          return buildBehaviorGridView(
+              behaviorList: state.demoBehaviorData, loading: true);
+        }
+        return Container();
+      },
+      listener: (contxt, state) {
+        //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
+        if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+            state.teacherCustomBehaviorList.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            behvaiourIconListCount.value =
+                state.teacherCustomBehaviorList.length;
+          });
+        } else {
+          pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
+        }
+      },
+    );
 
     final pbisStudentProfileWidget = Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -399,6 +401,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           HeroDialogRoute(
                                               builder: (context) =>
                                                   PBISPlusStudentDashBoard(
+                                                      pBISPlusBloc:
+                                                          pBISPlusBloc,
                                                       constraint:
                                                           widget.constraint,
                                                       scaffoldKey:
