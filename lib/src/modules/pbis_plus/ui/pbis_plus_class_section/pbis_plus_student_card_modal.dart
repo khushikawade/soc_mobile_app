@@ -220,16 +220,16 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         return Container();
       },
       listener: (contxt, state) {
-
         //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
-        if (state is PBISPlusGetTeacherCustomBehaviorSuccess && state.teacherCustomBehaviorList.isNotEmpty) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              behvaiourIconListCount.value =
-                  state.teacherCustomBehaviorList.length;
-            });}
-           else {
-            pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-           }        
+        if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+            state.teacherCustomBehaviorList.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            behvaiourIconListCount.value =
+                state.teacherCustomBehaviorList.length;
+          });
+        } else {
+          pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
+        }
       },
     );
 
@@ -401,6 +401,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           HeroDialogRoute(
                                               builder: (context) =>
                                                   PBISPlusStudentDashBoard(
+                                                      pBISPlusBloc:
+                                                          pBISPlusBloc,
                                                       constraint:
                                                           widget.constraint,
                                                       scaffoldKey:
