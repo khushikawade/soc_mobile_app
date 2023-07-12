@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_success.dart';
 import 'package:Soc/src/modules/student_plus/widgets/timer_animated_widget.dart';
@@ -9,6 +10,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusFamilyOtp extends StatefulWidget {
   const StudentPlusFamilyOtp({Key? key}) : super(key: key);
@@ -26,6 +28,8 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   AnimationController? _controller;
 
   int levelClock = 60;
+  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -57,6 +61,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
           body: Container(
@@ -215,6 +220,40 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
                   borderSide: new BorderSide(color: Colors.red))),
         ),
       ),
+    );
+  }
+
+  /* ------------------------- bloc listener widget to manage family login ------------------------- */
+
+  Widget familyLoginBlocListener() {
+    return BlocListener(
+      bloc: studentPlusBloc,
+      child: Container(),
+      listener: (context, state) {
+        if (state is FamilyLoginOtpSendSuccess) {
+          Utility.showSnackBar(
+              _scaffoldKey, "Otp Send Successfully", context, null);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp()),
+          );
+        } else if (state is FamilyLoginOtpSendFailure) {
+          Utility.showSnackBar(
+              _scaffoldKey,
+              "User is not authorized to access student plus in family section",
+              context,
+              null);
+          Navigator.pop(context);
+        } else if (state is FamilyLoginErrorReceived) {
+          Utility.showSnackBar(
+              _scaffoldKey, "Something Went Wrong", context, null);
+          Navigator.pop(context);
+        } else if (state is FamilyLoginLoading) {
+          Utility.showLoadingDialog(
+              context: context, msg: 'Please wait', isOCR: false);
+        }
+      },
     );
   }
 
