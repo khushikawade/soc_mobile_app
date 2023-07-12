@@ -109,7 +109,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1 //classroomMaxPointQue
-              ? widget.height! * 1.2
+              ? widget.height! * 1.1
               : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
