@@ -220,15 +220,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         return Container();
       },
       listener: (contxt, state) {
-        if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
-          if (state.teacherCustomBehaviorList.isNotEmpty) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              behvaiourIconListCount.value =
-                  state.teacherCustomBehaviorList.length;
-            });
-          } else {
-            pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-          }
+        //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
+        if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+            state.teacherCustomBehaviorList.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            behvaiourIconListCount.value =
+                state.teacherCustomBehaviorList.length;
+          });
+        } else {
+          pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
         }
       },
     );

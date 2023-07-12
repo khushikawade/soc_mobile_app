@@ -171,8 +171,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         ? Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: children())
-        : ListView(children: children());
+            children: bodyFrameWidget())
+        : ListView(children: bodyFrameWidget());
   }
 
   Widget pbisPlusBody(BuildContext context) {
@@ -587,7 +587,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         },
       );
 
-  List<Widget> children() {
+  List<Widget> bodyFrameWidget() {
     return [buildBehaviourSection(), buildTableSection()];
   }
 
@@ -855,7 +855,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 13),
+                        padding: const EdgeInsets.only(left: 25),
                         child: Text(
                           widget.studentValueNotifier.value.profile?.name
                                   ?.fullName ??
