@@ -246,14 +246,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       },
       listener: (contxt, state) {
         //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
-        if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
-            state.teacherCustomBehaviorList.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            behvaiourIconListCount.value =
-                state.teacherCustomBehaviorList.length;
-          });
-        } else {
-          pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
+        if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
+          if (state.teacherCustomBehaviorList.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              behvaiourIconListCount.value =
+                  state.teacherCustomBehaviorList.length;
+            });
+          } else {
+            pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
+          }
         }
       },
     );
@@ -565,7 +566,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         itemcount.value <= 3
             ? (widget.constraint <= 115)
                 ? MediaQuery.of(context).size.width * 0.09
-                : MediaQuery.of(context).size.width * 0.2
+                : MediaQuery.of(context).size.width * 0.12
             // MediaQuery.of(context).size.width * 0.12
             : 0;
 
@@ -645,7 +646,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   void trackUserActivity() {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_student_card_modal_view");
-
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_student_card_modal_screen',
         screenClass: 'PBISPlusStudentCardModal');
