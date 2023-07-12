@@ -31,6 +31,7 @@ class _GradedPlusStaffState extends State<GradedPlusStaff> {
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+      iconData: null,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone

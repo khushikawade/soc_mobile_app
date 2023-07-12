@@ -58,9 +58,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
-              // refresh: (v) {
-              //   setState(() {});
-              // },
+              refresh: (v) {
+                setState(() {});
+              },
               titleIconCode: 0xe881,
             ),
             body: body()),
@@ -444,7 +444,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             width: MediaQuery.of(context).size.width * 0.12,
             child: Center(
               child: Utility.textWidget(
-                  text: centreText,
+                  text: centreText == "Below"
+                      ? centreText.toUpperCase()
+                      : centreText,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   context: context,

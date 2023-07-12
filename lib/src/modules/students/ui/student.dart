@@ -587,38 +587,38 @@ class _StudentPageState extends State<StudentPage> {
     );
   }
 
-  popupModal({required String message}) {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message: message,
-                title: "Action Required",
-                confirmationOnPress: () async {
-                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      "logout");
-                  await UserGoogleProfile.clearUserProfile();
-                  await GoogleClassroom.clearClassroomCourses();
-                  await Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
-                  // Globals.googleDriveFolderId = null;
-                  PlusUtility.updateLogs(
-                      activityType: 'GRADED+',
-                      userType: 'Teacher',
-                      activityId: '3',
-                      description: 'User profile logout',
-                      operationResult: 'Success');
-                  Navigator.pop(context);
-                  studentPlusLogin();
-                },
-              );
-            }));
-  }
+  // popupModal({required String message}) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) =>
+  //           OrientationBuilder(builder: (context, orientation) {
+  //             return CommonPopupWidget(
+  //               isLogout: true,
+  //               orientation: orientation,
+  //               context: context,
+  //               message: message,
+  //               title: "Action Required",
+  //               confirmationOnPress: () async {
+  //                 await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //                     "logout");
+  //                 await UserGoogleProfile.clearUserProfile();
+  //                 await GoogleClassroom.clearClassroomCourses();
+  //                 await Authentication.signOut(context: context);
+  //                 Utility.clearStudentInfo(tableName: 'student_info');
+  //                 Utility.clearStudentInfo(tableName: 'history_student_info');
+  //                 // Globals.googleDriveFolderId = null;
+  //                 PlusUtility.updateLogs(
+  //                     activityType: 'GRADED+',
+  //                     userType: 'Teacher',
+  //                     activityId: '3',
+  //                     description: 'User profile logout',
+  //                     operationResult: 'Success');
+  //                 Navigator.pop(context);
+  //                 studentPlusLogin();
+  //               },
+  //             );
+  //           }));
+  // }
 
   /* ---------------------------- Function call in case of student Plus --------------------------- */
   Future studentPlusLogin() async {
@@ -667,9 +667,24 @@ class _StudentPageState extends State<StudentPage> {
       //Creating fresh sessionID
       // Check user is login in other section or not
       if (_profileData[0].userType != "Student") {
-        popupModal(
-            message:
-                "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
+
+        studentPlusLogin();
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
         return;
       }
 

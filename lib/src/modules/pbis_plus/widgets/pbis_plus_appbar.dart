@@ -6,9 +6,7 @@ import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/user_profile.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -24,14 +22,19 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool? isGradedPlus;
-  PBISPlusAppBar(
-      {Key? key,
-      this.titleIconData,
-      this.backButton,
-      required this.title,
-      required this.scaffoldKey,
-      this.isGradedPlus = false})
-      : preferredSize = Size.fromHeight(60.0),
+
+  // final Widget? titleWidget;
+  // final Widget? leadingWidget;
+  PBISPlusAppBar({
+    Key? key,
+    this.titleIconData,
+    this.backButton,
+    required this.title,
+    required this.scaffoldKey,
+    this.isGradedPlus = false,
+    // this.titleWidget,
+    // this.leadingWidget
+  })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
   final Size preferredSize;
@@ -42,7 +45,8 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading = Container(
+    Widget leading = //widget.leadingWidget ??
+        Container(
       child: Row(
         children: [
           _translateButton(setState, context),
@@ -105,8 +109,6 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                                 profile: snapshot.data!,
                               )),
                     );
-
-                
                   },
                 ),
               );
@@ -120,9 +122,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: widget.isGradedPlus == true
-          ? gradedLogoBuilder(context)
-          : titleBuilder(context, widget.titleIconData),
+      title:
+          // widget.isGradedPlus == true
+          //     ? gradedLogoBuilder(context)
+          //     :
+          titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,

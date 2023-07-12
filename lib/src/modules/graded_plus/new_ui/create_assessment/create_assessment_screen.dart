@@ -8,12 +8,9 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment/create_assessment_method.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
-import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -150,6 +147,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               //   FloatingActionButtonLocation.centerFloat,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                iconData: Icons.add,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 isSuccessState: ValueNotifier<bool>(true),

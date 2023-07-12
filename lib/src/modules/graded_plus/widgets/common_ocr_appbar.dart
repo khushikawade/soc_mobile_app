@@ -50,6 +50,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   final VoidCallback? onTap;
   bool? fromGradedPlus;
   String? plusAppName;
+  IconData? iconData;
   final scaffoldKey;
 
   CustomOcrAppBarWidget(
@@ -73,7 +74,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.navigateBack,
       this.isProfilePage,
       required this.fromGradedPlus,
-      required this.plusAppName})
+      required this.plusAppName,
+      required this.iconData})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -113,7 +115,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         //       height: 40,
         //       color: Colors.transparent,
         //     )),
-        title: commonGradedLogo(),
+        title: widget.iconData == null
+            ? commonGradedLogo()
+            : allScreenIconWidget(),
         actions: [
           widget.isProfilePage == true
               ? IconButton(
@@ -591,6 +595,16 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 ? 25
                 : 32
             : null,
+      ),
+    );
+  }
+
+  Widget allScreenIconWidget() {
+    return Container(
+      padding: EdgeInsets.only(right: 7),
+      child: Icon(
+        widget.iconData,
+        color: AppTheme.kButtonColor,
       ),
     );
   }
