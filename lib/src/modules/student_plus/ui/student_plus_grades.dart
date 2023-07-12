@@ -40,7 +40,8 @@ class individual extends State<StudentPlusGradesPage> {
 
   @override
   void initState() {
-    _studentPlusBloc.add(widget.sectionType == 'Staff'
+    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
+            widget.sectionType == 'Family'
         ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
         : FetchStudentGradesWithClassroomEvent(
             studentId: widget.studentDetails.studentIdC));
@@ -86,7 +87,8 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"
+                widget.sectionType == "Student"||
+            widget.sectionType == 'Family'
                     ? Container()
                     : StudentPlusInfoSearchBar(
                         hintText:
@@ -169,7 +171,8 @@ class individual extends State<StudentPlusGradesPage> {
       valueListenable: selectedValue,
       builder: (context, value, child) {
         return Container(
-          height: widget.sectionType == "Student"
+          height: widget.sectionType == "Student"||
+            widget.sectionType == 'Family'
               ? MediaQuery.of(context).size.height * 0.75
               : MediaQuery.of(context).size.height * 0.62,
           child: Column(
