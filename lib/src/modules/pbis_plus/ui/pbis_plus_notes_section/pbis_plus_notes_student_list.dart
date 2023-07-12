@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes_detail.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -297,31 +298,41 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                           width: 40,
                           height: 40,
                           child: localSimmerWidget(height: 40, width: 40))
-                      : Container(
-                          width: 50,
-                          height: 50,
-                          child: CachedNetworkImage(
-                              fit: BoxFit.contain,
-                              placeholder: (context, url) => SizedBox(
-                                  height: 8,
-                                  width: 8,
-                                  child: Center(
-                                      child: CircularProgressIndicator.adaptive(
-                                          backgroundColor:
-                                              AppTheme.kButtonColor))),
-                              imageUrl: studentNotesList[index].iconUrlC ?? '',
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                              imageBuilder: (context, imageProvider) => CircleAvatar(
-                                  radius: 56, backgroundImage: imageProvider))),
+                      : PBISCommonProfileWidget(
+                          isFromStudentNotes: true,
+                          studentname: studentNotesList[index].names!,
+                          profilePictureSize: 30,
+                          imageUrl: studentNotesList[index].iconUrlC!),
+                  // Container(
+                  //     width: 50,
+                  //     height: 50,
+                  //     child: CachedNetworkImage(
+                  //         fit: BoxFit.contain,
+                  //         placeholder: (context, url) => SizedBox(
+                  //             height: 8,
+                  //             width: 8,
+                  //             child: Center(
+                  //                 child: CircularProgressIndicator.adaptive(
+                  //                     backgroundColor:
+                  //                         AppTheme.kButtonColor))),
+                  //         imageUrl: studentNotesList[index].iconUrlC ?? '',
+                  //         errorWidget: (context, url, error) =>
+                  //             Icon(Icons.error),
+                  //         imageBuilder: (context, imageProvider) => CircleAvatar(
+                  //             radius: 56, backgroundImage: imageProvider))),
                   title: isShimmerLoading == true
                       ? localSimmerWidget(height: 20, width: 30)
                       : Utility.textWidget(
                           text: studentNotesList[index].names!.fullName ?? '',
                           context: context,
                           textTheme: Theme.of(context).textTheme.headline2!),
-                  trailing:
-                      ShimmerLoading(isLoading: isShimmerLoading, child: Padding(padding: const EdgeInsets.only(right: 12), child: Icon(Icons.arrow_forward_ios_rounded, size: Globals.deviceType == "phone" ? 12 : 20, color: AppTheme.kPrimaryColor))),
+                  trailing: ShimmerLoading(
+                      isLoading: isShimmerLoading,
+                      child: Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Icon(Icons.arrow_forward_ios_rounded,
+                              size: Globals.deviceType == "phone" ? 12 : 20,
+                              color: AppTheme.kPrimaryColor))),
                   onTap: (() {
                     if (isShimmerLoading == false) {
                       Navigator.of(context).push(MaterialPageRoute(

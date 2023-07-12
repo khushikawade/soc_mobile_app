@@ -1791,6 +1791,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
