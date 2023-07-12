@@ -584,7 +584,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   void trackUserActivity() {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_student_card_modal_view");
-
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_student_card_modal_screen',
         screenClass: 'PBISPlusStudentCardModal');
