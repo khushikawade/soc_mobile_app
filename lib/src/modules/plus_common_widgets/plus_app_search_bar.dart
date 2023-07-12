@@ -104,6 +104,7 @@ class _PlusAppSearchBarState extends State<PlusAppSearchBar> {
 
   Widget innerSearchBar(String translatedMessage) {
     return TextFormField(
+        readOnly: true,
         autofocus: widget.autoFocus,
         style: Theme.of(context).textTheme.headline5,
         focusNode: widget.focusNode,
