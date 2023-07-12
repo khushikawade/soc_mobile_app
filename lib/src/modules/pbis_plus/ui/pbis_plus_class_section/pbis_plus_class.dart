@@ -140,9 +140,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         text: 'All Classes',
         backButton: false,
         isTrailingIcon: true,
-        backButtonOnTap: () {
-          widget.backOnTap();
-        },
+        // backButtonOnTap: () {
+        //   widget.backOnTap();
+        // },
       ),
       trailing: widget.isGradedPlus == true
           ? Container(
@@ -208,11 +208,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget body() {
     return Container(
+     
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+        // mainAxisSize: MainAxisSize.max,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           ValueListenableBuilder(
@@ -323,30 +324,32 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     );
   }
 
-  ListView buildList(
+  Widget buildList(
       {required List<ClassroomCourse> googleClassroomCourseList,
       required final bool isStudentInteractionLoading,
       required final bool isScreenShimmerLoading}) {
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        Container(
-            margin: EdgeInsets.all(10.0),
-            height: 30,
-            child: Container(
-              child: ListView.builder(
-                controller: null,
-                itemBuilder: (BuildContext context, int index) {
-                  return chipBuilder(googleClassroomCourseList, context, index,
-                      isScreenShimmerLoading);
-                },
-                itemCount: googleClassroomCourseList.length,
-                scrollDirection: Axis.horizontal,
-              ),
-            )),
-        studentListCourseWiseView(googleClassroomCourseList,
-            isStudentInteractionLoading, isScreenShimmerLoading)
-      ],
+    return Container(
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Container(
+              margin: EdgeInsets.all(10.0),
+              height: 30,
+              child: Container(
+                child: ListView.builder(
+                  controller: null,
+                  itemBuilder: (BuildContext context, int index) {
+                    return chipBuilder(googleClassroomCourseList, context,
+                        index, isScreenShimmerLoading);
+                  },
+                  itemCount: googleClassroomCourseList.length,
+                  scrollDirection: Axis.horizontal,
+                ),
+              )),
+          studentListCourseWiseView(googleClassroomCourseList,
+              isStudentInteractionLoading, isScreenShimmerLoading)
+        ],
+      ),
     );
   }
 

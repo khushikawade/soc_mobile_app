@@ -9,9 +9,9 @@ class StudentPlusOverrides {
   static final String studentGradeList = "student_grade_list";
   static final String studentPlusDetails = "student_plus_details1";
   static final String searchTileStaticWord = 'Class';
-  static final String recentSearchHeader = "Recent Search";
+  static final String recentSearchHeader = "Recent Searches";
   static final String titleSearchPage = 'Search Any Student';
-  static final String searchHintText = 'Search Student';
+  static final String searchHintText = 'Name';
   static final String errorMessageOnSearchPage =
       'Please Search With Minimum 3 Characters';
   static final String studentInfoPageTitle = 'Student Info';

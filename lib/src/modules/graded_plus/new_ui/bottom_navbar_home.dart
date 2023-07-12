@@ -60,6 +60,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
           return PersistentTabView.custom(
             context,
             controller: gradedPlusPersistentTabController,
+          
             screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
                 backOnTap: backOnTap),
             customWidget: ValueListenableBuilder(
@@ -91,6 +92,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                     backOnTap: backOnTap)
                 .length,
             confineInSafeArea: true,
+          
             backgroundColor: Theme.of(context).backgroundColor,
             handleAndroidBackButtonPress: true,
             resizeToAvoidBottomInset:
