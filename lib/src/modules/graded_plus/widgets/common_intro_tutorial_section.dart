@@ -1,5 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -21,10 +24,25 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
   CarouselController carouselController = CarouselController();
   ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
   List<String> sectionInfo = ['Constructed Response', 'Multiple Choice'];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return body();
+  // }
   @override
   Widget build(BuildContext context) {
-    return body();
+    return Stack(children: [
+      CommonBackgroundImgWidget(),
+      Scaffold(
+        resizeToAvoidBottomInset: false,
+        key: _scaffoldKey,
+        extendBody: true,
+        backgroundColor: Colors.transparent,
+        appBar: appBar(),
+        body: body(),
+      )
+    ]);
   }
 
   Widget body() {
@@ -32,12 +50,26 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          carouselSliderIndicator(),
+          sectionhHeader(),
           Expanded(
             child: Container(child: carouselSliderBuilder()),
           ),
         ],
       ),
+    );
+  }
+
+  PreferredSizeWidget? appBar() {
+    return CustomOcrAppBarWidget(
+      plusAppName: 'GRADED+',
+      fromGradedPlus: true,
+      //Show home button in standard app and hide in standalone
+      assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
+      isOcrHome: true,
+      isSuccessState: ValueNotifier<bool>(true),
+      isBackOnSuccess: ValueNotifier<bool>(false),
+      key: GlobalKey(),
+      isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
     );
   }
 
@@ -113,7 +145,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                           children: List.generate(
                             sectionInfo.length,
                             (index) => Expanded(
-                              child: buttonDesign(
+                              child: button(
                                 index: index,
                                 sectionInfo: sectionInfo[index],
                               ),
@@ -166,14 +198,14 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
     });
   }
 
-  buttonDesign({required int index, required String sectionInfo}) {
+  button({required int index, required String sectionInfo}) {
     return Container(
       margin: EdgeInsets.all(10),
       height: 50,
       child: TextButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              Colors.blue), // Replace with your desired color
+              AppTheme.kButtonColor), // Replace with your desired color
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
@@ -182,7 +214,22 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
           ),
         ),
         onPressed: () {
-          // Add your button's onPressed logic here
+          List<GradedIntroContentModal> onBoardingInfoList = [];
+          if (index == 0) {
+            onBoardingInfoList =
+                GradedIntroContentModal.onBoardingConstrutedResponseIndoList;
+          } else {
+            onBoardingInfoList =
+                GradedIntroContentModal.onBoardingMultipleChoiceIndoList;
+          }
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonIntroSection(
+                        backButton: true,
+                        onBoardingInfoList: onBoardingInfoList,
+                      )));
         },
         child: TranslationWidget(
           message: sectionInfo ?? '',
@@ -195,6 +242,27 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
           ),
         ),
       ),
+    );
+  }
+
+  Row sectionhHeader() {
+    return Row(
+      children: [
+        if (widget.backButton == true) backbutton(),
+        carouselSliderIndicator()
+      ],
+    );
+  }
+
+  Widget backbutton() {
+    return IconButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: Icon(
+          IconData(0xe80d,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor),
     );
   }
 }

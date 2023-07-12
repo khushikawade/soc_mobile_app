@@ -25,19 +25,23 @@ class _GradedPlusHelpSectionState extends State<GradedPlusHelpSection> {
 //Used to avoid the blink effect on navigating back to Staff screen //Standard App
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackgroundImgWidget(),
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
-        extendBody: true,
-        backgroundColor: Colors.transparent,
-        appBar: appBar(),
-        body: CommonIntroSection(
-            onBoardingInfoList:
-                GradedIntroContentModal.onBoardingMainPagesInfoList),
-      )
-    ]);
+    return CommonIntroSection(
+        onBoardingInfoList:
+            GradedIntroContentModal.onBoardingMainPagesInfoList);
+
+    // Stack(children: [
+    //   CommonBackgroundImgWidget(),
+    //   Scaffold(
+    //     resizeToAvoidBottomInset: false,
+    //     key: _scaffoldKey,
+    //     extendBody: true,
+    //     backgroundColor: Colors.transparent,
+    //     appBar: appBar(),
+    //     body: CommonIntroSection(
+    //         onBoardingInfoList:
+    //             GradedIntroContentModal.onBoardingMainPagesInfoList),
+    //   )
+    // ]);
   }
 
   PreferredSizeWidget? appBar() {
