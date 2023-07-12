@@ -75,7 +75,7 @@ class GradedPlusBottomNavBar {
           inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
           icon: gardedPlusBottomNavBarIcons(
-              iconData: IconData(0xe849,
+              iconData: IconData(0xe890,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg)),
           title: ('Help'),

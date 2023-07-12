@@ -8,7 +8,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -45,9 +45,13 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
   @override
   void initState() {
     studentValueNotifier.value = ClassroomStudents(
+        //TODOPBIS:   //behavior1
         profile: ClassroomProfile(
             emailAddress: widget.studentDetails.emailC ?? '',
             photoUrl: 'default-user',
+            // behavior1.  : 0,
+            // behavior2 :   : 0,
+            // behavior3: 0,
             helpful: 0,
             engaged: 0,
             niceWork: 0,
@@ -84,10 +88,13 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
               titleIconCode: 0xe891,
+              refresh: (v) {
+                setState(() {});
+              },
             ),
             body: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-              print(constraints.maxHeight);
+              // print(constraints.maxHeight);
               // Set the maximum height of the bottom sheet based on the screen size
               // print(constraints.maxHeight);
               return body(constraints.maxHeight);
@@ -110,10 +117,10 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+          widget.sectionType == "Student" || widget.sectionType == 'Family'
               ? Container()
-              : StudentPlusInfoSearchBar(
+              : PlusAppSearchBar(
+                  sectionName: 'STUDENT+',
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                   onTap: () async {

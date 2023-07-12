@@ -352,7 +352,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                           context,
                           _scaffoldKey,
                           title,
-                          'GRADED+',userType: 'Teacher');
+                          'GRADED+',
+                          userType: 'Teacher');
 
                       if (result == true) {
                         updateAppBar.value = !updateAppBar.value;

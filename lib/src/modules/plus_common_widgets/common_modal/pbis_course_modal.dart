@@ -1,4 +1,5 @@
 import 'dart:math';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_course_modal.g.dart';
 
@@ -111,6 +112,19 @@ class ClassroomProfile {
   int? niceWork;
   @HiveField(7)
   int? helpful;
+  // @HiveField(5)
+  // PBISPlusGenericBehaviorModal? behavior1;
+  // @HiveField(6)
+  // PBISPlusGenericBehaviorModal? behavior2;
+  // @HiveField(7)
+  // PBISPlusGenericBehaviorModal? behavior3;
+  // @HiveField(8)
+  // PBISPlusGenericBehaviorModal? behavior4;
+  // @HiveField(9)
+  // PBISPlusGenericBehaviorModal? behavior5;
+  // @HiveField(10)
+  // PBISPlusGenericBehaviorModal? behavior6;
+
   @HiveField(8)
   String? courseName;
   @HiveField(9)
@@ -124,6 +138,12 @@ class ClassroomProfile {
       this.engaged,
       this.niceWork,
       this.helpful,
+      // this.behavior1,
+      // this.behavior2,
+      // this.behavior3,
+      // this.behavior4,
+      // this.behavior5,
+      // this.behavior6,
       this.courseName,
       this.courseId});
 
@@ -144,6 +164,24 @@ class ClassroomProfile {
         permissions!.add(new ClassroomPermissions.fromJson(v));
       });
     }
+    // behavior1 = json['behavior1'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior2 = json['behavior2'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior3 = json['behaviou3'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior4 = json['behavior4'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior5 = json['behavior5'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior6 = json['behavior6'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
     engaged = 0;
     niceWork = 0;
     helpful = 0;

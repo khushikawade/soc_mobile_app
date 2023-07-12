@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -21,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:mailto/mailto.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -28,8 +30,10 @@ import 'user_profile.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Utility {
+  final player = AudioCache();
   static bool? isOldUser = false;
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
@@ -80,6 +84,22 @@ class Utility {
       return date;
     } catch (e) {
       return null;
+    }
+  }
+
+  static playSound(String audioPath) {
+    try {
+      AudioPlayer().play(AssetSource("pbis_sound/sound1.wav"));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static doVibration() async {
+    try {
+      await HapticFeedback.vibrate();
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -1005,5 +1025,29 @@ class Utility {
       body: body,
     );
     await Utility.launchUrlOnExternalBrowser('$mailtoLink');
+  }
+
+  static Color getContrastColor(BuildContext context) {
+    return Color(0xff000000) != Theme.of(context).backgroundColor
+        ? Color(0xffF7F8F9)
+        : Color(0xff111C20);
+  }
+
+  static getTimefromUtc(String utcdatetimeString, String cas) {
+    try {
+      if (utcdatetimeString != null && utcdatetimeString.isNotEmpty) {
+        DateTime datetime = DateTime.parse(utcdatetimeString).toLocal();
+        switch (cas) {
+          case 'D':
+            return DateFormat('dd/MM/yyyy').format(datetime); //Date: 28/06/2023
+          case 'T':
+            return DateFormat.jm().format(datetime); //Time: 9:27 AM
+          case 'WD':
+            return DateFormat.EEEE().format(datetime); // e.g., Wednesday
+        }
+      }
+    } catch (e) {
+      return utcdatetimeString;
+    }
   }
 }

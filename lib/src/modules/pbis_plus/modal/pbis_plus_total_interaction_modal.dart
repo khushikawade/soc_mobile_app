@@ -1,6 +1,8 @@
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_plus_total_interaction_modal.g.dart';
 
+//TODOPBIS:
 @HiveType(typeId: 41)
 class PBISPlusTotalInteractionModal {
   @HiveField(0)
@@ -21,6 +23,12 @@ class PBISPlusTotalInteractionModal {
   String? createdAt;
   @HiveField(8)
   String? classroomCourseId;
+  @HiveField(9)
+  int? participation;
+  @HiveField(10)
+  int? collaboration;
+  @HiveField(11)
+  int? listening;
   PBISPlusTotalInteractionModal(
       {this.schoolId,
       this.studentId,
@@ -29,7 +37,10 @@ class PBISPlusTotalInteractionModal {
       this.niceWork,
       this.helpful,
       this.createdAt,
-      this.studentEmail});
+      this.studentEmail,
+      this.participation,
+      this.collaboration,
+      this.listening});
 
   PBISPlusTotalInteractionModal.fromJson(Map<String, dynamic> json) {
     schoolId = json['School_Id'] ?? '';
@@ -41,6 +52,9 @@ class PBISPlusTotalInteractionModal {
     studentEmail = json["Student_Email"];
     createdAt = json["CreatedAt"];
     classroomCourseId = json["Classroom_Course_Id"];
+    participation = json['Participation'] ?? 0;
+    collaboration = json['Collaboration'] ?? 0;
+    listening = json['Listening'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +68,10 @@ class PBISPlusTotalInteractionModal {
     data['Student_Email'] = this.studentEmail;
     data['CreatedAt'] = this.createdAt;
     data["Classroom_Course_Id"] = this.classroomCourseId;
+    data["Participation"] = this.participation;
+    data["Collaboration"] = this.collaboration;
+    data["Listening"] = this.listening;
     return data;
   }
 }
+//  PBISPlusGenericBehaviorModal intern;

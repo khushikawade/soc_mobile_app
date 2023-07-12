@@ -31,10 +31,10 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
-              // refresh: (v) {
-              //   setState(() {});
-              // },
-              ),
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
           backgroundColor: Colors.transparent,
           body: OfflineBuilder(
               connectivityBuilder: (
@@ -54,8 +54,7 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
                                 StudentPlusOverrides.KVerticalSpace / 4),
                             PlusScreenTitleWidget(
                                 kLabelSpacing: _kLabelSpacing,
-                                text:
-                                    "Student List"),
+                                text: "Student List"),
                             SpacerWidget(
                                 StudentPlusOverrides.kSymmetricPadding),
                             studentList(list: []),

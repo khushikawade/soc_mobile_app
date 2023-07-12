@@ -151,7 +151,7 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
-      case 'Go to Presentation':
+      case 'Open Presentation':
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }
@@ -266,9 +266,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
-          print("STATE $state");
           if (state is GoogleSlidesPresentationErrorState) {
-            print(state.errorMsg);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();
@@ -351,7 +349,6 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
-          print("STATE $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(
@@ -359,7 +356,6 @@ class _GradedPlusResultOptionBottomSheetState
                 null);
           }
           if (state is StudentPlusErrorReceived) {
-            print(state.err);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
             Navigator.of(context).pop();

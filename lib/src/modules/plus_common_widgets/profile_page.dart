@@ -58,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            iconData: null,
             plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),

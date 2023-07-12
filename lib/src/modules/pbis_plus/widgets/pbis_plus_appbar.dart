@@ -106,8 +106,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                               )),
                     );
 
-                    // _showPopUp(snapshot.data!);
-                    //print("profile url");
+                
                   },
                 ),
               );
@@ -121,9 +120,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: widget.isGradedPlus == true
-          ? gradedLogoBuilder(context)
-          : titleBuilder(context, widget.titleIconData),
+      title:
+          // widget.isGradedPlus == true
+          //     ? gradedLogoBuilder(context)
+          //     :
+          titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
@@ -135,7 +136,6 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     List<UserInformation> _userInformation =
         await UserGoogleProfile.getUserProfile();
     Globals.userEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 

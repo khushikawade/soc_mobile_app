@@ -164,16 +164,25 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                   //         ),
                                   //         isLoading: widget.isLoading)
                                   //     :
+                                  //TODOPBIS:
                                   Text(
-                                PBISPlusUtility.numberAbbreviationFormat(widget
-                                        .studentValueNotifier
-                                        .value
-                                        .profile!
-                                        .engaged! +
+                                PBISPlusUtility.numberAbbreviationFormat(
+                                    // widget
+                                    //       .studentValueNotifier
+                                    //       .value
+                                    //       .profile!
+                                    //       .behavior1!
+                                    //       .counter! +
+                                    //   widget.studentValueNotifier.value.profile!
+                                    //       .behavior2!.counter! +
+                                    //   widget.studentValueNotifier.value.profile!
+                                    //       .behavior3!.counter!
                                     widget.studentValueNotifier.value.profile!
-                                        .niceWork! +
-                                    widget.studentValueNotifier.value.profile!
-                                        .helpful!),
+                                            .engaged! +
+                                        widget.studentValueNotifier.value
+                                            .profile!.niceWork! +
+                                        widget.studentValueNotifier.value
+                                            .profile!.helpful!),
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1!
@@ -209,7 +218,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             ),
           ),
           child: CircleAvatar(
-            radius: widget.profilePictureSize,
+            radius: widget.profilePictureSize ,
             backgroundColor: Colors.transparent,
             child: Icon(
               Icons.person,

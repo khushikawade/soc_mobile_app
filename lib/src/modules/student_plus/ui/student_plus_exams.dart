@@ -12,7 +12,7 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
 
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -58,9 +58,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
-              // refresh: (v) {
-              //   setState(() {});
-              // },
+              refresh: (v) {
+                setState(() {});
+              },
               titleIconCode: 0xe881,
             ),
             body: body()),
@@ -83,7 +83,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           widget.sectionType == "Student"||
             widget.sectionType == 'Family'
               ? Container()
-              : StudentPlusInfoSearchBar(
+              : PlusAppSearchBar(
+                  sectionName: 'STUDENT+',
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                   isMainPage: false,
@@ -443,7 +444,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             width: MediaQuery.of(context).size.width * 0.12,
             child: Center(
               child: Utility.textWidget(
-                  text: centreText,
+                  text: centreText == "Below"
+                      ? centreText.toUpperCase()
+                      : centreText,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   context: context,

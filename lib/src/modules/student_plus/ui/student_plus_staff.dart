@@ -21,9 +21,9 @@ class _StudentPlusStaffScreenState extends State<StudentPlusStaffScreen> {
           appBar: StudentPlusAppBar(
             titleIconCode:
                 int.parse(StudentPlusBottomNavBar.getStaffIconCode()),
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+            refresh: (v) {
+              setState(() {});
+            },
           ),
         ),
       ],

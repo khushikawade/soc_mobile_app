@@ -63,7 +63,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets ,
+      padding: MediaQuery.of(context).viewInsets,
       controller: ModalScrollController.of(context),
       child: Container(
         height: widget.sheetHeight != null
@@ -151,6 +151,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           horizontal: 20,
                         ),
                         child: TextFieldWidget(
+                            context: context,
                             msg: "Field is required",
                             controller: studentNameController,
                             onSaved: (String value) {}),
@@ -181,6 +182,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 20),
                                     child: TextFieldWidget(
+                                        context: context,
                                         msg: "Field is required",
                                         controller: textFieldController2,
                                         onSaved: (String value) {}),

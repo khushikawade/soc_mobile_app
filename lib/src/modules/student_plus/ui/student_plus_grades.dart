@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/modules/student_plus/ui/student_plus_grades_details.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -70,10 +70,10 @@ class individual extends State<StudentPlusGradesPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
-            titleIconCode: 0xe883,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+            titleIconCode: 0xe823,
+            refresh: (v) {
+              setState(() {});
+            },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(
@@ -90,7 +90,8 @@ class individual extends State<StudentPlusGradesPage> {
                 widget.sectionType == "Student"||
             widget.sectionType == 'Family'
                     ? Container()
-                    : StudentPlusInfoSearchBar(
+                    : PlusAppSearchBar(
+                        sectionName: 'STUDENT+',
                         hintText:
                             '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                         onTap: () async {
@@ -176,12 +177,15 @@ class individual extends State<StudentPlusGradesPage> {
               ? MediaQuery.of(context).size.height * 0.75
               : MediaQuery.of(context).size.height * 0.62,
           child: Column(
-            // shrinkWrap: true,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              //SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              markingPeriodHeader(),
               gradesChipListWidget(
                   chipList: chipList), // widget to grades chip List
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+
               SpacerWidget(_kLabelSpacing / 2),
               HeaderTitle(), // widget to show header of list
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
@@ -192,6 +196,22 @@ class individual extends State<StudentPlusGradesPage> {
           ),
         );
       },
+    );
+  }
+
+  /* ------------------ Widget to show marking period header ------------------ */
+  Widget markingPeriodHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 2),
+      width: MediaQuery.of(context).size.width,
+      child: Utility.textWidget(
+          context: context,
+          text: 'Marking Period',
+          textTheme: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(fontWeight: FontWeight.bold)),
     );
   }
 
@@ -219,7 +239,8 @@ class individual extends State<StudentPlusGradesPage> {
       },
       child: Bouncing(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          width: MediaQuery.of(context).size.width * 0.2,
+          //padding: EdgeInsets.symmetric(horizontal: 20),
           margin: EdgeInsets.only(left: 5),
           decoration: BoxDecoration(
             boxShadow: [],
@@ -234,18 +255,20 @@ class individual extends State<StudentPlusGradesPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
-              child: Utility.textWidget(
-                  text: chipValue == '1'
-                      ? 'First'
-                      : chipValue == '2'
-                          ? 'Second'
-                          : chipValue == '3'
-                              ? 'Third'
-                              : chipValue == '4'
-                                  ? 'Forth'
-                                  : chipValue,
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline4)),
+              child: FittedBox(
+            child: Utility.textWidget(
+                text: chipValue == '1'
+                    ? 'First'
+                    : chipValue == '2'
+                        ? 'Second'
+                        : chipValue == '3'
+                            ? 'Third'
+                            : chipValue == '4'
+                                ? 'Forth'
+                                : chipValue,
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4),
+          )),
         ),
       ),
     );

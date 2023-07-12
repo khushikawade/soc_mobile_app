@@ -10,7 +10,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dar
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -124,9 +124,9 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
-              // refresh: (v) {
-              //   setState(() {});
-              // },
+              refresh: (v) {
+                setState(() {});
+              },
               ),
           backgroundColor: Colors.transparent,
           body: OfflineBuilder(
@@ -231,11 +231,12 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         valueListenable: moveToTopNotifier,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return StudentPlusInfoSearchBar(
+          return PlusAppSearchBar(
             iconOnTap: () {
               _searchController.text = '';
               isRecentList.value = true;
             },
+            sectionName: 'STUDENT+',
             hintText: StudentPlusOverrides.searchHintText,
             isMainPage: moveToTopNotifier.value,
             autoFocus: widget.fromStudentPlusDetailPage == true
