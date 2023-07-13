@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -97,7 +98,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
           margin: EdgeInsets.symmetric(horizontal: 5.0),
           color: Colors.transparent,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 item.imgURL!,
@@ -120,25 +121,29 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                               fontWeight: FontWeight.bold,
                             )),
                   )),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: TranslationWidget(
-                  message: item.msgBody ?? '',
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          letterSpacing: 0.7,
-                          height: 1.2,
-                        ),
+              Container(
+                height: MediaQuery.of(context).size.height / 5,
+                alignment: Alignment.center,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: TranslationWidget(
+                    message: item.msgBody ?? '',
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            letterSpacing: 0.7,
+                            height: 1.2,
+                          ),
+                    ),
                   ),
                 ),
               ),
               Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
+                  height: MediaQuery.of(context).size.height * 0.13,
                   child: item.title == 'STEP 2'
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -199,56 +204,53 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
   }
 
   button({required int index, required String sectionInfo}) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      height: 50,
-      child: TextButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              AppTheme.kButtonColor), // Replace with your desired color
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5.0)), // Adjust the border radius as needed
-            ),
-          ),
-        ),
-        onPressed: () {
-          List<GradedIntroContentModal> onBoardingInfoList = [];
-          if (index == 0) {
-            onBoardingInfoList =
-                GradedIntroContentModal.onBoardingConstrutedResponseIndoList;
-          } else {
-            onBoardingInfoList =
-                GradedIntroContentModal.onBoardingMultipleChoiceIndoList;
-          }
+    return GradedPlusCustomFloatingActionButton(
+      textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(),
+      padding: EdgeInsets.all(10),
+      isExtended: true,
+      title: sectionInfo,
+      backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+      fabWidth: MediaQuery.of(context).size.width / 3,
+      onPressed: () {
+        List<GradedIntroContentModal> onBoardingInfoList = [];
+        if (index == 0) {
+          onBoardingInfoList =
+              GradedIntroContentModal.onBoardingConstrutedResponseIndoList;
+        } else {
+          onBoardingInfoList =
+              GradedIntroContentModal.onBoardingMultipleChoiceIndoList;
+        }
 
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => CommonIntroSection(
-                        backButton: true,
-                        onBoardingInfoList: onBoardingInfoList,
-                      )));
-        },
-        child: TranslationWidget(
-          message: sectionInfo ?? '',
-          toLanguage: Globals.selectedLanguage,
-          fromLanguage: "en",
-          builder: (translatedMessage) => Text(
-            translatedMessage,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(),
-          ),
-        ),
-      ),
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => CommonIntroSection(
+                      backButton: true,
+                      onBoardingInfoList: onBoardingInfoList,
+                    )));
+      },
     );
+
+   
   }
 
   Row sectionhHeader() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: widget.backButton == true
+          ? MainAxisAlignment.start
+          : MainAxisAlignment.center,
       children: [
-        if (widget.backButton == true) backbutton(),
+        if (widget.backButton == true)
+          Row(
+            children: [
+              Align(alignment: Alignment.centerLeft, child: backbutton()),
+              SizedBox(
+                  width: widget.backButton == true
+                      ? MediaQuery.of(context).size.width * 0.105
+                      : 0.0),
+            ],
+          ),
         carouselSliderIndicator()
       ],
     );

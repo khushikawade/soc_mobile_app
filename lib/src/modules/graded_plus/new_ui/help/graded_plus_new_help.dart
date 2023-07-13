@@ -44,17 +44,17 @@ class _GradedPlusHelpSectionState extends State<GradedPlusHelpSection> {
     // ]);
   }
 
-  PreferredSizeWidget? appBar() {
-    return CustomOcrAppBarWidget(
-      plusAppName: 'GRADED+',
-      fromGradedPlus: true,
-      //Show home button in standard app and hide in standalone
-      assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
-      isOcrHome: true,
-      isSuccessState: ValueNotifier<bool>(true),
-      isBackOnSuccess: ValueNotifier<bool>(false),
-      key: GlobalKey(),
-      isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
-    );
-  }
+  // PreferredSizeWidget? appBar() {
+  //   return CustomOcrAppBarWidget(
+  //     plusAppName: 'GRADED+',
+  //     fromGradedPlus: true,
+  //     //Show home button in standard app and hide in standalone
+  //     assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
+  //     isOcrHome: true,
+  //     isSuccessState: ValueNotifier<bool>(true),
+  //     isBackOnSuccess: ValueNotifier<bool>(false),
+  //     key: GlobalKey(),
+  //     isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
+  //   );
+  // }
 }
