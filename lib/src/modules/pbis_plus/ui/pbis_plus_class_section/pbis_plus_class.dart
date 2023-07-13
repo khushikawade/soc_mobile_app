@@ -59,6 +59,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   final ValueNotifier<bool> screenShotNotifier = ValueNotifier<bool>(false);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final double profilePictureSize = 30;
   static const double _KVerticalSpace = 60.0;
@@ -133,7 +134,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget headerListTile() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       title: PlusScreenTitleWidget(
         kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
         text: 'All Classes',
@@ -207,14 +208,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget body() {
     return Container(
-     
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         // mainAxisSize: MainAxisSize.max,
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           ValueListenableBuilder(
             valueListenable: screenShotNotifier,
             builder: (context, value, child) {
@@ -644,6 +644,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               heroTag: heroTag,
               classroomCourseId: classroomCourseId,
               scaffoldKey: _scaffoldKey,
+              pBISPlusNotesBloc: pBISPlusNotesBloc,
             )),
           ),
         );
@@ -698,6 +699,20 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
+              BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                  bloc: pBISPlusNotesBloc,
+                  builder: (context, state) {
+                    return SizedBox.shrink();
+                  },
+                  listener: (context, state) async {
+                    if (state is PBISPlusAddNotesSucess) {
+                      Utility.currentScreenSnackBar(
+                          "Note added successfully", null);
+                    } else if (state is PBISErrorState) {
+                      Utility.currentScreenSnackBar(
+                          state.error.toString(), null);
+                    }
+                  }),
               if (widget.isGradedPlus != true)
                 Positioned(
                     top: 0,
