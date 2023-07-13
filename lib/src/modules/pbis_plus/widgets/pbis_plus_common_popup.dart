@@ -154,6 +154,7 @@ class _PBISPlusDeleteBehaviorPopupState
 
   Widget _buildSelectedIcon({required PBISPlusCommonBehaviorModal item}) {
     return CachedNetworkImage(
+        fit: BoxFit.contain,
         imageBuilder: (context, imageProvider) => CircleAvatar(
             radius: 30,
             backgroundImage: imageProvider,

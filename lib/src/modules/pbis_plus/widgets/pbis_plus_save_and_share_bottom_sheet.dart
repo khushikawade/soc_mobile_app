@@ -117,7 +117,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       ? widget.fromClassScreen!
                           ? (widget.height! * 0.6)
                           : (widget.height! * 1.3)
-                      : widget.height, //saveAndShareOptions
+                      : widget.height! * 0.8, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -235,6 +235,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
                 })),
+            SpacerWidget(16)
           ]),
     );
   }

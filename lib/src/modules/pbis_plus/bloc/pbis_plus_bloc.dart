@@ -1386,6 +1386,19 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+
+      //DELTE THE STUDENT LIST
+      SharedPreferences clearNewsCache = await SharedPreferences.getInstance();
+      final clearCacheResult =
+          clearNewsCache.getBool('delete_local_all_notes_Student');
+
+      if (clearCacheResult != true) {
+        print('Inside clear state');
+        await _pbisPlusStudentListDB.clear();
+        await clearNewsCache.setBool(
+            'delete_local_all_state_and_subject_cache1', true);
+      }
+
       List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
           await _pbisPlusStudentListDB.getData();
 

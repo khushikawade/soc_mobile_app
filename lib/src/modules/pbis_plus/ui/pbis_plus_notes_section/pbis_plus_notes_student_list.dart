@@ -368,14 +368,12 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   onItemChanged(String value) {
     _deBouncer.run(() {
       if (_searchController.text.isEmpty) {
-       
         //Fetching all student list again to restore the student list from local db only
         PBISPlusBlocInstance.add(
             GetPBISPlusStudentList(studentNotesList: studentLocalList));
         showSearchList.value = false;
         showErrorInSearch.value = false;
-      } else if (_searchController.text.length >= 3) {     
-
+      } else if (_searchController.text.length >= 3) {
         PBISPlusBlocSearchInstance.add(PBISPlusNotesSearchStudent(
             searchKey: _searchController.text,
             studentNotes: studentLocalList!));
