@@ -134,7 +134,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget headerListTile() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       title: PlusScreenTitleWidget(
         kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
         text: 'All Classes',
@@ -208,14 +208,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget body() {
     return Container(
-     
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         // mainAxisSize: MainAxisSize.max,
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           ValueListenableBuilder(
             valueListenable: screenShotNotifier,
             builder: (context, value, child) {
