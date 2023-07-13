@@ -11,6 +11,7 @@ class TextFieldWidget extends StatefulWidget {
   final TextInputType? keyboardType;
   final BuildContext? context;
   TextStyle? textStyle;
+  final int? maxLength;
   TextFieldWidget(
       {Key? key,
       required this.controller,
@@ -19,7 +20,8 @@ class TextFieldWidget extends StatefulWidget {
       this.hintText,
       this.keyboardType,
       required this.context,
-      this.textStyle})
+      this.textStyle,
+      this.maxLength})
       : super(key: key) {
     // Assign default values if not provided
     if (this.textStyle == null) {
@@ -37,6 +39,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: widget.maxLength,
       validator: (text) {
         if (text == null || text.isEmpty) {
           return widget.msg;

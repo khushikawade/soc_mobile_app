@@ -69,7 +69,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         padding: MediaQuery.of(context).viewInsets,
         controller: ModalScrollController.of(context),
         child: Container(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
               color: Utility.getContrastColor(context),
               borderRadius: BorderRadius.only(
@@ -176,7 +176,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
     return Container(
         padding: EdgeInsets.only(left: 16),
-        // color: Colors.amberAccent,
         child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -193,6 +192,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                       icon: Icon(Icons.clear,
                           color: AppTheme.kButtonColor,
                           size: Globals.deviceType == "phone" ? 28 : 36))),
+              SpacerWidget(10),
               Container(
                   alignment: Alignment.centerLeft,
                   child: Utility.textWidget(
@@ -202,27 +202,26 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                           .textTheme
                           .headline5!
                           .copyWith(fontWeight: FontWeight.bold))),
-              Expanded(
-                child: Form(
-                    key: _formKey,
-                    child: Container(
-                      child: TextFieldWidget(
-                          context: context,
-                          textStyle: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
-                          msg: "Field is required",
-                          controller: editNameController,
-                          onSaved: (String value) {}),
-                    )),
-              ),
+              Form(
+                  key: _formKey,
+                  child: Container(
+                    child: TextFieldWidget(
+                        maxLength: 13,
+                        context: context,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(
+                                fontWeight: FontWeight.w600, fontSize: 18),
+                        msg: "Field is required",
+                        controller: editNameController,
+                        onSaved: (String value) {}),
+                  )),
               ValueListenableBuilder(
                   valueListenable: _errorMessage,
                   builder: (context, value, _) {
                     return Container(
-                        height: 20,
+                        height: 25,
                         alignment: Alignment.topLeft,
                         padding: EdgeInsets.symmetric(vertical: 5),
                         child: _errorMessage.value
@@ -237,7 +236,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                                 })
                             : null);
                   }),
-              SpacerWidget(18),
               _buildSaveButton(dataList)
             ]));
   }
@@ -245,7 +243,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
     return Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
         child: FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
             onPressed: () async {
