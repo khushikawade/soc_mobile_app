@@ -41,6 +41,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
   Widget build(BuildContext context) {
     /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
     String firstName;
+    //student profile at student notes tabs
     if (widget.isFromStudentNotes != null &&
         widget.isFromStudentNotes == true &&
         widget.studentname!.fullName!.split(' ').length > 0) {
@@ -48,7 +49,9 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
           .split(' ')[0]
           .substring(0, 1)
           .toUpperCase();
-    } else {
+    }
+    //Student profile at all other places
+    else {
       firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
                   .isNotEmpty &&
               widget.studentValueNotifier!.value.profile!.name!.fullName!

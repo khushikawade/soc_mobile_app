@@ -3,15 +3,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
@@ -21,7 +18,6 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +35,8 @@ class PBISPlusStudentCardModal extends StatefulWidget {
   final double constraint;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   final String? studentProfile;
-  final PBISPlusBloc? pBISPlusNotesBloc;
+  final PBISPlusBloc?
+      pBISPlusNotesBloc; //used to manage notes and its state at class screen
   PBISPlusStudentCardModal(
       {Key? key,
       required this.isFromDashboardPage,
@@ -91,9 +88,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     if (_focusNode.hasFocus) {
       // TextField is focused
       isNotesTextfieldEnable.value = true;
-    } else {
-      // TextField lost focus
-      print('TextField lost focus');
     }
   }
 
@@ -121,105 +115,101 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   @override
   Widget build(BuildContext context) {
     //----------------------------------------------NOTES TEXT FIELD-------------------------------------------//
-    final addNotes = Container(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            isNotesTextfieldEnable.value == true
-                ? SizedBox.shrink()
-                : Container(
-                    height: 0.1,
-                    width: double.infinity,
-                    color:
+    final Column addNotes = Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          isNotesTextfieldEnable.value == true
+              ? SizedBox.shrink()
+              : Container(
+                  height: 0.1,
+                  width: double.infinity,
+                  color: Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color(0xff111C20)
+                      : Color(0xffF7F8F9)),
+          ValueListenableBuilder(
+              valueListenable: isNotesTextfieldEnable,
+              builder: (context, value, _) => TextFormField(
+                    minLines: isNotesTextfieldEnable.value == true ? null : 1,
+                    maxLines: 12,
+                    focusNode: _focusNode,
+                    autofocus: isNotesTextfieldEnable.value,
+                    textAlign: isNotesTextfieldEnable.value
+                        ? TextAlign.start
+                        : TextAlign.center,
+                    controller: noteController,
+                    onChanged: (value) {
+                      isNotesTextfieldEnable.value = true;
+                      // if (noteController.text.isEmpty) {
+                      //   isNotesTextfieldEnable.value = false;
+                      // }
+                    },
+                    cursorColor:
                         Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
-                            : Color(0xffF7F8F9)),
-            ValueListenableBuilder(
-                valueListenable: isNotesTextfieldEnable,
-                builder: (context, value, _) => TextFormField(
-                      minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                      maxLines: 7,
-                      focusNode: _focusNode,
-                      autofocus: isNotesTextfieldEnable.value,
-                      textAlign: isNotesTextfieldEnable.value
-                          ? TextAlign.start
-                          : TextAlign.center,
-                      controller: noteController,
-                      onChanged: (value) {
-                        isNotesTextfieldEnable.value = true;
-                        // if (noteController.text.isEmpty) {
-                        //   isNotesTextfieldEnable.value = false;
-                        // }
-                      },
-                      cursorColor:
+                            : Color(0xffF7F8F9),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor:
                           Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                        // Color(0xffF7F8F9),
-                        hintText:
-                            isNotesTextfieldEnable.value ? "" : "Add Note",
-                        hintStyle: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(
-                                fontSize: 14,
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xff111C20)
-                                    : Color(0xffF7F8F9),
-                                fontWeight: FontWeight.w400),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 0.0, color: Colors.transparent),
-                        ),
-
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 0.0, color: Colors.transparent),
-                        ),
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      // Color(0xffF7F8F9),
+                      hintText: isNotesTextfieldEnable.value ? "" : "Add Note",
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(
+                              fontSize: 14,
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xff111C20)
+                                  : Color(0xffF7F8F9),
+                              fontWeight: FontWeight.w400),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
                       ),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          fontSize: 14,
-                          color: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9),
-                          fontWeight: FontWeight.w400),
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.next,
-                    )),
-            //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
-            BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                bloc: widget.pBISPlusNotesBloc,
-                builder: (context, state) {
-                  if (state is PBISPlusLoading) {
-                    return _buildAddButton(isLoading: true);
-                  }
-                  return _buildAddButton(isLoading: false);
-                },
-                listener: (context, state) async {
-                  // if (state is PBISPlusAddNotesSucess) {
-                  //   isNotesTextfieldEnable.value = false;
-                  //   noteController.clear();
-                  //   Utility.currentScreenSnackBar(
-                  //       "Note added successfully", null);
-                  //   Navigator.pop(context, true);
-                  // } else if (state is PBISErrorState) {
-                  //   isNotesTextfieldEnable.value = false;
-                  //   noteController.clear();
-                  //   Utility.currentScreenSnackBar(state.error.toString(), null);
-                  //   Navigator.pop(context, true);
-                  // }
-                })
-          ]),
-    );
+
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0.0, color: Colors.transparent),
+                      ),
+                    ),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontSize: 14,
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                        fontWeight: FontWeight.w400),
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.next,
+                  )),
+          //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
+          BlocConsumer<PBISPlusBloc, PBISPlusState>(
+              bloc: widget.pBISPlusNotesBloc,
+              builder: (context, state) {
+                if (state is PBISPlusLoading) {
+                  return _buildAddButton(isLoading: true);
+                }
+                return _buildAddButton(isLoading: false);
+              },
+              listener: (context, state) async {
+                // if (state is PBISPlusAddNotesSucess) {
+                //   isNotesTextfieldEnable.value = false;
+                //   noteController.clear();
+                //   Utility.currentScreenSnackBar(
+                //       "Note added successfully", null);
+                //   Navigator.pop(context, true);
+                // } else if (state is PBISErrorState) {
+                //   isNotesTextfieldEnable.value = false;
+                //   noteController.clear();
+                //   Utility.currentScreenSnackBar(state.error.toString(), null);
+                //   Navigator.pop(context, true);
+                // }
+              })
+        ]);
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------ActionInteractionButtonsRowWise------------------------------------- */
@@ -435,61 +425,58 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                       classroomCourseId: widget
                                                           .classroomCourseId)));
                                     },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: PBISCommonProfileWidget(
-                                        studentProfile: widget.studentProfile,
-                                        isFromStudentPlus:
-                                            widget.isFromStudentPlus,
-                                        isLoading: widget.isLoading,
-                                        valueChange: valueChange,
-                                        countWidget: true,
-                                        studentValueNotifier:
-                                            widget.studentValueNotifier,
-                                        profilePictureSize:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                        imageUrl: widget.studentValueNotifier
-                                                .value.profile?.photoUrl ??
-                                            ""),
+                              child: Column(children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
                                   ),
-                                  Container(
-                                      alignment: Alignment.topCenter,
-                                      height:
+                                  child: PBISCommonProfileWidget(
+                                      studentProfile: widget.studentProfile,
+                                      isFromStudentPlus:
+                                          widget.isFromStudentPlus,
+                                      isLoading: widget.isLoading,
+                                      valueChange: valueChange,
+                                      countWidget: true,
+                                      studentValueNotifier:
+                                          widget.studentValueNotifier,
+                                      profilePictureSize:
                                           MediaQuery.of(context).size.width *
                                               0.1,
+                                      imageUrl: widget.studentValueNotifier
+                                              .value.profile?.photoUrl ??
+                                          ""),
+                                ),
+                                Container(
+                                    alignment: Alignment.topCenter,
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.1,
 
-                                      // widget.isFromDashboardPage ==
-                                      //             true ||
-                                      //         widget.isFromStudentPlus == true
-                                      //     ? MediaQuery.of(context).size.width *
-                                      //         0.2
-                                      //     : MediaQuery.of(context).size.width *
-                                      //         0.2 /
-                                      //         1.1,
+                                    // widget.isFromDashboardPage ==
+                                    //             true ||
+                                    //         widget.isFromStudentPlus == true
+                                    //     ? MediaQuery.of(context).size.width *
+                                    //         0.2
+                                    //     : MediaQuery.of(context).size.width *
+                                    //         0.2 /
+                                    //         1.1,
 
-                                      ///1.1,
-                                      width: widget.isFromDashboardPage == true
-                                          ? MediaQuery.of(context).size.width
-                                          : MediaQuery.of(context).size.width *
-                                              0.8,
-                                      decoration: BoxDecoration(
-                                          color: widget.isFromDashboardPage ==
-                                                      true ||
-                                                  widget.isFromStudentPlus ==
-                                                      true
-                                              ? Colors.transparent
-                                              :
-                                              // Colors.orangeAccent,
-                                              AppTheme.kButtonColor,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12),
-                                              topRight: Radius.circular(12))),
-                                      child: Text(
+                                    ///1.1,
+                                    width: widget.isFromDashboardPage == true
+                                        ? MediaQuery.of(context).size.width
+                                        : MediaQuery.of(context).size.width *
+                                            0.8,
+                                    decoration: BoxDecoration(
+                                        color: widget.isFromDashboardPage ==
+                                                    true ||
+                                                widget.isFromStudentPlus == true
+                                            ? Colors.transparent
+                                            :
+                                            // Colors.orangeAccent,
+                                            AppTheme.kButtonColor,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12))),
+                                    child: Text(
                                         widget.studentValueNotifier.value
                                                 .profile?.name?.fullName ??
                                             '',
@@ -499,10 +486,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                             .bodyText1!
                                             .copyWith(
                                                 fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                      )),
-                                ],
-                              )))
+                                                fontWeight: FontWeight.bold)))
+                              ])))
                     ]))));
   }
 
