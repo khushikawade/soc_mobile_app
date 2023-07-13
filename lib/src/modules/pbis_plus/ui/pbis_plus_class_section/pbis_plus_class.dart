@@ -208,7 +208,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget body() {
     return Container(
-     
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
@@ -706,6 +705,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     return SizedBox.shrink();
                   },
                   listener: (context, state) async {
+                    print(state);
                     if (state is PBISPlusAddNotesSucess) {
                       Utility.currentScreenSnackBar(
                           "Note added successfully", null);

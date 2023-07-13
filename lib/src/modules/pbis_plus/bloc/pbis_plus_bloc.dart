@@ -848,6 +848,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await _pbisPlusSNotesStudentListDB.addData(element);
           });
         }
+        yield PBISPlusLoading();
         yield PBISPlusNotesSucess(notesList: studentNotesList);
       } catch (e) {
         yield PBISErrorState(error: "No Notes Found");
@@ -1395,8 +1396,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       if (clearCacheResult != true) {
         print('Inside clear state');
         await _pbisPlusStudentListDB.clear();
-        await clearNewsCache.setBool(
-            'delete_local_all_state_and_subject_cache1', true);
+        await clearNewsCache.setBool('delete_local_all_notes_Student', true);
       }
 
       List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
