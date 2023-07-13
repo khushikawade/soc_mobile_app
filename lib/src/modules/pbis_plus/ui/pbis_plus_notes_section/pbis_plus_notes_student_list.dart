@@ -102,7 +102,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 2.9),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           PlusScreenTitleWidget(
               kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'Student Notes'),

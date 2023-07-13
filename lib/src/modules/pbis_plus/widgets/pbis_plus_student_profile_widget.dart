@@ -40,8 +40,31 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
   @override
   Widget build(BuildContext context) {
     /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
-    String firstName = "";
-    String lastName = "";
+    String firstName;
+    //student profile at student notes tabs
+    if (widget.isFromStudentNotes != null &&
+        widget.isFromStudentNotes == true &&
+        widget.studentname!.fullName!.split(' ').length > 0) {
+      firstName = widget.studentname!.fullName!
+          .split(' ')[0]
+          .substring(0, 1)
+          .toUpperCase();
+    }
+    //Student profile at all other places
+    else {
+      firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
+                  .isNotEmpty &&
+              widget.studentValueNotifier!.value.profile!.name!.fullName!
+                      .split(' ')
+                      .length >
+                  0
+          ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+              .split(' ')[0]
+              .substring(0, 1)
+              .toUpperCase()
+          : '';
+    }
+    String lastName;
 
     firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
                 .isNotEmpty &&

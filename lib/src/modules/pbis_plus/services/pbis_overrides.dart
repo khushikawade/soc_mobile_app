@@ -42,4 +42,14 @@ class PBISPlusOverrides {
       'pbis_plus_additional_behavior';
   static final String PbisPlusTeacherCustomBehaviorLocalDbTable =
       'pbis_plus_custom_behavior';
+
+  static final List<String> soundPath = [
+    "pbis_sound/sound1.wav",
+    "pbis_sound/sound2.wav",
+    "pbis_sound/sound3.wav",
+    "pbis_sound/sound4.wav",
+    "pbis_sound/sound5.wav",
+    "pbis_sound/sound6.wav",
+    "pbis_sound/sound7.wav"
+  ];
 }
