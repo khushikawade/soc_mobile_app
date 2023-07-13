@@ -25,7 +25,9 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/common_ocr_appbar.dart';
 
 class GradedPlusMultipleChoice extends StatefulWidget {
-  const GradedPlusMultipleChoice({Key? key}) : super(key: key);
+  final IconData? titleIconData;
+  const GradedPlusMultipleChoice({Key? key, this.titleIconData})
+      : super(key: key);
 
   @override
   State<GradedPlusMultipleChoice> createState() =>
@@ -127,7 +129,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
-      iconData: Icons.add,
+      iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),

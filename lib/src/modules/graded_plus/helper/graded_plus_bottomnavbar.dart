@@ -24,11 +24,14 @@ class GradedPlusBottomNavBar {
         backOnTap: backOnTap,
       ),
       GradedPlusAssessmentSummary(
-        isFromHomeSection: true,
-        selectedFilterValue: 'All',
-      ),
-      GradedPlusSelectAssessmentTypeSection(),
-      GradedPlusHelp(),
+          isFromHomeSection: true,
+          selectedFilterValue: 'All',
+          titleIconData: const IconData(0xe824,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
+      GradedPlusSelectAssessmentTypeSection(titleIconData: Icons.add),
+      GradedPlusHelp(
+          titleIconData: const IconData(0xe890,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
 
       // CustomIntroWidget(
       //   isFromHelp: true,

@@ -50,6 +50,7 @@ class GradedPlusCameraScreen extends StatefulWidget {
   final HistoryAssessment? obj;
   final String? assessmentName;
   final int? lastAssessmentLength;
+  final IconData? titleIconData;
   // bool flash;
   ValueNotifier<bool>? isFlashOn = ValueNotifier<bool>(false);
   GradedPlusCameraScreen(
@@ -67,7 +68,8 @@ class GradedPlusCameraScreen extends StatefulWidget {
       this.selectedAnswer,
       this.createdAsPremium,
       this.obj,
-      required this.isFlashOn})
+      required this.isFlashOn,
+      this.titleIconData})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -725,6 +727,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 GradedPlusScanResult(
+                                                  titleIconData:
+                                                      widget.titleIconData,
                                                   assessmentName:
                                                       widget.assessmentName,
                                                   lastAssessmentLength: widget
@@ -1096,6 +1100,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+                  titleIconData: widget.titleIconData,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   obj: widget.obj,
@@ -1125,6 +1130,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+                  titleIconData: widget.titleIconData,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   createdAsPremium: widget.createdAsPremium,
@@ -1149,6 +1155,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
+                titleIconData: widget.titleIconData,
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 customGrades: classList,
