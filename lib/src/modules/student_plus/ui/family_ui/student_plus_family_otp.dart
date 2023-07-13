@@ -1,4 +1,9 @@
+import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_success.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/shake_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/timer_animated_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -21,6 +26,8 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   TextEditingController emailEditingController = TextEditingController();
 
   int _counter = 0;
+  final otpFieldKeys =
+      List.generate(6, (index) => GlobalKey<FormFieldState<String>>());
 
   AnimationController? _controller;
 
@@ -34,7 +41,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         vsync: this,
         duration: Duration(
             seconds:
-                levelClock) // gameData.levelClock is a user entered number elsewhere in the applciation
+                levelClock) // gameData.levelClock is a user entered number elsewhere in the application
 
         );
 
@@ -60,38 +67,29 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+              context: context, isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.06),
-
                 FamilyLoginCommonWidget.titleAndDesWidget(
                     context: context,
                     title: 'Enter Your Passcode',
                     description:
                         'Enter the one-time password we just sent to your email address.'),
-
                 SpacerWidget(MediaQuery.of(context).size.height * 0.07),
-
                 FamilyLoginCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/otp_lock.png'),
-
                 SpacerWidget(20),
-
-                otpWidget(),
-
+                ShakeWidget(child: otpWidget()),
                 SpacerWidget(30),
-
                 timerWidget(),
-
                 SpacerWidget(10),
-
                 reSendButtonTextWidget(),
-
                 SpacerWidget(30),
 
                 // Container(
@@ -121,12 +119,20 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
             context: context,
             textTheme: Theme.of(context).textTheme.subtitle1),
         InkWell(
-          onTap: () {},
+          onTap: () {
+            if (_controller!.duration == Duration(seconds: 0)) {
+              studentPlusBloc.add(SendOtpFamilyLogin(emailId: widget.emailId));
+            }
+          },
           child: Utility.textWidget(
               textAlign: TextAlign.center,
               text: " Resend Code",
               context: context,
-              textTheme: Theme.of(context).textTheme.subtitle1),
+              textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: _controller!.duration != Duration(seconds: 0)
+                        ? Colors.grey
+                        : Theme.of(context).colorScheme.secondary,
+                  )),
         ),
       ],
     );
@@ -136,17 +142,17 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildOtpField(otpFieldKey1, 0),
+        _buildOtpField(0),
         SizedBox(width: 16.0),
-        _buildOtpField(otpFieldKey2, 1),
+        _buildOtpField(1),
         SizedBox(width: 16.0),
-        _buildOtpField(otpFieldKey3, 2),
+        _buildOtpField(2),
         SizedBox(width: 16.0),
-        _buildOtpField(otpFieldKey4, 3),
+        _buildOtpField(3),
         SizedBox(width: 16.0),
-        _buildOtpField(otpFieldKey5, 4),
+        _buildOtpField(4),
         SizedBox(width: 16.0),
-        _buildOtpField(otpFieldKey6, 5),
+        _buildOtpField(5),
       ],
     );
   }
@@ -184,12 +190,14 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
     );
   }
 
-  Widget _buildOtpField(GlobalKey<FormFieldState<String>> fieldKey, int index) {
+  Widget _buildOtpField(int index) {
     return Container(
       width: 40.0,
       child: Center(
         child: TextFormField(
-          key: fieldKey,
+          scrollPadding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          key: otpFieldKeys[index],
           maxLength: 1,
           onChanged: (value) => _onOtpChanged(index, value),
           keyboardType: TextInputType.number,
@@ -216,6 +224,12 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
               ),
               border: new UnderlineInputBorder(
                   borderSide: new BorderSide(color: Colors.red))),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return '';
+            }
+            return null;
+          },
         ),
       ),
     );
@@ -235,7 +249,9 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => StudentPlusFamilyLogInSuccess()),
+                builder: (context) => StudentPlusFamilyLogInSuccess(
+                      token: state.authToken ?? '',
+                    )),
           );
         } else if (state is FamilyLoginOtpVerifyFailure) {
           Utility.showSnackBar(
@@ -248,6 +264,10 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
               context: context, msg: 'Please wait', isOCR: false);
+        } else if (state is FamilyLoginOtpSendSuccess) {
+          Utility.showSnackBar(
+              _scaffoldKey, "Otp Resend Send Successfully", context, null);
+          Navigator.pop(context);
         }
       },
     );
@@ -255,7 +275,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
 
   void _verifyOtp() {
     String enteredOtp = otp.join();
-    if (enteredOtp.length == 6) {
+    if (_isOtpValid()) {
       studentPlusBloc
           .add(VerifyOtpFamilyLogin(emailId: widget.emailId, otp: enteredOtp));
     }
@@ -264,22 +284,27 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
 
   List<String> otp = List.filled(6, '');
 
-  final otpFieldKey1 = GlobalKey<FormFieldState<String>>();
-  final otpFieldKey2 = GlobalKey<FormFieldState<String>>();
-  final otpFieldKey3 = GlobalKey<FormFieldState<String>>();
-  final otpFieldKey4 = GlobalKey<FormFieldState<String>>();
-  final otpFieldKey5 = GlobalKey<FormFieldState<String>>();
-  final otpFieldKey6 = GlobalKey<FormFieldState<String>>();
-
   void _onOtpChanged(int index, String value) {
     if (value == '') {
       FocusScope.of(context).previousFocus();
     } else if (value.length == 1) {
+      otp[index] = value;
       if (index < otp.length - 1) {
         FocusScope.of(context).nextFocus();
       } else {
         FocusScope.of(context).unfocus();
       }
     }
+  }
+
+  bool _isOtpValid() {
+    bool isValid = true;
+    for (int i = 0; i < otp.length; i++) {
+      final field = otpFieldKeys[i].currentState;
+      if (field != null && !field.validate()) {
+        isValid = false;
+      }
+    }
+    return isValid;
   }
 }

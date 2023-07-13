@@ -88,8 +88,7 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student" ||
-                        widget.sectionType == 'Family'
+                widget.sectionType == "Student" 
                     ? Container()
                     : PlusAppSearchBar(
                         sectionName: 'STUDENT+',
@@ -176,7 +175,7 @@ class individual extends State<StudentPlusGradesPage> {
       builder: (context, value, child) {
         return Container(
           height:
-              widget.sectionType == "Student" || widget.sectionType == 'Family'
+              widget.sectionType == "Student" 
                   ? MediaQuery.of(context).size.height * 0.75
                   : MediaQuery.of(context).size.height * 0.62,
           child: Column(
@@ -195,7 +194,7 @@ class individual extends State<StudentPlusGradesPage> {
               Container(
                 height: widget.sectionType == "Student"
                     ? MediaQuery.of(context).size.height * 0.56
-                    : MediaQuery.of(context).size.height * 0.46,
+                    : MediaQuery.of(context).size.height * 0.42,
                 child:
                     gradesListSectionWidget(list: obj, courseList: courseList),
               ) // widget to show grades class wise
@@ -246,7 +245,7 @@ class individual extends State<StudentPlusGradesPage> {
       },
       child: Bouncing(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.2,
+          width: MediaQuery.of(context).size.width * 0.16,
           //padding: EdgeInsets.symmetric(horizontal: 20),
           margin: EdgeInsets.only(left: 5),
           decoration: BoxDecoration(
@@ -265,13 +264,13 @@ class individual extends State<StudentPlusGradesPage> {
               child: FittedBox(
             child: Utility.textWidget(
                 text: chipValue == '1'
-                    ? 'First'
+                    ? '1st'
                     : chipValue == '2'
-                        ? 'Second'
+                        ? '2st'
                         : chipValue == '3'
-                            ? 'Third'
+                            ? '3st'
                             : chipValue == '4'
-                                ? 'Forth'
+                                ? '4st'
                                 : chipValue,
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline4),
@@ -314,7 +313,7 @@ class individual extends State<StudentPlusGradesPage> {
             ),
           )
         : Container(
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.1,
             child: RefreshIndicator(
               key: refreshKey,
               onRefresh: refreshPage,

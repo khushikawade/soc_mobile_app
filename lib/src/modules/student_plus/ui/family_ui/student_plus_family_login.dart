@@ -22,6 +22,9 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
   StudentPlusBloc studentPlusBloc = StudentPlusBloc();
   TextEditingController emailEditingController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final otpFieldKeys =
+      List.generate(6, (index) => GlobalKey<FormFieldState<String>>());
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -30,7 +33,8 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
         Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+              context: context, isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
@@ -84,7 +88,9 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Navigator.pop(context);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StudentPlusFamilyOtp(emailId: emailEditingController.text)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    StudentPlusFamilyOtp(emailId: emailEditingController.text)),
           );
         } else if (state is FamilyLoginOtpSendFailure) {
           Utility.showSnackBar(
@@ -97,7 +103,6 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Utility.showSnackBar(
               _scaffoldKey, "Something Went Wrong", context, null);
           Navigator.pop(context);
-          
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
               context: context, msg: 'Please wait', isOCR: false);
@@ -110,81 +115,84 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
   Widget textFormFieldWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
-      child: TextFormField(
-        scrollPadding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        autofocus: false,
-        style: Theme.of(context).textTheme.headline3,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        controller: emailEditingController,
-        cursorColor: Theme.of(context).colorScheme.primaryVariant,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 0),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              borderSide: BorderSide(color: AppTheme.kButtonColor, width: 1),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              borderSide: BorderSide(color: Colors.red, width: 1),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              borderSide: BorderSide(color: Colors.red, width: 1),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              borderSide: BorderSide(color: Colors.grey, width: 1),
-            ),
-            hintStyle: Theme.of(context)
-                .textTheme
-                .headline3!
-                .copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
-            hintText: 'Email',
-            fillColor: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Theme.of(context).colorScheme.secondary
-                : Color.fromARGB(255, 12, 20, 23),
-            //Theme.of(context).colorScheme.secondary,
-
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Icon(
-                Icons.email,
-                size: 26,
-                color: AppTheme.kButtonColor,
+      child: Form(
+        key: _formKey,
+        child: TextFormField(
+          scrollPadding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          autofocus: false,
+          style: Theme.of(context).textTheme.headline3,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          controller: emailEditingController,
+          cursorColor: Theme.of(context).colorScheme.primaryVariant,
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(color: AppTheme.kButtonColor, width: 1),
               ),
-            ),
-            suffixIcon: isValidEmail(emailEditingController.text)
-                ? Icon(
-                    Icons.check_circle_sharp,
-                    color: AppTheme.kButtonColor,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  )
-                : IconButton(
-                    onPressed: () {
-                      emailEditingController.clear();
-                    },
-                    icon: Icon(
-                      Icons.clear,
-                      color: Theme.of(context).colorScheme.primaryVariant,
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(color: Colors.red, width: 1),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(color: Colors.red, width: 1),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(color: Colors.grey, width: 1),
+              ),
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
+              hintText: 'Email',
+              fillColor: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Theme.of(context).colorScheme.secondary
+                  : Color.fromARGB(255, 12, 20, 23),
+              //Theme.of(context).colorScheme.secondary,
+
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Icon(
+                  Icons.email,
+                  size: 26,
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
+              suffixIcon: isValidEmail(emailEditingController.text)
+                  ? Icon(
+                      Icons.check_circle_sharp,
+                      color: AppTheme.kButtonColor,
                       size: Globals.deviceType == "phone" ? 20 : 28,
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        emailEditingController.clear();
+                      },
+                      icon: Icon(
+                        Icons.clear,
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                        size: Globals.deviceType == "phone" ? 20 : 28,
+                      ),
                     ),
-                  ),
-            prefix: SizedBox(
-              width: 20,
-            )),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter your email';
-          }
-          if (!isValidEmail(value)) {
-            return 'Please enter a valid email';
-          }
-          return null;
-        },
-        // onChanged: (value) {
-        //   emailEditingController.text = value;
-        // },
+              prefix: SizedBox(
+                width: 20,
+              )),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your email';
+            }
+            if (!isValidEmail(value)) {
+              return 'Please enter a valid email';
+            }
+            return null;
+          },
+          // onChanged: (value) {
+          //   emailEditingController.text = value;
+          // },
+        ),
       ),
     );
   }
@@ -196,7 +204,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       fabWidth: MediaQuery.of(context).size.width * 0.75,
       title: 'Generate OTP',
       onPressed: () async {
-        if (isValidEmail(emailEditingController.text)) {
+        if (_formKey.currentState!.validate()) {
           studentPlusBloc
               .add(SendOtpFamilyLogin(emailId: emailEditingController.text));
         }
@@ -208,4 +216,6 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
     final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     return emailRegex.hasMatch(value);
   }
+
+ 
 }

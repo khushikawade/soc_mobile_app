@@ -125,8 +125,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   ],
                 ),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+                widget.sectionType == "Student"
                     ? Container()
                     : PlusAppSearchBar(
                         sectionName: 'STUDENT+',

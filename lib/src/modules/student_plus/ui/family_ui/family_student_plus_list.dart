@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dar
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,7 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class FamilyStudentPlusList extends StatefulWidget {
-  const FamilyStudentPlusList({Key? key}) : super(key: key);
+  final String token;
+  const FamilyStudentPlusList({Key? key, required this.token})
+      : super(key: key);
 
   @override
   State<FamilyStudentPlusList> createState() => _FamilyStudentPlusListState();
@@ -23,6 +24,15 @@ class FamilyStudentPlusList extends StatefulWidget {
 class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   static const double _kLabelSpacing = 20.0;
+
+  @override
+  void initState() {
+    _studentPlusBloc
+        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -57,7 +67,7 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
                                 text: "Student List"),
                             SpacerWidget(
                                 StudentPlusOverrides.kSymmetricPadding),
-                            studentList(list: []),
+                            blocBuilder(),
                             blocListener(),
                           ],
                         ),
@@ -70,6 +80,23 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
               child: Container()),
         ),
       ],
+    );
+  }
+
+  /* ---------------------------------- bloc builder to show list --------------------------------- */
+
+  Widget blocBuilder() {
+    return BlocBuilder<StudentPlusBloc, StudentPlusState>(
+      builder: (context, state) {
+        if (state is FamilyLoginLoading) {
+          return Center(child: CircularProgressIndicator.adaptive());
+        } else if (state is StudentPlusSearchSuccess) {
+          return studentList(list: state.obj);
+        } else {
+          return Container();
+        }
+      },
+      bloc: _studentPlusBloc,
     );
   }
 
@@ -97,13 +124,13 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
                           : Color(0xffE9ECEE)),
               child: ListTile(
                 onTap: () {
-                  if (list[index].id == null || list[index].id == '') {
+                  if (list[index].studentIDC == null || list[index].studentIDC == '') {
                     Utility.currentScreenSnackBar(
                         'Unable to get details for ${list[index].firstNameC} ${list[index].lastNameC}',
                         null);
                   } else {
-                    StudentPlusUtility.addStudentInfoToLocalDb(
-                        studentInfo: list[index]);
+                    // StudentPlusUtility.addStudentInfoToLocalDb(
+                    //     studentInfo: list[index]);
                     _studentPlusBloc.add(GetStudentPlusDetails(
                         studentIdC: list[index].studentIDC ?? ''));
                   }

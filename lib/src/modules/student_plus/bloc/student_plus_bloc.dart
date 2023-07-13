@@ -397,6 +397,10 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       }
     }
 
+    /* ---------------------------------------------------------------------------------------------- */
+    /*                             Api used to family section student plus                            */
+    /* ---------------------------------------------------------------------------------------------- */
+
     /* ----------------------------- Event to send otp family login ---------------------------- */
     if (event is SendOtpFamilyLogin) {
       try {
@@ -418,10 +422,26 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield FamilyLoginLoading();
         var result =
             await verifyOtpFamilyLogin(emailId: event.emailId, otp: event.otp);
-        if (result) {
+        if (result is String) {
           yield FamilyLoginOtpVerifySuccess(authToken: result.toString());
         } else {
           yield FamilyLoginOtpVerifyFailure();
+        }
+      } catch (e) {
+        yield FamilyLoginErrorReceived(err: e);
+      }
+    }
+
+    /* ------------------------- Event to get student list in family section ------------------------ */
+    if (event is GetStudentListFamilyLogin) {
+      try {
+        yield FamilyLoginLoading();
+        var result =
+            await getStudentListFamilyLogin(token: event.familyAuthToken);
+        if (result is List<StudentPlusSearchModel>) {
+          yield StudentPlusSearchSuccess(obj: result);
+        } else {
+          yield FamilyLoginErrorReceived();
         }
       } catch (e) {
         yield FamilyLoginErrorReceived(err: e);
@@ -433,6 +453,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   /*                              List of functions                             */
   /* -------------------------------------------------------------------------- */
 
+  /* ---------------------------------------------------------------------------------------------- */
+  /*                             Functions used in Family student login                             */
+  /* ---------------------------------------------------------------------------------------------- */
   /* --------------- Function to send otp family login -------------- */
   Future<bool> sendOtpFamilyLogin({required String emailId}) async {
     try {
@@ -453,7 +476,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   }
 
   /* --------------- Function to send otp family login -------------- */
-  Future<bool> verifyOtpFamilyLogin(
+  Future verifyOtpFamilyLogin(
       {required String emailId, required String otp}) async {
     try {
       final ResponseModel response = await _dbServices.postApi(
@@ -467,7 +490,31 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data["statusCode"] == 200) {
-        return response.statusCode["authToken"];
+        return response.data["token"];
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  /* --------------- Function to send otp family login -------------- */
+  Future getStudentListFamilyLogin({required String token}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          "${FamilyLoginOverride.familyLoginUrl}/student-plus/student-list",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "bearer ${token}"
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        return response.data["body"]
+            .map<StudentPlusSearchModel>(
+                (i) => StudentPlusSearchModel.fromJson(i))
+            .toList();
       } else {
         return false;
       }
@@ -481,6 +528,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     required List<StudentPlusGradeModel> list,
   }) {
     List<String> chipList = ['Current', '1', '2', '3', '4'];
+
+    // Comment Because we need to show all marking period
     // for (var i = 0; i < list.length; i++) {
     //   if (list[i].markingPeriodC != null &&
     //       !chipList.contains(list[i].markingPeriodC)) {

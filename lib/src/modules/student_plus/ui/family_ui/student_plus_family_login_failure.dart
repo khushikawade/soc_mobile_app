@@ -30,7 +30,7 @@ class _StudentPlusFamilyLogInFailureState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.red.withOpacity(0.2),
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context,isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(

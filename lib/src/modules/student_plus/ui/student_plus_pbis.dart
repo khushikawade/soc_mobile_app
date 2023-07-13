@@ -50,9 +50,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         profile: ClassroomProfile(
             emailAddress: widget.studentDetails.emailC ?? '',
             photoUrl: 'default-user',
-            // behavior1.  : 0,
-            // behavior2 :   : 0,
-            // behavior3: 0,
+          
             helpful: 0,
             engaged: 0,
             niceWork: 0,
@@ -118,7 +116,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student" || widget.sectionType == 'Family'
+          widget.sectionType == "Student"
               ? Container()
               : PlusAppSearchBar(
                   sectionName: 'STUDENT+',

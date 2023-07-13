@@ -80,8 +80,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPlusExamsTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+          widget.sectionType == "Student"
               ? Container()
               : PlusAppSearchBar(
                   sectionName: 'STUDENT+',
@@ -182,8 +181,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             Container(
               height: Globals.deviceType == "phone" &&
                       MediaQuery.of(context).orientation == Orientation.portrait
-                  ? (widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+                  ? (widget.sectionType == "Student"
                       ? MediaQuery.of(context).size.height * 0.7
                       : MediaQuery.of(context).size.height * 0.57) //61
                   : Globals.deviceType == "phone" &&

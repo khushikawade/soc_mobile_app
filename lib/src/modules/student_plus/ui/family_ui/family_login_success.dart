@@ -1,7 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/family_student_plus_list.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_login_failure.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_otp.dart';
 import 'package:Soc/src/overrides.dart';
@@ -11,16 +13,28 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class StudentPlusFamilyLogInSuccess extends StatefulWidget {
-  const StudentPlusFamilyLogInSuccess({Key? key}) : super(key: key);
+  final String token;
+  StudentPlusFamilyLogInSuccess({Key? key, required this.token})
+      : super(key: key);
 
   @override
   State<StudentPlusFamilyLogInSuccess> createState() =>
       _StudentPlusFamilyLogInSuccessState();
 }
 
+
 class _StudentPlusFamilyLogInSuccessState
     extends State<StudentPlusFamilyLogInSuccess> {
   TextEditingController emailEditingController = TextEditingController();
+    final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+
+  @override
+  void initState() {
+     _studentPlusBloc
+        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -28,7 +42,8 @@ class _StudentPlusFamilyLogInSuccessState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-         appBar: FamilyLoginCommonWidget.familyLoginAppBar(context:context),
+          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+              context: context, isBackButton: false),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
@@ -68,7 +83,9 @@ class _StudentPlusFamilyLogInSuccessState
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => StudentPlusFamilyLogInFailure()),
+              builder: (context) => FamilyStudentPlusList(
+                    token: widget.token,
+                  )),
         );
       },
     );

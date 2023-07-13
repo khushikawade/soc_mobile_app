@@ -41,20 +41,24 @@ class FamilyLoginCommonWidget {
     );
   }
 
-  static PreferredSizeWidget familyLoginAppBar({required BuildContext context}) {
+  static PreferredSizeWidget familyLoginAppBar(
+      {required BuildContext context, required bool isBackButton}) {
     return AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
-      leading: IconButton(
-        icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: AppTheme.kButtonColor,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+      leading: isBackButton == true
+          ? IconButton(
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : Container(),
     );
   }
 }
