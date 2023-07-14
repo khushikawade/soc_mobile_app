@@ -103,6 +103,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
             currentIndex.value = index;
           }),
       items: widget.onBoardingInfoList.map((GradedIntroContentModal item) {
+       
         return Container(
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 5.0),
@@ -115,7 +116,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                 fit: BoxFit.contain,
                 height: MediaQuery.of(context).size.height / 3.0,
               ),
-              SpacerWidget(40),
+              SpacerWidget(MediaQuery.of(context).size.height/40),
               Align(
                   alignment: Alignment.center,
                   child: TranslationWidget(
@@ -366,7 +367,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
 
   buildBottomHeader() {
     return Container(
-        height: MediaQuery.of(context).size.height / 15,
+        height: MediaQuery.of(context).size.height / 13,
         child: widget.backButton == true && widget.isSkipAndStartButton == true
             ? Column(
                 children: [
