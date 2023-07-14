@@ -20,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GradedPlusSelectAssessmentTypeSection extends StatefulWidget {
-  const GradedPlusSelectAssessmentTypeSection({Key? key}) : super(key: key);
+  final IconData? titleIconData;
+  const GradedPlusSelectAssessmentTypeSection({Key? key, this.titleIconData})
+      : super(key: key);
 
   @override
   State<GradedPlusSelectAssessmentTypeSection> createState() =>
@@ -63,7 +65,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
-      iconData: Icons.add,
+      iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone
@@ -133,7 +135,9 @@ class _GradedPlusSelectAssessmentTypeSectionState
                   Globals.scoringRubric = '0-1';
 
                   await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => GradedPlusMultipleChoice()));
+                      builder: (context) => GradedPlusMultipleChoice(
+                            titleIconData: widget.titleIconData,
+                          )));
                 } else {
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
@@ -143,7 +147,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                       operationResult: 'Success');
                   Fluttertoast.cancel();
                   await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => GradedPlusConstructedResponse()));
+                      builder: (context) => GradedPlusConstructedResponse( titleIconData: widget.titleIconData,)));
                 }
                 OcrOverrides.gradedPlusNavBarIsHide.value = false;
 

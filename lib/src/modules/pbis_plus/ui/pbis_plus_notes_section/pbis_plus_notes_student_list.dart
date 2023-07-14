@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes_detail.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -52,7 +53,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   final _searchController = TextEditingController();
   final _deBouncer = Debouncer(milliseconds: 100);
   List<PBISPlusNotesUniqueStudentList>? studentLocalList;
-
+  ValueNotifier<ClassroomStudents>? studentValueNotifier;
   @override
   void initState() {
     super.initState();
@@ -80,6 +81,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
       WillPopScope(
           onWillPop: () async => false,
           child: Scaffold(
+              resizeToAvoidBottomInset: true,
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: PBISPlusUtility.pbisAppBar(
@@ -115,76 +117,78 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   }
 
   Widget _buildStudentList() {
-    return ValueListenableBuilder(
-        valueListenable: showSearchList,
-        builder: (BuildContext context, bool value, Widget? child) {
-          return showSearchList.value
-              ? BlocConsumer(
-                  bloc: PBISPlusBlocSearchInstance,
-                  builder: (context, state) {
-                    if (state is PBISPlusStudentSearchSucess) {
-                      //---------------------return the filter list to UI-----------//
-                      if (state.sortedList.isNotEmpty) {
-                        //Storing the data in another list to use in search student functionality
-                        // studentLocalList = state.studentList;
+    return Expanded(
+      child: ValueListenableBuilder(
+          valueListenable: showSearchList,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return showSearchList.value
+                ? BlocConsumer(
+                    bloc: PBISPlusBlocSearchInstance,
+                    builder: (context, state) {
+                      if (state is PBISPlusStudentSearchSucess) {
+                        //---------------------return the filter list to UI-----------//
+                        if (state.sortedList.isNotEmpty) {
+                          //Storing the data in another list to use in search student functionality
+                          // studentLocalList = state.studentList;
+                          return _listBuilder(state.sortedList,
+                              isShimmerLoading: false);
+                        } else {
+                          return _noDataFoundWidget();
+                        }
+                      } else if (state is PBISPlusLoading ||
+                          state is PBISPlusInitial) {
+                        return _listBuilder(
+                            List.generate(10,
+                                (index) => PBISPlusNotesUniqueStudentList()),
+                            isShimmerLoading: true);
+                      } else if (state is PBISErrorState) {
+                        return _noDataFoundWidget();
+                      }
+                      //Managing shimmer loading in case of initial loading
+                      return SizedBox.shrink();
+                    },
+                    listener: (context, state) {
+                      if (state is PBISPlusImportRosterSuccess) {
+                        PBISPlusBlocInstance.add(
+                            GetPBISPlusStudentList(studentNotesList: null));
+                      }
+                    })
+                : BlocConsumer(
+                    bloc: PBISPlusBlocInstance,
+                    builder: (context, state) {
+                      if (state is PBISPlusStudentListSucess) {
+                        //---------------------return the filter list to UI-----------//
+                        if (state.studentList.isNotEmpty) {
+                          //Storing the data in another list to use in search student functionality
+                          studentLocalList = state.studentList;
+                          return _listBuilder(state.studentList,
+                              isShimmerLoading: false);
+                        } else {
+                          return _noDataFoundWidget();
+                        }
+                      } else if (state is PBISPlusLoading ||
+                          state is PBISPlusInitial) {
+                        return _listBuilder(
+                            List.generate(10,
+                                (index) => PBISPlusNotesUniqueStudentList()),
+                            isShimmerLoading: true);
+                      } else if (state is PBISPlusStudentSearchSucess) {
                         return _listBuilder(state.sortedList,
                             isShimmerLoading: false);
-                      } else {
+                      } else if (state is PBISErrorState) {
                         return _noDataFoundWidget();
                       }
-                    } else if (state is PBISPlusLoading ||
-                        state is PBISPlusInitial) {
-                      return _listBuilder(
-                          List.generate(
-                              10, (index) => PBISPlusNotesUniqueStudentList()),
-                          isShimmerLoading: true);
-                    } else if (state is PBISErrorState) {
-                      return _noDataFoundWidget();
-                    }
-                    //Managing shimmer loading in case of initial loading
-                    return SizedBox.shrink();
-                  },
-                  listener: (context, state) {
-                    if (state is PBISPlusImportRosterSuccess) {
-                      PBISPlusBlocInstance.add(
-                          GetPBISPlusStudentList(studentNotesList: null));
-                    }
-                  })
-              : BlocConsumer(
-                  bloc: PBISPlusBlocInstance,
-                  builder: (context, state) {
-                    if (state is PBISPlusStudentListSucess) {
-                      //---------------------return the filter list to UI-----------//
-                      if (state.studentList.isNotEmpty) {
-                        //Storing the data in another list to use in search student functionality
-                        studentLocalList = state.studentList;
-                        return _listBuilder(state.studentList,
-                            isShimmerLoading: false);
-                      } else {
-                        return _noDataFoundWidget();
+                      //Managing shimmer loading in case of initial loading
+                      return Container();
+                    },
+                    listener: (context, state) {
+                      if (state is PBISPlusImportRosterSuccess) {
+                        PBISPlusBlocInstance.add(
+                            GetPBISPlusStudentList(studentNotesList: null));
                       }
-                    } else if (state is PBISPlusLoading ||
-                        state is PBISPlusInitial) {
-                      return _listBuilder(
-                          List.generate(
-                              10, (index) => PBISPlusNotesUniqueStudentList()),
-                          isShimmerLoading: true);
-                    } else if (state is PBISPlusStudentSearchSucess) {
-                      return _listBuilder(state.sortedList,
-                          isShimmerLoading: false);
-                    } else if (state is PBISErrorState) {
-                      return _noDataFoundWidget();
-                    }
-                    //Managing shimmer loading in case of initial loading
-                    return Container();
-                  },
-                  listener: (context, state) {
-                    if (state is PBISPlusImportRosterSuccess) {
-                      PBISPlusBlocInstance.add(
-                          GetPBISPlusStudentList(studentNotesList: null));
-                    }
-                  });
-        });
+                    });
+          }),
+    );
   }
 
   /* ----------- Search Widget ---------- */
@@ -235,24 +239,22 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
   /* -----------------------------Widget to list of the student---------------- */
   Widget _listBuilder(List<PBISPlusNotesUniqueStudentList> studentNotesList,
       {required final bool isShimmerLoading}) {
-    return Expanded(
-      child: ValueListenableBuilder(
-          valueListenable: filterNotifier,
-          builder: (BuildContext context, String value, Widget? child) {
-            return _searchController.value.text.isEmpty
-                ? RefreshIndicator(
-                    color: AppTheme.kButtonColor,
-                    key: refreshKey,
-                    onRefresh: refreshPage,
-                    child: studentNotesList.length > 0
-                        ? _buildListItem(studentNotesList, isShimmerLoading)
-                        : NoDataFoundErrorWidget(
-                            isResultNotFoundMsg: true,
-                            isNews: false,
-                            isEvents: false))
-                : _buildListItem(studentNotesList, isShimmerLoading);
-          }),
-    );
+    return ValueListenableBuilder(
+        valueListenable: filterNotifier,
+        builder: (BuildContext context, String value, Widget? child) {
+          return _searchController.value.text.isEmpty
+              ? RefreshIndicator(
+                  color: AppTheme.kButtonColor,
+                  key: refreshKey,
+                  onRefresh: refreshPage,
+                  child: studentNotesList.length > 0
+                      ? _buildListItem(studentNotesList, isShimmerLoading)
+                      : NoDataFoundErrorWidget(
+                          isResultNotFoundMsg: true,
+                          isNews: false,
+                          isEvents: false))
+              : _buildListItem(studentNotesList, isShimmerLoading);
+        });
   }
 
   /* -----------------------------Widget to list item of the student---------------- */
@@ -296,8 +298,31 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                           height: 40,
                           child: localSimmerWidget(height: 40, width: 40))
                       : PBISCommonProfileWidget(
-                          isFromStudentNotes: true,
-                          studentname: studentNotesList[index].names!,
+                          studentValueNotifier:
+                              ValueNotifier<ClassroomStudents>(
+                                  ClassroomStudents(
+                            profile: ClassroomProfile(
+                              courseId: "1",
+                              courseName: "m",
+                              emailAddress: "a",
+                              engaged: 1,
+                              helpful: 1,
+                              id: "1",
+                              name: ClassroomProfileName(
+                                givenName:
+                                    studentNotesList[index].names?.givenName,
+                                fullName:
+                                    studentNotesList[index].names?.fullName!,
+                                familyName:
+                                    studentNotesList[index].names?.familyName,
+                              ),
+                              niceWork: 1,
+                              permissions: null,
+                              photoUrl: studentNotesList[index].iconUrlC,
+                            ),
+                          )),
+                          isFromStudentNotes: false,
+                          // studentname: studentNotesList[index].names!,
                           profilePictureSize: 30,
                           imageUrl: studentNotesList[index].iconUrlC!),
                   // Container(
@@ -315,8 +340,10 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                   //         imageUrl: studentNotesList[index].iconUrlC ?? '',
                   //         errorWidget: (context, url, error) =>
                   //             Icon(Icons.error),
-                  //         imageBuilder: (context, imageProvider) => CircleAvatar(
-                  //             radius: 56, backgroundImage: imageProvider))),
+                  //         imageBuilder: (context, imageProvider) =>
+                  //             CircleAvatar(
+                  //                 radius: 56,
+                  //                 backgroundImage: imageProvider))),
                   title: isShimmerLoading == true
                       ? localSimmerWidget(height: 20, width: 30)
                       : Utility.textWidget(
@@ -343,19 +370,18 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
 
 //------------------------NO DATA FOUND ---------------------------------//
   Widget _noDataFoundWidget() {
-    return Expanded(
-        child: Container(
-            alignment: Alignment.center,
-            child: RefreshIndicator(
-                color: AppTheme.kButtonColor,
-                key: refreshKey,
-                onRefresh: refreshPage,
-                child: NoDataFoundErrorWidget(
-                    marginTop: MediaQuery.of(context).size.height / 4,
-                    isResultNotFoundMsg: false,
-                    isNews: false,
-                    isEvents: false,
-                    errorMessage: 'No Student Found'))));
+    return Center(
+        // alignment: Alignment.center,
+        child: RefreshIndicator(
+            color: AppTheme.kButtonColor,
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: NoDataFoundErrorWidget(
+                marginTop: MediaQuery.of(context).size.height / 8,
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                errorMessage: 'No Student Found')));
   }
 
 //----------------------------Pull to Refresh--------------------------

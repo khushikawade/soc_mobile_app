@@ -11,9 +11,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class GradedPlusHelp extends StatefulWidget {
-  GradedPlusHelp({
-    Key? key,
-  }) : super(key: key);
+  final IconData? titleIconData;
+  GradedPlusHelp({Key? key, this.titleIconData}) : super(key: key);
 
   @override
   State<GradedPlusHelp> createState() => _GradedPlusHelpState();
@@ -45,11 +44,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
-      iconData: IconData(
-        0xe849,
-        fontFamily: Overrides.kFontFam,
-        fontPackage: Overrides.kFontPkg,
-      ),
+      iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone
@@ -133,6 +128,7 @@ class _GradedPlusHelpState extends State<GradedPlusHelp> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CustomIntroWidget(
+                    titleIconData: widget.titleIconData,
                     SectionName: selectedIntroType.value,
                     isFromHelp: true,
                   ),

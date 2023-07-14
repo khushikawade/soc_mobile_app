@@ -103,6 +103,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
+                            sectionType: "Staff",
                                 plusAppName: 'PBIS+',
                                 fromGradedPlus: false,
                                 hideStateSelection: true,

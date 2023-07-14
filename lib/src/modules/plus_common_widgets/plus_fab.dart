@@ -17,7 +17,7 @@ class PlusCustomFloatingActionButton extends StatelessWidget {
         width: 60,
         margin: EdgeInsets.only(bottom: 30),
         child: FloatingActionButton(
-          backgroundColor: AppTheme.kButtonColor,
+          backgroundColor: AppTheme.ksaveAndShareButton,
           onPressed: onPressed,
           child: icon ??
               Icon(

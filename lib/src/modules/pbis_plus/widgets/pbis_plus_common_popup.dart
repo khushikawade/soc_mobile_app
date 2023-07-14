@@ -153,36 +153,48 @@ class _PBISPlusDeleteBehaviorPopupState
   }
 
   Widget _buildSelectedIcon({required PBISPlusCommonBehaviorModal item}) {
-    return CachedNetworkImage(
-        imageBuilder: (context, imageProvider) => CircleAvatar(
-            radius: 30,
-            backgroundImage: imageProvider,
-            backgroundColor: Colors.transparent),
-        imageUrl: item.pBISBehaviorIconURLC!,
-        placeholder: (context, url) => Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey[300]!, width: 0.5)),
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.transparent,
-                    child: Icon(Icons.person, color: Colors.grey[300]!)))),
-        errorWidget: (context, url, error) => Icon(Icons.error));
+    return CircleAvatar(
+        radius: 42.0,
+        backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+            ? Color(0xffF7F8F9)
+            : Color(0xff111C20),
+        child: CachedNetworkImage(
+            fit: BoxFit.contain,
+            imageBuilder: (context, imageProvider) => Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+            imageUrl: item.pBISBehaviorIconURLC!,
+            placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Colors.grey[300]!, width: 0.5)),
+                    child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.transparent,
+                        child: Icon(Icons.person, color: Colors.grey[300]!)))),
+            errorWidget: (context, url, error) => Icon(Icons.error)));
   }
 
   Widget _showDeleteIconWidget(PBISPlusCommonBehaviorModal item) {
-    return Container(
-        decoration: BoxDecoration(
-            color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
-            shape: BoxShape.circle),
-        child: CircleAvatar(
-            radius: 42.0,
-            backgroundColor: Colors.transparent,
-            child: _buildSelectedIcon(item: item)));
+    return
+        // CircleAvatar(
+        //     radius: 42.0,
+        //     backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+        //         ? Color(0xffF7F8F9)
+        //         : Color(0xff111C20),
+        //     child: ClipOval(child:
+        _buildSelectedIcon(item: item);
+    // ));
   }
 }

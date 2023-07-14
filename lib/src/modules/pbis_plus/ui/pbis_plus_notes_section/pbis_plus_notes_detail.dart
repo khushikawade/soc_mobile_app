@@ -76,17 +76,25 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
   }
 
   Widget _buildBackIcon() {
-    return IconButton(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.all(0),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         Navigator.pop(context);
       },
-      icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          size: Globals.deviceType == 'phone' ? 24 : 32,
-          color: AppTheme.kButtonColor),
+      // alignment: Alignment.centerLeft,
+      // padding: EdgeInsets.all(0),
+      // onPressed: () {
+      //   Navigator.pop(context);
+      // },
+      // icon:
+      child: Padding(
+        padding: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
+        child: Icon(
+            IconData(0xe80d,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            size: Globals.deviceType == 'phone' ? 24 : 32,
+            color: AppTheme.kButtonColor),
+      ),
     );
   }
 
@@ -99,10 +107,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             _buildBackIcon(),
-            // SizedBox(width: StudentPlusOverrides.KVerticalSpace / 5),
             Expanded(
-                // alignment: Alignment.centerLeft,
-                // fit: BoxFit.fill,
                 child: Text("${widget.item.names!.fullName!}'s" + " Notes",
                     textAlign: TextAlign.left,
                     style: Theme.of(context)
@@ -147,7 +152,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                     physics: isShimmerLoading
                         ? NeverScrollableScrollPhysics()
                         : null,
-                    padding: EdgeInsets.only(bottom: Platform.isIOS ? 80 : 48),
+                    padding: EdgeInsets.only(bottom: Platform.isIOS ? 80 : 60),
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
                       return _buildCard(

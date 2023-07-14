@@ -38,6 +38,7 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
   final String? classroomCourseId;
   final double constraint;
   final String? studentProfile;
+  final String? sectionType;
   // final List<PBISPlusCommonBehaviorModal>? pBISPlusCommonBehaviorList;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
@@ -57,7 +58,7 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.constraint,
       this.studentProfile,
       // this.pBISPlusCommonBehaviorList,
-      required this.pBISPlusBloc})
+      required this.pBISPlusBloc,this.sectionType})
       : super(key: key);
 
   @override
@@ -109,11 +110,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   @override
   void dispose() {
-     if (widget.isFromStudentPlus != true) {
-         _scrollController!.removeListener(_handleScroll);
-    _scrollController!.dispose();
-     }
- 
+    if (widget.isFromStudentPlus != true) {
+      _scrollController!.removeListener(_handleScroll);
+      _scrollController!.dispose();
+    }
+
     super.dispose();
   }
 
@@ -158,6 +159,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                               isWorkPage: false,
                               titleIconCode: 0xe825,
                               refresh: (value) {},
+                              sectionType: '',
                             )
                           : appBar(),
                       body: pbisPlusBody(context),

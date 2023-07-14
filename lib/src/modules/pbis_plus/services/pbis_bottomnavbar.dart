@@ -172,7 +172,9 @@ class PbisPlusBottomNavBar {
       PBISPlusHistory(
           titleIconData: IconData(0xe824,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
-      PBISPlusEditSkills(),
+      PBISPlusEditSkills(
+          titleIconData: const IconData(0xe898,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       PBISPlusNotesStudentList(
           titleIconData: IconData(0xe895,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
