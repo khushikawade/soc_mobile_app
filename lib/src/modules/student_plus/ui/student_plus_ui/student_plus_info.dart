@@ -7,6 +7,8 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_sea
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
+import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -61,6 +63,7 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
+              sectionType:widget.sectionType,
               titleIconCode: 0xe883,
               refresh: (v) {
                 setState(() {});
@@ -91,15 +94,39 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                   onTap: () async {
-                    var result = await pushNewScreen(context,
-                        screen: StudentPlusSearchScreen(
-                            fromStudentPlusDetailPage: true,
-                            index: 0,
-                            studentDetails: widget.studentDetails),
-                        withNavBar: false,
-                        pageTransitionAnimation: PageTransitionAnimation.fade);
-                    if (result == true) {
-                      Utility.closeKeyboard(context);
+                    if (widget.sectionType == "Family") {
+                      showModalBottomSheet(
+                        useRootNavigator: true,
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(42),
+                            topRight: Radius.circular(42),
+                          ),
+                        ),
+                        builder: (_) => LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return StudentPlusFamilyStudentList(
+                            height: MediaQuery.of(context).size.height *
+                                0.4, //0.45,
+                            currentIndex: 0,
+                          );
+                        }),
+                      );
+                    } else {
+                      var result = await pushNewScreen(context,
+                          screen: StudentPlusSearchScreen(
+                              fromStudentPlusDetailPage: true,
+                              index: 0,
+                              studentDetails: widget.studentDetails),
+                          withNavBar: false,
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.fade);
+                      if (result == true) {
+                        Utility.closeKeyboard(context);
+                      }
                     }
                   },
                   isMainPage: false,

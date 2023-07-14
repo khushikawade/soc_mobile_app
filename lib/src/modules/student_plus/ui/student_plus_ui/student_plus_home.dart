@@ -98,12 +98,12 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             context,
             controller: _controller,
             screens: StudentPlusBottomNavBar.buildScreens(
-                studentInfo: widget.sectionType == "Student"
-                    ? studentPlusDetailsModel!
-                    : widget.studentPlusStudentInfo,
-                sectionType: widget.sectionType
-                // index: widget.index
-                ),
+                studentInfo: widget.sectionType == "Student" ||
+                        widget.sectionType == "Family"
+                    ? studentPlusDetailsModel! //Calling API in case of Student or Family section
+                    : widget
+                        .studentPlusStudentInfo, //Already having data so passing values directly
+                sectionType: widget.sectionType),
 
             onItemSelected: (i) {
               //To go back to the staff screen of standard app

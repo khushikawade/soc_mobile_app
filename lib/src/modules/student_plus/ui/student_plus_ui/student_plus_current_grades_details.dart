@@ -20,8 +20,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusGradesDetailPage extends StatefulWidget {
   final StudentPlusCourseModel studentPlusCourseModel;
+  final String sectionType;
   const StudentPlusGradesDetailPage(
-      {Key? key, required this.studentPlusCourseModel})
+      {Key? key, required this.studentPlusCourseModel,required this.sectionType})
       : super(key: key);
 
   @override
@@ -53,9 +54,13 @@ class _StudentPlusGradesDetailPageState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: StudentPlusAppBar(titleIconCode: 0xe883,refresh: (v) {
-                setState(() {});
-              },),
+          appBar: StudentPlusAppBar(
+            sectionType: widget.sectionType,
+            titleIconCode: 0xe883,
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
           body: Container(
             padding: EdgeInsets.symmetric(
                 horizontal: StudentPlusOverrides.kSymmetricPadding),

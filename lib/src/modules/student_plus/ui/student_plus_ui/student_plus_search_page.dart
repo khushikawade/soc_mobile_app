@@ -124,6 +124,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
+            sectionType: "Staff",
             refresh: (v) {
               setState(() {});
             },

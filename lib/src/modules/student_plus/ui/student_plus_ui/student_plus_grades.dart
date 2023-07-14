@@ -6,10 +6,11 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_grades_details.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_current_grades_details.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -71,6 +72,7 @@ class individual extends State<StudentPlusGradesPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
+             sectionType:widget.sectionType,
             titleIconCode: 0xe823,
             refresh: (v) {
               setState(() {});
@@ -95,16 +97,40 @@ class individual extends State<StudentPlusGradesPage> {
                         hintText:
                             '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                         onTap: () async {
-                          var result = await pushNewScreen(context,
-                              screen: StudentPlusSearchScreen(
-                                  fromStudentPlusDetailPage: true,
-                                  index: 3,
-                                  studentDetails: widget.studentDetails),
-                              withNavBar: false,
-                              pageTransitionAnimation:
-                                  PageTransitionAnimation.fade);
-                          if (result == true) {
-                            Utility.closeKeyboard(context);
+                          if (widget.sectionType == "Family") {
+                            showModalBottomSheet(
+                              useRootNavigator: true,
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(42),
+                                  topRight: Radius.circular(42),
+                                ),
+                              ),
+                              builder: (_) => LayoutBuilder(builder:
+                                  (BuildContext context,
+                                      BoxConstraints constraints) {
+                                return StudentPlusFamilyStudentList(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.4, //0.45,
+                                  currentIndex: 3,
+                                );
+                              }),
+                            );
+                          } else {
+                            var result = await pushNewScreen(context,
+                                screen: StudentPlusSearchScreen(
+                                    fromStudentPlusDetailPage: true,
+                                    index: 3,
+                                    studentDetails: widget.studentDetails),
+                                withNavBar: false,
+                                pageTransitionAnimation:
+                                    PageTransitionAnimation.fade);
+                            if (result == true) {
+                              Utility.closeKeyboard(context);
+                            }
                           }
                         },
                         isMainPage: false,
@@ -356,6 +382,7 @@ class individual extends State<StudentPlusGradesPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => StudentPlusGradesDetailPage(
+                     sectionType:widget.sectionType,
                         studentPlusCourseModel: studentPlusCourseModel,
                       )));
         },

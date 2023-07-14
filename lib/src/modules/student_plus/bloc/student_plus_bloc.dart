@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_met
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/services/family_login_override.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -433,18 +434,39 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
 
     /* ------------------------- Event to get student list in family section ------------------------ */
-    if (event is GetParentStudentList) {
+    if (event is GetStudentListFamilyLogin) {
+      List<UserInformation> parentInfo =
+          await FamilyUserDetails.getFamilyUserProfile();
       try {
-        yield FamilyLoginLoading();
-        var result =
-            await getStudentListFamilyLogin(token: event.familyAuthToken);
+        LocalDatabase<StudentPlusSearchModel> _localDb = LocalDatabase(
+            "${FamilyLoginOverride.studentListLocalDb}_${parentInfo[0].userEmail}");
+
+        List<StudentPlusSearchModel>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield FamilyLoginLoading();
+        } else {
+          yield StudentPlusSearchSuccess(obj: _localData);
+        }
+
+        var result = await getStudentListFamilyLogin(
+            token: parentInfo[0].familyToken ?? '');
+
         if (result is List<StudentPlusSearchModel>) {
+          await _localDb.clear();
+          result.forEach((StudentPlusSearchModel e) {
+            _localDb.addData(e);
+          });
           yield StudentPlusSearchSuccess(obj: result);
         } else {
           yield FamilyLoginErrorReceived();
         }
       } catch (e) {
-        yield FamilyLoginErrorReceived(err: e);
+        LocalDatabase<StudentPlusSearchModel> _localDb = LocalDatabase(
+            "${FamilyLoginOverride.studentListLocalDb}_${parentInfo[0].userEmail}");
+
+        List<StudentPlusSearchModel>? _localData = await _localDb.getData();
+        yield StudentPlusSearchSuccess(obj: _localData);
       }
     }
   }
@@ -490,6 +512,11 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        await FamilyUserDetails.updateFamilyUserProfile(UserInformation(
+            familyToken: response.data["token"],
+            userEmail: emailId,
+            userName:
+                "${response.data["body"]["parent"]["Parent_First_Name__c"]} ${response.data["body"]["parent"]["Parent_Last_Name__c"]}"));
         return response.data["token"];
       } else {
         return false;
@@ -509,7 +536,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             "Authorization": "bearer ${token}"
           },
           isCompleteUrl: true);
-
+      print(token);
       if (response.statusCode == 200 && response.data["statusCode"] == 200) {
         return response.data["body"]
             .map<StudentPlusSearchModel>(
