@@ -22,7 +22,7 @@ class PBISPlusOverrides {
 
   static final double profilePictureSize =
       Globals.deviceType == "phone" ? 40 : 60;
-  static final double circleSize = Globals.deviceType == "phone" ? 25 : 35;
+  static final double circleSize = Globals.deviceType == "phone" ? 28 : 35;
   static String pbisPlusFilterValue = 'All';
 
   // base url used for PBIS plus section
