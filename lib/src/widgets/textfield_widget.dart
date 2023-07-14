@@ -12,6 +12,7 @@ class TextFieldWidget extends StatefulWidget {
   final BuildContext? context;
   TextStyle? textStyle;
   final int? maxLength;
+  final TextStyle? counterStyle;
   TextFieldWidget(
       {Key? key,
       required this.controller,
@@ -21,7 +22,8 @@ class TextFieldWidget extends StatefulWidget {
       this.keyboardType,
       required this.context,
       this.textStyle,
-      this.maxLength})
+      this.maxLength,
+      this.counterStyle})
       : super(key: key) {
     // Assign default values if not provided
     if (this.textStyle == null) {
@@ -66,6 +68,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               : Color(
                   0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        counterStyle: widget.counterStyle,
         hintText: widget.hintText ?? '',
         hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
             color: Color(0xff000000) == Theme.of(context).backgroundColor
