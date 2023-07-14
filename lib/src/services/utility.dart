@@ -87,8 +87,6 @@ class Utility {
     }
   }
 
-
-
   static doVibration() async {
     try {
       await HapticFeedback.vibrate();
@@ -1043,5 +1041,11 @@ class Utility {
     } catch (e) {
       return utcdatetimeString;
     }
+  }
+
+  static Future clearStudentList({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
   }
 }

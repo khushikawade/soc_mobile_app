@@ -249,28 +249,31 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-        child: FloatingActionButton.extended(
-            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-            onPressed: () async {
-              if (editNameController.text.isNotEmpty) {
-                _errorMessage.value = false;
-                widget.onEditCallBack(editNameController.text);
-                Navigator.pop(context);
-              } else {
-                _errorMessage.value = true;
-              }
-            },
-            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Utility.textWidget(
-                  text: 'Save',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor))
-            ])));
+    return Expanded(
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+          child: FloatingActionButton.extended(
+              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+              onPressed: () async {
+                if (editNameController.text.isNotEmpty) {
+                  _errorMessage.value = false;
+                  widget.onEditCallBack(editNameController.text);
+                  Navigator.pop(context);
+                } else {
+                  _errorMessage.value = true;
+                }
+              },
+              label:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Utility.textWidget(
+                    text: 'Save',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor))
+              ]))),
+    );
   }
 }

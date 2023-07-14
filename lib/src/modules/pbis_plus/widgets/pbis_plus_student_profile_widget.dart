@@ -66,26 +66,29 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
     }
     String lastName;
 
-    if (widget.isFromStudentNotes != null &&
-        widget.isFromStudentNotes == true &&
-        widget.studentname!.fullName!.split(' ').length > 0) {
-      lastName = widget.studentname!.fullName!
-          .split(' ')[1]
-          .substring(0, 1)
-          .toUpperCase();
-    } else {
-      lastName = widget.studentValueNotifier!.value.profile!.name!.fullName!
-                  .isNotEmpty &&
-              widget.studentValueNotifier!.value.profile!.name!.fullName!
-                      .split(' ')
-                      .length >
-                  1
-          ? widget.studentValueNotifier!.value.profile!.name!.fullName!
-              .split(' ')[1]
-              .substring(0, 1)
-              .toUpperCase()
-          : '';
-    }
+    firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
+                .isNotEmpty &&
+            widget.studentValueNotifier!.value.profile!.name!.fullName!
+                    .split(' ')
+                    .length >
+                0
+        ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+            .split(' ')[0]
+            .substring(0, 1)
+            .toUpperCase()
+        : '';
+
+    lastName = widget.studentValueNotifier!.value.profile!.name!.fullName!
+                .isNotEmpty &&
+            widget.studentValueNotifier!.value.profile!.name!.fullName!
+                    .split(' ')
+                    .length >
+                1
+        ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+            .split(' ')[1]
+            .substring(0, 1)
+            .toUpperCase()
+        : '';
 
     /*-------------------------------------------------END--------------------------------------------------------*/
 
@@ -95,10 +98,13 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             margin: widget.countWidget == true
                 ? EdgeInsets.all(10)
                 : EdgeInsets.zero,
-            child: widget.isFromStudentNotes != null &&
-                    widget.isFromStudentNotes == true
-                ? (widget.imageUrl.contains('default-user') ||
-                        widget.imageUrl.contains('default-user=')
+            child: widget.isFromStudentPlus == true &&
+                    widget.studentProfile != null
+                ? studentProfilePicture()
+                : (widget.studentValueNotifier!.value.profile!.photoUrl!
+                            .contains('default-user') &&
+                        !widget.studentValueNotifier!.value.profile!.photoUrl!
+                            .contains('default-user=')
                     ? CircleAvatar(
                         radius: widget.profilePictureSize,
                         backgroundColor: Color(0xff000000) ==
@@ -107,6 +113,14 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                             : Color(0xff111C20),
                         child: Text(
                           firstName + lastName,
+                          // widget.studentValueNotifier.value.profile!.name!
+                          //         .givenName!
+                          //         .toUpperCase()
+                          //         .substring(0, 1) +
+                          //     widget.studentValueNotifier.value.profile!.name!
+                          //         .familyName!
+                          //         .toUpperCase()
+                          //         .substring(0, 1),
                           style:
                               Theme.of(context).textTheme.headline2!.copyWith(
                                     color: Color(0xff000000) !=
@@ -145,76 +159,10 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                             ),
                           ),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ))
-                : widget.isFromStudentPlus == true &&
-                        widget.studentProfile != null
-                    ? studentProfilePicture()
-                    : (widget.studentValueNotifier!.value.profile!.photoUrl!
-                                .contains('default-user') &&
-                            !widget
-                                .studentValueNotifier!.value.profile!.photoUrl!
-                                .contains('default-user=')
-                        ? CircleAvatar(
+                        errorWidget: (context, url, error) => CircleAvatar(
                             radius: widget.profilePictureSize,
-                            backgroundColor: Color(0xff000000) ==
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                            child: Text(
-                              firstName + lastName,
-                              // widget.studentValueNotifier.value.profile!.name!
-                              //         .givenName!
-                              //         .toUpperCase()
-                              //         .substring(0, 1) +
-                              //     widget.studentValueNotifier.value.profile!.name!
-                              //         .familyName!
-                              //         .toUpperCase()
-                              //         .substring(0, 1),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(
-                                    color: Color(0xff000000) !=
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffF7F8F9)
-                                        : Color(0xff111C20),
-                                  ),
-                            ),
-                          )
-                        : CachedNetworkImage(
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                              radius: widget.profilePictureSize,
-                              backgroundImage: imageProvider,
-                            ),
-                            imageUrl: widget.imageUrl!,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                // padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.grey[300]!,
-                                    width: 0.5,
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: widget.profilePictureSize,
-                                  backgroundColor: Colors.transparent,
-                                  child: Icon(
-                                    Icons.person,
-                                    // size: profilePictureSize,
-                                    color: Colors.grey[300]!,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ))),
+                            child: Icon(Icons.error)),
+                      ))),
         if (widget.countWidget == true)
           Positioned(
             right: 0,
