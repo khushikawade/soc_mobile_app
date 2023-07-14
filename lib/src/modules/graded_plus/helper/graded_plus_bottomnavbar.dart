@@ -28,7 +28,9 @@ class GradedPlusBottomNavBar {
           selectedFilterValue: 'All',
           titleIconData: const IconData(0xe824,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
-      GradedPlusSelectAssessmentTypeSection(titleIconData: Icons.add),
+      GradedPlusSelectAssessmentTypeSection(
+          titleIconData: const IconData(0xe898,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       GradedPlusHelp(
           titleIconData: const IconData(0xe890,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
