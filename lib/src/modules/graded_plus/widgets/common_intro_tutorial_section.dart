@@ -333,10 +333,12 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                 await _hiveDbServices.addSingleData(
                     'is_new_user', 'new_user', true);
 
+//to remove the both Graded+ tutorial pages
                 Navigator.of(context)
                   ..pop()
                   ..pop();
 
+// and push to graded+ section
                 Navigator.push(
                     context,
                     MaterialPageRoute<void>(
