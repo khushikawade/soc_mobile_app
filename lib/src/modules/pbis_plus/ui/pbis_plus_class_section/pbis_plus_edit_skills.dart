@@ -147,17 +147,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     isCustomBehavior.value = value;
                     setToggleValue(value: value);
                   },
-                  trackColor:
-                      Color(0xff000000) == Theme.of(context).backgroundColor
-                          ? AppTheme.klistTilePrimaryLight.withOpacity(0.1)
-                          : Color(0xff000000).withOpacity(0.5),
+                  trackColor: Colors.grey,
                   thumbColor: isCustomBehavior.value
                       ? AppTheme.GreenColor
                       : AppTheme.klistTilePrimaryLight,
-                  activeColor:
-                      Color(0xff000000) == Theme.of(context).backgroundColor
-                          ? Color(0xff000000).withOpacity(0.8)
-                          : Color(0xff000000).withOpacity(0.1),
+                  activeColor: Theme.of(context).backgroundColor,
                 ),
               )),
     );
