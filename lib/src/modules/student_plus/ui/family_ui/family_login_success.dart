@@ -1,16 +1,14 @@
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_student_plus_list.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_login_failure.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_otp.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusFamilyLogInSuccess extends StatefulWidget {
   final String token;
@@ -22,19 +20,20 @@ class StudentPlusFamilyLogInSuccess extends StatefulWidget {
       _StudentPlusFamilyLogInSuccessState();
 }
 
-
 class _StudentPlusFamilyLogInSuccessState
     extends State<StudentPlusFamilyLogInSuccess> {
   TextEditingController emailEditingController = TextEditingController();
-    final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  bool isLoading = false;
 
   @override
   void initState() {
-     _studentPlusBloc
+    _studentPlusBloc
         .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -75,18 +74,54 @@ class _StudentPlusFamilyLogInSuccessState
 
   /* ----------------------------- widget to show generate otp button ----------------------------- */
   Widget fabButton() {
-    return GradedPlusCustomFloatingActionButton(
-      isExtended: true,
-      fabWidth: MediaQuery.of(context).size.width * 0.7,
-      title: 'Get Started',
-      onPressed: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => FamilyStudentPlusList(
-                    token: widget.token,
-                  )),
+    return BlocConsumer(
+      bloc: _studentPlusBloc,
+      builder: (context, state) {
+        return GradedPlusCustomFloatingActionButton(
+          isExtended: true,
+          fabWidth: MediaQuery.of(context).size.width * 0.7,
+          title: 'Get Started',
+          onPressed: () async {
+            if (state is StudentPlusSearchSuccess) {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => StudentPlusHome(
+                            sectionType: "Family",
+                            studentPlusStudentInfo: StudentPlusDetailsModel(
+                                studentIdC: state.obj[0].studentIDC,
+                                firstNameC: state.obj[0].firstNameC,
+                                lastNameC: state.obj[0].lastNameC,
+                                classC: state.obj[0].classC),
+                            index: 0,
+                            //   index: widget.index,
+                          )),
+                  (_) => true);
+            } else {
+              isLoading = true;
+              Utility.showLoadingDialog(
+                context: context,
+                isOCR: true,
+              );
+            }
+          },
         );
+      },
+      listener: (context, state) {
+        if (state is StudentPlusSearchSuccess && isLoading) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => StudentPlusHome(
+                        sectionType: "Family",
+                        studentPlusStudentInfo: StudentPlusDetailsModel(
+                            studentIdC: state.obj[0].studentIDC,
+                            firstNameC: state.obj[0].firstNameC,
+                            lastNameC: state.obj[0].lastNameC,
+                            classC: state.obj[0].classC),
+                        index: 0,
+                        //   index: widget.index,
+                      )),
+              (_) => true);
+        }
       },
     );
   }

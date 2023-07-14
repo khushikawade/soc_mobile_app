@@ -41,6 +41,9 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
     // Only call in case of Student Section to fetch student details
     if (widget.sectionType == "Student") {
       _studentPlusBloc.add(StudentPlusSearchByEmail());
+    } else if (widget.sectionType == "Family") {
+      _studentPlusBloc.add(GetStudentPlusDetails(
+          studentIdC: widget.studentPlusStudentInfo.studentIdC ?? ''));
     }
 
     super.initState();
@@ -54,13 +57,15 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: widget.sectionType == "Student"
+        body: widget.sectionType == "Student" || widget.sectionType == "Family"
             ? BlocBuilder<StudentPlusBloc, StudentPlusState>(
                 bloc: _studentPlusBloc,
                 builder: (context, state) {
                   if (state is StudentPlusGetDetailsLoading) {
                     return loaderWidget();
                   } else if (state is StudentPlusSearchByEmailSuccess) {
+                    return body(studentPlusDetailsModel: state.obj);
+                  } else if (state is StudentPlusInfoSuccess) {
                     return body(studentPlusDetailsModel: state.obj);
                   }
                   return Container();
