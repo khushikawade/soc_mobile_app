@@ -33,7 +33,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
         Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+          appBar: FamilyVerificationCommonWidget.familyLoginAppBar(
               context: context, isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
@@ -41,13 +41,13 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.06),
-                FamilyLoginCommonWidget.titleAndDesWidget(
+                FamilyVerificationCommonWidget.titleAndDesWidget(
                     context: context,
                     title: 'Email',
                     description:
                         'Enter your email below to receive a one-time password.'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.1),
-                FamilyLoginCommonWidget.familyCircularIcon(
+                FamilyVerificationCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/login_lock.png'),
                 SpacerWidget(40),
@@ -84,7 +84,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       listener: (context, state) {
         if (state is FamilyLoginOtpSendSuccess) {
           Utility.showSnackBar(
-              _scaffoldKey, "Otp Send Successfully", context, null);
+              _scaffoldKey, "OTP Sent Successfully", context, null);
           Navigator.pop(context);
           Navigator.push(
             context,
@@ -95,7 +95,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
         } else if (state is FamilyLoginOtpSendFailure) {
           Utility.showSnackBar(
               _scaffoldKey,
-              "User is not authorized to access student plus in family section",
+              "You are not authorized to access STUDENT+ in Families section",
               context,
               null);
           Navigator.pop(context);
@@ -216,6 +216,4 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
     final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     return emailRegex.hasMatch(value);
   }
-
- 
 }

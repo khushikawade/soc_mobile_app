@@ -6,8 +6,8 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_grades_details.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_grades_details.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -88,7 +88,7 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student" 
+                widget.sectionType == "Student"
                     ? Container()
                     : PlusAppSearchBar(
                         sectionName: 'STUDENT+',
@@ -174,10 +174,9 @@ class individual extends State<StudentPlusGradesPage> {
       valueListenable: selectedValue,
       builder: (context, value, child) {
         return Container(
-          height:
-              widget.sectionType == "Student" 
-                  ? MediaQuery.of(context).size.height * 0.75
-                  : MediaQuery.of(context).size.height * 0.62,
+          height: widget.sectionType == "Student"
+              ? MediaQuery.of(context).size.height * 0.75
+              : MediaQuery.of(context).size.height * 0.62,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -142,13 +142,11 @@ class VerifyOtpFamilyLogin extends StudentPlusEvent {
 }
 
 /* ---------------- Event use to trigger get student list for family login --------------- */
-class GetStudentListFamilyLogin extends StudentPlusEvent {
+class GetParentStudentList extends StudentPlusEvent {
   final String familyAuthToken;
-  GetStudentListFamilyLogin({required this.familyAuthToken});
+  GetParentStudentList({required this.familyAuthToken});
   @override
   List<Object> get props => [];
   @override
   String toString() => '';
 }
-
-

@@ -29,8 +29,8 @@ class StudentPlusSearchModel {
           id: json["Id"],
           firstNameC: json["First_Name__c"],
           lastNameC: json["last_Name__c"],
-            classC: json["Class__c"],
-            studentIDC: json['Student_ID__c']);
+          classC: json["Class__c"],
+          studentIDC: json['Student_ID__c']);
   Map<String, dynamic> toJson() => {
         "Id": id,
         "First_Name__c": firstNameC,

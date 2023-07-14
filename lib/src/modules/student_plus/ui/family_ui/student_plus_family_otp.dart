@@ -3,9 +3,8 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_success.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/shake_widget.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/shake_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/timer_animated_widget.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -24,16 +23,17 @@ class StudentPlusFamilyOtp extends StatefulWidget {
 class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
     with TickerProviderStateMixin {
   TextEditingController emailEditingController = TextEditingController();
+  AnimationController? _controller;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
+  //-----------------------------------------------
 
-  int _counter = 0;
+  // int _counter = 0;
   final otpFieldKeys =
       List.generate(6, (index) => GlobalKey<FormFieldState<String>>());
-
-  AnimationController? _controller;
-
+  List<String> otp = List.filled(6, '');
   int levelClock = 60;
-  StudentPlusBloc studentPlusBloc = StudentPlusBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  //-----------------------------------------------
 
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
         Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+          appBar: FamilyVerificationCommonWidget.familyLoginAppBar(
               context: context, isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
@@ -75,13 +75,13 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.06),
-                FamilyLoginCommonWidget.titleAndDesWidget(
+                FamilyVerificationCommonWidget.titleAndDesWidget(
                     context: context,
                     title: 'Enter Your Passcode',
                     description:
                         'Enter the one-time password we just sent to your email address.'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.07),
-                FamilyLoginCommonWidget.familyCircularIcon(
+                FamilyVerificationCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/otp_lock.png'),
                 SpacerWidget(20),
@@ -138,56 +138,48 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
     );
   }
 
+//OTP Textfield Widget
   Widget otpWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildOtpField(0),
-        SizedBox(width: 16.0),
-        _buildOtpField(1),
-        SizedBox(width: 16.0),
-        _buildOtpField(2),
-        SizedBox(width: 16.0),
-        _buildOtpField(3),
-        SizedBox(width: 16.0),
-        _buildOtpField(4),
-        SizedBox(width: 16.0),
-        _buildOtpField(5),
-      ],
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      _buildOtpField(0),
+      SizedBox(width: 16.0),
+      _buildOtpField(1),
+      SizedBox(width: 16.0),
+      _buildOtpField(2),
+      SizedBox(width: 16.0),
+      _buildOtpField(3),
+      SizedBox(width: 16.0),
+      _buildOtpField(4),
+      SizedBox(width: 16.0),
+      _buildOtpField(5)
+    ]);
   }
 
   Widget timerWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Utility.textWidget(
-            textAlign: TextAlign.center,
-            text: "Code expires in :  ",
-            context: context,
-            textTheme: Theme.of(context).textTheme.subtitle1),
-        Countdown(
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Utility.textWidget(
+          textAlign: TextAlign.center,
+          text: "Code expires in :  ",
+          context: context,
+          textTheme: Theme.of(context).textTheme.subtitle1),
+      Countdown(
           animation: StepTween(
-            begin: levelClock, // THIS IS A USER ENTERED NUMBER
-
-            end: 0,
-          ).animate(_controller!),
-        ),
-      ],
-    );
+        begin: levelClock, // THIS IS A USER ENTERED NUMBER
+        end: 0,
+      ).animate(_controller!))
+    ]);
   }
 
   /* ----------------------------- widget to show generate otp button ----------------------------- */
 
   Widget fabButton() {
     return GradedPlusCustomFloatingActionButton(
-      isExtended: true,
-      fabWidth: MediaQuery.of(context).size.width * 0.7,
-      title: 'Verify Passcode',
-      onPressed: () async {
-        _verifyOtp();
-      },
-    );
+        isExtended: true,
+        fabWidth: MediaQuery.of(context).size.width * 0.7,
+        title: 'Verify Passcode',
+        onPressed: () async {
+          _verifyOtp();
+        });
   }
 
   Widget _buildOtpField(int index) {
@@ -279,10 +271,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       studentPlusBloc
           .add(VerifyOtpFamilyLogin(emailId: widget.emailId, otp: enteredOtp));
     }
-    print('Entered OTP: $enteredOtp');
   }
-
-  List<String> otp = List.filled(6, '');
 
   void _onOtpChanged(int index, String value) {
     if (value == '') {

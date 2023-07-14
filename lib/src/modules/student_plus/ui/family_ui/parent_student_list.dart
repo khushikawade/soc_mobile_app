@@ -3,7 +3,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dar
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -27,8 +27,7 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
 
   @override
   void initState() {
-    _studentPlusBloc
-        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
+    _studentPlusBloc.add(GetParentStudentList(familyAuthToken: widget.token));
     // TODO: implement initState
     super.initState();
   }
@@ -124,7 +123,8 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
                           : Color(0xffE9ECEE)),
               child: ListTile(
                 onTap: () {
-                  if (list[index].studentIDC == null || list[index].studentIDC == '') {
+                  if (list[index].studentIDC == null ||
+                      list[index].studentIDC == '') {
                     Utility.currentScreenSnackBar(
                         'Unable to get details for ${list[index].firstNameC} ${list[index].lastNameC}',
                         null);

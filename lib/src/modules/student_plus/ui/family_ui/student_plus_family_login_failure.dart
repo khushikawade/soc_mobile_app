@@ -3,8 +3,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_otp.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -30,19 +29,20 @@ class _StudentPlusFamilyLogInFailureState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.red.withOpacity(0.2),
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(context: context,isBackButton: true),
+          appBar: FamilyVerificationCommonWidget.familyLoginAppBar(
+              context: context, isBackButton: true),
           body: Container(
             height: MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.1),
-                FamilyLoginCommonWidget.titleAndDesWidget(
+                FamilyVerificationCommonWidget.titleAndDesWidget(
                   context: context,
                   title: 'Not Verified',
                 ),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.05),
-                FamilyLoginCommonWidget.familyCircularIcon(
+                FamilyVerificationCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/failure_lock.png'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.05),

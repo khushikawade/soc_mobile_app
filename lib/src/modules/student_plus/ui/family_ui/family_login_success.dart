@@ -3,8 +3,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/family_student_plus_list.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +27,7 @@ class _StudentPlusFamilyLogInSuccessState
 
   @override
   void initState() {
-    _studentPlusBloc
-        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
-    // TODO: implement initState
+    _studentPlusBloc.add(GetParentStudentList(familyAuthToken: widget.token));
     super.initState();
   }
 
@@ -41,7 +38,7 @@ class _StudentPlusFamilyLogInSuccessState
         CommonBackgroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: FamilyLoginCommonWidget.familyLoginAppBar(
+          appBar: FamilyVerificationCommonWidget.familyLoginAppBar(
               context: context, isBackButton: false),
           body: Container(
             height: MediaQuery.of(context).size.height,
@@ -49,7 +46,7 @@ class _StudentPlusFamilyLogInSuccessState
               physics: BouncingScrollPhysics(),
               children: [
                 SpacerWidget(MediaQuery.of(context).size.height * 0.2),
-                FamilyLoginCommonWidget.familyCircularIcon(
+                FamilyVerificationCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/success_lock.png'),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.05),

@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_override.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/family_login_override.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -433,7 +433,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
 
     /* ------------------------- Event to get student list in family section ------------------------ */
-    if (event is GetStudentListFamilyLogin) {
+    if (event is GetParentStudentList) {
       try {
         yield FamilyLoginLoading();
         var result =
