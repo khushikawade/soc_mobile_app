@@ -36,9 +36,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
-  final StudentPlusDetailsModel studentDetails;
+  StudentPlusDetailsModel studentDetails;
   final String sectionType;
-  const StudentPlusWorkScreen(
+  StudentPlusWorkScreen(
       {Key? key, required this.studentDetails, required this.sectionType})
       : super(key: key);
 
@@ -60,6 +60,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       GoogleSlidesPresentationBloc();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
+  List<ResultSummaryIcons> resultSummaryIconsModalList = [
+    ResultSummaryIcons(
+      title: 'Sync Presentation',
+      svgPath: '',
+    ),
+    ResultSummaryIcons(
+      title: 'Open Presentation',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+    ),
+  ];
   @override
   void initState() {
     _studentPlusBloc.add(
@@ -512,30 +522,15 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   _shareBottomSheetMenu() async {
-    // List<UserInformation> userProfileInfoData =
-    //     await UserGoogleProfile.getUserProfile();
-    // //For extra safety, We have already verified if folder exist or not
-    // if (userProfileInfoData[0].studentPlusGoogleDriveFolderId == null ||
-    //     userProfileInfoData[0].studentPlusGoogleDriveFolderId == "") {
-    //   Utility.currentScreenSnackBar('User Authentication Error', null);
-    //   return;
+    // if (widget.studentDetails.studentGooglePresentationUrl != null &&
+    //     widget.studentDetails.studentGooglePresentationUrl != '') {
+    //   resultSummaryIconsModalList.add(
+    //     ResultSummaryIcons(
+    //       title: 'Open Presentation',
+    //       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+    //     ),
+    //   );
     // }
-
-    List<ResultSummaryIcons> resultSummaryIconsModalList = [
-      ResultSummaryIcons(
-        title: 'Sync Presentation',
-        svgPath: '',
-      ),
-    ];
-    if (widget.studentDetails.studentGooglePresentationUrl != null &&
-        widget.studentDetails.studentGooglePresentationUrl != '') {
-      resultSummaryIconsModalList.add(
-        ResultSummaryIcons(
-          title: 'Open Presentation',
-          svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-        ),
-      );
-    }
     // print(widget.studentDetails.studentGooglePresentationUrl);
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -557,6 +552,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             },
           );
         });
+    if (result != null) {
+      widget.studentDetails = result;
+    }
   }
 
   BlocListener googleDriveBlocListener() {
