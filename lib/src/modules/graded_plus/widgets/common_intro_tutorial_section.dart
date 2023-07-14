@@ -122,7 +122,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                             )),
                   )),
               Container(
-                height: MediaQuery.of(context).size.height / 5,
+                height: MediaQuery.of(context).size.height / 6,
                 alignment: Alignment.center,
                 child: Padding(
                   padding:
@@ -143,19 +143,42 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                 ),
               ),
               Container(
-                  height: MediaQuery.of(context).size.height * 0.13,
+                  height: MediaQuery.of(context).size.height * 0.16,
                   child: item.title == 'STEP 2'
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            sectionInfo.length,
-                            (index) => Expanded(
-                              child: button(
-                                index: index,
-                                sectionInfo: sectionInfo[index],
-                              ),
-                            ),
-                          ))
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: TranslationWidget(
+                                  message: 'Select assignment type:',
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                      translatedMessage,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(Globals
+                                              .navigatorKey.currentContext!)
+                                          .textTheme
+                                          .headline2!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                )),
+                            // SpacerWidget(20),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  sectionInfo.length,
+                                  (index) => Expanded(
+                                    child: button(
+                                      index: index,
+                                      sectionInfo: sectionInfo[index],
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        )
                       : null)
             ],
           ),
@@ -230,8 +253,6 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                     )));
       },
     );
-
-   
   }
 
   Row sectionhHeader() {
