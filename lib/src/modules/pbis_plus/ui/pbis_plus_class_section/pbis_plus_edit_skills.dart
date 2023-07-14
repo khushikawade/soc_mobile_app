@@ -24,7 +24,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Soc/src/services/Strings.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
-  PBISPlusEditSkills({Key? key, this.constraint}) : super(key: key) {}
+  final IconData titleIconData;
+  PBISPlusEditSkills({
+    Key? key,
+    this.constraint,
+    required this.titleIconData,
+  }) : super(key: key) {}
   final double? constraint;
 
   @override
@@ -700,7 +705,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: PBISPlusAppBar(
-                  title: "", backButton: true, scaffoldKey: _scaffoldKey),
+                  titleIconData: widget.titleIconData,
+                  title: "",
+                  backButton: true,
+                  scaffoldKey: _scaffoldKey),
               body: body(context))
         ]));
   }

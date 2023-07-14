@@ -11,6 +11,8 @@ class TextFieldWidget extends StatefulWidget {
   final TextInputType? keyboardType;
   final BuildContext? context;
   TextStyle? textStyle;
+  final int? maxLength;
+  final TextStyle? counterStyle;
   TextFieldWidget(
       {Key? key,
       required this.controller,
@@ -19,7 +21,9 @@ class TextFieldWidget extends StatefulWidget {
       this.hintText,
       this.keyboardType,
       required this.context,
-      this.textStyle})
+      this.textStyle,
+      this.maxLength,
+      this.counterStyle})
       : super(key: key) {
     // Assign default values if not provided
     if (this.textStyle == null) {
@@ -37,6 +41,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: widget.maxLength,
       validator: (text) {
         if (text == null || text.isEmpty) {
           return widget.msg;
@@ -63,6 +68,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               : Color(
                   0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        counterStyle: widget.counterStyle,
         hintText: widget.hintText ?? '',
         hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
             color: Color(0xff000000) == Theme.of(context).backgroundColor
