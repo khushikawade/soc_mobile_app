@@ -1,12 +1,12 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_exams.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_grades.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_info.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_pbis.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_staff.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_work.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_exams.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_grades.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_info.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_pbis.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_staff.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_work.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusBottomNavBar {
-   /* ------- function to return list of widget for bottom navigation bar ------ */
+  /* ------- function to return list of widget for bottom navigation bar ------ */
   static List<Widget> buildScreens(
       {required StudentPlusDetailsModel studentInfo,
       required String sectionType}) {
@@ -94,7 +94,7 @@ class StudentPlusBottomNavBar {
     );
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
       icon: ResultSummaryIcons(
-         sectionType == "Student" ? "0xe80a" : getStaffIconCode(),
+          sectionType == "Student" ? "0xe80a" : getStaffIconCode(),
           sectionType == "Student" ? 'Student' : 'Staff',
           context),
       activeColorPrimary: AppTheme.kButtonColor,

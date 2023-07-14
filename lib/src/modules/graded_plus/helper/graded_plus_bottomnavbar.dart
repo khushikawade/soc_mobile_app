@@ -27,11 +27,16 @@ class GradedPlusBottomNavBar {
         backOnTap: backOnTap,
       ),
       GradedPlusAssessmentSummary(
-        isFromHomeSection: true,
-        selectedFilterValue: 'All',
-      ),
-      GradedPlusSelectAssessmentTypeSection(),
-    GradedPlusHelpSection(),
+          isFromHomeSection: true,
+          selectedFilterValue: 'All',
+          titleIconData: const IconData(0xe824,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
+      GradedPlusSelectAssessmentTypeSection(
+          titleIconData: const IconData(0xe898,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
+      GradedPlusHelpSection(
+          titleIconData: const IconData(0xe890,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
 
       // CustomIntroWidget(
       //   isFromHelp: true,
@@ -78,7 +83,7 @@ class GradedPlusBottomNavBar {
           inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
           icon: gardedPlusBottomNavBarIcons(
-              iconData: IconData(0xe849,
+              iconData: IconData(0xe890,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg)),
           title: ('Help'),

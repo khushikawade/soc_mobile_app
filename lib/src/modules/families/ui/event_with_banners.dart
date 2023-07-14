@@ -533,7 +533,6 @@ class _EventPageState extends State<EventPage>
                   map[0].monthString.toString().toLowerCase(),
                   state.calendarBannerImageList),
               imageBuilder: (context, imageProvider) =>
-              
                   imageBuilder(imageProvider, date, context, BoxFit.fitWidth),
               placeholder: (context, url) => placeholderBuilder(),
               errorWidget: (context, url, error) =>

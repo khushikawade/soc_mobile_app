@@ -2,6 +2,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/family_login_override.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -155,8 +157,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         } else {
           yield StudentPlusGradeSuccess(
               obj: _localData,
-              chipList:
-                  getChipsList(list: _localData, fromStudentSection: false),
+              chipList: getChipsList(list: _localData),
               courseList: []);
         }
 
@@ -172,7 +173,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
         yield StudentPlusGradeSuccess(
             obj: list,
-            chipList: getChipsList(list: list, fromStudentSection: false),
+            chipList: getChipsList(
+              list: list,
+            ),
             courseList: []);
       } catch (e) {
         LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
@@ -183,7 +186,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         yield StudentPlusGradeSuccess(
             obj: _localData,
-            chipList: getChipsList(list: _localData, fromStudentSection: false),
+            chipList: getChipsList(
+              list: _localData,
+            ),
             courseList: []);
       }
     }
@@ -210,8 +215,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         } else {
           yield StudentPlusGradeSuccess(
               obj: _localData,
-              chipList:
-                  getChipsList(list: _localData, fromStudentSection: true),
+              chipList: getChipsList(
+                list: _localData,
+              ),
               courseList: _localCourseData);
         }
         //-----------------------------------------------------------------------------------
@@ -249,7 +255,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
         yield StudentPlusGradeSuccess(
             obj: list,
-            chipList: getChipsList(list: list, fromStudentSection: true),
+            chipList: getChipsList(list: list),
             courseList: studentCourseList);
       } catch (e) {
         List<UserInformation> userProfileLocalData =
@@ -267,7 +273,9 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         yield StudentPlusGradeSuccess(
             obj: _localData,
-            chipList: getChipsList(list: _localData, fromStudentSection: true),
+            chipList: getChipsList(
+              list: _localData,
+            ),
             courseList: _localCourseData);
       }
     }
@@ -389,27 +397,177 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e);
       }
     }
+
+    /* ---------------------------------------------------------------------------------------------- */
+    /*                             Api used to family section student plus                            */
+    /* ---------------------------------------------------------------------------------------------- */
+
+    /* ----------------------------- Event to send otp family login ---------------------------- */
+    if (event is SendOtpFamilyLogin) {
+      try {
+        yield FamilyLoginLoading();
+        bool result = await sendOtpFamilyLogin(emailId: event.emailId);
+        if (result) {
+          yield FamilyLoginOtpSendSuccess();
+        } else {
+          yield FamilyLoginOtpSendFailure();
+        }
+      } catch (e) {
+        yield FamilyLoginErrorReceived(err: e);
+      }
+    }
+
+    /* ----------------------------- Event to send otp family login ---------------------------- */
+    if (event is VerifyOtpFamilyLogin) {
+      try {
+        yield FamilyLoginLoading();
+        var result =
+            await verifyOtpFamilyLogin(emailId: event.emailId, otp: event.otp);
+        if (result is String) {
+          yield FamilyLoginOtpVerifySuccess(authToken: result.toString());
+        } else {
+          yield FamilyLoginOtpVerifyFailure();
+        }
+      } catch (e) {
+        yield FamilyLoginErrorReceived(err: e);
+      }
+    }
+
+    /* ------------------------- Event to get student list in family section ------------------------ */
+    if (event is GetStudentListFamilyLogin) {
+      List<UserInformation> parentInfo =
+          await FamilyUserDetails.getFamilyUserProfile();
+      try {
+        LocalDatabase<StudentPlusSearchModel> _localDb = LocalDatabase(
+            "${FamilyLoginOverride.studentListLocalDb}_${parentInfo[0].userEmail}");
+
+        List<StudentPlusSearchModel>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield FamilyLoginLoading();
+        } else {
+          yield StudentPlusSearchSuccess(obj: _localData);
+        }
+
+        var result = await getStudentListFamilyLogin(
+            token: parentInfo[0].familyToken ?? '');
+
+        if (result is List<StudentPlusSearchModel>) {
+          await _localDb.clear();
+          result.forEach((StudentPlusSearchModel e) {
+            _localDb.addData(e);
+          });
+          yield StudentPlusSearchSuccess(obj: result);
+        } else {
+          yield FamilyLoginErrorReceived();
+        }
+      } catch (e) {
+        LocalDatabase<StudentPlusSearchModel> _localDb = LocalDatabase(
+            "${FamilyLoginOverride.studentListLocalDb}_${parentInfo[0].userEmail}");
+
+        List<StudentPlusSearchModel>? _localData = await _localDb.getData();
+        yield StudentPlusSearchSuccess(obj: _localData);
+      }
+    }
   }
 
   /* -------------------------------------------------------------------------- */
   /*                              List of functions                             */
   /* -------------------------------------------------------------------------- */
 
-  /* --------------- Function to return chipList for grades page -------------- */
-  List<String> getChipsList(
-      {required List<StudentPlusGradeModel> list,
-      required bool fromStudentSection}) {
-    List<String> chipList = [];
-    for (var i = 0; i < list.length; i++) {
-      if (list[i].markingPeriodC != null &&
-          !chipList.contains(list[i].markingPeriodC)) {
-        chipList.add(list[i].markingPeriodC!);
+  /* ---------------------------------------------------------------------------------------------- */
+  /*                             Functions used in Family student login                             */
+  /* ---------------------------------------------------------------------------------------------- */
+  /* --------------- Function to send otp family login -------------- */
+  Future<bool> sendOtpFamilyLogin({required String emailId}) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+          "${FamilyLoginOverride.familyLoginUrl}/parent-login",
+          headers: {"Content-Type": "application/json"},
+          body: {"email": emailId, "schoolId": "${Globals.appSetting.id}"},
+          isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        return true;
+      } else {
+        return false;
       }
+    } catch (e) {
+      throw (e);
     }
-    chipList.sort();
-    if (fromStudentSection == true) {
-      chipList.insert(0, "Current");
+  }
+
+  /* --------------- Function to send otp family login -------------- */
+  Future verifyOtpFamilyLogin(
+      {required String emailId, required String otp}) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+          "${FamilyLoginOverride.familyLoginUrl}/parent-otp-verify",
+          headers: {"Content-Type": "application/json"},
+          body: {
+            "email": emailId,
+            "schoolId": "${Globals.appSetting.id}",
+            "otp": otp
+          },
+          isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        await FamilyUserDetails.updateFamilyUserProfile(UserInformation(
+            familyToken: response.data["token"],
+            userEmail: emailId,
+            userName:
+                "${response.data["body"]["parent"]["Parent_First_Name__c"]} ${response.data["body"]["parent"]["Parent_Last_Name__c"]}"));
+        return response.data["token"];
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
+  }
+
+  /* --------------- Function to send otp family login -------------- */
+  Future getStudentListFamilyLogin({required String token}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          "${FamilyLoginOverride.familyLoginUrl}/student-plus/student-list",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "bearer ${token}"
+          },
+          isCompleteUrl: true);
+      print(token);
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
+        return response.data["body"]
+            .map<StudentPlusSearchModel>(
+                (i) => StudentPlusSearchModel.fromJson(i))
+            .toList();
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  /* --------------- Function to return chipList for grades page -------------- */
+  List<String> getChipsList({
+    required List<StudentPlusGradeModel> list,
+  }) {
+    List<String> chipList = ['Current', '1', '2', '3', '4'];
+
+    // Comment Because we need to show all marking period
+    // for (var i = 0; i < list.length; i++) {
+    //   if (list[i].markingPeriodC != null &&
+    //       !chipList.contains(list[i].markingPeriodC)) {
+    //     chipList.add(list[i].markingPeriodC!);
+    //   }
+    // }
+
+    // chipList.sort();
+    // if (fromStudentSection == true) {
+    //   chipList.insert(0, "Current");
+    // }
     return chipList;
   }
 
@@ -540,7 +698,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
-      print(body);
+      // print(body);
       print(
           "saveStudentGooglePresentationWorkEvent api response rec. ${response.statusCode}");
       if (response.statusCode == 200) {

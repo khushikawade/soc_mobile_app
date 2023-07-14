@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 part 'student_plus_course_work_model.g.dart';
 
-@HiveType(typeId: 44)
+@HiveType(typeId: 51)
 class StudentPlusCourseWorkModel {
   @HiveField(0)
   final String? courseId;
@@ -104,7 +104,7 @@ class StudentPlusCourseWorkModel {
       };
 }
 
-@HiveType(typeId: 45)
+@HiveType(typeId: 53)
 class StudentWorkSubmission {
   @HiveField(0)
   final String? courseId;
@@ -241,7 +241,7 @@ class Attachment {
       };
 }
 
-@HiveType(typeId: 48)
+@HiveType(typeId: 52)
 class Link {
   @HiveField(0)
   final String? url;

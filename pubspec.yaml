@@ -57,7 +57,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   package_info_plus: ^1.4.0
   html_unescape: ^2.0.0
-  persistent_bottom_nav_bar: ^ 4.0.2
+  persistent_bottom_nav_bar: ^4.0.2
   flutter_oss_licenses: ^1.0.1
   shimmer: ^2.0.0
   adaptive_theme: ^2.3.1
@@ -108,7 +108,9 @@ dependencies:
   visibility_detector: ^0.3.3 #Used to get the feed view by user - View Interaction
   fl_chart: ^0.61.0 #Used to create graphs and charts / Used in Student+
   pdf: ^3.0.1 #Used in PBIS+ psf generation and customization
-  screenshot: ^1.3.0 #used to take screenshot / Used in PBIS+
+  screenshot: ^1.3.0
+  audioplayers: ^3.0.1
+  # screenshot: ^1.3.0 #used to take screenshot / Used in PBIS+
   uuid: ^3.0.7 #Used to generate unique ids / Used to generate user logs session_Id
 
 dev_dependencies:
@@ -119,6 +121,7 @@ dev_dependencies:
 
 dependency_overrides:
   webview_flutter: ^3.0.4
+  # modal_bottom_sheet: ^3.0.0-pre
 
 flutter_icons:
   image_path: "assets/images/appicon.png"
@@ -140,6 +143,16 @@ flutter:
     - assets/images/
     - assets/ocr_result_section_bottom_button_icons/
     - lib/src/modules/pbis_plus/bloc/
+    - lib/src/modules/pbis_plus/pbis_plus_asset/
+    - assets/Pbis_plus/
+    - assets/pbis_sound/sound1.wav
+    - assets/pbis_sound/sound2.wav
+    - assets/pbis_sound/sound3.wav
+    - assets/pbis_sound/sound4.wav
+    - assets/pbis_sound/sound5.wav
+    - assets/pbis_sound/sound6.wav
+
+
     # - assets/pbis_plus_asset/
   # An image asset can refer to one or more resolution-specific "finaliants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -152,6 +165,7 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+
   fonts:
     - family: Roboto
       fonts:

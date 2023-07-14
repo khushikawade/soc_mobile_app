@@ -18,13 +18,16 @@ class CommonIntroSection extends StatefulWidget {
   final bool? backButton;
   final bool? isSkipAndStartButton;
   final List<GradedIntroContentModal> onBoardingInfoList;
-  const CommonIntroSection({
-    Key? key,
-    required this.onBoardingInfoList,
-    this.backButton = false,
-    this.isMcqSheet,
-    this.isSkipAndStartButton = false,
-  }) : super(key: key);
+  final IconData? titleIconData;
+
+  const CommonIntroSection(
+      {Key? key,
+      required this.onBoardingInfoList,
+      this.backButton = false,
+      this.isMcqSheet,
+      this.isSkipAndStartButton = false,
+      this.titleIconData})
+      : super(key: key);
 
   @override
   State<CommonIntroSection> createState() => _CommonIntroSectionState();
@@ -81,6 +84,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
       isBackOnSuccess: ValueNotifier<bool>(false),
       key: GlobalKey(),
       isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
+      iconData: widget.titleIconData,
     );
   }
 
@@ -103,7 +107,6 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
             currentIndex.value = index;
           }),
       items: widget.onBoardingInfoList.map((GradedIntroContentModal item) {
-       
         return Container(
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 5.0),
@@ -116,7 +119,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                 fit: BoxFit.contain,
                 height: MediaQuery.of(context).size.height / 3.0,
               ),
-              SpacerWidget(MediaQuery.of(context).size.height/40),
+              SpacerWidget(MediaQuery.of(context).size.height / 40),
               Align(
                   alignment: Alignment.center,
                   child: TranslationWidget(
@@ -261,6 +264,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => CommonIntroSection(
+                      titleIconData: widget.titleIconData,
                       isSkipAndStartButton: widget.isSkipAndStartButton,
                       backButton: true,
                       onBoardingInfoList: onBoardingInfoList,

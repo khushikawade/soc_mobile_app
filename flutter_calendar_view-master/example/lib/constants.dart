@@ -47,7 +47,6 @@ class AppConstants {
           horizontal: 20,
         ),
       );
-  
 }
 
 class BreakPoints {

@@ -1,19 +1,11 @@
 import 'dart:ui';
-import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/warning_popup_model.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../globals.dart';
 import '../../../styles/theme.dart';
-import '../../google_classroom/modal/google_classroom_list.dart';
-import '../../../services/user_profile.dart';
-import '../../home/ui/home.dart';
 import '../modal/student_assessment_info_modal.dart';
 
 class CustomDialogBox extends StatefulWidget {
@@ -121,9 +113,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                 ]),
             child: widget.isUserInfoPop == true
                 ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    SizedBox(
-                      height: Globals.deviceType == 'phone' ? 2 : 10,
-                    ),
+                    SizedBox(height: Globals.deviceType == 'phone' ? 2 : 10),
                     FittedBox(
                       child: Utility.textWidget(
                         context: context,
@@ -214,98 +204,131 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                   ])
                 : studentInfoWidget(
                     studentAssessmentInfo: widget.studentAssessmentInfo!)),
-        if (widget.isUserInfoPop == true)
-          Positioned(
-            left: 20,
-            right: 20,
-            child: CircleAvatar(
-              backgroundColor: AppTheme.kSelectedColor,
-              radius: 52,
-              child: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                radius: 70,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(80),
+        // if (widget.isUserInfoPop == true)
+        widget.isUserInfoPop == true
+            ? Positioned(
+                left: 20,
+                right: 20,
+                child: CircleAvatar(
+                  backgroundColor: AppTheme.kSelectedColor,
+                  radius: 52,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 70,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(80),
+                      ),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          height: 100,
+                          width: 100,
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                          imageUrl: widget.profileData!.profilePicture!,
+                          placeholder: (context, url) => Center(
+                                child: CupertinoActivityIndicator(),
+                              )),
+                    ),
                   ),
-                  child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      height: 100,
-                      width: 100,
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      imageUrl: widget.profileData!.profilePicture!,
-                      placeholder: (context, url) => Center(
-                            child: CupertinoActivityIndicator(),
-                          )),
+                ),
+              )
+            : Positioned(
+                right: 10,
+                top: 60,
+                // left: 20,
+                // right: 20,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    color: AppTheme.kButtonColor,
+                    size: Globals.deviceType == "phone" ? 28 : 36,
+                  ),
                 ),
               ),
-            ),
-          ),
       ],
     );
   }
 
   Widget studentInfoWidget(
       {required StudentAssessmentInfo studentAssessmentInfo}) {
-    return Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-      Utility.textWidget(
-          text: widget.title!,
-          context: context,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          textTheme: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
-      Utility.textWidget(
-          text: widget.isMcqSheet == true
-              ? 'Multiple Choice'
-              : 'Constructed Response',
-          context: context,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          textTheme: Theme.of(context).textTheme.headline3!),
-      Expanded(
-        child: ListView(children: <Widget>[
-          // _headingWidget(
-          //     title: 'Assessment Type',
-          //     value: widget.isMcqSheet == true
-          //         ? 'Multiple Choice'
-          //         : 'Constructed Response'),
-          _headingWidget(
-              title: 'Subject',
-              value: studentAssessmentInfo.subject ?? 'Subject'),
-          _headingWidget(
-              title: 'Grade', value: studentAssessmentInfo.grade ?? 'Grade'),
-          _headingWidget(
-              title: 'Class',
-              value: studentAssessmentInfo.className ?? 'Class'),
-          _headingWidget(
-              title: 'Domain',
-              value: studentAssessmentInfo.learningStandard ?? 'Domain'),
-          _headingWidget(
-              title: 'Sub-Domain',
-              value: studentAssessmentInfo.subLearningStandard ?? 'Sub-Domain'),
-        ]),
-      )
-    ]);
+    return Container(
+      child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+        FittedBox(
+          child: Utility.textWidget(
+              text: widget.title!,
+              context: context,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline2!
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+        ),
+        FittedBox(
+          child: Utility.textWidget(
+              text: widget.isMcqSheet == true
+                  ? 'Multiple Choice'
+                  : 'Constructed Response',
+              context: context,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context).textTheme.headline3!),
+        ),
+        Expanded(
+          child: ListView(physics: BouncingScrollPhysics(), children: <Widget>[
+            // _headingWidget(
+            //     title: 'Assessment Type',
+            //     value: widget.isMcqSheet == true
+            //         ? 'Multiple Choice'
+            //         : 'Constructed Response'),
+            _headingWidget(
+                title: 'Subject',
+                value: studentAssessmentInfo.subject ?? 'Subject'),
+            _headingWidget(
+                title: 'Grade', value: studentAssessmentInfo.grade ?? 'Grade'),
+            _headingWidget(
+                title: 'Class',
+                value: studentAssessmentInfo.className ?? 'Class'),
+            _headingWidget(
+                title: 'Domain',
+                value: studentAssessmentInfo.learningStandard ?? 'Domain'),
+            _headingWidget(
+                title: 'Sub-Domain',
+                value:
+                    studentAssessmentInfo.subLearningStandard ?? 'Sub-Domain'),
+          ]),
+        )
+      ]),
+    );
     // ]);
   }
 
   Widget _headingWidget({required String title, required String value}) {
-    return ListTile(
-      title: Utility.textWidget(
-          text: title,
-          context: context,
-          textTheme: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(fontWeight: FontWeight.bold)),
-      subtitle: Utility.textWidget(
-          text: value,
-          context: context,
-          textAlign: TextAlign.left,
-          textTheme: Theme.of(context).textTheme.headline2!),
+    return Container(
+      child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Utility.textWidget(
+                  text: title,
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              Utility.textWidget(
+                  text: value,
+                  context: context,
+                  textAlign: TextAlign.left,
+                  textTheme: Theme.of(context).textTheme.headline2!),
+            ],
+          )),
     );
   }
 }

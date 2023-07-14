@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_custom_nav_bar_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_custom_nav_bar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 
 import 'package:flutter/material.dart';
@@ -59,13 +60,14 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
           return PersistentTabView.custom(
             context,
             controller: gradedPlusPersistentTabController,
+          
             screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
                 backOnTap: backOnTap),
             customWidget: ValueListenableBuilder(
                 valueListenable: indexNotifier,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
-                  return GradedPlusCustomNavBarWidget(
+                  return PlusCustomNavBarWidget(
                     backgroundColor: Theme.of(context).colorScheme.background,
                     items: GradedPlusBottomNavBar.gradedPlusNavbarItems(
                         context: context),
@@ -90,6 +92,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                     backOnTap: backOnTap)
                 .length,
             confineInSafeArea: true,
+          
             backgroundColor: Theme.of(context).backgroundColor,
             handleAndroidBackButtonPress: true,
             resizeToAvoidBottomInset:

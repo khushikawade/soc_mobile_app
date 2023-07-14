@@ -389,7 +389,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocialAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postApimain(
+      final ResponseModel response = await _dbServices.postAPIMain(
           //timestamp=false is use to manage the UID. If not found, it will create a new record with UID
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);

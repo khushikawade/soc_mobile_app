@@ -182,6 +182,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 0),
                   // minLeadingWidth: 70,
                   title: PlusScreenTitleWidget(
+                      isTrailingIcon: true,
                       kLabelSpacing: 20,
                       text: selectedTypeFilterIndex == 1
                           ? "Select Subject"
@@ -373,7 +374,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                           widget.filterNotifier.value == text
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(text,
+                          child: Text(text == "NA" ? "None" : text,
                               // context: context,
                               style: Theme.of(context)
                                   .textTheme
@@ -388,7 +389,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                           )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(text,
+                          child: Text(text == "NA" ? "None" : text,
                               // context: context,
                               style: Theme.of(context).textTheme.headline4),
                         ),

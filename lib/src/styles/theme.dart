@@ -20,7 +20,7 @@ class AppTheme {
   static const Color klistTileSecoandryDark = Color(0xff111C20);
   static const Color klistTilePrimaryLight = Color(0xffF7F8F9);
   static const Color klistTileSecoandryLight = Color(0xffE9ECEE);
-
+  static const Color ksaveAndShareButton = Color(0xFFE49725);
   //Colors
 
   static Color kPrimaryColor = Colors.greenAccent;
@@ -63,6 +63,7 @@ class AppTheme {
   static const Color kactiveTrackColor = Color(0xffCDECE1);
   static const Color kinactiveTrackColor = Color(0xffd4d4d4);
   static const Color ListColor2 = Color(0xFFF7F7F7);
+  static const Color GreenColor = Color(0xff01ff83);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;

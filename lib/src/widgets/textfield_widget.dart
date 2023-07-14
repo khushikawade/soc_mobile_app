@@ -9,15 +9,30 @@ class TextFieldWidget extends StatefulWidget {
   final String? msg;
   final String? hintText;
   final TextInputType? keyboardType;
-
+  final BuildContext? context;
+  TextStyle? textStyle;
+  final int? maxLength;
+  final TextStyle? counterStyle;
   TextFieldWidget(
       {Key? key,
       required this.controller,
       required this.onSaved,
       required this.msg,
       this.hintText,
-      this.keyboardType})
-      : super(key: key);
+      this.keyboardType,
+      required this.context,
+      this.textStyle,
+      this.maxLength,
+      this.counterStyle})
+      : super(key: key) {
+    // Assign default values if not provided
+    if (this.textStyle == null) {
+      this.textStyle = Theme.of(context!).textTheme.subtitle1!.copyWith(
+            fontWeight: FontWeight.bold,
+          );
+    }
+    ;
+  }
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
 }
@@ -26,6 +41,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: widget.maxLength,
       validator: (text) {
         if (text == null || text.isEmpty) {
           return widget.msg;
@@ -41,9 +57,10 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
 
       autofocus: false,
       textAlign: TextAlign.start,
-      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+      style: widget.textStyle ??
+          Theme.of(context).textTheme.subtitle1!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
       controller: widget.controller,
       cursorColor: //Theme.of(context).colorScheme.primaryVariant,
           Color(0xff000000) == Theme.of(context).backgroundColor
@@ -51,6 +68,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               : Color(
                   0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        counterStyle: widget.counterStyle,
         hintText: widget.hintText ?? '',
         hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
             color: Color(0xff000000) == Theme.of(context).backgroundColor

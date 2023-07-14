@@ -5,16 +5,13 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
-
 import 'package:Soc/src/services/user_profile.dart';
-
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +23,13 @@ import 'package:open_apps_settings/settings_enum.dart';
 class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
-  //final ValueChanged? refresh;
+  final ValueChanged? refresh;
+  final String sectionType;
   StudentPlusAppBar({
     Key? key,
     this.titleIconCode,
-    // required this.refresh,
+    required this.refresh,
+    required this.sectionType,
     this.isWorkPage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -113,6 +112,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
+                                  sectionType: widget.sectionType,
                                   plusAppName: 'STUDENT+',
                                   fromGradedPlus: false,
                                   hideStateSelection: true,
@@ -132,11 +132,11 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
       // leading: leading,
       leadingWidth: 110,
 
-      title: widget.isWorkPage == true
-          ? wordScreenIconWidget()
-          : widget.titleIconCode != null
-              ? allScreenIconWidget()
-              : Container(),
+      title:
+          // widget.isWorkPage == true
+          //     ? wordScreenIconWidget()
+          //     :
+          widget.titleIconCode != null ? allScreenIconWidget() : Container(),
 
       // Utility.textWidget(
       //   text: title,
@@ -174,7 +174,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // widget.refresh!(true);
+              widget.refresh!(true);
             }
           });
         },
@@ -248,7 +248,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
   Widget allScreenIconWidget() {
     return Container(
-      padding: EdgeInsets.only(right: 7),
+      padding: EdgeInsets.only(right: widget.titleIconCode == 0xe881 ? 0 : 7),
       child: Icon(
         IconData(
           widget.titleIconCode!,
@@ -262,8 +262,9 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
   Future<UserInformation> getUserProfile() async {
     //GET CURRENT GOOGLE USER PROFILE
-    List<UserInformation> _userInformation =
-        await UserGoogleProfile.getUserProfile();
+    List<UserInformation> _userInformation = widget.sectionType == "Family"
+        ? await FamilyUserDetails.getFamilyUserProfile()
+        : await UserGoogleProfile.getUserProfile();
     Globals.userEmailId = _userInformation[0].userEmail!;
     return _userInformation[0];
   }

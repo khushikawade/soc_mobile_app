@@ -47,6 +47,8 @@ class GradedPlusScanResult extends StatefulWidget {
   final bool isFlashOn;
   final String? assessmentName;
   final int? lastAssessmentLength;
+  final IconData? titleIconData;
+
   GradedPlusScanResult(
       {Key? key,
       this.isMcqSheet,
@@ -61,7 +63,8 @@ class GradedPlusScanResult extends StatefulWidget {
       required this.isFromHistoryAssessmentScanMore,
       this.createdAsPremium,
       this.obj,
-      required this.isFlashOn})
+      required this.isFlashOn,
+      this.titleIconData})
       : super(key: key);
 
   @override
@@ -188,6 +191,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isBackButton: false,
@@ -370,6 +374,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                     context,
                     MaterialPageRoute(
                         builder: (context) => GradedPlusCameraScreen(
+                              titleIconData: widget.titleIconData,
                               assessmentName: widget.assessmentName,
                               lastAssessmentLength: widget.lastAssessmentLength,
                               isMcqSheet: widget.isMcqSheet,
@@ -590,6 +595,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
+                  titleIconData: widget.titleIconData,
                   assessmentName: widget.assessmentName,
                   lastAssessmentLength: widget.lastAssessmentLength,
                   isMcqSheet: widget.isMcqSheet,
@@ -1668,8 +1674,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         }
       }
 
-      if (isUpdateData == true &&
-          studentInfo.isNotEmpty ) {
+      if (isUpdateData == true && studentInfo.isNotEmpty) {
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
 
@@ -1795,6 +1800,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         context,
         MaterialPageRoute(
             builder: (_) => GradedPlusCameraScreen(
+                  titleIconData: widget.titleIconData,
                   assessmentName: widget.assessmentName,
                   lastAssessmentLength: widget.lastAssessmentLength,
                   isMcqSheet: widget.isMcqSheet,

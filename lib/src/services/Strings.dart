@@ -58,5 +58,8 @@ class Strings {
       "last_news_id"; // to maintain news id for showing red indicator
   static final String studentInfoDbName = "student_info";
   static final String historyStudentInfoDbName = "history_student_info";
+  
   static final String gradedApprovedDomains = 'graded_approved_domains';
+//---------------------------PBIS PLUS-------------------------------//
+  static final String isCustomBehavior = "isCustomBehavior";
 }

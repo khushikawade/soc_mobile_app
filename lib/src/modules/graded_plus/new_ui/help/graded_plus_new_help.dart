@@ -6,9 +6,9 @@ import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class GradedPlusHelpSection extends StatefulWidget {
-  GradedPlusHelpSection({
-    Key? key,
-  }) : super(key: key);
+  final IconData? titleIconData;
+
+  GradedPlusHelpSection({Key? key, this.titleIconData}) : super(key: key);
 
   @override
   State<GradedPlusHelpSection> createState() => _GradedPlusHelpSectionState();
@@ -26,6 +26,7 @@ class _GradedPlusHelpSectionState extends State<GradedPlusHelpSection> {
   @override
   Widget build(BuildContext context) {
     return CommonIntroSection(
+      titleIconData: widget.titleIconData,
         onBoardingInfoList:
             GradedIntroContentModal.onBoardingMainPagesInfoList);
 

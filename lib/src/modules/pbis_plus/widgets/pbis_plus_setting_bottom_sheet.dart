@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_edit_skills.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -17,8 +17,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../styles/theme.dart';
-import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class PBISPlusSettingBottomSheet extends StatefulWidget {
@@ -27,12 +27,15 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
   final double? constraintDeviceHeight;
   final PBISPlusBloc? pbisBloc;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  // Function? editBehaviorFunction;
+
   PBISPlusSettingBottomSheet(
       {Key? key,
       required this.googleClassroomCourseworkList,
       required this.constraintDeviceHeight,
       this.pbisBloc,
       this.height = 200,
+      // required this.editBehaviorFunction,
       required this.scaffoldKey})
       : super(key: key);
 
@@ -44,23 +47,24 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
 class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
+  AnimationController? _animationControllerForSync;
+  Animation? animation;
+  Animation? rotateAnimation;
+
   final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
+
   PBISPlusBloc pbisBloc = new PBISPlusBloc();
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
   List<ClassroomCourse> selectedRecords = []; //Add selected student and courses
   List<ClassroomStudents> selectedStudentList = [];
   List<ClassroomStudents> allStudents = [];
 
-  AnimationController? _animationControllerForSync;
-  Animation? animation;
-  Animation? rotateAnimation;
-
   int pageValue = 0;
   String sectionName = '';
-  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
-
   get heightMap => {
-        0: widget.height! * 1.1,
+        // 0: widget.height! * 1.1,
+        0: widget.height! * 0.9,
         1: widget.height! * 1.2,
         2: widget.height! * 1.2,
         // 3: widget.height! / 1.5,
@@ -73,7 +77,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   @override
   void initState() {
     initMethod();
-
     super.initState();
   }
 
@@ -127,14 +130,13 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     pageSnapping: false,
                     controller: _pageController,
                     children: [
-                      settingWidget(
-                          context), //-----------------setting widget design------------//
-                      buildGoogleClassroomCourseWidget(
-                          context), //----------select ClassroomCourse view-----------------//
-                      buildSelectStudentBottomsheetWidget(
-                          context), //----------------------select student view---------------//
+                      settingWidget(context),
+                      //-----------------setting widget design------------//
+                      buildGoogleClassroomCourseWidget(context),
+                      //----------select ClassroomCourse view-----------------//
+                      buildSelectStudentBottomsheetWidget(context),
+                      //----------------------select student view---------------//
                       buildSelectStudentByCourseBottomsheetWidget(context),
-
                       warningWidget(),
                       commonLoaderWidget(),
                     ],
@@ -197,7 +199,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                           if (_animationControllerForSync!.isAnimating ==
                               true) {
                             Utility.currentScreenSnackBar(
-                                'Courses synced successfully', null,
+                                'Classes synced successfully', null,
                                 marginFromBottom: 90);
                             _animationControllerForSync!.stop();
                           }
@@ -249,8 +251,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         textWidget(PBISPlusOverrides.kresetOptionThreetitle, Color(0xff111C20)),
         divider(context),
         textWidget(PBISPlusOverrides.kresetOptionFourtitle, Color(0xff111C20)),
-        textWidget('Edit Skills', AppTheme.kButtonColor),
-        textWidget('Coming September 2023', AppTheme.kSecondaryColor),
+        // textWidget('Edit Behavior', AppTheme.kButtonColor),
+        // textWidget('Edit Behavior', Color(0xff111C20)),
       ],
     );
   }
@@ -275,7 +277,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           sectionName = text ?? '';
           selectedRecords.clear();
           selectedStudentList.clear();
-
           switch (text) {
             case PBISPlusOverrides.kresetOptionOnetitle:
               PlusUtility.updateLogs(
@@ -319,6 +320,25 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
               break;
 
+            case PBISPlusOverrides.kresetOptionFourtitle:
+              _pageController.animateToPage(3,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              break;
+
+            case 'Edit Behavior':
+              sectionName = 'Behavior';
+              Navigator.pop(context);
+              pushNewScreen(
+                context,
+                screen: PBISPlusEditSkills(
+                    titleIconData: const IconData(0xe898,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg)),
+                withNavBar: true,
+              );
+
+              break;
             case PBISPlusOverrides.kresetOptionFourtitle:
               _pageController.animateToPage(3,
                   duration: const Duration(milliseconds: 100),
@@ -387,7 +407,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Courses',
+              text: 'Select Classes',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -734,7 +754,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
   Container blocListener() {
-    print("UI STATE------------BlocConsumer ");
     return Container(
       height: 0,
       width: 0,
@@ -743,14 +762,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           BlocConsumer<GoogleDriveBloc, GoogleDriveState>(
             bloc: googleDriveBloc,
             builder: (context, state) {
-              print("UI STATE------------GOOGLE STATE $state");
               return Container(
                 height: 0,
               );
             },
             listener: (context, state) async {
-              print("UI STATE------------GOOGLE STATE $state");
-
               if (state is GoogleFolderCreated) {
                 //In case of Folder Id received
                 _exportDataToSpreadSheet();
@@ -796,7 +812,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             bloc: pbisBloc,
             child: EmptyContainer(),
             listener: (context, state) async {
-              print("UI STATE------------pbisBloc STATE $state");
               if (state is PBISErrorState) {
                 Navigator.of(context).pop();
                 Utility.currentScreenSnackBar(
@@ -949,7 +964,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 context: context,
                 textAlign: TextAlign.center,
                 text:
-                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still want to continue?',
+                    'This action will reset \'All Classes and Students\' PBIS scores. Do you still want to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
@@ -1019,16 +1034,23 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             for (ClassroomStudents studentInCourse in course.students!) {
               if (studentInCourse.profile?.id == student.profile?.id) {
                 ClassroomStudents newStudent = ClassroomStudents(
+                  //TODOPBIS:  excel sheet
                   profile: ClassroomProfile(
                     courseName: course.name,
                     emailAddress: studentInCourse.profile?.emailAddress,
-                    engaged: studentInCourse.profile?.engaged,
-                    helpful: studentInCourse.profile?.helpful,
                     id: studentInCourse.profile?.id,
                     name: studentInCourse.profile?.name,
-                    niceWork: studentInCourse.profile?.niceWork,
                     permissions: studentInCourse.profile?.permissions,
                     photoUrl: studentInCourse.profile?.photoUrl,
+                    engaged: studentInCourse.profile?.engaged,
+                    helpful: studentInCourse.profile?.helpful,
+                    niceWork: studentInCourse.profile?.niceWork,
+                    // behavior1: studentInCourse.profile?.behavior1,
+                    // behavior2: studentInCourse.profile?.behavior2,
+                    // behavior3: studentInCourse.profile?.behavior3,
+                    // behavior4: studentInCourse.profile?.behavior4,
+                    // behavior5: studentInCourse.profile?.behavior5,
+                    // behavior6: studentInCourse.profile?.behavior6,
                   ),
                 );
 
@@ -1077,7 +1099,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             contentPadding: EdgeInsets.symmetric(horizontal: 0),
             title: Utility.textWidget(
                 context: context,
-                text: 'Select Students by Course',
+                text: 'Select Students by Classes',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
