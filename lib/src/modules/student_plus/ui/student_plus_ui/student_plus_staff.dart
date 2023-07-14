@@ -19,6 +19,7 @@ class _StudentPlusStaffScreenState extends State<StudentPlusStaffScreen> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
+            sectionType: "Staff",
             titleIconCode:
                 int.parse(StudentPlusBottomNavBar.getStaffIconCode()),
             refresh: (v) {

@@ -25,6 +25,9 @@ class UserInformation {
   String? gradedPlusGoogleDriveFolderPathUrl;
   @HiveField(10)
   String? userType;
+  @HiveField(11)
+  String? familyToken;
+ 
 
   UserInformation(
       {this.userName,
@@ -37,5 +40,6 @@ class UserInformation {
       this.pbisPlusGoogleDriveFolderId,
       this.studentPlusGoogleDriveFolderId,
       this.gradedPlusGoogleDriveFolderPathUrl,
-      this.userType});
+      this.userType,
+      this.familyToken});
 }

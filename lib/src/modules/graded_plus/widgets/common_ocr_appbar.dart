@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart'
     as customIntroLayout;
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -54,6 +55,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? fromGradedPlus;
   String? plusAppName;
   IconData? iconData;
+  final String? sectionType;
   final scaffoldKey;
 
   CustomOcrAppBarWidget(
@@ -78,7 +80,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isProfilePage,
       required this.fromGradedPlus,
       required this.plusAppName,
-      required this.iconData})
+      required this.iconData,
+      this.sectionType})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -299,6 +302,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        sectionType: widget.sectionType ?? '',
                                         plusAppName: 'Graded+',
                                         fromGradedPlus: widget.fromGradedPlus,
                                         hideStateSelection:
@@ -327,6 +331,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 message: message,
                 title: title!,
                 confirmationOnPress: () async {
+                  if (widget.sectionType == 'Family') {
+                    await FamilyUserDetails.clearFamilyUserProfile();
+                  }
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
                   await UserGoogleProfile.clearUserProfile();
