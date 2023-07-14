@@ -238,7 +238,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                                   builder: (translatedMessage) {
                                     return FittedBox(
                                         child: Text(translatedMessage,
-                                            style: TextStyle(color: Colors.red)));
+                                            style:
+                                                TextStyle(color: Colors.red)));
                                   })
                               : null);
                     }),
