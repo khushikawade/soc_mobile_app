@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
@@ -39,6 +40,7 @@ import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
+import '../../graded_plus/widgets/common_intro_tutorial_section.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -365,7 +367,7 @@ class _StaffPageState extends State<StaffPage> {
             activityId: '3',
             description: 'User profile logout',
             operationResult: 'Success');
-     
+
         staffActionIconsOnTap(actionName: actionName);
         // popupModal(
         //     message:
@@ -399,11 +401,16 @@ class _StaffPageState extends State<StaffPage> {
         // Check User is First Time or old user
         HiveDbServices _hiveDbServices = HiveDbServices();
         var isOldUser =
-            await _hiveDbServices.getSingleData('new_user', 'new_user');
+            await _hiveDbServices.getSingleData('is_new_user', 'new_user');
         pushNewScreen(
           context,
-          screen:
-              isOldUser == true ? GradedPlusNavBarHome() : CustomIntroWidget(),
+          screen: isOldUser == true
+              ? GradedPlusNavBarHome()
+              : CommonIntroSection(
+                  isSkipAndStartButton: true,
+                  onBoardingInfoList:
+                      GradedIntroContentModal.onBoardingMainPagesInfoList,
+                  isMcqSheet: false),
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {
