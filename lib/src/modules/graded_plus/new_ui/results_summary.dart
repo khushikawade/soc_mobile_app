@@ -61,7 +61,8 @@ class GradedPlusResultsSummary extends StatefulWidget {
       required this.assessmentName,
       this.historySecondTime,
       this.isMcqSheet,
-      this.selectedAnswer})
+      this.selectedAnswer,
+      this.titleIconData})
       : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
@@ -78,6 +79,7 @@ class GradedPlusResultsSummary extends StatefulWidget {
   final bool? createdAsPremium;
   bool? isMcqSheet;
   String? selectedAnswer;
+  final IconData? titleIconData;
   @override
   State<GradedPlusResultsSummary> createState() => studentRecordList();
 }
@@ -209,7 +211,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-              iconData: Icons.add,
+              iconData: widget.titleIconData,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {

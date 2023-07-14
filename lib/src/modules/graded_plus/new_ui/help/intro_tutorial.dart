@@ -20,12 +20,14 @@ class CustomIntroWidget extends StatefulWidget {
   final bool? isMcqSheet;
   final bool? isFromHelp;
   final String? SectionName;
-  const CustomIntroWidget({
-    Key? key,
-    this.isMcqSheet,
-    this.isFromHelp,
-    this.SectionName = '',
-  }) : super(key: key);
+  final IconData? titleIconData;
+  const CustomIntroWidget(
+      {Key? key,
+      this.isMcqSheet,
+      this.isFromHelp,
+      this.SectionName = '',
+      this.titleIconData})
+      : super(key: key);
 
   @override
   State<CustomIntroWidget> createState() => _CustomIntroWidgetState();
@@ -73,11 +75,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
   PreferredSizeWidget? appBar() {
     return widget.isFromHelp == true
         ? CustomOcrAppBarWidget(
-           iconData: IconData(
-          0xe849,
-          fontFamily: Overrides.kFontFam,
-          fontPackage: Overrides.kFontPkg,
-        ),
+            iconData: widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
             //Show home button in standard app and hide in standalone

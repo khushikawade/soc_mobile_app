@@ -6,9 +6,11 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 
 class GoogleSearchWidget extends StatefulWidget {
-  const GoogleSearchWidget({Key? key, required this.selectedFilterValue})
+  const GoogleSearchWidget(
+      {Key? key, required this.selectedFilterValue, this.titleIconData})
       : super(key: key);
   final String selectedFilterValue;
+  final IconData? titleIconData;
   @override
   State<GoogleSearchWidget> createState() => _GoogleSearchState();
 }
@@ -26,11 +28,7 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-              iconData: IconData(
-          0xe824,
-          fontFamily: Overrides.kFontFam,
-          fontPackage: Overrides.kFontPkg,
-        ),
+                iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {

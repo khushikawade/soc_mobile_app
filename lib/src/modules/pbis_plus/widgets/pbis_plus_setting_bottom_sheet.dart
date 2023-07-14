@@ -331,7 +331,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               Navigator.pop(context);
               pushNewScreen(
                 context,
-                screen: PBISPlusEditSkills(),
+                screen: PBISPlusEditSkills(
+                    titleIconData: const IconData(0xe898,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg)),
                 withNavBar: true,
               );
 

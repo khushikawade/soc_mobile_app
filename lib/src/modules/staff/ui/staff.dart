@@ -367,7 +367,7 @@ class _StaffPageState extends State<StaffPage> {
             activityId: '3',
             description: 'User profile logout',
             operationResult: 'Success');
-     
+
         staffActionIconsOnTap(actionName: actionName);
         // popupModal(
         //     message:

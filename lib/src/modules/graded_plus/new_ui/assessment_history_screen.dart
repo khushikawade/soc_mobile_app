@@ -32,10 +32,12 @@ import '../widgets/searchbar_widget.dart';
 class GradedPlusAssessmentSummary extends StatefulWidget {
   final bool isFromHomeSection;
   final String selectedFilterValue;
+  final IconData? titleIconData;
   GradedPlusAssessmentSummary(
       {Key? key,
       required this.isFromHomeSection,
-      required this.selectedFilterValue})
+      required this.selectedFilterValue,
+      this.titleIconData})
       : super(key: key);
   @override
   State<GradedPlusAssessmentSummary> createState() =>
@@ -108,11 +110,7 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
-                iconData: IconData(
-          0xe824,
-          fontFamily: Overrides.kFontFam,
-          fontPackage: Overrides.kFontPkg,
-        ),
+                iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {
@@ -200,6 +198,7 @@ class _GradedPlusAssessmentSummaryState
                   context,
                   MaterialPageRoute(
                       builder: (context) => GoogleSearchWidget(
+                            titleIconData: widget.titleIconData,
                             selectedFilterValue: selectedValue.value,
                           )),
                 );
@@ -491,6 +490,7 @@ class _GradedPlusAssessmentSummaryState
               context,
               MaterialPageRoute(
                   builder: (context) => GradedPlusResultsSummary(
+                        titleIconData: widget.titleIconData,
                         createdAsPremium: createdAsPremium,
                         obj: list[index],
                         assessmentName: list[index].title!,
