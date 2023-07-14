@@ -119,18 +119,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           BlocConsumer(
               bloc: PBISPlusBlocInstance,
               builder: (context, state) {
-                print(state);
-                // if (state is PBISPlusNotesSucess) {
-                //   //---------------------return the filter list to UI-----------//
-                //   return _listBuilder(state.notesList, isShimmerLoading: false);
-                // } else if (state is PBISPlusLoading ||
-                //     state is PBISPlusInitial) {
-                //   return _listBuilder(
-                //       List.generate(10, (index) => PBISStudentNotes()),
-                //       isShimmerLoading: true);
-                // } else if (state is PBISErrorState) {
-                //   return _noDataFoundWidget(state.error);
-                // }
+                if (state is PBISPlusNotesSucess) {
+                  //---------------------return the filter list to UI-----------//
+                  return _listBuilder(state.notesList, isShimmerLoading: false);
+                } else if (state is PBISPlusLoading ||
+                    state is PBISPlusInitial) {
+                  return _listBuilder(
+                      List.generate(10, (index) => PBISStudentNotes()),
+                      isShimmerLoading: true);
+                } else if (state is PBISErrorState) {
+                  return _noDataFoundWidget(state.error);
+                }
                 //Managing shimmer loading in case of initial loading
                 return Container();
               },

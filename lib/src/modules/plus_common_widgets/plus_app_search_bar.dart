@@ -104,7 +104,6 @@ class _PlusAppSearchBarState extends State<PlusAppSearchBar> {
 
   Widget innerSearchBar(String translatedMessage) {
     return TextFormField(
-        keyboardType: TextInputType.multiline,
         readOnly: widget.sectionName == 'PBIS+' ? false : true,
         autofocus: widget.autoFocus,
         style: Theme.of(context).textTheme.headline5,
