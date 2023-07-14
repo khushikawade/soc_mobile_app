@@ -60,6 +60,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
   ValueNotifier<int> maxLine = ValueNotifier<int>(1);
+    ValueNotifier<double> spacing = ValueNotifier<double>(0.0); 
   ValueNotifier<bool> isNotesTextfieldEnable = ValueNotifier<bool>(false);
   //---------------------------------------------------------------------------------------------
   final TextEditingController noteController = TextEditingController();
@@ -105,7 +106,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       } else {
         event = PBISPlusGetDefaultSchoolBehavior();
       }
-      pBISPlusBloc.add(event);
+      pBISPlusBloc.add(PBISPlusGetTeacherCustomBehavior());
     } catch (e) {}
   }
 
@@ -131,7 +132,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => TextFormField(
                     minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                    maxLines: 10,
+                    maxLines: 11,
                     focusNode: _focusNode,
                     autofocus: isNotesTextfieldEnable.value,
                     textAlign: isNotesTextfieldEnable.value
@@ -237,15 +238,24 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       listener: (contxt, state) {
         //Managing the student card behaviour list to show custom in case of toggle is on and data exist otherwise will show default behaviors
         if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
+          print(state);
           if (state.teacherCustomBehaviorList.isNotEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               behvaiourIconListCount.value =
                   state.teacherCustomBehaviorList.length;
             });
-          } else {
-            pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
-          }
+          } 
         }
+         else  if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+           WidgetsBinding.instance.addPostFrameCallback((_) {
+              behvaiourIconListCount.value =
+                 state.defaultSchoolBehaviorList.length;
+            });
+        }
+          else {
+            // pBISPlusBloc.add(PBISPlusGetDefaultSchoolBehavior());
+          }
+        
       },
     );
 
@@ -298,6 +308,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     Stack(alignment: Alignment.center, children: <Widget>[
                       ValueListenableBuilder(
                           valueListenable: isNotesTextfieldEnable,
+                          builder: (context, value, _) =>
+                          ValueListenableBuilder(
+                          valueListenable: spacing,
                           builder: (context, value, _) =>
                               ValueListenableBuilder(
                                 valueListenable: behvaiourIconListCount,
@@ -356,12 +369,12 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                           true ||
                                                       widget.isFromStudentPlus ==
                                                           true
-                                                  ? 0.26
-                                                  : 0.2,
+                                                  ? spacing.value>0.0? 0.3 :0.28 
+                                                  :spacing.value>0.0? 0.25 :0.22 ,
                                               0.0
                                             ])),
                                     child: pbisStudentProfileWidget),
-                              )),
+                              ))),
 
                       //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
 
@@ -461,11 +474,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                         ? EdgeInsets.symmetric(horizontal: 24)
                                         : EdgeInsets.all(0),
                                     decoration: BoxDecoration(
-                                      color: widget.isFromDashboardPage ==
-                                                  true ||
-                                              widget.isFromStudentPlus == true
-                                          ? Colors.transparent
-                                          : AppTheme.kButtonColor,
+                                      // color: widget.isFromDashboardPage ==
+                                      //             true ||
+                                      //         widget.isFromStudentPlus == true
+                                      //     ? Colors.transparent
+                                      //     : AppTheme.kButtonColor,
                                     ),
                                     child: Text(
                                         widget.studentValueNotifier.value
@@ -538,37 +551,41 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   dynamic getContainerHeight(
       bool? isFromDashboardPage, double? constraint, itemcount) {
-    double spacing = isNotesTextfieldEnable.value == false
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            spacing.value =       
+            isNotesTextfieldEnable.value == false
         ? itemcount.value <= 3
             ? (widget.constraint <= 115)
                 ? MediaQuery.of(context).size.width * 0.09
-                : MediaQuery.of(context).size.width * 0.12
-            // MediaQuery.of(context).size.width * 0.12
+                : MediaQuery.of(context).size.width * 0.18
             : 0
         : 0;
+            });
+    
     print(
         "--------spacing $spacing--------${widget.constraint} ---${MediaQuery.of(context).size.width * 0.18}-------");
     double height = Platform.isAndroid
         ? (widget.isFromDashboardPage == true ||
                 widget.isFromStudentPlus == true
             ? (widget.constraint <= 115)
-                ? MediaQuery.of(context).size.height * 0.43 - spacing
-                : MediaQuery.of(context).size.height * 0.40 - spacing
+                ? MediaQuery.of(context).size.height * 0.43 - spacing.value
+                : MediaQuery.of(context).size.height * 0.40 - spacing.value
             : (widget.constraint <= 115)
-                ? MediaQuery.of(context).size.height * 0.50 - spacing
-                : MediaQuery.of(context).size.height * 0.49 - spacing)
+                ? MediaQuery.of(context).size.height * 0.50 - spacing.value
+                : MediaQuery.of(context).size.height * 0.49 - spacing.value )
         : widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
             ? (widget.constraint <= 115)
-                ? MediaQuery.of(context).size.height * 0.50 - spacing
-                : MediaQuery.of(context).size.height * 0.48 - spacing
+                ? MediaQuery.of(context).size.height * 0.50 - spacing.value 
+                : MediaQuery.of(context).size.height * 0.43 - spacing.value
             : (widget.constraint <= 115)
-                ? MediaQuery.of(context).size.height * 0.55 - spacing
-                : MediaQuery.of(context).size.height * 0.55 - spacing;
+                ? MediaQuery.of(context).size.height * 0.55 - spacing.value
+                : MediaQuery.of(context).size.height * 0.49 - spacing.value;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       cardHeight.value = height;
     });
-
+   print( cardHeight.value*0.001-.18);
     return height;
   }
 
