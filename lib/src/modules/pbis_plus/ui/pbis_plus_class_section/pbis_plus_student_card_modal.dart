@@ -131,7 +131,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => TextFormField(
                     minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                    maxLines: 12,
+                    maxLines: 10,
                     focusNode: _focusNode,
                     autofocus: isNotesTextfieldEnable.value,
                     textAlign: isNotesTextfieldEnable.value
@@ -258,9 +258,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   child: ValueListenableBuilder(
                       valueListenable: isNotesTextfieldEnable,
                       builder: (context, value, _) => Container(
-                          // margin: isNotesTextfieldEnable.value
-                          //     ? EdgeInsets.only(top: 16)
-                          //     : EdgeInsets.zero,
+                          margin: isNotesTextfieldEnable.value
+                              ? EdgeInsets.only(top: cardHeight.value * 0.2)
+                              : EdgeInsets.zero,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(12),
@@ -356,7 +356,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                           true ||
                                                       widget.isFromStudentPlus ==
                                                           true
-                                                  ? 0.3
+                                                  ? 0.26
                                                   : 0.2,
                                               0.0
                                             ])),
@@ -450,32 +450,23 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                     alignment: Alignment.topCenter,
                                     height:
                                         MediaQuery.of(context).size.width * 0.1,
-
-                                    // widget.isFromDashboardPage ==
-                                    //             true ||
-                                    //         widget.isFromStudentPlus == true
-                                    //     ? MediaQuery.of(context).size.width *
-                                    //         0.2
+                                    width: MediaQuery.of(context).size.width,
+                                    //  widget.isFromDashboardPage == true
+                                    //     ? MediaQuery.of(context).size.width
                                     //     : MediaQuery.of(context).size.width *
-                                    //         0.2 /
-                                    //         1.1,
-
-                                    ///1.1,
-                                    width: widget.isFromDashboardPage == true
-                                        ? MediaQuery.of(context).size.width
-                                        : MediaQuery.of(context).size.width *
-                                            0.8,
+                                    //         0.8,
+                                    margin: widget.isFromDashboardPage ==
+                                                true ||
+                                            widget.isFromStudentPlus == true
+                                        ? EdgeInsets.symmetric(horizontal: 24)
+                                        : EdgeInsets.all(0),
                                     decoration: BoxDecoration(
-                                        color: widget.isFromDashboardPage ==
-                                                    true ||
-                                                widget.isFromStudentPlus == true
-                                            ? Colors.transparent
-                                            :
-                                            // Colors.orangeAccent,
-                                            AppTheme.kButtonColor,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12))),
+                                      color: widget.isFromDashboardPage ==
+                                                  true ||
+                                              widget.isFromStudentPlus == true
+                                          ? Colors.transparent
+                                          : AppTheme.kButtonColor,
+                                    ),
                                     child: Text(
                                         widget.studentValueNotifier.value
                                                 .profile?.name?.fullName ??
@@ -547,14 +538,16 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   dynamic getContainerHeight(
       bool? isFromDashboardPage, double? constraint, itemcount) {
-    double spacing = // MediaQuery.of(context).size.width * 0.2;
-        itemcount.value <= 3
+    double spacing = isNotesTextfieldEnable.value == false
+        ? itemcount.value <= 3
             ? (widget.constraint <= 115)
                 ? MediaQuery.of(context).size.width * 0.09
                 : MediaQuery.of(context).size.width * 0.12
             // MediaQuery.of(context).size.width * 0.12
-            : 0;
-
+            : 0
+        : 0;
+    print(
+        "--------spacing $spacing--------${widget.constraint} ---${MediaQuery.of(context).size.width * 0.18}-------");
     double height = Platform.isAndroid
         ? (widget.isFromDashboardPage == true ||
                 widget.isFromStudentPlus == true
