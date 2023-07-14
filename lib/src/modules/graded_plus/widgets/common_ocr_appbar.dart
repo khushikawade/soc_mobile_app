@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -333,6 +334,15 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 confirmationOnPress: () async {
                   if (widget.sectionType == 'Family') {
                     await FamilyUserDetails.clearFamilyUserProfile();
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  index: 3,
+                                  isFromOcrSection: true,
+                                )),
+                        (_) => false);
+                    return;
                   }
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
@@ -346,7 +356,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       _pbisPlusStudentListDB =
                       LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
                   _pbisPlusStudentListDB.clear();
-                  
+
                   // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
