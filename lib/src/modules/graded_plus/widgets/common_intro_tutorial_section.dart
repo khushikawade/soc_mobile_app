@@ -64,6 +64,7 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
           Expanded(
             child: Container(child: carouselSliderBuilder()),
           ),
+          if (widget.isSkipAndStartButton == true) buildBottomHeader()
         ],
       ),
     );
@@ -151,61 +152,46 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
                   ),
                 ),
               ),
-              ValueListenableBuilder<int>(
-                  valueListenable: currentIndex,
-                  builder:
-                      (BuildContext context, dynamic value, Widget? child) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.16,
-                        child: item.title == 'STEP 2'
-                            ? Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Align(
-                                      alignment: Alignment.topCenter,
-                                      child: FittedBox(
-                                        child: TranslationWidget(
-                                          message: 'Select assignment type:',
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                              translatedMessage,
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(Globals
-                                                      .navigatorKey
-                                                      .currentContext!)
-                                                  .textTheme
-                                                  .headline2!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  )),
-                                        ),
-                                      )),
-                                  // SpacerWidget(20),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: List.generate(
-                                        sectionInfo.length,
-                                        (index) => Expanded(
-                                          child: assignmentSectionbutton(
-                                            index: index,
-                                            sectionInfo: sectionInfo[index],
-                                          ),
-                                        ),
-                                      )),
-                                ],
-                              )
-                            : widget.backButton == true &&
-                                    widget.isSkipAndStartButton == true
-                                ? currentIndex.value !=
-                                        widget.onBoardingInfoList.length - 1
-                                    ? skipAndStartButton(action: 'Skip')
-                                    : skipAndStartButton(
-                                        action: 'Start With Graded+')
-                                : null);
-                  })
+              Container(
+                  height: MediaQuery.of(context).size.height * 0.16,
+                  child: item.title == 'STEP 2'
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: FittedBox(
+                                  child: TranslationWidget(
+                                    message: 'Select assignment type:',
+                                    toLanguage: Globals.selectedLanguage,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) => Text(
+                                        translatedMessage,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(Globals
+                                                .navigatorKey.currentContext!)
+                                            .textTheme
+                                            .headline2!
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                  ),
+                                )),
+                            // SpacerWidget(20),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  sectionInfo.length,
+                                  (index) => Expanded(
+                                    child: assignmentSectionbutton(
+                                      index: index,
+                                      sectionInfo: sectionInfo[index],
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        )
+                      : null)
             ],
           ),
         );
@@ -376,5 +362,25 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
         ),
       ),
     );
+  }
+
+  buildBottomHeader() {
+    return Container(
+        height: MediaQuery.of(context).size.height / 15,
+        child: widget.backButton == true && widget.isSkipAndStartButton == true
+            ? Column(
+                children: [
+                  ValueListenableBuilder<int>(
+                      valueListenable: currentIndex,
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return currentIndex.value !=
+                                widget.onBoardingInfoList.length - 1
+                            ? skipAndStartButton(action: 'Skip')
+                            : skipAndStartButton(action: 'Start With Graded+');
+                      }),
+                ],
+              )
+            : null);
   }
 }
