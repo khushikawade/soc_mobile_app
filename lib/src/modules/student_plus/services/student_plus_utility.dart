@@ -293,4 +293,24 @@ class StudentPlusUtility {
       ),
     );
   }
+
+  static String convertToSentenceCase(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+
+    // Convert the string to lowercase and split it into words
+    List<String> words = input.toLowerCase().split(' ');
+
+    // Capitalize the first letter of each word
+    for (int i = 0; i < words.length; i++) {
+      String word = words[i];
+      if (word.isNotEmpty) {
+        words[i] = word[0].toUpperCase() + word.substring(1);
+      }
+    }
+
+    // Join the words back into a sentence
+    return words.join(' ');
+  }
 }

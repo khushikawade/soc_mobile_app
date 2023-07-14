@@ -132,7 +132,7 @@ class StudentPlusBottomNavBar {
                 IconData(int.parse(iconData),
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                // size: 22,
+                size: 22,
               ),
               SpacerWidget(2),
               TranslationWidget(

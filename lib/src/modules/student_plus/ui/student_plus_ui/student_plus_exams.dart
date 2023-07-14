@@ -467,9 +467,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             width: MediaQuery.of(context).size.width * 0.12,
             child: Center(
               child: Utility.textWidget(
-                  text: centreText == "Below"
-                      ? centreText.toUpperCase()
-                      : centreText,
+                  text: StudentPlusUtility.convertToSentenceCase(centreText),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   context: context,

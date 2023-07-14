@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_action_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -68,6 +69,7 @@ class _GradedPlusAssessmentSummaryState
   //     LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
+  FocusNode myFocusNode = new FocusNode();
 //  late ScrollController _controller;
   @override
   void initState() {
@@ -185,16 +187,12 @@ class _GradedPlusAssessmentSummaryState
           SpacerWidget(_KVertcalSpace / 3),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width / 30),
-            child: SearchBar(
-              stateName: '',
-              isSearchPage: false,
-              isSubLearningPage: false,
-              readOnly: true,
-              controller: searchAssessmentController,
-              onSaved: (String value) {},
-              onTap: () {
-                Navigator.push(
+                horizontal: MediaQuery.of(context).size.width / 50),
+            child: PlusAppSearchBar(
+              sectionName: 'GRADED+',
+              hintText: "Search",
+              onTap: () async {
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => GoogleSearchWidget(
@@ -202,8 +200,35 @@ class _GradedPlusAssessmentSummaryState
                             selectedFilterValue: selectedValue.value,
                           )),
                 );
+                if (result == true) {
+                  Utility.closeKeyboard(context);
+                }
               },
+              isMainPage: false,
+              autoFocus: false,
+              controller: searchAssessmentController,
+              kLabelSpacing: 1,
+              focusNode: myFocusNode,
+              onItemChanged: null,
             ),
+
+            //  SearchBar(
+            //   stateName: '',
+            //   isSearchPage: false,
+            //   isSubLearningPage: false,
+            //   readOnly: true,
+            //   controller: searchAssessmentController,
+            //   onSaved: (String value) {},
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => GoogleSearchWidget(
+            //                 selectedFilterValue: selectedValue.value,
+            //               )),
+            //     );
+            //   },
+            // ),
           ),
           SpacerWidget(_KVertcalSpace / 5),
           Expanded(

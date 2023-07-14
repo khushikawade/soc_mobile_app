@@ -337,21 +337,18 @@ class individual extends State<StudentPlusGradesPage> {
               },
             ),
           )
-        : Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            child: RefreshIndicator(
-              key: refreshKey,
-              onRefresh: refreshPage,
-              child: NoDataFoundErrorWidget(
-                marginTop: MediaQuery.of(context).size.height * 0.1,
-                errorMessage: StudentPlusOverrides.gradesErrorMessage,
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-                isSearchpage: true,
-              ),
-            ),
-          );
+        : SizedBox.shrink();
+    //  Container(
+    //     height: MediaQuery.of(context).size.height * 0.5,
+    //     child: NoDataFoundErrorWidget(
+    //       marginTop: MediaQuery.of(context).size.height * 0.1,
+    //       errorMessage: StudentPlusOverrides.gradesErrorMessage,
+    //       isResultNotFoundMsg: false,
+    //       isNews: false,
+    //       isEvents: false,
+    //       isSearchpage: true,
+    //     ),
+    //   );
   }
 
   /* ----------------------------- widget used to build current widget ---------------------------- */

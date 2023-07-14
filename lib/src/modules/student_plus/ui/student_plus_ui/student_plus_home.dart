@@ -150,7 +150,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
               animateTabTransition: false,
             ),
             navBarStyle: NavBarStyle.style6,
-            navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+            navBarHeight: Globals.deviceType == "phone" ? 55 : 65,
           );
         });
   }
