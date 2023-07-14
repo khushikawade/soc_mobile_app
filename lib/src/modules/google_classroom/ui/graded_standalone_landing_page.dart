@@ -174,6 +174,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfilePage(
+                                              sectionType: "Graded+",
                                                   plusAppName: 'Graded+',
                                                   fromGradedPlus: true,
                                                   profile: snapshot.data!,

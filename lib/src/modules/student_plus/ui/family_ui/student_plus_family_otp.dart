@@ -251,6 +251,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
             MaterialPageRoute(
                 builder: (context) => StudentPlusFamilyLogInSuccess(
                       token: state.authToken ?? '',
+                      email: widget.emailId,
                     )),
           );
         } else if (state is FamilyLoginOtpVerifyFailure) {

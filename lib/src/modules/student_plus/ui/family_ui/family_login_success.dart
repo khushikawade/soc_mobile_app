@@ -12,7 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusFamilyLogInSuccess extends StatefulWidget {
   final String token;
-  StudentPlusFamilyLogInSuccess({Key? key, required this.token})
+  final String email;
+  StudentPlusFamilyLogInSuccess({Key? key, required this.token,required this.email})
       : super(key: key);
 
   @override
@@ -22,14 +23,13 @@ class StudentPlusFamilyLogInSuccess extends StatefulWidget {
 
 class _StudentPlusFamilyLogInSuccessState
     extends State<StudentPlusFamilyLogInSuccess> {
-  TextEditingController emailEditingController = TextEditingController();
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   bool isLoading = false;
 
   @override
   void initState() {
-    _studentPlusBloc
-        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
+    _studentPlusBloc.add(GetStudentListFamilyLogin(
+       ));
     // TODO: implement initState
     super.initState();
   }

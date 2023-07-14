@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -50,7 +51,6 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         profile: ClassroomProfile(
             emailAddress: widget.studentDetails.emailC ?? '',
             photoUrl: 'default-user',
-          
             helpful: 0,
             engaged: 0,
             niceWork: 0,
@@ -86,6 +86,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
+              sectionType: widget.sectionType,
               titleIconCode: 0xe891,
               refresh: (v) {
                 setState(() {});
@@ -123,16 +124,40 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                   onTap: () async {
-                    var result = await pushNewScreen(context,
-                        screen: StudentPlusSearchScreen(
-                          fromStudentPlusDetailPage: true,
-                          studentDetails: widget.studentDetails,
-                          index: widget.index,
+                    if (widget.sectionType == "Family") {
+                      showModalBottomSheet(
+                        useRootNavigator: true,
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(42),
+                            topRight: Radius.circular(42),
+                          ),
                         ),
-                        withNavBar: false,
-                        pageTransitionAnimation: PageTransitionAnimation.fade);
-                    if (result == true) {
-                      Utility.closeKeyboard(context);
+                        builder: (_) => LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return StudentPlusFamilyStudentList(
+                            height: MediaQuery.of(context).size.height *
+                                0.4, //0.45,
+                            currentIndex: 4,
+                          );
+                        }),
+                      );
+                    } else {
+                      var result = await pushNewScreen(context,
+                          screen: StudentPlusSearchScreen(
+                            fromStudentPlusDetailPage: true,
+                            studentDetails: widget.studentDetails,
+                            index: widget.index,
+                          ),
+                          withNavBar: false,
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.fade);
+                      if (result == true) {
+                        Utility.closeKeyboard(context);
+                      }
                     }
                   },
                   isMainPage: false,
@@ -152,6 +177,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
   /* --------------------- widget to show pbis Dashboard --------------------- */
   Widget pbisDashboardWidget(constraint) {
     return PBISPlusStudentDashBoard(
+      sectionType: widget.sectionType,
       pBISPlusBloc: PBISPlusBloc(),
       studentProfile: widget.studentDetails.studentPhoto,
       constraint: constraint,

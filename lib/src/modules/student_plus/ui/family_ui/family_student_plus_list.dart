@@ -27,8 +27,8 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
 
   @override
   void initState() {
-    _studentPlusBloc
-        .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
+    // _studentPlusBloc
+    //     .add(GetStudentListFamilyLogin(familyAuthToken: widget.token));
     // TODO: implement initState
     super.initState();
   }
@@ -41,6 +41,7 @@ class _FamilyStudentPlusListState extends State<FamilyStudentPlusList> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
+            sectionType: "Family",
             refresh: (v) {
               setState(() {});
             },
