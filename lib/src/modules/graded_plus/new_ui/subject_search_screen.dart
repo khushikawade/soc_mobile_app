@@ -1064,7 +1064,7 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
-            iconData: Icons.add,
+            iconData:widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {

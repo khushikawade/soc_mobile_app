@@ -1280,6 +1280,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       GradedPlusAssessmentSummary(
+                                        titleIconData: widget.titleIconData,
                                         selectedFilterValue:
                                             widget.isMcqSheet == true
                                                 ? 'Multiple Choice'
@@ -1903,6 +1904,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
+                titleIconData: widget.titleIconData,
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
                 isMcqSheet: isMcqSheet, // widget.isMcqSheet ?? false,
