@@ -275,7 +275,11 @@ class PbisPlusBottomNavBar {
   /* -------------------- bottom navigation bar item widget ------------------- */
 
   static Widget bottomNavBarIcons({required IconData iconData, Color? color}) {
-    return Icon(iconData, color: color);
+    return Icon(
+      iconData,
+      color: color,
+      size: 24,
+    );
   }
 
   /* -------------------- bottom navigation bar item widget ------------------- */

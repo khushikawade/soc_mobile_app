@@ -197,10 +197,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
               iconOnTap: () {
                 _searchController.clear();
                 onItemChanged("");
+                FocusScope.of(context).requestFocus(FocusNode());
               },
               sectionName: 'PBIS+',
               hintText: StudentPlusOverrides.searchHintText,
-              isMainPage: false,
+              isMainPage: true,
               autoFocus: !_searchController.text.isEmpty,
               controller: _searchController,
               kLabelSpacing: 1,

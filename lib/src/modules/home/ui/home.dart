@@ -305,6 +305,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       IconData(int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
+                      size: 22.0,
                     ),
                   ],
                 ),
@@ -417,7 +418,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // duration: Duration(milliseconds: 200),
       ),
       navBarStyle: NavBarStyle.style6,
-      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      navBarHeight: Globals.deviceType == "phone" ? 55 : 65,
     );
   }
 

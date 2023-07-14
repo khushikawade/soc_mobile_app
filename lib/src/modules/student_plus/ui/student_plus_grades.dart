@@ -87,8 +87,8 @@ class individual extends State<StudentPlusGradesPage> {
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
+                widget.sectionType == "Student" ||
+                        widget.sectionType == 'Family'
                     ? Container()
                     : PlusAppSearchBar(
                         sectionName: 'STUDENT+',
@@ -172,10 +172,10 @@ class individual extends State<StudentPlusGradesPage> {
       valueListenable: selectedValue,
       builder: (context, value, child) {
         return Container(
-          height: widget.sectionType == "Student"||
-            widget.sectionType == 'Family'
-              ? MediaQuery.of(context).size.height * 0.75
-              : MediaQuery.of(context).size.height * 0.62,
+          height:
+              widget.sectionType == "Student" || widget.sectionType == 'Family'
+                  ? MediaQuery.of(context).size.height * 0.75
+                  : MediaQuery.of(context).size.height * 0.62,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,17 +304,18 @@ class individual extends State<StudentPlusGradesPage> {
               },
             ),
           )
-        : Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: NoDataFoundErrorWidget(
-              marginTop: MediaQuery.of(context).size.height * 0.1,
-              errorMessage: StudentPlusOverrides.gradesErrorMessage,
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              isSearchpage: true,
-            ),
-          );
+        : SizedBox.shrink();
+    //  Container(
+    //     height: MediaQuery.of(context).size.height * 0.5,
+    //     child: NoDataFoundErrorWidget(
+    //       marginTop: MediaQuery.of(context).size.height * 0.1,
+    //       errorMessage: StudentPlusOverrides.gradesErrorMessage,
+    //       isResultNotFoundMsg: false,
+    //       isNews: false,
+    //       isEvents: false,
+    //       isSearchpage: true,
+    //     ),
+    //   );
   }
 
   /* ----------------------------- widget used to build current widget ---------------------------- */
