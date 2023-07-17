@@ -3,7 +3,9 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -21,6 +23,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -258,17 +261,17 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       return noClassroomFound();
                     }
                   }
-                  if (state is PBISPlusInitialImportRosterSuccess) {
-                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
-                      return buildList(
-                          googleClassroomCourseList:
-                              state.googleClassroomCourseList,
-                          isStudentInteractionLoading: true,
-                          isScreenShimmerLoading: false);
-                    } else {
-                      return noClassroomFound();
-                    }
-                  }
+                  // if (state is PBISPlusInitialImportRosterSuccess) {
+                  //   if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                  //     return buildList(
+                  //         googleClassroomCourseList:
+                  //             state.googleClassroomCourseList,
+                  //         isStudentInteractionLoading: true,
+                  //         isScreenShimmerLoading: false);
+                  //   } else {
+                  //     return noClassroomFound();
+                  //   }
+                  // }
                   return noClassroomFound();
                 },
                 listener: (context, state) async {
@@ -295,6 +298,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                           marginFromBottom: 90);
                       _animationController!.stop();
                     }
+
+                    callCourseBlocInstance(state.googleClassroomCourseList);
                   }
                   if (state is PBISErrorState) {
                     if (state.error == 'ReAuthentication is required') {
@@ -502,12 +507,34 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         ),
       ),
       googleClassroomCourseList[index].students!.length > 0
-          ? renderStudents(
-              googleClassroomCourseList[index].students!,
-              index,
-              googleClassroomCourseList[index].id!,
-              isStudentInteractionLoading,
-              isScreenShimmerLoading)
+          ? BlocConsumer(
+              bloc: getBlocForCourse(googleClassroomCourseList[index].id ?? ''),
+              listener: (context, state) {
+                print(state);
+                if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
+                  print(" state is recived for ${state.classroomCourse.name}");
+                  googleClassroomCourseList[index] = state.classroomCourse;
+                }
+              },
+              builder: (context, state) {
+                if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
+                  return renderStudents(
+                    googleClassroomCourseList[index].students!,
+                    index,
+                    googleClassroomCourseList[index].id!,
+                    false,
+                    isScreenShimmerLoading,
+                  );
+                }
+
+                return renderStudents(
+                  googleClassroomCourseList[index].students!,
+                  index,
+                  googleClassroomCourseList[index].id!,
+                  true,
+                  isScreenShimmerLoading,
+                );
+              })
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -526,11 +553,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   }
 
   renderStudents(
-      List<ClassroomStudents> studentList,
-      i,
-      String classroomCourseId,
-      final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading) {
+    List<ClassroomStudents> studentList,
+    i,
+    String classroomCourseId,
+    final bool isStudentInteractionLoading,
+    final bool isScreenShimmerLoading,
+    // final PBISPlusBloc? courseBlocInstance
+  ) {
     return GridView.count(
         padding: EdgeInsets.all(10.0),
         childAspectRatio: 7.0 / 9.0,
@@ -545,6 +574,47 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               isStudentInteractionLoading,
               isScreenShimmerLoading);
         }));
+
+    //  BlocConsumer(
+    //   bloc: courseBlocInstance,
+    //   builder: (context, state) {
+    //     if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
+    //       return GridView.count(
+    //           padding: EdgeInsets.all(10.0),
+    //           childAspectRatio: 7.0 / 9.0,
+    //           physics: NeverScrollableScrollPhysics(),
+    //           crossAxisCount: 4,
+    //           shrinkWrap: true,
+    //           children: List.generate(studentList.length, (index) {
+    //             return _buildStudent(
+    //                 ValueNotifier<ClassroomStudents>(studentList[index]),
+    //                 index,
+    //                 classroomCourseId,
+    //                 isStudentInteractionLoading,
+    //                 isScreenShimmerLoading);
+    //           }));
+    //     }
+
+    //     return GridView.count(
+    //         padding: EdgeInsets.all(10.0),
+    //         childAspectRatio: 7.0 / 9.0,
+    //         physics: NeverScrollableScrollPhysics(),
+    //         crossAxisCount: 4,
+    //         shrinkWrap: true,
+    //         children: List.generate(studentList.length, (index) {
+    //           return _buildStudent(
+    //               ValueNotifier<ClassroomStudents>(studentList[index]),
+    //               index,
+    //               classroomCourseId,
+    //               (studentList[index].profile!.behaviorList == null ||
+    //                   studentList[index].profile!.behaviorList!.isEmpty),
+    //               isScreenShimmerLoading);
+    //         }));
+    //   },
+    //   listener: (BuildContext context, Object? state) {
+    //     if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {}
+    //   },
+    // );
   }
 
   Widget _buildStudent(
@@ -575,18 +645,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     return Text(
                       //TODOPBIS:
                       PBISPlusUtility.numberAbbreviationFormat(
-                          // studentValueNotifier
-                          //         .value.profile!.behavior1!.counter! +
-                          //     studentValueNotifier
-                          //         .value.profile!.behavior2!.counter! +
-                          //     studentValueNotifier
-                          //         .value.profile!.behavior2!.counter!
-                          // studentValueNotifier.value!.profile!.engaged! +
-                          //     studentValueNotifier.value!.profile!.niceWork! +
-                          //     studentValueNotifier.value!.profile!.helpful!
-                          // PBISPlusUtility.getStudentTotalCounts(
-                          //    studentValueNotifier.value)
-                          "0"),
+                          PBISPlusUtility.getStudentTotalCounts(
+                              student: studentValueNotifier!.value,
+                              isCustomBehavior:
+                                  PBISPlusOverrides.isCustomBehavior.value,
+                              teacherCustomBehaviorList: PBISPlusOverrides
+                                  .teacherCustomBehaviorList.value)),
                       style: TextStyle(
                         color: Theme.of(context).backgroundColor,
                         fontWeight: FontWeight.bold,
@@ -711,7 +775,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     return SizedBox.shrink();
                   },
                   listener: (context, state) async {
-                    print(state);
                     if (state is PBISPlusAddNotesSucess) {
                       Utility.currentScreenSnackBar(
                           "Note added successfully", null);
@@ -928,5 +991,33 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         refreshPage();
       });
     }
+  }
+
+  final Map<String, PBISPlusBloc> _blocMap = {};
+
+  Future<void> callCourseBlocInstance(
+      List<ClassroomCourse> googleClassroomCourseList) async {
+    //Fetch logged in user profile
+    List<UserInformation> userProfileLocalData =
+        await UserGoogleProfile.getUserProfile();
+    googleClassroomCourseList
+        .asMap()
+        .forEach((int index, ClassroomCourse course) {
+      PBISPlusBloc currentCourseBlocInstance =
+          getBlocForCourse(course.id ?? '');
+      if (course.students != null && course.students!.isNotEmpty) {
+        currentCourseBlocInstance.add(PBISPlusGetStudentBehaviorByCourse(
+            index: index,
+            classroomCourse: course,
+            teacherEmail: userProfileLocalData[0].userEmail!));
+      }
+    });
+  }
+
+  PBISPlusBloc getBlocForCourse(String courseId) {
+    if (!_blocMap.containsKey(courseId)) {
+      _blocMap[courseId] = PBISPlusBloc();
+    } else {}
+    return _blocMap[courseId] ?? PBISPlusBloc();
   }
 }

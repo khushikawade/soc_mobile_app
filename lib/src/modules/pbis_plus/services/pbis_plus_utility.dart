@@ -77,6 +77,7 @@ class PBISPlusUtility {
         }
       } else {
         totalCounts = student.profile!.behaviorList!
+            .where((behavior) => behavior.defaultBehavior == true)
             .map((behavior) => behavior.behaviorCount ?? 0)
             .reduce((sum, count) => sum + count);
       }

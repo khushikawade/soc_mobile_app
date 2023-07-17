@@ -27,13 +27,14 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       courseWorkId: fields[7] as String?,
       assessmentCId: fields[8] as String?,
       courseWorkURL: fields[9] as String?,
+      isBehviourLoading: fields[10] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassroomCourse obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       ..writeByte(8)
       ..write(obj.assessmentCId)
       ..writeByte(9)
-      ..write(obj.courseWorkURL);
+      ..write(obj.courseWorkURL)
+      ..writeByte(10)
+      ..write(obj.isBehviourLoading);
   }
 
   @override

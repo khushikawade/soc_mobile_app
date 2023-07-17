@@ -26,6 +26,8 @@ class ClassroomCourse {
   String? assessmentCId; //used in GRADED+
   @HiveField(9)
   String? courseWorkURL; //used in GRADED+
+  @HiveField(10)
+  bool? isBehviourLoading;
 
   ClassroomCourse(
       {this.id,
@@ -37,7 +39,8 @@ class ClassroomCourse {
       this.students,
       this.courseWorkId,
       this.assessmentCId,
-      this.courseWorkURL});
+      this.courseWorkURL,
+      this.isBehviourLoading = true});
 
   ClassroomCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
