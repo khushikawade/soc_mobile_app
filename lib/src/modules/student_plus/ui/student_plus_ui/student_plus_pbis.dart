@@ -97,7 +97,9 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               // print(constraints.maxHeight);
               // Set the maximum height of the bottom sheet based on the screen size
               // print(constraints.maxHeight);
-              return body(constraints.maxHeight);
+              return
+                  // pbisDashboardWidget(constraints.maxHeight);
+                  body(constraints.maxHeight);
             })),
       ],
     );
@@ -109,6 +111,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ListView(
+        shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -168,7 +171,9 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
                   onItemChanged: null,
                 ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-          pbisDashboardWidget(constraint)
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: pbisDashboardWidget(constraint))
         ],
       ),
     );

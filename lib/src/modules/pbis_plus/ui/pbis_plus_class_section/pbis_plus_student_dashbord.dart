@@ -58,7 +58,8 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.constraint,
       this.studentProfile,
       // this.pBISPlusCommonBehaviorList,
-      required this.pBISPlusBloc,this.sectionType})
+      required this.pBISPlusBloc,
+      this.sectionType})
       : super(key: key);
 
   @override
@@ -146,7 +147,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   @override
   Widget build(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? studentPlusBody(context)
+        ? pbisPlusBody(context)
         : Stack(children: [
             CommonBackgroundImgWidget(),
             ValueListenableBuilder(
@@ -186,11 +187,14 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return Column(children: [
       sectionHeader(),
       Flexible(
-          child: CustomScrollView(controller: _scrollController, slivers: [
-        // A flexible app bar
-        buildSliverAppBar(),
-        SliverFillRemaining(child: buildTableSection())
-      ]))
+          child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _scrollController,
+              slivers: [
+            // A flexible app bar
+            buildSliverAppBar(),
+            SliverFillRemaining(child: buildTableSection())
+          ]))
     ]);
   }
 
@@ -583,10 +587,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               backgroundColor: AppTheme.kButtonColor,
             ));
           } else if (state is PBISPlusStudentDashboardLogSuccess) {
-            return
-                // state.pbisStudentInteractionList.length > 0
-                //     ?
-                RefreshIndicator(
+            return state.pbisStudentInteractionList.length > 0
+                ? RefreshIndicator(
                     color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
@@ -611,17 +613,16 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                                   pBISPlusCommonBehaviorList,
                                               list: state
                                                   .pbisStudentInteractionList)))))
-                        ]));
-            // : RefreshIndicator(
-            //     key: refreshKey,
-            //     onRefresh: refreshPage,
-            //     child: NoDataFoundErrorWidget(
-            //         marginTop:
-            //             MediaQuery.of(context).size.height * 0.06,
-            //         isResultNotFoundMsg: true,
-            //         isNews: false,
-            //         isEvents: false),
-            //   );
+                        ]))
+                : RefreshIndicator(
+                    key: refreshKey,
+                    onRefresh: refreshPage,
+                    child: NoDataFoundErrorWidget(
+                        marginTop: MediaQuery.of(context).size.height * 0.06,
+                        isResultNotFoundMsg: true,
+                        isNews: false,
+                        isEvents: false),
+                  );
           } else {
             //  shows in condition where email is not not their in case of student plus
             return RefreshIndicator(
@@ -710,6 +711,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       margin: EdgeInsets.symmetric(horizontal: 16),
       padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
+        color: Colors.lightBlueAccent,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
       ),
@@ -736,7 +738,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildSliverAppBar() {
     return SliverAppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.yellowAccent,
         automaticallyImplyLeading: false,
         expandedHeight: MediaQuery.of(context).size.height / 1.8,
         flexibleSpace: FlexibleSpaceBar(
