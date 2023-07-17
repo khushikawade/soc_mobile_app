@@ -73,7 +73,7 @@ class individual extends State<StudentPlusGradesPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
-             sectionType:widget.sectionType,
+            sectionType: widget.sectionType,
             titleIconCode: 0xe823,
             refresh: (v) {
               setState(() {});
@@ -94,14 +94,17 @@ class individual extends State<StudentPlusGradesPage> {
                 widget.sectionType == "Student"
                     ? Container()
                     : DummySearchBar(
-                  sectionType: widget.sectionType,
-                  studentDetails: widget.studentDetails),
+                        sectionType: widget.sectionType,
+                        studentDetails: widget.studentDetails),
 
                 //       GradesWidget()
                 BlocConsumer<StudentPlusBloc, StudentPlusState>(
                   bloc: _studentPlusBloc,
                   listener: (context, state) {
                     if (state is StudentPlusGradeSuccess) {
+                      if (widget.sectionType == "Family") {
+                        state.chipList.remove("Current");
+                      }
                       if (state.chipList.length > 0) {
                         selectedValue.value = state.chipList[0];
                       }
@@ -335,7 +338,7 @@ class individual extends State<StudentPlusGradesPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => StudentPlusGradesDetailPage(
-                     sectionType:widget.sectionType,
+                        sectionType: widget.sectionType,
                         studentPlusCourseModel: studentPlusCourseModel,
                       )));
         },

@@ -139,6 +139,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
       constraint: constraint,
       isValueChangeNotice: isValueChangeNotice,
       isFromStudentPlus: true,
+      
       studentValueNotifier: studentValueNotifier,
       StudentDetailWidget: Column(),
       onValueUpdate: (ValueNotifier<ClassroomStudents> data) {},

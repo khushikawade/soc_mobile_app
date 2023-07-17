@@ -1,8 +1,10 @@
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/family_login_common_widget.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -82,20 +84,35 @@ class _StudentPlusFamilyLogInSuccessState
           title: 'Get Started',
           onPressed: () async {
             if (state is StudentPlusSearchSuccess) {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (context) => StudentPlusHome(
-                            sectionType: "Family",
-                            studentPlusStudentInfo: StudentPlusDetailsModel(
-                                studentIdC: state.obj[0]
-                                    .studentIDC, //By default showing 0th index student
-                                firstNameC: state.obj[0].firstNameC,
-                                lastNameC: state.obj[0].lastNameC,
-                                classC: state.obj[0].classC),
-                            index: 0,
-                            //   index: widget.index,
-                          )),
-                  (_) => true);
+              if (state.obj.isEmpty || state.obj.length == 0) {
+                Utility.currentScreenSnackBar("Parent is not associate with any student",null);
+
+                await FamilyUserDetails.clearFamilyUserProfile();
+
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(
+                              index: 3,
+                              isFromOcrSection: true,
+                            )),
+                    (_) => false);
+                return;
+              } else {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) => StudentPlusHome(
+                              sectionType: "Family",
+                              studentPlusStudentInfo: StudentPlusDetailsModel(
+                                  studentIdC: state.obj[0]
+                                      .studentIDC, //By default showing 0th index student
+                                  firstNameC: state.obj[0].firstNameC,
+                                  lastNameC: state.obj[0].lastNameC,
+                                  classC: state.obj[0].classC),
+                              index: 0,
+                              //   index: widget.index,
+                            )),
+                    (_) => true);
+              }
             } else {
               isLoading = true;
               Utility.showLoadingDialog(
