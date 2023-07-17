@@ -594,7 +594,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     onRefresh: refreshPage,
                     child: ListView(
                         physics: widget.isFromStudentPlus == true
-                            ? BouncingScrollPhysics()
+                            ? NeverScrollableScrollPhysics()
                             : NeverScrollableScrollPhysics(),
                         children: [
                           FittedBox(
