@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -94,13 +95,19 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 googleClassroomCourseList: responseList[0]);
           }
 
-          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
+          List<PBISPlusTotalBehaviorModal> pbisTotalInteractionList = [];
           //Get PBISTotal interaction only if Section is PBIS+
+          // if (event.isGradedPlus == false) {
+          //   pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+          //       teacherEmail: userProfileLocalData[0].userEmail!);
+          // }
           if (event.isGradedPlus == false) {
-            pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
-                teacherEmail: userProfileLocalData[0].userEmail!);
+            pbisTotalInteractionList =
+                await getPBISTotalInteractionBySchoolAndTeacher(
+                    teacherEmail: userProfileLocalData[0].userEmail!,
+                    schoolId: Overrides.SCHOOL_ID);
           }
-
+          print(pbisTotalInteractionList);
           // Merge Student Interaction with Google Classroom Rosters
           List<ClassroomCourse> classroomStudentProfile =
               await assignStudentTotalInteraction(
@@ -1005,46 +1012,46 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
-      {required String teacherEmail, int retry = 3}) async {
-    try {
-      print(
-          "------------teacherEmail ------===========-${teacherEmail}==============----------------");
-      final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-          },
-          isCompleteUrl: true);
+  // Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
+  //     {required String teacherEmail, int retry = 3}) async {
+  //   try {
+  //     print(
+  //         "------------teacherEmail ------===========-${teacherEmail}==============----------------");
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         isCompleteUrl: true);
 
-      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        return response.data['body']
-            .map<PBISPlusTotalInteractionModal>(
-                (i) => PBISPlusTotalInteractionModal.fromJson(i))
-            .toList();
-      } else if (retry > 0) {
-        return getPBISTotalInteractionByTeacher(
-            teacherEmail: teacherEmail, retry: retry - 1);
-      }
-      return [];
-    } catch (e) {
-      throw (e);
-    }
-  }
+  //     if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //       return response.data['body']
+  //           .map<PBISPlusTotalInteractionModal>(
+  //               (i) => PBISPlusTotalInteractionModal.fromJson(i))
+  //           .toList();
+  //     } else if (retry > 0) {
+  //       return getPBISTotalInteractionByTeacher(
+  //           teacherEmail: teacherEmail, retry: retry - 1);
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
 
   /*----------------------------------------------------------------------------------------------*/
   /*-----------------Function to assign the student interaction with classroom--------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
   List<ClassroomCourse> assignStudentTotalInteraction(
-    List<PBISPlusTotalInteractionModal> pbisTotalInteractionList,
+    List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList,
     List<ClassroomCourse> classroomCourseList,
   ) {
     List<ClassroomCourse> classroomStudentProfile = [];
 
     // classroomStudentProfile.clear();
-    if (pbisTotalInteractionList.length == 0) {
+    if (pbisTotalBehaviorList.length == 0) {
       //Add 0 interaction counts to all the post in case of no interaction found
       classroomStudentProfile.addAll(classroomCourseList);
     } else {
@@ -1062,11 +1069,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         bool interactionCountsFound = false;
 
         for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
-          for (int k = 0; k < pbisTotalInteractionList.length; k++) {
+          for (int k = 0; k < pbisTotalBehaviorList.length; k++) {
             if (classroomCourseList[i].id ==
-                    pbisTotalInteractionList[k].classroomCourseId &&
+                    pbisTotalBehaviorList[k].classroomCourseId &&
                 classroomCourseList[i].students![j].profile!.id ==
-                    pbisTotalInteractionList[k].studentId) {
+                    pbisTotalBehaviorList[k].studentId) {
               //TODOPBIS:
               // classroomCourse.students![j].profile!.behavior1!.counter =
               //     pbisTotalInteractionList[k].engaged;
@@ -1074,12 +1081,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               //     pbisTotalInteractionList[k].niceWork;
               // classroomCourse.students![j].profile!.behavior3!.counter =
               //     pbisTotalInteractionList[k].helpful;
-              classroomCourse.students![j].profile!.engaged =
-                  pbisTotalInteractionList[k].engaged;
-              classroomCourse.students![j].profile!.niceWork =
-                  pbisTotalInteractionList[k].niceWork;
-              classroomCourse.students![j].profile!.helpful =
-                  pbisTotalInteractionList[k].helpful;
+              // classroomCourse.students![j].profile!.engaged =
+              //     pbisTotalInteractionList[k].engaged;
+              // classroomCourse.students![j].profile!.niceWork =
+              //     pbisTotalInteractionList[k].niceWork;
+              // classroomCourse.students![j].profile!.helpful =
+              //     pbisTotalInteractionList[k].helpful;
+              classroomCourse.students![j].profile!.behaviorList =
+                  pbisTotalBehaviorList[k].behaviorList;
               interactionCountsFound = true;
               // print(classroomCourse.students![j].profile!.studentInteraction);
               break;
@@ -1820,6 +1829,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       return false;
     } catch (e) {
       print(e);
+      throw (e);
+    }
+  }
+
+  Future<List<PBISPlusTotalBehaviorModal>>
+      getPBISTotalInteractionBySchoolAndTeacher(
+          {required String teacherEmail,
+          required String schoolId,
+          int retry = 3}) async {
+    try {
+      print("call getPBISTotalInteractionBySchoolAndTeacher");
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/teacher/$teacherEmail?schoolId=$schoolId',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return response.data['body']
+            .map<PBISPlusTotalBehaviorModal>(
+                (i) => PBISPlusTotalBehaviorModal.fromJson(i))
+            .toList();
+      } else if (retry > 0) {
+        return getPBISTotalInteractionBySchoolAndTeacher(
+            teacherEmail: teacherEmail, retry: retry - 1, schoolId: schoolId);
+      }
+      return [];
+    } catch (e) {
       throw (e);
     }
   }

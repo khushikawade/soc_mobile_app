@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -338,7 +339,7 @@ class PBISPlusActionInteractionButtonState
     for (BehaviorList item
         in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
       if (item.id == id) {
-        return item.score ?? 0;
+        return item.behaviorCount ?? 0;
       }
     }
     return 0; // Return null if the ID is not found
@@ -351,12 +352,12 @@ class PBISPlusActionInteractionButtonState
         in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
       if (item.id == iconData.id) {
         isAlready = true;
-        item.score = item.score! + 1;
+        item.behaviorCount = item.behaviorCount! + 1;
       }
     }
     if (isAlready == false) {
       widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
-          id: iconData.id, name: iconData.behaviorTitleC, score: 1));
+          id: iconData.id, name: iconData.behaviorTitleC, behaviorCount: 1));
     }
     print("isAlready $isAlready");
     onTapDetect.value =

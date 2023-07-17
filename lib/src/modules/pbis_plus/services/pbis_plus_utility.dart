@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -68,7 +69,7 @@ class PBISPlusUtility {
             in teacherCustomBehaviorList) {
           for (BehaviorList Behavior in student.profile!.behaviorList ?? []) {
             if (Behavior.id == CustomBehavior.id) {
-              var score = Behavior.score ?? 0;
+              var score = Behavior.behaviorCount ?? 0;
               totalCounts += score;
               break;
             }
@@ -76,7 +77,7 @@ class PBISPlusUtility {
         }
       } else {
         totalCounts = student.profile!.behaviorList!
-            .map((behavior) => behavior.score ?? 0)
+            .map((behavior) => behavior.behaviorCount ?? 0)
             .reduce((sum, count) => sum + count);
       }
 
@@ -99,6 +100,7 @@ class PBISPlusUtility {
       }
     } catch (e) {}
   }
+
   static playSound(String audioPath) {
     try {
       AudioPlayer().play(AssetSource(audioPath));
