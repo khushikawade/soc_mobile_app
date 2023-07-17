@@ -195,13 +195,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               slivers: [
             // A flexible app bar
             buildSliverAppBar(),
-            // SliverFillRemaining(child: buildTableSection())
-            SliverList(
-                delegate: SliverChildListDelegate(
-              [
-                buildTableSection(),
-              ],
-            )),
+            SliverFillRemaining(child: buildTableSection())
+            // SliverList(
+            //     delegate: SliverChildListDelegate(
+            //   [
+            //     buildTableSection(),
+            //   ],
+            // )),
           ]))
     ]);
   }
