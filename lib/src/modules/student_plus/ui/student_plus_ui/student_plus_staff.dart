@@ -20,8 +20,8 @@ class _StudentPlusStaffScreenState extends State<StudentPlusStaffScreen> {
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
             sectionType: "Staff",
-            titleIconCode:
-                int.parse(StudentPlusBottomNavBar.getStaffIconCode()),
+            titleIconCode: int.parse(
+                StudentPlusBottomNavBar.getIconCode(sectionType: "Staff")),
             refresh: (v) {
               setState(() {});
             },
