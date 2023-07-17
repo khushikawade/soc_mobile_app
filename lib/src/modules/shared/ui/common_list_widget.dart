@@ -311,7 +311,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     List<UserInformation> _profileData =
         await FamilyUserDetails.getFamilyUserProfile();
 
-    if (_profileData.isEmpty &&
+    if (_profileData.isEmpty ||
         (_profileData[0].familyToken == null ||
             _profileData[0].familyToken == "")) {
       pushNewScreen(

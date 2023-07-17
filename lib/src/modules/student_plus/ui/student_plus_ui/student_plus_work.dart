@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/widgets/common_Dummy_SearchBar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -139,50 +140,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 widget.sectionType == "Student"
                     ? Container()
-                    : PlusAppSearchBar(
-                        sectionName: 'STUDENT+',
-                        hintText:
-                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                        isMainPage: false,
-                        autoFocus: false,
-                        onTap: () {
-                          if (widget.sectionType == "Family") {
-                            showModalBottomSheet(
-                              useRootNavigator: true,
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(42),
-                                  topRight: Radius.circular(42),
-                                ),
-                              ),
-                              builder: (_) => LayoutBuilder(builder:
-                                  (BuildContext context,
-                                      BoxConstraints constraints) {
-                                return StudentPlusFamilyStudentList(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.4, //0.45,
-                                  currentIndex: 2,
-                                );
-                              }),
-                            );
-                          } else {
-                            pushNewScreen(
-                              context,
-                              screen: StudentPlusSearchScreen(
-                                  fromStudentPlusDetailPage: true,
-                                  index: 2,
-                                  studentDetails: widget.studentDetails),
-                              withNavBar: false,
-                            );
-                          }
-                        },
-                        controller: _controller,
-                        kLabelSpacing: _kLabelSpacing,
-                        focusNode: myFocusNode,
-                      ),
+                    : DummySearchBar(
+                  sectionType: widget.sectionType,
+                  studentDetails: widget.studentDetails),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 listViewWidget(),
                 SpacerWidget(20)

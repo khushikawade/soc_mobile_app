@@ -867,7 +867,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           pointPossible: Globals.pointPossible ?? "0"));
     } else {
       CreateAssessmentScreenMethod.navigateToSubjectSection(
-         titleIconData: widget.titleIconData,
+          titleIconData: widget.titleIconData,
           context: context,
           classSuggestions: widget.classSuggestions,
           classController: classController,

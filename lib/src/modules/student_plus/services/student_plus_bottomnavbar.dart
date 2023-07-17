@@ -94,8 +94,16 @@ class StudentPlusBottomNavBar {
     );
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
       icon: ResultSummaryIcons(
-          sectionType == "Student" ? "0xe80a" : getStaffIconCode(),
-          sectionType == "Student" ? 'Student' : 'Staff',
+          sectionType == "Student"
+              ? "0xe80a"
+              : sectionType == 'Family'
+                  ? "0xe820"
+                  : getStaffIconCode(),
+          sectionType == "Student"
+              ? 'Student'
+              : sectionType == 'Family'
+                  ? "Family"
+                  : 'Staff',
           context),
       activeColorPrimary: AppTheme.kButtonColor,
       inactiveColorPrimary: CupertinoColors.systemGrey,
