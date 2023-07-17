@@ -541,7 +541,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       child: ShimmerLoading(
                           isLoading: loading,
                           child: PBISPlusActionInteractionButton(
-                            
                               index: index,
                               isCustomBehavior: isCustomBehavior,
                               size: widget.isFromDashboardPage == true ||
@@ -559,7 +558,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 valueChange.value = !valueChange
                                     .value; // Update the changes on bool change detect
                               },
-                              isLoading:  widget.isFromStudentPlus ==true?true: widget.isLoading,
+                              isLoading: widget.isFromStudentPlus == true
+                                  ? true
+                                  : widget.isLoading,
                               isFromStudentPlus: widget.isFromStudentPlus,
                               studentValueNotifier: widget.studentValueNotifier,
                               iconData: behaviorList[index],
