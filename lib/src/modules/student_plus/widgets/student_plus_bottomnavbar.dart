@@ -108,7 +108,7 @@ class StudentPlusBottomNavBar {
     return persistentBottomNavBarItemList;
   }
 
-  /* --------- function to get staff icon code from main bottom navBar -------- */
+  /* --------- function to get section icon code from main bottom navBar -------- */
   static String getIconCode({required String sectionType}) {
     String IconCode = '0xe808';
     for (var i = 0;

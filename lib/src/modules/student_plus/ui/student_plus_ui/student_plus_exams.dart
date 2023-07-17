@@ -5,10 +5,10 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_bottomsheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
 
