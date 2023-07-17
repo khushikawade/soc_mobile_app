@@ -155,6 +155,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       child: Form(
         key: formKey,
         child: Pinput(
+          autofocus: true,
           scrollPadding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           controller: pinController,
