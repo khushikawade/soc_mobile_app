@@ -47,11 +47,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
   @override
   void initState() {
     _timerStream = _timerController.stream;
-
     _startTimer();
-
-    // TODO: implement initState
-
     super.initState();
   }
 
@@ -297,7 +293,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       listener: (context, state) {
         if (state is FamilyLoginOtpVerifySuccess) {
           Utility.showSnackBar(
-              _scaffoldKey, "Otp Verify Successfully", context, null);
+              _scaffoldKey, "OTP Verified Successfully", context, null);
           Navigator.pop(context);
           Navigator.push(
             context,
@@ -309,7 +305,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
           );
         } else if (state is FamilyLoginOtpVerifyFailure) {
           Utility.showSnackBar(
-              _scaffoldKey, "Please Enter Valid Otp", context, null);
+              _scaffoldKey, "Please Enter a Valid OTP", context, null);
           Navigator.pop(context);
         } else if (state is FamilyLoginErrorReceived) {
           Utility.showSnackBar(
@@ -320,7 +316,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
               context: context, msg: 'Please wait', isOCR: false);
         } else if (state is FamilyLoginOtpSendSuccess) {
           Utility.showSnackBar(
-              _scaffoldKey, "Otp Resend Send Successfully", context, null);
+              _scaffoldKey, "OTP Sent Successfully", context, null);
           _resendOTP();
           isResendOtp.value = false;
           Navigator.pop(context);

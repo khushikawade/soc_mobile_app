@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/common_Dummy_SearchBar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -140,9 +140,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 widget.sectionType == "Student"
                     ? Container()
-                    : DummySearchBar(
-                  sectionType: widget.sectionType,
-                  studentDetails: widget.studentDetails),
+                    : StudentPlusSearchBarAndDropdown(
+                        sectionType: widget.sectionType,
+                        studentDetails: widget.studentDetails),
                 SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 listViewWidget(),
                 SpacerWidget(20)

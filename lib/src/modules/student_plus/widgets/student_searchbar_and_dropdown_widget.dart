@@ -7,18 +7,18 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-class DummySearchBar extends StatefulWidget {
+class StudentPlusSearchBarAndDropdown extends StatefulWidget {
   final String sectionType;
   final StudentPlusDetailsModel studentDetails;
-  const DummySearchBar(
+  const StudentPlusSearchBarAndDropdown(
       {Key? key, required this.sectionType, required this.studentDetails})
       : super(key: key);
 
   @override
-  State<DummySearchBar> createState() => _DummySearchBarState();
+  State<StudentPlusSearchBarAndDropdown> createState() => _StudentPlusSearchBarAndDropdownState();
 }
 
-class _DummySearchBarState extends State<DummySearchBar> {
+class _StudentPlusSearchBarAndDropdownState extends State<StudentPlusSearchBarAndDropdown> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

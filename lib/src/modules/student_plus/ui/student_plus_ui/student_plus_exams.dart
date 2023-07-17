@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.d
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/common_Dummy_SearchBar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
 
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
@@ -85,7 +85,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           widget.sectionType == "Student"
               ? Container()
-              : DummySearchBar(
+              : StudentPlusSearchBarAndDropdown(
                   sectionType: widget.sectionType,
                   studentDetails: widget.studentDetails),
           tabWidget(),
