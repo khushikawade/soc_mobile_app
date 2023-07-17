@@ -594,7 +594,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     onRefresh: refreshPage,
                     child: ListView(
                         physics: widget.isFromStudentPlus == true
-                            ? null
+                            ? BouncingScrollPhysics()
                             : NeverScrollableScrollPhysics(),
                         children: [
                           FittedBox(
@@ -709,9 +709,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       // height: MediaQuery.of(context).size.height * 0.50,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: 40),
       decoration: BoxDecoration(
-        color: Colors.lightBlueAccent,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
       ),
@@ -738,9 +737,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildSliverAppBar() {
     return SliverAppBar(
-        backgroundColor: Colors.yellowAccent,
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        expandedHeight: MediaQuery.of(context).size.height / 1.8,
+        expandedHeight: widget.isFromStudentPlus == true
+            ? MediaQuery.of(context).size.height / 2.2
+            : MediaQuery.of(context).size.height / 1.8,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),

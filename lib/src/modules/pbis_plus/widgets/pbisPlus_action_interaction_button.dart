@@ -143,8 +143,9 @@ class PBISPlusActionInteractionButtonState
                         builder: (BuildContext context, dynamic value,
                             Widget? child) {
                           return Container(
-                              height: 24,
-                              width: 24,
+                              height:
+                                  widget.isFromStudentPlus == true ? 28 : 24,
+                              width: widget.isFromStudentPlus == true ? 28 : 24,
                               alignment: Alignment.center,
                               // padding: EdgeInsets.all(6),
                               decoration: BoxDecoration(
@@ -162,6 +163,11 @@ class PBISPlusActionInteractionButtonState
                                           .textTheme
                                           .bodyText1!
                                           .copyWith(
+                                              color: Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Colors.grey[600]
+                                                  : Colors.white,
                                               fontWeight: FontWeight.w600,
                                               fontSize: 18))
                                   : _getCounts());
