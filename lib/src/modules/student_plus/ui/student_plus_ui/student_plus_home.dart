@@ -1,8 +1,9 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_bottomnavbar.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,6 +109,16 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
               if (i == 5) {
+                if (widget.sectionType == 'Family') {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                index: 3,
+                                isFromOcrSection: true,
+                              )),
+                      (_) => false);
+                  return;
+                }
                 Navigator.of(context).popUntil((route) => route.isFirst);
               }
             },

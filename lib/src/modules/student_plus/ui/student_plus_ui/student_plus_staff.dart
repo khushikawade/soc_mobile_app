@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_bottomnavbar.dart';
 import 'package:flutter/material.dart';
 
 class StudentPlusStaffScreen extends StatefulWidget {
@@ -20,8 +20,8 @@ class _StudentPlusStaffScreenState extends State<StudentPlusStaffScreen> {
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
             sectionType: "Staff",
-            titleIconCode:
-                int.parse(StudentPlusBottomNavBar.getStaffIconCode()),
+            titleIconCode: int.parse(
+                StudentPlusBottomNavBar.getIconCode(sectionType: "Staff")),
             refresh: (v) {
               setState(() {});
             },

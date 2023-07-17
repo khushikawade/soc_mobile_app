@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
@@ -119,54 +120,9 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           widget.sectionType == "Student"
               ? Container()
-              : PlusAppSearchBar(
-                  sectionName: 'STUDENT+',
-                  hintText:
-                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                  onTap: () async {
-                    if (widget.sectionType == "Family") {
-                      showModalBottomSheet(
-                        useRootNavigator: true,
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(42),
-                            topRight: Radius.circular(42),
-                          ),
-                        ),
-                        builder: (_) => LayoutBuilder(builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return StudentPlusFamilyStudentList(
-                            height: MediaQuery.of(context).size.height *
-                                0.4, //0.45,
-                            currentIndex: 4,
-                          );
-                        }),
-                      );
-                    } else {
-                      var result = await pushNewScreen(context,
-                          screen: StudentPlusSearchScreen(
-                            fromStudentPlusDetailPage: true,
-                            studentDetails: widget.studentDetails,
-                            index: widget.index,
-                          ),
-                          withNavBar: false,
-                          pageTransitionAnimation:
-                              PageTransitionAnimation.fade);
-                      if (result == true) {
-                        Utility.closeKeyboard(context);
-                      }
-                    }
-                  },
-                  isMainPage: false,
-                  autoFocus: false,
-                  controller: _controller,
-                  kLabelSpacing: _kLabelSpacing,
-                  focusNode: myFocusNode,
-                  onItemChanged: null,
-                ),
+              : StudentPlusSearchBarAndDropdown(
+                  sectionType: widget.sectionType,
+                  studentDetails: widget.studentDetails),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
           pbisDashboardWidget(constraint)
         ],

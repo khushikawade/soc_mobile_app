@@ -182,10 +182,10 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
               )),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter your email';
+              return 'Please Enter Your Email Address';
             }
             if (!isValidEmail(value)) {
-              return 'Please enter a valid email';
+              return 'Please Enter a Valid Email Address';
             }
             return null;
           },
