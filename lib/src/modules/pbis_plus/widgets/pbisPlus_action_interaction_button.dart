@@ -163,11 +163,12 @@ class PBISPlusActionInteractionButtonState
                                           .textTheme
                                           .bodyText1!
                                           .copyWith(
-                                              color: Color(0xff000000) ==
-                                                      Theme.of(context)
-                                                          .backgroundColor
-                                                  ? Colors.grey[600]
-                                                  : Colors.white,
+                                              color: Colors.grey[600],
+                                              // Color(0xff000000) ==
+                                              //         Theme.of(context)
+                                              //             .backgroundColor
+                                              //     ? Colors.grey[600]
+                                              //     : Colors.white,
                                               fontWeight: FontWeight.w600,
                                               fontSize: 18))
                                   : _getCounts());
@@ -311,20 +312,26 @@ class PBISPlusActionInteractionButtonState
 
     int viewCount = map[title] ?? 0;
     // return viewCount;
-    return Padding(
-      padding: Globals.deviceType != 'phone'
-          ? EdgeInsets.zero
-          // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
-          : EdgeInsets.zero,
-      child: Utility.textWidget(
-          text: viewCount.toString(),
-          context: context,
-          textAlign: TextAlign.center,
-          textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
-              color: Color(0xff000000) == Theme.of(context).backgroundColor
-                  ? Color(0xff111C20)
-                  : Color(0xff111C20),
-              fontSize: 12)),
+    return FittedBox(
+      child: Padding(
+        padding: Globals.deviceType != 'phone'
+            ? EdgeInsets.zero
+            // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
+            : EdgeInsets.zero,
+        child: Utility.textWidget(
+            text: viewCount.toString(),
+            context: context,
+            textAlign: TextAlign.center,
+            textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+                color: Colors.grey[600],
+                // Color(0xff000000) ==
+                //         Theme.of(context)
+                //             .backgroundColor
+                //     ? Colors.grey[600]
+                //     : Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14)),
+      ),
     );
   }
 }

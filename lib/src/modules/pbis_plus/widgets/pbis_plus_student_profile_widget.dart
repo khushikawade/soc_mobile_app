@@ -172,9 +172,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
               width: PBISPlusOverrides.circleSize,
               height: PBISPlusOverrides.circleSize,
               decoration: BoxDecoration(
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
+                color: Colors.grey[300],
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -200,28 +198,30 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                   //     :
                                   //TODOPBIS:
                                   Text(
-                                PBISPlusUtility.numberAbbreviationFormat(
-                                    // widget
-                                    //       .studentValueNotifier
-                                    //       .value
-                                    //       .profile!
-                                    //       .behavior1!
-                                    //       .counter! +
-                                    //   widget.studentValueNotifier.value.profile!
-                                    //       .behavior2!.counter! +
-                                    //   widget.studentValueNotifier.value.profile!
-                                    //       .behavior3!.counter!
-                                    widget.studentValueNotifier!.value.profile!
-                                            .engaged! +
-                                        widget.studentValueNotifier!.value
-                                            .profile!.niceWork! +
-                                        widget.studentValueNotifier!.value
-                                            .profile!.helpful!),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              );
+                                      PBISPlusUtility.numberAbbreviationFormat(
+                                          // widget
+                                          //       .studentValueNotifier
+                                          //       .value
+                                          //       .profile!
+                                          //       .behavior1!
+                                          //       .counter! +
+                                          //   widget.studentValueNotifier.value.profile!
+                                          //       .behavior2!.counter! +
+                                          //   widget.studentValueNotifier.value.profile!
+                                          //       .behavior3!.counter!
+                                          widget.studentValueNotifier!.value
+                                                  .profile!.engaged! +
+                                              widget.studentValueNotifier!.value
+                                                  .profile!.niceWork! +
+                                              widget.studentValueNotifier!.value
+                                                  .profile!.helpful!),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.w600,
+                                          ));
                             },
                           );
                         })),

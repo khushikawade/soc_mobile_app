@@ -176,9 +176,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   Widget studentPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+        ? ListView(
+            // padding: EdgeInsets.only(bottom: 60),
+            // s  : NeverScrollableScrollPhysics(),
+            // mainAxisAlignment: MainAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: bodyFrameWidget())
         : ListView(children: bodyFrameWidget());
   }
@@ -193,7 +195,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               slivers: [
             // A flexible app bar
             buildSliverAppBar(),
-            SliverFillRemaining(child: buildTableSection())
+            // SliverFillRemaining(child: buildTableSection())
+            SliverList(
+                delegate: SliverChildListDelegate(
+              [
+                buildTableSection(),
+              ],
+            )),
           ]))
     ]);
   }
