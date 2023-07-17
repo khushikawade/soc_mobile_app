@@ -41,6 +41,9 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
     // Only call in case of Student Section to fetch student details
     if (widget.sectionType == "Student") {
       _studentPlusBloc.add(StudentPlusSearchByEmail());
+    } else if (widget.sectionType == "Family") {
+      _studentPlusBloc.add(GetStudentPlusDetails(
+          studentIdC: widget.studentPlusStudentInfo.studentIdC ?? ''));
     }
 
     super.initState();
@@ -54,13 +57,15 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: widget.sectionType == "Student"
+        body: widget.sectionType == "Student" || widget.sectionType == "Family"
             ? BlocBuilder<StudentPlusBloc, StudentPlusState>(
                 bloc: _studentPlusBloc,
                 builder: (context, state) {
                   if (state is StudentPlusGetDetailsLoading) {
                     return loaderWidget();
                   } else if (state is StudentPlusSearchByEmailSuccess) {
+                    return body(studentPlusDetailsModel: state.obj);
+                  } else if (state is StudentPlusInfoSuccess) {
                     return body(studentPlusDetailsModel: state.obj);
                   }
                   return Container();
@@ -93,12 +98,12 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             context,
             controller: _controller,
             screens: StudentPlusBottomNavBar.buildScreens(
-                studentInfo: widget.sectionType == "Student"
-                    ? studentPlusDetailsModel!
-                    : widget.studentPlusStudentInfo,
-                sectionType: widget.sectionType
-                // index: widget.index
-                ),
+                studentInfo: widget.sectionType == "Student" ||
+                        widget.sectionType == "Family"
+                    ? studentPlusDetailsModel! //Calling API in case of Student or Family section
+                    : widget
+                        .studentPlusStudentInfo, //Already having data so passing values directly
+                sectionType: widget.sectionType),
 
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
@@ -145,7 +150,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
               animateTabTransition: false,
             ),
             navBarStyle: NavBarStyle.style6,
-            navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+            navBarHeight: Globals.deviceType == "phone" ? 55 : 65,
           );
         });
   }

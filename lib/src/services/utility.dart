@@ -87,14 +87,6 @@ class Utility {
     }
   }
 
-  static playSound(String audioPath) {
-    try {
-      AudioPlayer().play(AssetSource("pbis_sound/sound1.wav"));
-    } catch (e) {
-      print(e);
-    }
-  }
-
   static doVibration() async {
     try {
       await HapticFeedback.vibrate();
@@ -1049,5 +1041,11 @@ class Utility {
     } catch (e) {
       return utcdatetimeString;
     }
+  }
+
+  static Future clearStudentList({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
   }
 }

@@ -53,6 +53,7 @@ class GradedPluSubjectSelection extends StatefulWidget {
   // final String? questionImageUrl;
   final bool? isCommonCore;
   final File? gradedPlusQueImage;
+  final IconData? titleIconData;
   GradedPluSubjectSelection(
       {Key? key,
       this.stateName,
@@ -66,7 +67,8 @@ class GradedPluSubjectSelection extends StatefulWidget {
       this.isCommonCore,
       this.isMcqSheet,
       this.selectedAnswer,
-      required this.gradedPlusQueImage})
+      required this.gradedPlusQueImage,
+      this.titleIconData})
       : super(key: key);
 
   @override
@@ -130,7 +132,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       //     &&
       // Overrides.STANDALONE_GRADED_APP != true)
       ? [
-          'Google Sheet',
+          'Google Sheets',
           'Google Slides',
           'Google Classroom',
           '${Globals.schoolDbnC} Dashboard'
@@ -264,6 +266,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  iconData: widget.titleIconData,
                   plusAppName: 'GRADED+',
                   fromGradedPlus: true,
                   hideStateSelection: true,
@@ -311,6 +314,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPlusSearchScreenPage(
+                                  titleIconData: widget.titleIconData,
                                   gradedPlusQueImage: widget.gradedPlusQueImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
@@ -374,6 +378,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPlusSearchScreenPage(
+                                  titleIconData: widget.titleIconData,
                                   gradedPlusQueImage: widget.gradedPlusQueImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
@@ -1005,6 +1010,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         GradedPlusResultsSummary(
+                                          titleIconData: widget.titleIconData,
                                           isMcqSheet: widget.isMcqSheet,
                                           selectedAnswer: widget.selectedAnswer,
                                           subjectId: subjectId ?? '',
@@ -1448,6 +1454,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusResultsSummary(
+                titleIconData: widget.titleIconData,
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 fileId: Globals.googleExcelSheetId,
@@ -1872,6 +1879,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           context,
           MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+              titleIconData: widget.titleIconData,
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               fileId: Globals.googleExcelSheetId,

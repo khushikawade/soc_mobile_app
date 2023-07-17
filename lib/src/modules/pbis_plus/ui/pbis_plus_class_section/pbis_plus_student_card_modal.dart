@@ -3,7 +3,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
@@ -11,7 +10,6 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
@@ -21,7 +19,6 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +36,8 @@ class PBISPlusStudentCardModal extends StatefulWidget {
   final double constraint;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   final String? studentProfile;
-
+  final PBISPlusBloc?
+      pBISPlusNotesBloc; //used to manage notes and its state at class screen
   PBISPlusStudentCardModal(
       {Key? key,
       required this.isFromDashboardPage,
@@ -51,7 +49,8 @@ class PBISPlusStudentCardModal extends StatefulWidget {
       required this.classroomCourseId,
       required this.onValueUpdate,
       required this.constraint,
-      this.studentProfile})
+      this.studentProfile,
+      this.pBISPlusNotesBloc})
       : super(key: key);
 
   @override
@@ -67,9 +66,12 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   final TextEditingController noteController = TextEditingController();
   // PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
   PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
+  PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+  // PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
   ValueNotifier<double> cardHeight = ValueNotifier<double>(1);
   bool? isCustomBehavior = false;
+  FocusNode _focusNode = FocusNode();
 
   PBISPlusBloc pbisPluDefaultBehaviorBloc = PBISPlusBloc();
   PBISPlusBloc pbisPluCustomBehaviorBloc = PBISPlusBloc();
@@ -82,12 +84,20 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
+    _focusNode.addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
     noteController.dispose();
     super.dispose();
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus) {
+      // TextField is focused
+      isNotesTextfieldEnable.value = true;
+    }
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -118,24 +128,30 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-              height: 0.1,
-              width: double.infinity,
-              color: Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xff111C20)
-                  : Color(0xffF7F8F9)),
+          isNotesTextfieldEnable.value == true
+              ? SizedBox.shrink()
+              : Container(
+                  height: 0.1,
+                  width: double.infinity,
+                  color: Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color(0xff111C20)
+                      : Color(0xffF7F8F9)),
           ValueListenableBuilder(
-              valueListenable: maxLine,
+              valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => TextFormField(
-                    minLines: 1,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
+                    minLines: isNotesTextfieldEnable.value == true ? null : 1,
+                    maxLines: 12,
+                    focusNode: _focusNode,
+                    autofocus: isNotesTextfieldEnable.value,
+                    textAlign: isNotesTextfieldEnable.value
+                        ? TextAlign.start
+                        : TextAlign.center,
                     controller: noteController,
                     onChanged: (value) {
                       isNotesTextfieldEnable.value = true;
-                      if (noteController.text.isEmpty) {
-                        isNotesTextfieldEnable.value = false;
-                      }
+                      // if (noteController.text.isEmpty) {
+                      //   isNotesTextfieldEnable.value = false;
+                      // }
                     },
                     cursorColor:
                         Color(0xff000000) != Theme.of(context).backgroundColor
@@ -148,7 +164,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                               ? Color(0xffF7F8F9)
                               : Color(0xff111C20),
                       // Color(0xffF7F8F9),
-                      hintText: 'Add Note',
+                      hintText: isNotesTextfieldEnable.value ? "" : "Add Note",
                       hintStyle: Theme.of(context)
                           .textTheme
                           .bodyText1!
@@ -181,7 +197,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   )),
           //--------------------------------------BUTTON TO CALL THE ADD NOTE API---------------------------------------------------
           BlocConsumer<PBISPlusBloc, PBISPlusState>(
-              bloc: pBISPlusNotesBloc,
+              bloc: widget.pBISPlusNotesBloc,
               builder: (context, state) {
                 if (state is PBISPlusLoading) {
                   return _buildAddButton(isLoading: true);
@@ -189,16 +205,18 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 return _buildAddButton(isLoading: false);
               },
               listener: (context, state) async {
-                isNotesTextfieldEnable.value = false;
-                noteController.clear();
-                if (state is PBISPlusAddNotesSucess) {
-                  Utility.currentScreenSnackBar(
-                      "Note added successfully", null);
-                  Navigator.pop(context, true);
-                } else if (state is PBISErrorState) {
-                  Utility.currentScreenSnackBar(state.error.toString(), null);
-                  Navigator.pop(context, true);
-                }
+                // if (state is PBISPlusAddNotesSucess) {
+                //   isNotesTextfieldEnable.value = false;
+                //   noteController.clear();
+                //   Utility.currentScreenSnackBar(
+                //       "Note added successfully", null);
+                //   Navigator.pop(context, true);
+                // } else if (state is PBISErrorState) {
+                //   isNotesTextfieldEnable.value = false;
+                //   noteController.clear();
+                //   Utility.currentScreenSnackBar(state.error.toString(), null);
+                //   Navigator.pop(context, true);
+                // }
               })
         ]);
 
@@ -254,67 +272,39 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         });
 
     final pbisStudentProfileWidget = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-            height: widget.isFromDashboardPage == true ||
-                    widget.isFromStudentPlus == true
-                ? MediaQuery.of(context).size.width * 0.2
-                : MediaQuery.of(context).size.width * 0.2 / 1.1,
-
-            ///1.1,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                color: AppTheme.kButtonColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12))),
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.studentValueNotifier.value.profile?.name?.fullName ??
-                        '',
-                    textAlign: TextAlign.end,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  // widget.isFromDashboardPage == true ||
-                  //         widget.isFromStudentPlus == true
-                  //     ? SpacerWidget(8)
-                  //     : SpacerWidget(4)
-                ])),
-        Expanded(
-            child: ValueListenableBuilder(
-                valueListenable: isNotesTextfieldEnable,
-                builder: (context, value, _) => Container(
-                    alignment:
-                        // widget.isFromDashboardPage == true ||
-                        //         widget.isFromStudentPlus == true
-                        //     ?
-                        Alignment.center,
-                    // : isNotesTextfieldEnable.value
-                    //     ? Alignment.topCenter
-                    //     : Alignment.center,
-                    margin: isNotesTextfieldEnable.value
-                        ? EdgeInsets.only(top: 0)
-                        : EdgeInsets.all(0),
-                    padding: EdgeInsets.only(
-                        // top: isNotesTextfieldEnable.value ? 24 : 0,
-                        left: 10,
-                        right: 10),
-                    width: MediaQuery.of(context).size.width * 1,
-                    child: ActionInteractionButtonsRowWise))),
-        // widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
-        //     ? SizedBox.shrink()
-        //     : SpacerWidget(48)
-      ],
-    );
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          isNotesTextfieldEnable.value == true
+              ? Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: isNotesTextfieldEnable,
+                      builder: (context, value, _) => Container(
+                          // margin: isNotesTextfieldEnable.value
+                          //     ? EdgeInsets.only(top: 16)
+                          //     : EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12),
+                                  bottomRight: Radius.circular(12))),
+                          alignment: Alignment.bottomRight,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: addNotes)),
+                )
+              : Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: isNotesTextfieldEnable,
+                      builder: (context, value, _) => Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(
+                              top: widget.isFromDashboardPage == true ||
+                                      widget.isFromStudentPlus == true
+                                  ? MediaQuery.of(context).size.height * 0.1
+                                  : MediaQuery.of(context).size.width * 0.1),
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          width: MediaQuery.of(context).size.width * 1,
+                          child: ActionInteractionButtonsRowWise)))
+        ]);
 
     return SingleChildScrollView(
         reverse: true, // this is new
@@ -384,29 +374,44 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                   : Color(0xff111C20)
                                             ],
                                             stops: [
-                                              0.2,
+                                              widget.isFromDashboardPage ==
+                                                          true ||
+                                                      widget.isFromStudentPlus ==
+                                                          true
+                                                  ? 0.3
+                                                  : 0.2,
                                               0.0
                                             ])),
                                     child: pbisStudentProfileWidget),
                               )),
 
                       //----------------------------------------------------NOTE TEXT FIELD -----------------------------------------------
-                      Positioned(
-                          bottom: 5,
-                          child: widget.isFromStudentPlus == true ||
-                                  widget.isFromDashboardPage == true
+
+                      ValueListenableBuilder(
+                          valueListenable: isNotesTextfieldEnable,
+                          builder: (context, value, _) => isNotesTextfieldEnable
+                                      .value ==
+                                  true
                               ? SizedBox.shrink()
-                              : Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(12),
-                                      bottomRight: Radius.circular(12),
-                                    ),
-                                  ),
-                                  alignment: Alignment.bottomRight,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: addNotes)),
+                              : Positioned(
+                                  bottom: 5,
+                                  child: widget.isFromStudentPlus == true ||
+                                          widget.isFromDashboardPage == true ||
+                                          isNotesTextfieldEnable.value == true
+                                      ? SizedBox.shrink()
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(12),
+                                              bottomRight: Radius.circular(12),
+                                            ),
+                                          ),
+                                          alignment: Alignment.bottomRight,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.8,
+                                          child: addNotes))),
 
                       //----------------------------------------------------Profile Image-----------------------------------------------------
                       Positioned(
@@ -421,6 +426,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           HeroDialogRoute(
                                               builder: (context) =>
                                                   PBISPlusStudentDashBoard(
+                                                      pBISPlusBloc:
+                                                          pBISPlusBloc,
                                                       constraint:
                                                           widget.constraint,
                                                       scaffoldKey:
@@ -440,24 +447,69 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                       classroomCourseId: widget
                                                           .classroomCourseId)));
                                     },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                              child: Column(children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: PBISCommonProfileWidget(
+                                      studentProfile: widget.studentProfile,
+                                      isFromStudentPlus:
+                                          widget.isFromStudentPlus,
+                                      isLoading: widget.isLoading,
+                                      valueChange: valueChange,
+                                      countWidget: true,
+                                      studentValueNotifier:
+                                          widget.studentValueNotifier,
+                                      profilePictureSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.1,
+                                      imageUrl: widget.studentValueNotifier
+                                              .value.profile?.photoUrl ??
+                                          ""),
                                 ),
-                                child: PBISCommonProfileWidget(
-                                    studentProfile: widget.studentProfile,
-                                    isFromStudentPlus: widget.isFromStudentPlus,
-                                    isLoading: widget.isLoading,
-                                    valueChange: valueChange,
-                                    countWidget: true,
-                                    studentValueNotifier:
-                                        widget.studentValueNotifier,
-                                    profilePictureSize:
+                                Container(
+                                    alignment: Alignment.topCenter,
+                                    height:
                                         MediaQuery.of(context).size.width * 0.1,
-                                    imageUrl: widget.studentValueNotifier.value
-                                            .profile?.photoUrl ??
-                                        ""),
-                              )))
+
+                                    // widget.isFromDashboardPage ==
+                                    //             true ||
+                                    //         widget.isFromStudentPlus == true
+                                    //     ? MediaQuery.of(context).size.width *
+                                    //         0.2
+                                    //     : MediaQuery.of(context).size.width *
+                                    //         0.2 /
+                                    //         1.1,
+
+                                    ///1.1,
+                                    width: widget.isFromDashboardPage == true
+                                        ? MediaQuery.of(context).size.width
+                                        : MediaQuery.of(context).size.width *
+                                            0.8,
+                                    decoration: BoxDecoration(
+                                        color: widget.isFromDashboardPage ==
+                                                    true ||
+                                                widget.isFromStudentPlus == true
+                                            ? Colors.transparent
+                                            :
+                                            // Colors.orangeAccent,
+                                            AppTheme.kButtonColor,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12))),
+                                    child: Text(
+                                        widget.studentValueNotifier.value
+                                                .profile?.name?.fullName ??
+                                            '',
+                                        textAlign: TextAlign.end,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)))
+                              ])))
                     ]))));
   }
 
@@ -468,60 +520,63 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       {required List<PBISPlusCommonBehaviorModal> behaviorList,
       bool loading = false}) {
     return GridView.builder(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: widget.isFromDashboardPage == true ? 1.1 : 0.9,
-          // Adjust this value to change item aspect ratio
-          crossAxisSpacing: 4.0,
-          // Adjust the spacing between items horizontally
-          mainAxisSpacing: 4.0
-          // Adjust the spacing between items vertically
-          ),
-      itemCount: behaviorList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return FittedBox(
-            child: Center(
-                child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ShimmerLoading(
-                        isLoading: loading,
-                        child: PBISPlusActionInteractionButton(
-                            isCustomBehavior: isCustomBehavior,
-                            size: widget.isFromDashboardPage == true ||
-                                    widget.studentProfile == true
-                                ? 48
-                                : 64,
-                            isShowCircle: true,
-                            onValueUpdate: (updatedStudentValueNotifier) {
-                              widget.classroomCourseId =
-                                  widget.classroomCourseId;
-                              widget.onValueUpdate(
-                                  updatedStudentValueNotifier); // Return to class screen // Roster screen count update
-                              widget.studentValueNotifier =
-                                  updatedStudentValueNotifier; // Used on current screen to update the value
-                              valueChange.value = !valueChange
-                                  .value; // Update the changes on bool change detect
-                            },
-                            isLoading: widget.isLoading,
-                            isFromStudentPlus: widget.isFromStudentPlus,
-                            studentValueNotifier: widget.studentValueNotifier,
-                            iconData: behaviorList[index],
-                            classroomCourseId: widget.classroomCourseId,
-                            scaffoldKey: widget.scaffoldKey)))));
-      },
-    );
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: widget.isFromDashboardPage == true ? 1.1 : 0.9,
+            // Adjust this value to change item aspect ratio
+            crossAxisSpacing: 4.0,
+            // Adjust the spacing between items horizontally
+            mainAxisSpacing: 4.0
+            // Adjust the spacing between items vertically
+            ),
+        itemCount: behaviorList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return FittedBox(
+              child: Center(
+                  child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ShimmerLoading(
+                          isLoading: loading,
+                          child: PBISPlusActionInteractionButton(
+                            
+                              index: index,
+                              isCustomBehavior: isCustomBehavior,
+                              size: widget.isFromDashboardPage == true ||
+                                      widget.studentProfile == true
+                                  ? 48
+                                  : 64,
+                              isShowCircle: true,
+                              onValueUpdate: (updatedStudentValueNotifier) {
+                                widget.classroomCourseId =
+                                    widget.classroomCourseId;
+                                widget.onValueUpdate(
+                                    updatedStudentValueNotifier); // Return to class screen // Roster screen count update
+                                widget.studentValueNotifier =
+                                    updatedStudentValueNotifier; // Used on current screen to update the value
+                                valueChange.value = !valueChange
+                                    .value; // Update the changes on bool change detect
+                              },
+                              isLoading:  widget.isFromStudentPlus ==true?true: widget.isLoading,
+                              isFromStudentPlus: widget.isFromStudentPlus,
+                              studentValueNotifier: widget.studentValueNotifier,
+                              iconData: behaviorList[index],
+                              classroomCourseId: widget.classroomCourseId,
+                              scaffoldKey: widget.scaffoldKey)))));
+        });
   }
 
   dynamic getContainerHeight(
       bool? isFromDashboardPage, double? constraint, itemcount) {
-    double spacing = itemcount.value <= 3
-        ? (widget.constraint <= 115)
-            ? MediaQuery.of(context).size.width * 0.07
-            : MediaQuery.of(context).size.width * 0.12
-        : 0;
+    double spacing = // MediaQuery.of(context).size.width * 0.2;
+        itemcount.value <= 3
+            ? (widget.constraint <= 115)
+                ? MediaQuery.of(context).size.width * 0.09
+                : MediaQuery.of(context).size.width * 0.12
+            // MediaQuery.of(context).size.width * 0.12
+            : 0;
 
     double height = Platform.isAndroid
         ? (widget.isFromDashboardPage == true ||
@@ -530,23 +585,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 ? MediaQuery.of(context).size.height * 0.43 - spacing
                 : MediaQuery.of(context).size.height * 0.40 - spacing
             : (widget.constraint <= 115)
-                ? isNotesTextfieldEnable.value
-                    ? MediaQuery.of(context).size.height * 0.60 - spacing
-                    : MediaQuery.of(context).size.height * 0.50 - spacing
-                : isNotesTextfieldEnable.value
-                    ? MediaQuery.of(context).size.height * 0.58 - spacing
-                    : MediaQuery.of(context).size.height * 0.49 - spacing)
+                ? MediaQuery.of(context).size.height * 0.50 - spacing
+                : MediaQuery.of(context).size.height * 0.49 - spacing)
         : widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
             ? (widget.constraint <= 115)
                 ? MediaQuery.of(context).size.height * 0.50 - spacing
                 : MediaQuery.of(context).size.height * 0.48 - spacing
             : (widget.constraint <= 115)
-                ? isNotesTextfieldEnable.value
-                    ? MediaQuery.of(context).size.height * 0.66 - spacing
-                    : MediaQuery.of(context).size.height * 0.55 - spacing
-                : isNotesTextfieldEnable.value
-                    ? MediaQuery.of(context).size.height * 0.58 - spacing
-                    : MediaQuery.of(context).size.height * 0.55 - spacing;
+                ? MediaQuery.of(context).size.height * 0.55 - spacing
+                : MediaQuery.of(context).size.height * 0.55 - spacing;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       cardHeight.value = height;
@@ -560,20 +607,26 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       valueListenable: isNotesTextfieldEnable,
       builder: (context, value, _) => isNotesTextfieldEnable.value
           ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: FittedBox(
                   child: CustomCircularButton(
-                      size: Size(MediaQuery.of(context).size.width * 0.26,
+                      iconSize: Globals.deviceType == "phone" ? 20 : 28,
+                      iconData: IconData(
+                        0xe896,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg,
+                      ),
+                      size: Size(MediaQuery.of(context).size.width * 0.36,
                           MediaQuery.of(context).size.width / 10),
                       borderColor: AppTheme.kButtonColor,
                       textColor:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
+                          Color(0xff000000) == Theme.of(context).backgroundColor
                               ? Color(0xff111C20)
                               : Color(0xffF7F8F9),
                       text: "Add Note",
                       onClick: () async {
                         if (noteController.text.isNotEmpty) {
-                          pBISPlusNotesBloc.add(AddPBISPlusStudentNotes(
+                          widget.pBISPlusNotesBloc!.add(AddPBISPlusStudentNotes(
                               studentId: widget
                                   .studentValueNotifier.value.profile?.id!,
                               studentName: widget.studentValueNotifier.value
@@ -584,6 +637,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                               schoolId: Overrides.SCHOOL_ID,
                               schoolDbn: Globals.schoolDbnC,
                               notes: noteController.text));
+                          Navigator.pop(context, true);
                         }
                       },
                       backgroundColor: AppTheme.kButtonColor,
@@ -594,15 +648,12 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
-
 /*-------------------------------------------------trackUserActivity-------------------------------------------- */
-
 /*-------------------------------------------------------------------------------------------------------------- */
 
   void trackUserActivity() {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_student_card_modal_view");
-
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_student_card_modal_screen',
         screenClass: 'PBISPlusStudentCardModal');

@@ -3,6 +3,8 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_intro_tutorial_section.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
@@ -129,7 +131,12 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                       onPressed: () async {
                         var result = await Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => CustomIntroWidget()),
+                            builder: (context) => CommonIntroSection(
+                                isSkipAndStartButton: true,
+                                onBoardingInfoList: GradedIntroContentModal
+                                    .onBoardingMainPagesInfoList,
+                                isMcqSheet: widget.isMultipleChoice),
+                          ),
                         );
                         //  Navigator.pop(context);
                       },
@@ -174,6 +181,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfilePage(
+                                                  sectionType: "Graded+",
                                                   plusAppName: 'Graded+',
                                                   fromGradedPlus: true,
                                                   profile: snapshot.data!,

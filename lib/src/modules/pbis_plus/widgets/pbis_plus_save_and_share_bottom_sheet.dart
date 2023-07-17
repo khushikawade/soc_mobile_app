@@ -109,7 +109,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1 //classroomMaxPointQue
-              ? widget.height! * 1.2
+              ? widget.height! * 1.1
               : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
@@ -117,7 +117,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       ? widget.fromClassScreen!
                           ? (widget.height! * 0.6)
                           : (widget.height! * 1.3)
-                      : widget.height, //saveAndShareOptions
+                      : widget.height! * 0.8, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -235,6 +235,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
                 })),
+            SpacerWidget(16)
           ]),
     );
   }

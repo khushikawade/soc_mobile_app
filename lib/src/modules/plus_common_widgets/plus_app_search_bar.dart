@@ -90,7 +90,8 @@ class _PlusAppSearchBarState extends State<PlusAppSearchBar> {
             suffixIcon: IconButton(
                 onPressed: widget.iconOnTap,
                 icon: Icon(
-                    widget.controller.text == ''
+                    widget.controller.text == '' ||
+                            widget.controller.text.isEmpty
                         ? const IconData(0xe805,
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg)
@@ -103,6 +104,7 @@ class _PlusAppSearchBarState extends State<PlusAppSearchBar> {
 
   Widget innerSearchBar(String translatedMessage) {
     return TextFormField(
+        readOnly: widget.sectionName == 'PBIS+' ? false : true,
         autofocus: widget.autoFocus,
         style: Theme.of(context).textTheme.headline5,
         focusNode: widget.focusNode,

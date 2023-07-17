@@ -248,11 +248,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     if (event is PBISPlusNotesSearchStudent) {
       try {
         yield PBISPlusLoading();
-        if (event.searchKey.isNotEmpty && event.studentNotes.length > 0) {
+        if (event.searchKey.isNotEmpty) {
           final searchedList =
-              await searchNotesList(event.studentNotes, event.searchKey);
+              await searchStudentList(event.studentNotes, event.searchKey);
 
-          if (searchedList.isNotEmpty && searchedList.length > 0) {
+          if (searchedList != null && searchedList.isNotEmpty) {
             yield PBISPlusStudentSearchSucess(sortedList: searchedList);
           } else {
             yield PBISErrorState(error: "No Student Found");
@@ -841,10 +841,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentNotesList.isNotEmpty) {
           // Assuming want to update the notes with the first API data
           _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
-          // //Updating the notes data in local db
-          // _pbisPlusNotesStudentsList.removeAt(studentItemIndex);
-          // _pbisPlusNotesStudentsList.insert(
-          //     studentItemIndex, _pbisPlusNotesStudentsList[studentItemIndex]);
 
           //Updating the notes data in local db
           await _pbisPlusSNotesStudentListDB.clear();
@@ -852,6 +848,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await _pbisPlusSNotesStudentListDB.addData(element);
           });
         }
+        yield PBISPlusLoading();
         yield PBISPlusNotesSucess(notesList: studentNotesList);
       } catch (e) {
         yield PBISErrorState(error: "No Notes Found");
@@ -1390,26 +1387,53 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       LocalDatabase<PBISPlusNotesUniqueStudentList> _pbisPlusStudentListDB =
           LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+
+      //DELTE THE STUDENT LIST
+      SharedPreferences clearNewsCache = await SharedPreferences.getInstance();
+      final clearCacheResult =
+          clearNewsCache.getBool('delete_local_all_notes_Student');
+
+      if (clearCacheResult != true) {
+        print('Inside clear state');
+        await _pbisPlusStudentListDB.clear();
+        await clearNewsCache.setBool('delete_local_all_notes_Student', true);
+      }
+
       List<PBISPlusNotesUniqueStudentList>? _pbisPlusStudentDataList =
           await _pbisPlusStudentListDB.getData();
 
-      uniqueStudents = await getUniqueStudentList(allClassroomCourses);
-
-      uniqueStudents.sort((a, b) {
-        return a.profile!.name!.fullName!
-            .toLowerCase()
-            .compareTo(b.profile!.name!.fullName!.toLowerCase());
-      });
+      //Creating the unique student list
+      for (final ClassroomCourse course in allClassroomCourses) {
+        for (final ClassroomStudents student in course?.students ?? []) {
+          if (student.profile != null &&
+              !uniqueStudents
+                  .any((s) => s.profile?.id == student.profile?.id)) {
+            student.profile!.courseName = course.name;
+            uniqueStudents.add(student);
+          }
+        }
+      }
+      //Sorting the unique student list in alphabetically order
+      uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
+          .toLowerCase()
+          .compareTo(b.profile!.name!.fullName!.toLowerCase()));
 
       //--------------------------------NEW WAY TO MAP THE DATA IT SAVED THE PERVIOULSY NOTES  THE STUDENTS ------------- /
       if (_pbisPlusStudentDataList.isNotEmpty) {
         list = uniqueStudents.map((item) {
           // Check if the student already exists in the local database
           PBISPlusNotesUniqueStudentList existingStudent =
-              _pbisPlusStudentDataList
-                  .firstWhere((e) => e.studentId == item.profile?.id);
+              PBISPlusNotesUniqueStudentList();
+          List<PBISStudentNotes>? notes;
 
-          List<PBISStudentNotes>? notes = existingStudent.notes;
+          try {
+            existingStudent = _pbisPlusStudentDataList.firstWhere(
+                (e) => e.studentId == item.profile?.id,
+                orElse: () => PBISPlusNotesUniqueStudentList());
+            notes = existingStudent.notes ?? null;
+          } catch (e) {
+            notes = null;
+          }
 
           return PBISPlusNotesUniqueStudentList(
             email: item.profile!.emailAddress!,
@@ -1478,7 +1502,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1503,7 +1530,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           '${Overrides.API_BASE_URL2}production/getRecords/PBIS_Custom_Icon__c',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
@@ -1736,11 +1766,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
-          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
           isCompleteUrl: true);
-      print(
-        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/get-notes/teacher/$teacherId/student/$student_id?dbn=${Globals.schoolDbnC}',
-      );
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<PBISStudentNotes> listData = response.data['body']
             .map<PBISStudentNotes>((i) => PBISStudentNotes.fromJson(i))
@@ -1776,6 +1807,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/notes/add-notes',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
           },
           body: body,
           isGoogleApi: true);
@@ -1796,16 +1828,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*----------------------------------------------------------------------------------------------*/
 /*---------------------------------------Function searchNotesList-------------------------------*/
 /*----------------------------------------------------------------------------------------------*/
-List<PBISPlusNotesUniqueStudentList> searchNotesList(
+List<PBISPlusNotesUniqueStudentList> searchStudentList(
     List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
-  List<PBISPlusNotesUniqueStudentList> searchResults = [];
-
-  for (var note in notesList) {
-    if (note.names != null && note.names!.fullName != null) {
-      if (note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase())) {
-        searchResults.add(note);
-      }
-    }
-  }
-  return searchResults;
+  return notesList
+      .where((note) =>
+          note.names != null &&
+          note.names!.fullName != null &&
+          note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase()))
+      .toList();
 }

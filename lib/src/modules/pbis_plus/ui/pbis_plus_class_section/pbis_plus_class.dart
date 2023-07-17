@@ -59,6 +59,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   final ValueNotifier<bool> screenShotNotifier = ValueNotifier<bool>(false);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final double profilePictureSize = 30;
   static const double _KVerticalSpace = 60.0;
@@ -136,15 +137,15 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget headerListTile() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       title: PlusScreenTitleWidget(
-        kLabelSpacing: 18,
+        kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
         text: 'All Classes',
         backButton: false,
         isTrailingIcon: true,
-        backButtonOnTap: () {
-          widget.backOnTap();
-        },
+        // backButtonOnTap: () {
+        //   widget.backOnTap();
+        // },
       ),
       trailing: widget.isGradedPlus == true
           ? Container(
@@ -214,9 +215,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+        // mainAxisSize: MainAxisSize.max,
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+          // SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           ValueListenableBuilder(
             valueListenable: screenShotNotifier,
             builder: (context, value, child) {
@@ -325,30 +326,32 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     );
   }
 
-  ListView buildList(
+  Widget buildList(
       {required List<ClassroomCourse> googleClassroomCourseList,
       required final bool isStudentInteractionLoading,
       required final bool isScreenShimmerLoading}) {
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        Container(
-            margin: EdgeInsets.all(10.0),
-            height: 30,
-            child: Container(
-              child: ListView.builder(
-                controller: null,
-                itemBuilder: (BuildContext context, int index) {
-                  return chipBuilder(googleClassroomCourseList, context, index,
-                      isScreenShimmerLoading);
-                },
-                itemCount: googleClassroomCourseList.length,
-                scrollDirection: Axis.horizontal,
-              ),
-            )),
-        studentListCourseWiseView(googleClassroomCourseList,
-            isStudentInteractionLoading, isScreenShimmerLoading)
-      ],
+    return Container(
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Container(
+              margin: EdgeInsets.all(10.0),
+              height: 30,
+              child: Container(
+                child: ListView.builder(
+                  controller: null,
+                  itemBuilder: (BuildContext context, int index) {
+                    return chipBuilder(googleClassroomCourseList, context,
+                        index, isScreenShimmerLoading);
+                  },
+                  itemCount: googleClassroomCourseList.length,
+                  scrollDirection: Axis.horizontal,
+                ),
+              )),
+          studentListCourseWiseView(googleClassroomCourseList,
+              isStudentInteractionLoading, isScreenShimmerLoading)
+        ],
+      ),
     );
   }
 
@@ -556,8 +559,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         builder: (BuildContext context, BoxConstraints constraints) {
       Container BuildStudentCountIndicator = Container(
         padding: EdgeInsets.all(2),
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,
           shape: BoxShape.circle,
@@ -647,6 +650,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               heroTag: heroTag,
               classroomCourseId: classroomCourseId,
               scaffoldKey: _scaffoldKey,
+              pBISPlusNotesBloc: pBISPlusNotesBloc,
             )),
           ),
         );
@@ -664,7 +668,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 5),
                   alignment: Alignment.center,
-                  margin: EdgeInsets.all(3),
+                  margin: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color:
@@ -701,6 +705,21 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
+              BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                  bloc: pBISPlusNotesBloc,
+                  builder: (context, state) {
+                    return SizedBox.shrink();
+                  },
+                  listener: (context, state) async {
+                    print(state);
+                    if (state is PBISPlusAddNotesSucess) {
+                      Utility.currentScreenSnackBar(
+                          "Note added successfully", null);
+                    } else if (state is PBISErrorState) {
+                      Utility.currentScreenSnackBar(
+                          state.error.toString(), null);
+                    }
+                  }),
               if (widget.isGradedPlus != true)
                 Positioned(
                     top: 0,

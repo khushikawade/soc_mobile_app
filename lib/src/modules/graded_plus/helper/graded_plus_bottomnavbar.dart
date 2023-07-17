@@ -1,8 +1,11 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help/graded_plus_help.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_staff.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/graded_plus_new_help.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_intro_tutorial_section.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
@@ -24,11 +27,16 @@ class GradedPlusBottomNavBar {
         backOnTap: backOnTap,
       ),
       GradedPlusAssessmentSummary(
-        isFromHomeSection: true,
-        selectedFilterValue: 'All',
-      ),
-      GradedPlusSelectAssessmentTypeSection(),
-      GradedPlusHelp(),
+          isFromHomeSection: true,
+          selectedFilterValue: 'All',
+          titleIconData: const IconData(0xe824,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
+      GradedPlusSelectAssessmentTypeSection(
+          titleIconData: const IconData(0xe898,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
+      GradedPlusHelpSection(
+          titleIconData: const IconData(0xe890,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
 
       // CustomIntroWidget(
       //   isFromHelp: true,

@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_edit_skills_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -24,9 +25,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Soc/src/services/Strings.dart';
 
 class PBISPlusEditSkills extends StatefulWidget {
+  final IconData titleIconData;
   PBISPlusEditSkills({
     Key? key,
     this.constraint,
+    required this.titleIconData,
   }) : super(key: key) {}
   final double? constraint;
 
@@ -105,7 +108,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
-          _buildToggleButton(),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: StudentPlusOverrides.kSymmetricPadding),
+            child: PlusScreenTitleWidget(
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                text: 'Edit Behavior'),
+          ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           buildTargetBehaviorWidget(),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
@@ -118,9 +127,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*----------------------------------------------_buildToggleButton---------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
   Widget _buildToggleButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: StudentPlusOverrides.kSymmetricPadding),
+    return Container(
+      // color: Colors.red,
+      // padding: EdgeInsets.only(right: 0),
+      // padding: EdgeInsets.symmetric(
+      //     horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ValueListenableBuilder(
           valueListenable: PBISPlusOverrides.isCustomBehavior,
           builder: (context, value, _) => Transform.scale(
@@ -156,18 +167,18 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------------_buildBackIcon------------------------------------------------ */
 /*-------------------------------------------------------------------------------------------------------------- */
-  Widget _buildBackIcon() {
-    return IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-            IconData(0xe80d,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg),
-            size: Globals.deviceType == 'phone' ? 24 : 32,
-            color: AppTheme.kButtonColor));
-  }
+  // Widget _buildBackIcon() {
+  //   return IconButton(
+  //       onPressed: () {
+  //         Navigator.pop(context);
+  //       },
+  //       icon: Icon(
+  //           IconData(0xe80d,
+  //               fontFamily: Overrides.kFontFam,
+  //               fontPackage: Overrides.kFontPkg),
+  //           size: Globals.deviceType == 'phone' ? 24 : 32,
+  //           color: AppTheme.kButtonColor));
+  // }
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*------------------------------------------------trackUserActivity--------------------------------------------- */
@@ -195,30 +206,34 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             color: Theme.of(context).backgroundColor,
             child: Column(children: [
               Container(
-                  width: MediaQuery.of(context).size.height * 0.80,
+                  // width: MediaQuery.of(context).size.height * 0.80,
                   decoration: BoxDecoration(
-                    color: AppTheme.kButtonColor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8.0),
-                      topLeft: Radius.circular(8.0),
-                    ),
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Utility.textWidget(
-                      textAlign: TextAlign.center,
-                      context: context,
-                      text: PBISPlusOverrides.isCustomBehavior.value
-                          ? "Teacher Behaviors"
-                          : "School Behaviors",
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(
-                              color: Color(0xff000000) ==
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xffFFFFFF)
-                                  : Color(0xff000000),
-                              fontWeight: FontWeight.bold))),
+                      color: AppTheme.kButtonColor,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8.0),
+                          topLeft: Radius.circular(8.0))),
+                  padding:
+                      EdgeInsets.only(left: 16, top: 16, bottom: 16, right: 8),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Utility.textWidget(
+                            textAlign: TextAlign.center,
+                            context: context,
+                            text: PBISPlusOverrides.isCustomBehavior.value
+                                ? "Teacher Behaviors"
+                                : "School Behaviors",
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffFFFFFF)
+                                        : Color(0xff000000),
+                                    fontWeight: FontWeight.bold)),
+                        _buildToggleButton()
+                      ])),
               SpacerWidget(18),
               BlocConsumer<PBISPlusBloc, PBISPlusState>(
                   bloc: PBISPlusOverrides.isCustomBehavior.value
@@ -700,7 +715,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: PBISPlusAppBar(
-                  title: "", backButton: true, scaffoldKey: _scaffoldKey),
+                  titleIconData: widget.titleIconData,
+                  title: "",
+                  backButton: true,
+                  scaffoldKey: _scaffoldKey),
               body: body(context))
         ]));
   }

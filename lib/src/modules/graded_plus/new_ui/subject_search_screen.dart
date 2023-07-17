@@ -51,7 +51,8 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
       required this.subjectId,
       required this.googleDriveBloc,
       required this.googleClassroomBloc,
-      required this.gradedPlusQueImage})
+      required this.gradedPlusQueImage,
+      this.titleIconData})
       : super(key: key);
 
   GoogleClassroomBloc googleClassroomBloc;
@@ -66,7 +67,7 @@ class GradedPlusSearchScreenPage extends StatefulWidget {
 
   final String? stateName;
   final String? subjectId;
-
+  final IconData? titleIconData;
   @override
   State<GradedPlusSearchScreenPage> createState() =>
       _GradedPlusSearchScreenPageState();
@@ -183,7 +184,7 @@ class _GradedPlusSearchScreenPageState
                           Container(
                               padding: EdgeInsets.only(bottom: 10),
                               child: Utility.textWidget(
-                                  text: 'Recent Search',
+                                  text: 'Recent Searches',
                                   context: context,
                                   textTheme: Theme.of(context)
                                       .textTheme
@@ -218,7 +219,7 @@ class _GradedPlusSearchScreenPageState
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Utility.textWidget(
-                                            text: 'Recent Search',
+                                            text: 'Recent Searches',
                                             context: context,
                                             textTheme: Theme.of(context)
                                                 .textTheme
@@ -274,6 +275,7 @@ class _GradedPlusSearchScreenPageState
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   GradedPluSubjectSelection(
+                                                      titleIconData: widget.titleIconData,
                                                     gradedPlusQueImage: widget
                                                         .gradedPlusQueImage,
                                                     isMcqSheet:
@@ -820,9 +822,11 @@ class _GradedPlusSearchScreenPageState
       OcrUtility.showSuccessDialog(context: context);
       Timer(Duration(seconds: 2), () {
         Navigator.pushReplacement(
+
           context,
           MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+                titleIconData: widget.titleIconData,
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               fileId: Globals.googleExcelSheetId,
@@ -1060,6 +1064,7 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            iconData:widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {

@@ -12,7 +12,9 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
       this.icon,
       this.fabWidth,
       required this.isExtended,
-      this.heroTag})
+      this.heroTag,
+      this.padding,
+      this.textTheme})
       : super(key: key);
 
   final VoidCallback onPressed;
@@ -22,10 +24,12 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
   final bool isExtended;
   final double? fabWidth;
   final String? heroTag;
+  final EdgeInsetsGeometry? padding;
+  final TextStyle? textTheme;
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
+      padding: padding ?? const EdgeInsets.only(bottom: 30),
       child: FloatingActionButton.extended(
           heroTag: heroTag,
           isExtended: isExtended,
@@ -41,12 +45,12 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
                   alignment: Alignment.center,
                   width: fabWidth,
                   child: Utility.textWidget(
+                      maxLines: 1,
                       context: context,
                       text: title!,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor)),
+                      textTheme: textTheme ??
+                          Theme.of(context).textTheme.headline2!.copyWith(
+                              color: Theme.of(context).backgroundColor)),
                 )),
     );
   }

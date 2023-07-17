@@ -31,79 +31,90 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 55,
+      height: 80,
       child: Container(
         width: MediaQuery.of(context).size.width * 1,
-        //  padding: EdgeInsets.symmetric(
-        //      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-        child: TranslationWidget(
-            message: isSearchPage == true
-                ? isCommonCore == true
-                    ? 'Common Core'
-                    : 'Search Learning Standard and $stateName Learning Standard '
-                : isSubLearningPage == true
-                    ? isCommonCore == true
-                        ? 'Common Core'
-                        : 'Search $stateName Learning Standard'
-                    : 'Search',
-            fromLanguage: "en",
-            toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) {
-              return TextFormField(
-                readOnly: readOnly ?? false,
-                autofocus: isSearchPage == true ? true : false,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primaryVariant),
-                //  focusNode: myFocusNode,
-                controller: controller,
-                cursorColor: Theme.of(context).colorScheme.primaryVariant,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    borderSide:
-                        BorderSide(color: AppTheme.kSelectedColor, width: 2),
+        //padding: EdgeInsets.symmetric(vertical: 20 / 3, horizontal: 20 / 3.5),
+        child: Card(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            //side: BorderSide(color: Colors.white70, width: 1),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          color: Colors.transparent,
+          child: TranslationWidget(
+              message: isSearchPage == true
+                  ? isCommonCore == true
+                      ? 'Common Core'
+                      : 'Search Learning Standard and $stateName Learning Standard '
+                  : isSubLearningPage == true
+                      ? isCommonCore == true
+                          ? 'Common Core'
+                          : 'Search $stateName Learning Standard'
+                      : 'Search',
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) {
+                return TextFormField(
+                  readOnly: readOnly ?? false,
+                  autofocus: isSearchPage == true ? true : false,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primaryVariant),
+                  //  focusNode: myFocusNode,
+                  controller: controller,
+                  cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 16),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderSide: BorderSide(
+                          color: readOnly == true
+                              ? Theme.of(context).colorScheme.secondary
+                              : AppTheme.kButtonColor,
+                          width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 2),
+                    ),
+                    hintText: translatedMessage.toString(),
+                    hintStyle:
+                        TextStyle(color: Color(0xffAAAAAA), fontSize: 15),
+                    fillColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Theme.of(context).colorScheme.secondary
+                            : Color.fromARGB(255, 12, 20, 23),
+                    prefixIcon: Icon(
+                      const IconData(0xe805,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: Color(0xffAAAAAA),
+                      size: Globals.deviceType == "phone" ? 18 : 16,
+                    ),
+                    suffixIcon: controller.text.isEmpty
+                        ? null
+                        : suffixIcon == null
+                            ? InkWell(
+                                onTap: () {
+                                  controller.clear();
+                                },
+                                child: Icon(
+                                  Icons.clear,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                  size: Globals.deviceType == "phone" ? 20 : 28,
+                                ),
+                              )
+                            : suffixIcon,
                   ),
-                  border: InputBorder.none,
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide: const BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  hintText: translatedMessage.toString(),
-                  hintStyle: TextStyle(color: Color(0xffAAAAAA), fontSize: 15),
-                  fillColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color.fromRGBO(0, 0, 0, 0.1)
-                          : Color.fromRGBO(255, 255, 255, 0.16),
-                  prefixIcon: Icon(
-                    const IconData(0xe805,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Color(0xffAAAAAA),
-                    size: Globals.deviceType == "phone" ? 18 : 16,
-                  ),
-                  suffixIcon: controller.text.isEmpty
-                      ? null
-                      : suffixIcon == null
-                          ? InkWell(
-                              onTap: () {
-                                controller.clear();
-                              },
-                              child: Icon(
-                                Icons.clear,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                                size: Globals.deviceType == "phone" ? 20 : 28,
-                              ),
-                            )
-                          : suffixIcon,
-                ),
-                onChanged: onSaved,
-                onTap: onTap,
-              );
-            }),
+                  onChanged: onSaved,
+                  onTap: onTap,
+                );
+              }),
+        ),
       ),
     );
   }

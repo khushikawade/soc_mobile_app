@@ -146,6 +146,12 @@ flutter:
     - lib/src/modules/pbis_plus/pbis_plus_asset/
     - assets/Pbis_plus/
     - assets/pbis_sound/sound1.wav
+    - assets/pbis_sound/sound2.wav
+    - assets/pbis_sound/sound3.wav
+    - assets/pbis_sound/sound4.wav
+    - assets/pbis_sound/sound5.wav
+    - assets/pbis_sound/sound6.wav
+
 
     # - assets/pbis_plus_asset/
   # An image asset can refer to one or more resolution-specific "finaliants", see

@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ class CustomCircularButton extends StatelessWidget {
   // dynamic model;
   double? buttonRadius;
   TextStyle? style;
+  IconData? iconData;
+  double? iconSize;
 
   CustomCircularButton({
     Key? key,
@@ -33,7 +36,9 @@ class CustomCircularButton extends StatelessWidget {
     required Color? backgroundColor,
     required bool? isBusy,
     required double? buttonRadius,
+    IconData? iconData,
     TextStyle? style,
+    double? iconSize,
   }) : super(key: key) {
     this.text = text ?? 'Press';
     this.backgroundColor = backgroundColor ?? AppTheme.kButtonColor;
@@ -44,6 +49,8 @@ class CustomCircularButton extends StatelessWidget {
     this.size = size ?? Size(140, 40);
     this.isBusy = isBusy ?? false;
     this.buttonRadius = buttonRadius ?? 64;
+    this.iconData = iconData ?? null;
+    this.iconSize = iconSize ?? 24;
     this.style = style ??
         TextStyle(
           fontSize: Globals.deviceType == "phone"
@@ -85,15 +92,30 @@ class CustomCircularButton extends StatelessWidget {
                       child: CircularProgressIndicator.adaptive(
                           strokeWidth: 2,
                           backgroundColor: AppTheme.kButtonColor)))
-              : Utility.textWidget(
-                  context: context,
-                  textAlign: TextAlign.center,
-                  text: (text!),
-                  textTheme: style ??
-                      Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: textColor, fontSize: 12)),
+              : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  iconData == null
+                      ? SizedBox.shrink()
+                      : Padding(
+                          padding: EdgeInsets.only(left: 4, right: 4),
+                          child: Icon(
+                            iconData,
+                            size: iconSize,
+                            color: Color(0xff000000) ==
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xff111C20)
+                                : Color(0xffF7F8F9),
+                          ),
+                        ),
+                  Utility.textWidget(
+                      context: context,
+                      textAlign: TextAlign.center,
+                      text: (text!),
+                      textTheme: style ??
+                          Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: textColor, fontSize: 12)),
+                ]),
         ));
   }
 }

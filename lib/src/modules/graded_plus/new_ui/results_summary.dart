@@ -61,7 +61,8 @@ class GradedPlusResultsSummary extends StatefulWidget {
       required this.assessmentName,
       this.historySecondTime,
       this.isMcqSheet,
-      this.selectedAnswer})
+      this.selectedAnswer,
+      this.titleIconData})
       : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
@@ -78,6 +79,7 @@ class GradedPlusResultsSummary extends StatefulWidget {
   final bool? createdAsPremium;
   bool? isMcqSheet;
   String? selectedAnswer;
+  final IconData? titleIconData;
   @override
   State<GradedPlusResultsSummary> createState() => studentRecordList();
 }
@@ -209,6 +211,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              iconData: widget.titleIconData,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
@@ -1277,6 +1280,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       GradedPlusAssessmentSummary(
+                                        titleIconData: widget.titleIconData,
                                         selectedFilterValue:
                                             widget.isMcqSheet == true
                                                 ? 'Multiple Choice'
@@ -1418,13 +1422,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
-                  : 'Student Id/Student Email',
-              textFileTitleThree:
-                  //   widget.isMcqSheet == true
-                  // ? "Student Selection"
-                  // /// : "Student Grade",
-                  // :
-                  'Points Earned',
+                  : 'Student ID/Student Email',
+              textFileTitleThree: 'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
@@ -1905,6 +1904,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
+                titleIconData: widget.titleIconData,
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
                 isMcqSheet: isMcqSheet, // widget.isMcqSheet ?? false,

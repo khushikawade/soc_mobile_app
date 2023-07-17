@@ -113,3 +113,39 @@ class StudentPlusSearchByEmailSuccess extends StudentPlusState {
   @override
   List<Object> get props => [];
 }
+
+/* ---------------- State use to send family login loading  --------------- */
+class FamilyLoginLoading extends StudentPlusState {}
+
+/* ---------------- State use to send otp success family login --------------- */
+class FamilyLoginOtpSendSuccess extends StudentPlusState {}
+
+/* ---------------- State use to send otp failure family login --------------- */
+class FamilyLoginOtpSendFailure extends StudentPlusState {}
+
+/* ---------------- State use to send otp verify success family login --------------- */
+class FamilyLoginOtpVerifySuccess extends StudentPlusState {
+  final String? authToken;
+  FamilyLoginOtpVerifySuccess({required this.authToken});
+  FamilyLoginOtpVerifySuccess copyWith({final obj}) {
+    return FamilyLoginOtpVerifySuccess(authToken: authToken ?? this.authToken);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+/* ---------------- State use to send otp failure family login --------------- */
+class FamilyLoginOtpVerifyFailure extends StudentPlusState {}
+
+/* ------------------------ state use to return family login Error ----------------------- */
+class FamilyLoginErrorReceived extends StudentPlusState {
+  final err;
+  FamilyLoginErrorReceived({this.err});
+  FamilyLoginErrorReceived copyWith({final err}) {
+    return FamilyLoginErrorReceived(err: err ?? this.err);
+  }
+
+  @override
+  List<Object> get props => [err];
+}

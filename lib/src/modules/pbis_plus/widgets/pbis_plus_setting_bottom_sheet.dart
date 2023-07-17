@@ -331,7 +331,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               Navigator.pop(context);
               pushNewScreen(
                 context,
-                screen: PBISPlusEditSkills(),
+                screen: PBISPlusEditSkills(
+                    titleIconData: const IconData(0xe898,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg)),
                 withNavBar: true,
               );
 
@@ -1096,7 +1099,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             contentPadding: EdgeInsets.symmetric(horizontal: 0),
             title: Utility.textWidget(
                 context: context,
-                text: 'Select Students by Course',
+                text: 'Select Students by Classes',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!

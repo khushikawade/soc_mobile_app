@@ -26,6 +26,7 @@ class StateSelectionPage extends StatefulWidget {
   // final String questionImageUrl;
   final String selectedClass;
   final File? gradedPlusQueImage;
+  final IconData? titleIconData;
   const StateSelectionPage(
       {Key? key,
       this.isMcqSheet,
@@ -33,7 +34,8 @@ class StateSelectionPage extends StatefulWidget {
       // required this.questionImageUrl,
       required this.selectedClass,
       this.isFromCreateAssessmentScreen,
-      required this.gradedPlusQueImage})
+      required this.gradedPlusQueImage,
+      this.titleIconData})
       : super(key: key);
 
   @override
@@ -84,6 +86,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                iconData: Icons.add,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 isSuccessState: ValueNotifier<bool>(true),

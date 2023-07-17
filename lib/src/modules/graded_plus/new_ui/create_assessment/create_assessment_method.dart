@@ -85,7 +85,8 @@ class CreateAssessmentScreenMethod {
       required selectedGrade,
       required localDb,
       required imageFile,
-      required isMcqSheet}) async {
+      required isMcqSheet,
+      final IconData? titleIconData}) async {
     for (int i = 0; i < classSuggestions.length; i++) {
       if (classController.text == classSuggestions[i])
         classSuggestions.removeAt(i);
@@ -137,6 +138,7 @@ class CreateAssessmentScreenMethod {
         context,
         MaterialPageRoute(
             builder: (context) => GradedPluSubjectSelection(
+                  titleIconData: titleIconData,
                   gradedPlusQueImage: imageFile,
                   isMcqSheet: isMcqSheet,
                   selectedAnswer: selectedAnswer,
@@ -152,6 +154,7 @@ class CreateAssessmentScreenMethod {
         context,
         MaterialPageRoute(
             builder: (context) => StateSelectionPage(
+                  titleIconData: titleIconData,
                   gradedPlusQueImage: imageFile,
                   isMcqSheet: isMcqSheet,
                   selectedAnswer: selectedAnswer,

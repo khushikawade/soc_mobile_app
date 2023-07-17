@@ -22,13 +22,14 @@ class ProfilePage extends StatefulWidget {
   final UserInformation profile;
   final bool? fromGradedPlus;
   final String? plusAppName;
+  final String sectionType;
 
   const ProfilePage(
       {Key? key,
       required this.profile,
       this.hideStateSelection,
       required this.fromGradedPlus,
-      required this.plusAppName})
+      required this.plusAppName,required this.sectionType})
       : super(key: key);
 
   @override
@@ -58,6 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+             sectionType: widget.sectionType,
+            iconData: null,
             plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),

@@ -1,6 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -12,14 +15,13 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -38,6 +40,7 @@ import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
+import '../../graded_plus/widgets/common_intro_tutorial_section.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -351,9 +354,24 @@ class _StaffPageState extends State<StaffPage> {
       }
     } else {
       if (_profileData[0].userType != "Teacher") {
-        popupModal(
-            message:
-                "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
+
+        staffActionIconsOnTap(actionName: actionName);
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
@@ -366,7 +384,7 @@ class _StaffPageState extends State<StaffPage> {
   }
 
 //--------------------------------------------------------------------------------------------------------
-  navigatorToScreen({required String actionName}) {
+  navigatorToScreen({required String actionName}) async {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => GradedLandingPage()));
@@ -380,12 +398,19 @@ class _StaffPageState extends State<StaffPage> {
             description: 'Graded+ Accessed(Login)/Login Id:',
             operationResult: 'Success');
 
+        // Check User is First Time or old user
+        HiveDbServices _hiveDbServices = HiveDbServices();
+        var isOldUser =
+            await _hiveDbServices.getSingleData('is_new_user', 'new_user');
         pushNewScreen(
           context,
-          screen: StartupPage(
-            isOcrSection: true, //since always opens OCR
-            isMultipleChoice: false,
-          ),
+          screen: isOldUser == true
+              ? GradedPlusNavBarHome()
+              : CommonIntroSection(
+                  isSkipAndStartButton: true,
+                  onBoardingInfoList:
+                      GradedIntroContentModal.onBoardingMainPagesInfoList,
+                  isMcqSheet: false),
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {

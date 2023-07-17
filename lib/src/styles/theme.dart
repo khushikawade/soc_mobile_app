@@ -20,7 +20,7 @@ class AppTheme {
   static const Color klistTileSecoandryDark = Color(0xff111C20);
   static const Color klistTilePrimaryLight = Color(0xffF7F8F9);
   static const Color klistTileSecoandryLight = Color(0xffE9ECEE);
-
+  static const Color ksaveAndShareButton = Color(0xFFE49725);
   //Colors
 
   static Color kPrimaryColor = Colors.greenAccent;

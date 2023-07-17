@@ -24,7 +24,7 @@ class PBISPlusOverrides {
 
   static final double profilePictureSize =
       Globals.deviceType == "phone" ? 40 : 60;
-  static final double circleSize = Globals.deviceType == "phone" ? 25 : 35;
+  static final double circleSize = Globals.deviceType == "phone" ? 28 : 35;
   static String pbisPlusFilterValue = 'All';
 
   // base url used for PBIS plus section
@@ -49,4 +49,14 @@ class PBISPlusOverrides {
   static final ValueNotifier<List<PBISPlusCommonBehaviorModal>>
       teacherCustomBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
+
+  static final List<String> soundPath = [
+    "pbis_sound/sound1.wav",
+    "pbis_sound/sound2.wav",
+    "pbis_sound/sound3.wav",
+    "pbis_sound/sound4.wav",
+    "pbis_sound/sound5.wav",
+    "pbis_sound/sound6.wav",
+    "pbis_sound/sound7.wav"
+  ];
 }

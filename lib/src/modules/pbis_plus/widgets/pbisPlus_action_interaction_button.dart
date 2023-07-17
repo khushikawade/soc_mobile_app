@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -25,6 +27,7 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final bool? isShowCircle;
   final double? size;
   final bool? isCustomBehavior;
+  final int index;
 
   PBISPlusActionInteractionButton(
       {Key? key,
@@ -37,7 +40,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
       required this.onValueUpdate,
       required this.isShowCircle,
       required this.size,
-      required this.isCustomBehavior
+      required this.isCustomBehavior,
+      required this.index
       // required this.onTapCallback,
       })
       : super(key: key);
@@ -193,7 +197,7 @@ class PBISPlusActionInteractionButtonState
   }
 
   Future<bool> _onLikeButtonTapped(bool isLiked) async {
-    Utility.playSound(Strings.soundPath[0]);
+    PBISPlusUtility.playSound(PBISPlusOverrides.soundPath[widget.index]);
     Utility.doVibration();
 
     if (_isOffline) {

@@ -172,9 +172,11 @@ class PbisPlusBottomNavBar {
       PBISPlusHistory(
           titleIconData: IconData(0xe824,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
-      PBISPlusEditSkills(),
+      PBISPlusEditSkills(
+          titleIconData: const IconData(0xe898,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       PBISPlusNotesStudentList(
-          titleIconData: IconData(0xe892,
+          titleIconData: IconData(0xe895,
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg)),
       PBISPlusStaff(titleIconData: getStaffIconCode()),
     ];
@@ -254,7 +256,7 @@ class PbisPlusBottomNavBar {
           inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
           icon: bottomNavBarIcons(
-              iconData: IconData(0xe892,
+              iconData: IconData(0xe895,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg)),
           title: ('Notes'),
@@ -275,7 +277,11 @@ class PbisPlusBottomNavBar {
   /* -------------------- bottom navigation bar item widget ------------------- */
 
   static Widget bottomNavBarIcons({required IconData iconData, Color? color}) {
-    return Icon(iconData, color: color);
+    return Icon(
+      iconData,
+      color: color,
+      size: 24,
+    );
   }
 
   /* -------------------- bottom navigation bar item widget ------------------- */

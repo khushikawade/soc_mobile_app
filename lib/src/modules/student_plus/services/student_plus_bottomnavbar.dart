@@ -1,12 +1,12 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_exams.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_grades.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_info.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_pbis.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_staff.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_work.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_exams.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_grades.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_info.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_pbis.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_staff.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_work.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -132,7 +132,7 @@ class StudentPlusBottomNavBar {
                 IconData(int.parse(iconData),
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                // size: 22,
+                size: 22,
               ),
               SpacerWidget(2),
               TranslationWidget(

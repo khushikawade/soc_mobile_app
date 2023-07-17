@@ -6,10 +6,11 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_grades_details.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_current_grades_details.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -37,10 +38,12 @@ class individual extends State<StudentPlusGradesPage> {
   final _controller = TextEditingController(); // textController for search
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('');
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
-    _studentPlusBloc.add(widget.sectionType == 'Staff'
+    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
+            widget.sectionType == 'Family'
         ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
         : FetchStudentGradesWithClassroomEvent(
             studentId: widget.studentDetails.studentIdC));
@@ -69,10 +72,11 @@ class individual extends State<StudentPlusGradesPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
-            titleIconCode: 0xe883,
-            // refresh: (v) {
-            //   setState(() {});
-            // },
+             sectionType:widget.sectionType,
+            titleIconCode: 0xe823,
+            refresh: (v) {
+              setState(() {});
+            },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(
@@ -93,16 +97,40 @@ class individual extends State<StudentPlusGradesPage> {
                         hintText:
                             '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
                         onTap: () async {
-                          var result = await pushNewScreen(context,
-                              screen: StudentPlusSearchScreen(
-                                  fromStudentPlusDetailPage: true,
-                                  index: 3,
-                                  studentDetails: widget.studentDetails),
-                              withNavBar: false,
-                              pageTransitionAnimation:
-                                  PageTransitionAnimation.fade);
-                          if (result == true) {
-                            Utility.closeKeyboard(context);
+                          if (widget.sectionType == "Family") {
+                            showModalBottomSheet(
+                              useRootNavigator: true,
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(42),
+                                  topRight: Radius.circular(42),
+                                ),
+                              ),
+                              builder: (_) => LayoutBuilder(builder:
+                                  (BuildContext context,
+                                      BoxConstraints constraints) {
+                                return StudentPlusFamilyStudentList(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.4, //0.45,
+                                  currentIndex: 3,
+                                );
+                              }),
+                            );
+                          } else {
+                            var result = await pushNewScreen(context,
+                                screen: StudentPlusSearchScreen(
+                                    fromStudentPlusDetailPage: true,
+                                    index: 3,
+                                    studentDetails: widget.studentDetails),
+                                withNavBar: false,
+                                pageTransitionAnimation:
+                                    PageTransitionAnimation.fade);
+                            if (result == true) {
+                              Utility.closeKeyboard(context);
+                            }
                           }
                         },
                         isMainPage: false,
@@ -132,22 +160,24 @@ class individual extends State<StudentPlusGradesPage> {
                             backgroundColor: AppTheme.kButtonColor,
                           ));
                     } else if (state is StudentPlusGradeSuccess) {
-                      return state.obj.length > 0 || state.courseList.length > 0
-                          ? GradesWidget(
+                      return
+                          // state.obj.length > 0 || state.courseList.length > 0
+                          //     ?
+                          GradesWidget(
                               chipList: state.chipList,
                               obj: state.obj,
-                              courseList: state.courseList)
-                          : Expanded(
-                              child: NoDataFoundErrorWidget(
-                                errorMessage:
-                                    StudentPlusOverrides.gradesErrorMessage,
-                                //  marginTop: 0,
-                                isResultNotFoundMsg: false,
-                                isNews: false,
-                                isEvents: false,
-                                isSearchpage: true,
-                              ),
-                            );
+                              courseList: state.courseList);
+                      // : Expanded(
+                      //     child: NoDataFoundErrorWidget(
+                      //       errorMessage:
+                      //           StudentPlusOverrides.gradesErrorMessage,
+                      //       //  marginTop: 0,
+                      //       isResultNotFoundMsg: false,
+                      //       isNews: false,
+                      //       isEvents: false,
+                      //       isSearchpage: true,
+                      //     ),
+                      //   );
                     } else {
                       return Container();
                     }
@@ -174,22 +204,45 @@ class individual extends State<StudentPlusGradesPage> {
               ? MediaQuery.of(context).size.height * 0.75
               : MediaQuery.of(context).size.height * 0.62,
           child: Column(
-            // shrinkWrap: true,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              //SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+              markingPeriodHeader(),
               gradesChipListWidget(
                   chipList: chipList), // widget to grades chip List
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+
               SpacerWidget(_kLabelSpacing / 2),
               HeaderTitle(), // widget to show header of list
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-              gradesListSectionWidget(
-                  list: obj,
-                  courseList: courseList) // widget to show grades class wise
+              Container(
+                height: widget.sectionType == "Student"
+                    ? MediaQuery.of(context).size.height * 0.56
+                    : MediaQuery.of(context).size.height * 0.42,
+                child:
+                    gradesListSectionWidget(list: obj, courseList: courseList),
+              ) // widget to show grades class wise
             ],
           ),
         );
       },
+    );
+  }
+
+  /* ------------------ Widget to show marking period header ------------------ */
+  Widget markingPeriodHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 2),
+      width: MediaQuery.of(context).size.width,
+      child: Utility.textWidget(
+          context: context,
+          text: 'Marking Period',
+          textTheme: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(fontWeight: FontWeight.bold)),
     );
   }
 
@@ -217,7 +270,8 @@ class individual extends State<StudentPlusGradesPage> {
       },
       child: Bouncing(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          width: MediaQuery.of(context).size.width * 0.16,
+          //padding: EdgeInsets.symmetric(horizontal: 20),
           margin: EdgeInsets.only(left: 5),
           decoration: BoxDecoration(
             boxShadow: [],
@@ -232,18 +286,20 @@ class individual extends State<StudentPlusGradesPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
-              child: Utility.textWidget(
-                  text: chipValue == '1'
-                      ? 'First'
-                      : chipValue == '2'
-                          ? 'Second'
-                          : chipValue == '3'
-                              ? 'Third'
-                              : chipValue == '4'
-                                  ? 'Forth'
-                                  : chipValue,
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline4)),
+              child: FittedBox(
+            child: Utility.textWidget(
+                text: chipValue == '1'
+                    ? '1st'
+                    : chipValue == '2'
+                        ? '2st'
+                        : chipValue == '3'
+                            ? '3st'
+                            : chipValue == '4'
+                                ? '4st'
+                                : chipValue,
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4),
+          )),
         ),
       ),
     );
@@ -261,9 +317,11 @@ class individual extends State<StudentPlusGradesPage> {
       }
     }
     return updatedList.length > 0 || courseList.length > 0
-        ? Expanded(
+        ? RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
             child: ListView.builder(
-              shrinkWrap: true,
+              //shrinkWrap: true,
               padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
               scrollDirection: Axis.vertical,
               itemCount: selectedValue.value == "Current"
@@ -279,17 +337,18 @@ class individual extends State<StudentPlusGradesPage> {
               },
             ),
           )
-        : Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: NoDataFoundErrorWidget(
-              marginTop: MediaQuery.of(context).size.height * 0.1,
-              errorMessage: StudentPlusOverrides.gradesErrorMessage,
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              isSearchpage: true,
-            ),
-          );
+        : SizedBox.shrink();
+    //  Container(
+    //     height: MediaQuery.of(context).size.height * 0.5,
+    //     child: NoDataFoundErrorWidget(
+    //       marginTop: MediaQuery.of(context).size.height * 0.1,
+    //       errorMessage: StudentPlusOverrides.gradesErrorMessage,
+    //       isResultNotFoundMsg: false,
+    //       isNews: false,
+    //       isEvents: false,
+    //       isSearchpage: true,
+    //     ),
+    //   );
   }
 
   /* ----------------------------- widget used to build current widget ---------------------------- */
@@ -320,6 +379,7 @@ class individual extends State<StudentPlusGradesPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => StudentPlusGradesDetailPage(
+                     sectionType:widget.sectionType,
                         studentPlusCourseModel: studentPlusCourseModel,
                       )));
         },
@@ -440,5 +500,16 @@ class individual extends State<StudentPlusGradesPage> {
         ),
       ),
     );
+  }
+
+  /* ------------------------- function call when pull to refresh perform ------------------------- */
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
+            widget.sectionType == 'Family'
+        ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
+        : FetchStudentGradesWithClassroomEvent(
+            studentId: widget.studentDetails.studentIdC));
   }
 }

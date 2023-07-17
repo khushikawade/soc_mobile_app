@@ -69,7 +69,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
         padding: MediaQuery.of(context).viewInsets,
         controller: ModalScrollController.of(context),
         child: Container(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
               color: Utility.getContrastColor(context),
               borderRadius: BorderRadius.only(
@@ -174,39 +174,45 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   Widget _buildEditNameWidget(PBISPlusCommonBehaviorModal? dataList) {
-    return Container(
-        padding: EdgeInsets.only(left: 16),
-        // color: Colors.amberAccent,
-        child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                      padding: EdgeInsets.all(0),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      icon: Icon(Icons.clear,
-                          color: AppTheme.kButtonColor,
-                          size: Globals.deviceType == "phone" ? 28 : 36))),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  child: Utility.textWidget(
-                      context: context,
-                      text: "${"Edit " + "${dataList!.behaviorTitleC}"}",
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.bold))),
-              Expanded(
-                child: Form(
+    return SingleChildScrollView(
+      child: Container(
+          padding: EdgeInsets.only(left: 16),
+          child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        padding: EdgeInsets.all(0),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
+                        icon: Icon(Icons.clear,
+                            color: AppTheme.kButtonColor,
+                            size: Globals.deviceType == "phone" ? 28 : 36))),
+                SpacerWidget(10),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: Utility.textWidget(
+                        context: context,
+                        text: "${"Edit " + "${dataList!.behaviorTitleC}"}",
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(fontWeight: FontWeight.bold))),
+                Form(
                     key: _formKey,
                     child: Container(
                       child: TextFieldWidget(
+                          counterStyle: TextStyle(
+                              color: Color(0xff000000) ==
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffFFFFFF)
+                                  : Color(0xff000000)),
+                          maxLength: 13,
                           context: context,
                           textStyle: Theme.of(context)
                               .textTheme
@@ -217,54 +223,57 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
                           controller: editNameController,
                           onSaved: (String value) {}),
                     )),
-              ),
-              ValueListenableBuilder(
-                  valueListenable: _errorMessage,
-                  builder: (context, value, _) {
-                    return Container(
-                        height: 20,
-                        alignment: Alignment.topLeft,
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: _errorMessage.value
-                            ? TranslationWidget(
-                                message: 'Field is required.',
-                                fromLanguage: "en",
-                                toLanguage: Globals.selectedLanguage,
-                                builder: (translatedMessage) {
-                                  return FittedBox(
-                                      child: Text(translatedMessage,
-                                          style: TextStyle(color: Colors.red)));
-                                })
-                            : null);
-                  }),
-              SpacerWidget(18),
-              _buildSaveButton(dataList)
-            ]));
+                ValueListenableBuilder(
+                    valueListenable: _errorMessage,
+                    builder: (context, value, _) {
+                      return Container(
+                          height: 25,
+                          alignment: Alignment.topLeft,
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          child: _errorMessage.value
+                              ? TranslationWidget(
+                                  message: 'Field is required.',
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) {
+                                    return FittedBox(
+                                        child: Text(translatedMessage,
+                                            style:
+                                                TextStyle(color: Colors.red)));
+                                  })
+                              : null);
+                    }),
+                _buildSaveButton(dataList)
+              ])),
+    );
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-        child: FloatingActionButton.extended(
-            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-            onPressed: () async {
-              if (editNameController.text.isNotEmpty) {
-                _errorMessage.value = false;
-                widget.onEditCallBack(editNameController.text);
-                Navigator.pop(context);
-              } else {
-                _errorMessage.value = true;
-              }
-            },
-            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Utility.textWidget(
-                  text: 'Save',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Theme.of(context).backgroundColor))
-            ])));
+    return Expanded(
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+          child: FloatingActionButton.extended(
+              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+              onPressed: () async {
+                if (editNameController.text.isNotEmpty) {
+                  _errorMessage.value = false;
+                  widget.onEditCallBack(editNameController.text);
+                  Navigator.pop(context);
+                } else {
+                  _errorMessage.value = true;
+                }
+              },
+              label:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Utility.textWidget(
+                    text: 'Save',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor))
+              ]))),
+    );
   }
 }
