@@ -16,16 +16,16 @@ class TranslationWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   var isUserInteraction;
 
-  TranslationWidget({
-    this.scaffoldKey,
-    this.shimmerHeight,
-    @required this.message,
-    this.fromLanguage,
-    @required this.toLanguage,
-    @required this.builder,
-    this.isUserInteraction,
-    Key? key,
-  }) : super(key: key);
+  TranslationWidget(
+      {this.scaffoldKey,
+      this.shimmerHeight,
+      @required this.message,
+      this.fromLanguage,
+      @required this.toLanguage,
+      @required this.builder,
+      this.isUserInteraction,
+      Key? key})
+      : super(key: key);
 
   @override
   _TranslationWidgetState createState() => _TranslationWidgetState();
