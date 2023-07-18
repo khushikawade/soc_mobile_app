@@ -79,12 +79,12 @@ class PBISPlusUtility {
         totalCounts = student.profile!.behaviorList!
             .where((behavior) => behavior.defaultBehavior == true)
             .map((behavior) => behavior.behaviorCount ?? 0)
-            .reduce((sum, count) => sum + count);
+            .fold(0, (sum, count) => sum + count);
       }
 
       return totalCounts?.toString() ?? "0";
     } catch (e) {
-      //  print(e);
+      print(e);
       return "0";
     }
   }
@@ -110,22 +110,3 @@ class PBISPlusUtility {
     }
   }
 }
-
-List list1 = [
-  {"id": "1", "name": "music", "score": " 10"},
-  {"id": "2", "name": "value", "score": " 6"},
-  {"id": "3", "name": "ctr", "score": " 5"},
-  {"id": "4", "name": "variable", "score": " 4"},
-  {"id": "5", "name": "car", "score": " 8"},
-  {"id": "6", "name": "bike", "score": " 0"},
-];
-List list2 = [
-  {
-    "id": "4",
-    "name": "music",
-  },
-  {
-    "id": "5",
-    "name": "value",
-  },
-];

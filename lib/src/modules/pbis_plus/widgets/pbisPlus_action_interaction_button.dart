@@ -357,7 +357,10 @@ class PBISPlusActionInteractionButtonState
     }
     if (isAlready == false) {
       widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
-          id: iconData.id, name: iconData.behaviorTitleC, behaviorCount: 1));
+          defaultBehavior: widget.isCustomBehavior == true ? true : false,
+          id: iconData.id,
+          name: iconData.behaviorTitleC,
+          behaviorCount: 1));
     }
     print("isAlready $isAlready");
     onTapDetect.value =

@@ -72,7 +72,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       ScreenshotController(); // screenshot of whole list
   PBISPlusBloc pbisBloc = PBISPlusBloc();
   AnimationController? _animationController;
-
+  final Map<String, PBISPlusBloc> _blocMap = {};
   @override
   void initState() {
     super.initState();
@@ -517,6 +517,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 }
               },
               builder: (context, state) {
+                print(state);
                 if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
                   return renderStudents(
                     googleClassroomCourseList[index].students!,
@@ -526,7 +527,15 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                     isScreenShimmerLoading,
                   );
                 }
-
+                if (state is PBISPlusLoading) {
+                  return renderStudents(
+                    googleClassroomCourseList[index].students!,
+                    index,
+                    googleClassroomCourseList[index].id!,
+                    true,
+                    isScreenShimmerLoading,
+                  );
+                }
                 return renderStudents(
                   googleClassroomCourseList[index].students!,
                   index,
@@ -992,8 +1001,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       });
     }
   }
-
-  final Map<String, PBISPlusBloc> _blocMap = {};
 
   Future<void> callCourseBlocInstance(
       List<ClassroomCourse> googleClassroomCourseList) async {

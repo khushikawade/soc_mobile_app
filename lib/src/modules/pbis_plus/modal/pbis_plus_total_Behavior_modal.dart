@@ -1,12 +1,22 @@
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:hive/hive.dart';
+part 'pbis_plus_total_Behavior_modal.g.dart';
 
+@HiveType(typeId: 55)
 class PBISPlusTotalBehaviorModal {
+  @HiveField(0)
   String? schoolAppC;
+  @HiveField(1)
   String? studentId;
+  @HiveField(2)
   String? teacherEmail;
+  @HiveField(3)
   String? studentEmail;
+  @HiveField(4)
   List<BehaviorList>? behaviorList;
+  @HiveField(5)
   String? createdAt;
+  @HiveField(6)
   String? classroomCourseId;
 
   PBISPlusTotalBehaviorModal(

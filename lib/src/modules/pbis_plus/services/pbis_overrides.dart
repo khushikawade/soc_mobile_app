@@ -14,7 +14,7 @@ class PBISPlusOverrides {
   //     'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
-  static final String pbisStudentInteractionDB = 'pbis_student_interaction';
+ // static final String pbisStudentInteractionDB = 'pbis_student_interaction';
   // used to save local db of student details
   static final String PBISPlusStudentDetail = 'PBISPlus_student_details';
 
