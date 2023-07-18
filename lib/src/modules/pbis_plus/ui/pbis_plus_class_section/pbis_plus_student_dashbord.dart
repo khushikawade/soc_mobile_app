@@ -196,24 +196,30 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return Column(children: [
-      sectionHeader(),
-      Flexible(
-          child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              slivers: [
-            // A flexible app bar
-            buildSliverAppBar(),
-            SliverFillRemaining(child: buildTableSection())
-            // SliverList(
-            //     delegate: SliverChildListDelegate(
-            //   [
-            //     buildTableSection(),
-            //   ],
-            // )),
-          ]))
-    ]);
+    return widget.isFromStudentPlus == true
+        ? NestedScrollView(
+            controller: _scrollController,
+            // key: _scaffoldKey,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                buildSliverAppBar(),
+              ];
+            },
+            body: buildTableSection(),
+          )
+        : Column(children: [
+            sectionHeader(),
+            Flexible(
+                child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    slivers: [
+                  // A flexible app bar
+                  buildSliverAppBar(),
+                  SliverFillRemaining(child: buildTableSection())
+                ]))
+          ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -614,7 +620,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         valueListenable: isListScrollUp,
                         builder: (context, value, child) {
                           return ListView(
-                              padding: EdgeInsets.only(bottom: 60),
+                              padding: EdgeInsets.only(bottom: 120),
                               physics: widget.isFromStudentPlus == true
                                   ? isListScrollUp.value
                                       ? BouncingScrollPhysics()
@@ -633,7 +639,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                             elevation: 10,
                                             child: Container(
                                                 padding:
-                                                    EdgeInsets.only(bottom: 80),
+                                                    EdgeInsets.only(bottom: 10),
                                                 child: _buildDataTable(
                                                     pBISPlusCommonBehaviorList:
                                                         pBISPlusCommonBehaviorList,
@@ -736,7 +742,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       // height: MediaQuery.of(context).size.height * 0.50,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.only(bottom: 40),
+      // padding: EdgeInsets.only(bottom: 40),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
