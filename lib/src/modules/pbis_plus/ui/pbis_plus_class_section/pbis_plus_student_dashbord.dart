@@ -79,7 +79,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       ScreenshotController(); // screenshot for header widget
   ScrollController? _scrollController;
   final ValueNotifier<bool> isScrolledUp = ValueNotifier<bool>(false);
-
+  final ValueNotifier<bool> isListScrollUp = ValueNotifier<bool>(false);
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
 
   void initState() {
@@ -105,22 +105,32 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       _scrollController = ScrollController();
       _scrollController!.addListener(_handleScroll);
     }
-
+    _scrollController = ScrollController();
+    _scrollController!.addListener(_handleScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    if (widget.isFromStudentPlus != true) {
-      _scrollController!.removeListener(_handleScroll);
-      _scrollController!.dispose();
-    }
+    // if (widget.isFromStudentPlus != true) {
+    //   _scrollController!.removeListener(_handleScroll);
+    //   _scrollController!.dispose();
+    // }
 
+    _scrollController!.removeListener(_handleScroll);
+    _scrollController!.dispose();
     super.dispose();
   }
 
   void _handleScroll() {
+    print(_scrollController!.position.pixels);
     isScrolledUp.value = _scrollController!.offset >= 400;
+    if (_scrollController?.position.pixels ==
+        _scrollController?.position.maxScrollExtent) {
+      isListScrollUp.value = true;
+    } else if (_scrollController!.position.pixels == 0) {
+      isListScrollUp.value = false;
+    }
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -600,28 +610,37 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
-                    child: ListView(
-                        physics: widget.isFromStudentPlus == true
-                            ? NeverScrollableScrollPhysics()
-                            : NeverScrollableScrollPhysics(),
-                        children: [
-                          FittedBox(
-                              child: Screenshot(
-                                  controller: screenshotController,
-                                  child: Material(
-                                      color: Color(0xff000000) !=
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffF7F8F9)
-                                          : Color(0xff111C20),
-                                      elevation: 10,
-                                      child: Container(
-                                          padding: EdgeInsets.only(bottom: 80),
-                                          child: _buildDataTable(
-                                              pBISPlusCommonBehaviorList:
-                                                  pBISPlusCommonBehaviorList,
-                                              list: state
-                                                  .pbisStudentInteractionList)))))
-                        ]))
+                    child: ValueListenableBuilder(
+                        valueListenable: isListScrollUp,
+                        builder: (context, value, child) {
+                          return ListView(
+                              padding: EdgeInsets.only(bottom: 60),
+                              physics: widget.isFromStudentPlus == true
+                                  ? isListScrollUp.value
+                                      ? BouncingScrollPhysics()
+                                      : NeverScrollableScrollPhysics()
+                                  : NeverScrollableScrollPhysics(),
+                              children: [
+                                FittedBox(
+                                    child: Screenshot(
+                                        controller: screenshotController,
+                                        child: Material(
+                                            color: Color(0xff000000) !=
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffF7F8F9)
+                                                : Color(0xff111C20),
+                                            elevation: 10,
+                                            child: Container(
+                                                padding:
+                                                    EdgeInsets.only(bottom: 80),
+                                                child: _buildDataTable(
+                                                    pBISPlusCommonBehaviorList:
+                                                        pBISPlusCommonBehaviorList,
+                                                    list: state
+                                                        .pbisStudentInteractionList)))))
+                              ]);
+                        }))
                 : RefreshIndicator(
                     key: refreshKey,
                     onRefresh: refreshPage,
