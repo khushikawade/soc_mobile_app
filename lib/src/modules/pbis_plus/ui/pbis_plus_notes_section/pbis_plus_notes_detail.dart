@@ -109,14 +109,22 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             _buildBackIcon(),
             Expanded(
-                child: Utility.textWidget(
-                    text: ("${widget.item.names!.fullName!}'s" + " Notes"),
-                    context: context,
-                    textAlign: TextAlign.left,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.w700)))
+                child: Row(children: [
+              Text(("${widget.item.names!.fullName!}'s"),
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.w700)),
+              Utility.textWidget(
+                  text: (" Notes"),
+                  context: context,
+                  textAlign: TextAlign.left,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.w700))
+            ]))
           ]),
           SpacerWidget(_KVertcalSpace / 5),
           BlocConsumer(

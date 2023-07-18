@@ -346,10 +346,8 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
                   //                 backgroundImage: imageProvider))),
                   title: isShimmerLoading == true
                       ? localSimmerWidget(height: 20, width: 30)
-                      : Utility.textWidget(
-                          text: studentNotesList[index].names!.fullName ?? '',
-                          context: context,
-                          textTheme: Theme.of(context).textTheme.headline2!),
+                      : Text(studentNotesList[index].names!.fullName ?? '',
+                          style: Theme.of(context).textTheme.headline2!),
                   trailing: ShimmerLoading(
                       isLoading: isShimmerLoading,
                       child: Padding(

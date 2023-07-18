@@ -38,7 +38,6 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
 
   @override
   void initState() {
-    print("inside the student plaus init  ${DateTime.now()} ");
     studentInfoList = StudentPlusUtility.createStudentList(
         studentDetails: widget
             .studentDetails); // function to get student details with label
