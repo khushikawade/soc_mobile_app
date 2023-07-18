@@ -223,7 +223,7 @@ class Authentication {
       if (!kIsWeb) {
         await googleSignIn.signOut();
       }
-      await FirebaseAuth.instance.signOut();
+      await googleSignIn.signOut();
       user = null;
     } catch (e) {
       print('Sign Out Error:::::: $e');
