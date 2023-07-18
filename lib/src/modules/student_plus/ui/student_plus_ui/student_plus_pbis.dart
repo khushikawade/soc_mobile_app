@@ -6,18 +6,12 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dar
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusPBISScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
@@ -128,7 +122,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
                   studentDetails: widget.studentDetails),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
           SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
+              height: MediaQuery.of(context).size.height * 0.7,
               child: pbisDashboardWidget(constraint))
         ],
       ),

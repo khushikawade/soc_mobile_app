@@ -190,12 +190,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             controller: _scrollController,
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                buildSliverAppBar(),
-              ];
+              return <Widget>[buildSliverAppBar()];
             },
-            body: buildTableSection(),
-          )
+            body: buildTableSection())
         : Column(children: [
             sectionHeader(),
             Flexible(
@@ -722,37 +719,37 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildTableSection() {
     return Container(
-      alignment: Alignment.topCenter,
-      height: (widget.constraint <= 115)
-          ? MediaQuery.of(context).size.height * 0.30
-          : MediaQuery.of(context).size.height * 0.32,
-      // height: MediaQuery.of(context).size.height * 0.50,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      // padding: EdgeInsets.only(bottom: 40),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
-          bloc: widget.pBISPlusBloc,
-          builder: (BuildContext contxt, PBISPlusState state) {
-            if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
-              return buildTable(
-                  pBISPlusCommonBehaviorList: state.defaultSchoolBehaviorList);
-            }
-            if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
-                state.teacherCustomBehaviorList.isNotEmpty) {
-              return buildTable(
-                  pBISPlusCommonBehaviorList: state.teacherCustomBehaviorList);
-            }
+        alignment: Alignment.topCenter,
+        height: (widget.constraint <= 115)
+            ? MediaQuery.of(context).size.height * 0.30
+            : MediaQuery.of(context).size.height * 0.32,
+        // height: MediaQuery.of(context).size.height * 0.50,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(left: 16, right: 16),
+        // padding: EdgeInsets.only(bottom: 40),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+            bloc: widget.pBISPlusBloc,
+            builder: (BuildContext contxt, PBISPlusState state) {
+              if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+                return buildTable(
+                    pBISPlusCommonBehaviorList:
+                        state.defaultSchoolBehaviorList);
+              }
+              if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+                  state.teacherCustomBehaviorList.isNotEmpty) {
+                return buildTable(
+                    pBISPlusCommonBehaviorList:
+                        state.teacherCustomBehaviorList);
+              }
 
-            return Center(
-                child: CircularProgressIndicator.adaptive(
-              backgroundColor: AppTheme.kButtonColor,
-            ));
-          }),
-    );
+              return Center(
+                  child: CircularProgressIndicator.adaptive(
+                      backgroundColor: AppTheme.kButtonColor));
+            }));
   }
 
   buildSliverAppBar() {
