@@ -623,6 +623,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           context,
                           null);
                     }
+                    SystemChrome.setEnabledSystemUIOverlays(
+                        SystemUiOverlay.values);
                   },
                 )),
         FutureBuilder(

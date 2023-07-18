@@ -90,7 +90,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           yield ErrorState();
         }
-        throw (e);
+        // throw (e);
       }
     }
 
