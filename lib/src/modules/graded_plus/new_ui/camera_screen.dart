@@ -1059,7 +1059,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void setEnabledSystemUIMode() {
-    print("-------------------BACK THE ICONS---------------------------");
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 

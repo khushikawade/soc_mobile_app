@@ -9,8 +9,8 @@ class TranslationAPI {
   static Future<String> translate(
       String message, String toLanguageCode, var isUserInteraction) async {
     try {
-      print(
-          "---------------------inside the api -Translation--${DateTime.now()}--");
+      // print(
+      //     "---------------------inside the api -Translation--${DateTime.now()}--");
 
       final response = await http.post(
           Uri.parse(
@@ -20,20 +20,20 @@ class TranslationAPI {
           });
 
       if (response.statusCode == 200) {
-        print(
-            "--------------------API rESPONSE Translation - --${DateTime.now()}--");
+        // print(
+        //     "--------------------API rESPONSE Translation - --${DateTime.now()}--");
         final body = json.decode(response.body);
         final translations = body['data']['translations'] as List;
         final translation = translations.first;
         return HtmlUnescape().convert(translation['translatedText']);
       } else {
-        print(
-            "---------------------------EXPECTION----------xxxxxxxxxxx--${DateTime.now()}-");
+        // print(
+        //     "---------------------------EXPECTION----------xxxxxxxxxxx--${DateTime.now()}-");
         throw Exception();
       }
     } catch (e) {
-      print(
-          "---------------------------catch------${e}----xxxxxxxxxxx--${DateTime.now()}-");
+      // print(
+      //     "---------------------------catch------${e}----xxxxxxxxxxx--${DateTime.now()}-");
     }
     return message;
   }
