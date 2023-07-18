@@ -365,5 +365,14 @@ class PBISPlusActionInteractionButtonState
 
     widget.onValueUpdate(
         widget.studentValueNotifier); //return updated count to other screens
+
+    interactionBloc.add(PbisPlusAddPBISInteraction(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        studentId: widget.studentValueNotifier.value.profile!.id,
+        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
+        classroomCourseId: widget.classroomCourseId,
+        behaviour: widget.iconData,
+        isCustomBehavior: widget.isCustomBehavior));
   }
 }
