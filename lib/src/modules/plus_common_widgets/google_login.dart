@@ -56,6 +56,7 @@ class GoogleLogin {
     );
 
     if (value.toString().contains('authenticationfailure')) {
+      
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
       PlusUtility.updateLogs(
