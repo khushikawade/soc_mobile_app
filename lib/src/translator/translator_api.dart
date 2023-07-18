@@ -12,9 +12,7 @@ class TranslationAPI {
       final response = await http.post(
           Uri.parse(
               'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&format=text'), //q=$message&
-          body: {
-            "q": "$message",
-          });
+          body: {"q": "$message"});
 
       if (response.statusCode == 200) {
         final body = json.decode(response.body);

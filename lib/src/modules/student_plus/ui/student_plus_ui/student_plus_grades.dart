@@ -250,11 +250,11 @@ class individual extends State<StudentPlusGradesPage> {
                 text: chipValue == '1'
                     ? '1st'
                     : chipValue == '2'
-                        ? '2st'
+                        ? '2nd'
                         : chipValue == '3'
-                            ? '3st'
+                            ? '3rd'
                             : chipValue == '4'
-                                ? '4st'
+                                ? '4th'
                                 : chipValue,
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline4),

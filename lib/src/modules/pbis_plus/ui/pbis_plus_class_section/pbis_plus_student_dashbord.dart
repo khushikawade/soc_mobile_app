@@ -58,7 +58,8 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.constraint,
       this.studentProfile,
       // this.pBISPlusCommonBehaviorList,
-      required this.pBISPlusBloc,this.sectionType})
+      required this.pBISPlusBloc,
+      this.sectionType})
       : super(key: key);
 
   @override
@@ -78,7 +79,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       ScreenshotController(); // screenshot for header widget
   ScrollController? _scrollController;
   final ValueNotifier<bool> isScrolledUp = ValueNotifier<bool>(false);
-
+  final ValueNotifier<bool> isListScrollUp = ValueNotifier<bool>(false);
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
 
   void initState() {
@@ -104,22 +105,26 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       _scrollController = ScrollController();
       _scrollController!.addListener(_handleScroll);
     }
-
+    _scrollController = ScrollController();
+    _scrollController!.addListener(_handleScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    if (widget.isFromStudentPlus != true) {
-      _scrollController!.removeListener(_handleScroll);
-      _scrollController!.dispose();
-    }
-
+    _scrollController!.removeListener(_handleScroll);
+    _scrollController!.dispose();
     super.dispose();
   }
 
   void _handleScroll() {
     isScrolledUp.value = _scrollController!.offset >= 400;
+    if (_scrollController?.position.pixels ==
+        _scrollController?.position.maxScrollExtent) {
+      isListScrollUp.value = true;
+    } else if (_scrollController!.position.pixels == 0) {
+      isListScrollUp.value = false;
+    }
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -146,7 +151,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   @override
   Widget build(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? studentPlusBody(context)
+        ? pbisPlusBody(context)
         : Stack(children: [
             CommonBackgroundImgWidget(),
             ValueListenableBuilder(
@@ -175,23 +180,30 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   Widget studentPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: bodyFrameWidget())
+        ? ListView(children: bodyFrameWidget())
         : ListView(children: bodyFrameWidget());
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return Column(children: [
-      sectionHeader(),
-      Flexible(
-          child: CustomScrollView(controller: _scrollController, slivers: [
-        // A flexible app bar
-        buildSliverAppBar(),
-        SliverFillRemaining(child: buildTableSection())
-      ]))
-    ]);
+    return widget.isFromStudentPlus == true
+        ? NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[buildSliverAppBar()];
+            },
+            body: buildTableSection())
+        : Column(children: [
+            sectionHeader(),
+            Flexible(
+                child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    slivers: [
+                  buildSliverAppBar(),
+                  SliverFillRemaining(child: buildTableSection())
+                ]))
+          ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -583,45 +595,51 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               backgroundColor: AppTheme.kButtonColor,
             ));
           } else if (state is PBISPlusStudentDashboardLogSuccess) {
-            return
-                // state.pbisStudentInteractionList.length > 0
-                //     ?
-                RefreshIndicator(
+            return state.pbisStudentInteractionList.length > 0
+                ? RefreshIndicator(
                     color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
-                    child: ListView(
-                        physics: widget.isFromStudentPlus == true
-                            ? null
-                            : NeverScrollableScrollPhysics(),
-                        children: [
-                          FittedBox(
-                              child: Screenshot(
-                                  controller: screenshotController,
-                                  child: Material(
-                                      color: Color(0xff000000) !=
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffF7F8F9)
-                                          : Color(0xff111C20),
-                                      elevation: 10,
-                                      child: Container(
-                                          padding: EdgeInsets.only(bottom: 80),
-                                          child: _buildDataTable(
-                                              pBISPlusCommonBehaviorList:
-                                                  pBISPlusCommonBehaviorList,
-                                              list: state
-                                                  .pbisStudentInteractionList)))))
-                        ]));
-            // : RefreshIndicator(
-            //     key: refreshKey,
-            //     onRefresh: refreshPage,
-            //     child: NoDataFoundErrorWidget(
-            //         marginTop:
-            //             MediaQuery.of(context).size.height * 0.06,
-            //         isResultNotFoundMsg: true,
-            //         isNews: false,
-            //         isEvents: false),
-            //   );
+                    child: ValueListenableBuilder(
+                        valueListenable: isListScrollUp,
+                        builder: (context, value, child) {
+                          return ListView(
+                              padding: EdgeInsets.only(bottom: 120),
+                              physics: widget.isFromStudentPlus == true
+                                  ? isListScrollUp.value
+                                      ? BouncingScrollPhysics()
+                                      : NeverScrollableScrollPhysics()
+                                  : NeverScrollableScrollPhysics(),
+                              children: [
+                                FittedBox(
+                                    child: Screenshot(
+                                        controller: screenshotController,
+                                        child: Material(
+                                            color: Color(0xff000000) !=
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffF7F8F9)
+                                                : Color(0xff111C20),
+                                            elevation: 10,
+                                            child: Container(
+                                                padding:
+                                                    EdgeInsets.only(bottom: 10),
+                                                child: _buildDataTable(
+                                                    pBISPlusCommonBehaviorList:
+                                                        pBISPlusCommonBehaviorList,
+                                                    list: state
+                                                        .pbisStudentInteractionList)))))
+                              ]);
+                        }))
+                : RefreshIndicator(
+                    key: refreshKey,
+                    onRefresh: refreshPage,
+                    child: NoDataFoundErrorWidget(
+                        marginTop: MediaQuery.of(context).size.height * 0.06,
+                        isResultNotFoundMsg: true,
+                        isNews: false,
+                        isEvents: false),
+                  );
           } else {
             //  shows in condition where email is not not their in case of student plus
             return RefreshIndicator(
@@ -701,44 +719,46 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildTableSection() {
     return Container(
-      alignment: Alignment.topCenter,
-      height: (widget.constraint <= 115)
-          ? MediaQuery.of(context).size.height * 0.30
-          : MediaQuery.of(context).size.height * 0.32,
-      // height: MediaQuery.of(context).size.height * 0.50,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
-          bloc: widget.pBISPlusBloc,
-          builder: (BuildContext contxt, PBISPlusState state) {
-            if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
-              return buildTable(
-                  pBISPlusCommonBehaviorList: state.defaultSchoolBehaviorList);
-            }
-            if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
-                state.teacherCustomBehaviorList.isNotEmpty) {
-              return buildTable(
-                  pBISPlusCommonBehaviorList: state.teacherCustomBehaviorList);
-            }
+        alignment: Alignment.topCenter,
+        height: (widget.constraint <= 115)
+            ? MediaQuery.of(context).size.height * 0.30
+            : MediaQuery.of(context).size.height * 0.32,
+        // height: MediaQuery.of(context).size.height * 0.50,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(left: 16, right: 16),
+        // padding: EdgeInsets.only(bottom: 40),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+            bloc: widget.pBISPlusBloc,
+            builder: (BuildContext contxt, PBISPlusState state) {
+              if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+                return buildTable(
+                    pBISPlusCommonBehaviorList:
+                        state.defaultSchoolBehaviorList);
+              }
+              if (state is PBISPlusGetTeacherCustomBehaviorSuccess &&
+                  state.teacherCustomBehaviorList.isNotEmpty) {
+                return buildTable(
+                    pBISPlusCommonBehaviorList:
+                        state.teacherCustomBehaviorList);
+              }
 
-            return Center(
-                child: CircularProgressIndicator.adaptive(
-              backgroundColor: AppTheme.kButtonColor,
-            ));
-          }),
-    );
+              return Center(
+                  child: CircularProgressIndicator.adaptive(
+                      backgroundColor: AppTheme.kButtonColor));
+            }));
   }
 
   buildSliverAppBar() {
     return SliverAppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        expandedHeight: MediaQuery.of(context).size.height / 1.8,
+        expandedHeight: widget.isFromStudentPlus == true
+            ? MediaQuery.of(context).size.height / 2.2
+            : MediaQuery.of(context).size.height / 1.8,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),

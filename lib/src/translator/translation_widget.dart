@@ -16,16 +16,16 @@ class TranslationWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   var isUserInteraction;
 
-  TranslationWidget({
-    this.scaffoldKey,
-    this.shimmerHeight,
-    @required this.message,
-    this.fromLanguage,
-    @required this.toLanguage,
-    @required this.builder,
-    this.isUserInteraction,
-    Key? key,
-  }) : super(key: key);
+  TranslationWidget(
+      {this.scaffoldKey,
+      this.shimmerHeight,
+      @required this.message,
+      this.fromLanguage,
+      @required this.toLanguage,
+      @required this.builder,
+      this.isUserInteraction,
+      Key? key})
+      : super(key: key);
 
   @override
   _TranslationWidgetState createState() => _TranslationWidgetState();
@@ -56,45 +56,42 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     }
 
     return FutureBuilder(
-      future: TranslationAPI.translate(
-          widget.message!, toLanguageCode, widget.isUserInteraction),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return widget.isUserInteraction == true
-                ? Container()
-                : buildWaiting();
-          default:
-            if (snapshot.hasError) {
-              if (Globals.isNetworkError == false) {
-                Globals.isNetworkError = true;
-                Future.delayed(const Duration(seconds: 3), () {
-                  Utility.showSnackBar(
-                      Globals.scaffoldKey,
-                      'Unable to translate, Please check the Internet connection',
-                      context,
-                      null);
-                });
+        future: TranslationAPI.translate(
+            widget.message!, toLanguageCode, widget.isUserInteraction),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return widget.isUserInteraction == true
+                  ? Container()
+                  : buildWaiting();
+            default:
+              if (snapshot.hasError) {
+                if (Globals.isNetworkError == false) {
+                  Globals.isNetworkError = true;
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Utility.showSnackBar(
+                        Globals.scaffoldKey,
+                        'Unable to translate, Please check the Internet connection',
+                        context,
+                        null);
+                  });
+                }
+                translation = widget.message!;
+              } else {
+                translation = snapshot.data;
+                Globals.isNetworkError = false;
               }
-              translation = widget.message!;
-            } else {
-              translation = snapshot.data;
-              Globals.isNetworkError = false;
-            }
-            return widget.builder!(translation!);
-        }
-      },
-    );
+              return widget.builder!(translation!);
+          }
+        });
   }
 
   Widget buildWaiting() => translation == null
       ? ShimmerLoading(
           isLoading: true,
           child: Container(
-            height: widget.shimmerHeight ?? 20,
-            width: 40,
-            color: Colors.white,
-          ),
-        )
+              height: widget.shimmerHeight ?? 20,
+              width: 40,
+              color: Colors.white))
       : widget.builder!(translation!);
 }
