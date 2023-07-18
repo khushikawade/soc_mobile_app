@@ -169,7 +169,7 @@ class Authentication {
           print('Google Auth Credentials::::::: $credential');
           final UserCredential userCredential =
               await auth.signInWithCredential(credential);
-
+          print(userCredential!.additionalUserInfo!.profile!);
           user = userCredential.user;
           print('Google Auth User::::::: $user');
           // Retrieve the refresh token
