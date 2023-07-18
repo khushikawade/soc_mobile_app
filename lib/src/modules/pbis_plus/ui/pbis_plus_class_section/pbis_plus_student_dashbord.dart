@@ -112,18 +112,12 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   @override
   void dispose() {
-    // if (widget.isFromStudentPlus != true) {
-    //   _scrollController!.removeListener(_handleScroll);
-    //   _scrollController!.dispose();
-    // }
-
     _scrollController!.removeListener(_handleScroll);
     _scrollController!.dispose();
     super.dispose();
   }
 
   void _handleScroll() {
-    print(_scrollController!.position.pixels);
     isScrolledUp.value = _scrollController!.offset >= 400;
     if (_scrollController?.position.pixels ==
         _scrollController?.position.maxScrollExtent) {
@@ -186,12 +180,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   Widget studentPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? ListView(
-            // padding: EdgeInsets.only(bottom: 60),
-            // s  : NeverScrollableScrollPhysics(),
-            // mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: bodyFrameWidget())
+        ? ListView(children: bodyFrameWidget())
         : ListView(children: bodyFrameWidget());
   }
 
@@ -199,7 +188,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return widget.isFromStudentPlus == true
         ? NestedScrollView(
             controller: _scrollController,
-            // key: _scaffoldKey,
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
@@ -215,7 +203,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     controller: _scrollController,
                     slivers: [
-                  // A flexible app bar
                   buildSliverAppBar(),
                   SliverFillRemaining(child: buildTableSection())
                 ]))
