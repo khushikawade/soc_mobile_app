@@ -8,20 +8,33 @@ class TranslationAPI {
 
   static Future<String> translate(
       String message, String toLanguageCode, var isUserInteraction) async {
-    final response = await http.post(
-        Uri.parse(
-            'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&format=text'), //q=$message&
-        body: {
-          "q": "$message",
-        });
+    try {
+      print(
+          "---------------------inside the api -Translation--${DateTime.now()}--");
 
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
-      final translations = body['data']['translations'] as List;
-      final translation = translations.first;
-      return HtmlUnescape().convert(translation['translatedText']);
-    } else {
-      throw Exception();
+      final response = await http.post(
+          Uri.parse(
+              'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&format=text'), //q=$message&
+          body: {
+            "q": "$message",
+          });
+
+      if (response.statusCode == 200) {
+        print(
+            "--------------------API rESPONSE Translation - --${DateTime.now()}--");
+        final body = json.decode(response.body);
+        final translations = body['data']['translations'] as List;
+        final translation = translations.first;
+        return HtmlUnescape().convert(translation['translatedText']);
+      } else {
+        print(
+            "---------------------------EXPECTION----------xxxxxxxxxxx--${DateTime.now()}-");
+        throw Exception();
+      }
+    } catch (e) {
+      print(
+          "---------------------------catch------${e}----xxxxxxxxxxx--${DateTime.now()}-");
     }
+    return message;
   }
 }

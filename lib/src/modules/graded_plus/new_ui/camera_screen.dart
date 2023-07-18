@@ -624,6 +624,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           context,
                           null);
                     }
+                    SystemChrome.setEnabledSystemUIOverlays(
+                        SystemUiOverlay.values);
                   },
                 )),
         FutureBuilder(
@@ -1057,6 +1059,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void setEnabledSystemUIMode() {
+    print("-------------------BACK THE ICONS---------------------------");
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
