@@ -121,7 +121,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
                 }
                 Navigator.of(context).popUntil((route) => route.isFirst);
               }
-              // setState(() {});
+              setState(() {});
             },
             items: StudentPlusBottomNavBar.navBarsItems(
                 context: context, sectionType: widget.sectionType),
