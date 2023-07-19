@@ -678,7 +678,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
                   index: index,
-                  constraints: constraints,
+                  constraints: constraints.maxHeight,
                   item: item,
                   height: MediaQuery.of(context).size.height * 0.35,
                   onDelete: onDelete,
