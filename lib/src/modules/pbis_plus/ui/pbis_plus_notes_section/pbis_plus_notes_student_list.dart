@@ -85,6 +85,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesStudentList> {
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: PBISPlusUtility.pbisAppBar(
+                refresh: (v) {
+                  setState(() {});
+                },
                 context: context,
                 titleIconData: widget.titleIconData,
                 title: 'Notes',
