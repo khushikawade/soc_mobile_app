@@ -177,10 +177,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
     return Container(
         padding: EdgeInsets.only(left: 16),
         child: Column(
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               Container(
                   alignment: Alignment.topRight,
                   child: IconButton(
@@ -246,32 +245,29 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   }
 
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
-    return Expanded(
-      child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(
-              horizontal: 30, vertical: widget.height! * 0.16),
-          child: FloatingActionButton.extended(
-              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-              onPressed: () async {
-                if (editNameController.text.isNotEmpty) {
-                  _errorMessage.value = false;
-                  widget.onEditCallBack(editNameController.text);
-                  Navigator.pop(context);
-                } else {
-                  _errorMessage.value = true;
-                }
-              },
-              label:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Utility.textWidget(
-                    text: 'Save',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).backgroundColor))
-              ]))),
-    );
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(
+            left: 30, right: 30, bottom: widget.height! * 0.16, top: 18),
+        child: FloatingActionButton.extended(
+            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+            onPressed: () async {
+              if (editNameController.text.isNotEmpty) {
+                _errorMessage.value = false;
+                widget.onEditCallBack(editNameController.text);
+                Navigator.pop(context);
+              } else {
+                _errorMessage.value = true;
+              }
+            },
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Utility.textWidget(
+                  text: 'Save',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Theme.of(context).backgroundColor))
+            ])));
   }
 }
