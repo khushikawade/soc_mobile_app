@@ -348,6 +348,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   pBISBehaviorIconURLC: draggedData.pBISBehaviorIconURLC);
 
           if (skillsList.length < 6) {
+            //To chekck the new adding place index for loading
             isWaitIndex.value = skillsList.length;
             teacherCustomBehaviorList.value.add(onAcceptedObj);
 
@@ -766,7 +767,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
             if (skillsList.length != 6) {
               return;
             }
-
+//To manage loading index at the time of replacing
             isWaitIndex.value = index;
             PBISPlusCommonBehaviorModal onAcceptedObj = draggedData;
             PBISPlusCommonBehaviorModal currentDraggedObj = item;
