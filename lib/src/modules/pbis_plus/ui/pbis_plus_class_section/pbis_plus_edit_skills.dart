@@ -60,8 +60,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<bool> updateAdditionalBehaviorWidget =
       ValueNotifier<bool>(false);
 
-  ValueNotifier<bool> isWait = ValueNotifier<bool>(false);
-
+  // ValueNotifier<bool> isWait = ValueNotifier<bool>(false);
+  ValueNotifier<int> isWaitIndex = ValueNotifier<int>(-1);
   @override
   void initState() {
     super.initState();
@@ -139,7 +139,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 child: CupertinoSwitch(
                   value: isCustomBehavior.value,
                   onChanged: (value) {
-                    if (isWait.value == true) {
+                    if (isWaitIndex.value != -1) {
                       notifyUser();
                       return;
                     }
@@ -264,7 +264,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         updateAdditionalBehaviorWidget.value =
                             !updateAdditionalBehaviorWidget.value;
-                        isWait.value = false;
+                        isWaitIndex.value = -1;
                       });
                       if (state.caughtError != null) {
                         notifyUser(msg: state.caughtError);
@@ -321,11 +321,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 if (index < skillsList.length) {
                   final item = skillsList[index];
                   return ValueListenableBuilder(
-                      valueListenable: isWait,
+                      valueListenable: isWaitIndex,
                       builder: (context, value, _) {
-                        var isWaitCurrentBehviour =
-                            ((skillsList.length - 1) == index &&
-                                (isWait.value == true));
+                        var isWaitCurrentBehviour = isWaitIndex.value == index;
 
                         return individualBehaviorTargetBuilder(index,
                             skillsList, item, loading, isWaitCurrentBehviour);
@@ -350,7 +348,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                   pBISBehaviorIconURLC: draggedData.pBISBehaviorIconURLC);
 
           if (skillsList.length < 6) {
-            isWait.value = true;
+            isWaitIndex.value = skillsList.length;
             teacherCustomBehaviorList.value.add(onAcceptedObj);
 
             // updateAdditinalBehviour(isShow: false, item: onAcceptedObj);
@@ -573,10 +571,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: ValueListenableBuilder(
-          valueListenable: isWait,
+          valueListenable: isWaitIndex,
           builder: (context, value, _) {
             return IgnorePointer(
-              ignoring: isWait.value,
+              ignoring: isWaitIndex.value != -1,
               child: GridView.builder(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
@@ -646,9 +644,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       onDragCompleted: () {
         //This call will hide the replaced icon from additional list
         updateAdditinalBehviourStatus(
-            isShow: false,
-            item: item,
-            callingFrom: "Draggable onDragCompleted");
+          isShow: false,
+          item: item,
+        );
       },
       onDragStarted: () {
         changedIndex.value = -1;
@@ -740,8 +738,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 }
               }
               //This call will show the replaced icon from additional list
-              updateAdditinalBehviourStatus(
-                  isShow: true, item: item, callingFrom: "showDeletePopup");
+              updateAdditinalBehviourStatus(isShow: true, item: item);
 
               //Updating the same deleted behavior API to the API
               pbisPluCustomBehaviorBloc
@@ -770,15 +767,16 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
               return;
             }
 
+            isWaitIndex.value = index;
             PBISPlusCommonBehaviorModal onAcceptedObj = draggedData;
             PBISPlusCommonBehaviorModal currentDraggedObj = item;
             //This call will show the existing icon from additional list which is replaced from the new icon
             updateAdditinalBehviourStatus(
-                isShow: true,
-                item: currentDraggedObj,
-                callingFrom: "single DragTarget widget");
+              isShow: true,
+              item: currentDraggedObj,
+            );
 
-            currentDraggedObj.behaviorTitleC = onAcceptedObj.behaviorTitleC;
+            // currentDraggedObj.behaviorTitleC = onAcceptedObj.behaviorTitleC;
 
             currentDraggedObj.pBISBehaviorIconURLC =
                 onAcceptedObj.pBISBehaviorIconURLC;
@@ -845,9 +843,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 //-------------------------------------------
 
   void updateAdditinalBehviourStatus(
-      {required bool isShow,
-      required PBISPlusCommonBehaviorModal item,
-      required String callingFrom}) {
+      {required bool isShow, required PBISPlusCommonBehaviorModal item}) {
     additionalBehaviorList.value.forEach((element) {
       if (element.pBISBehaviorIconURLC == item.pBISBehaviorIconURLC) {
         element.activeStatusC = isShow ? "" : "false";
@@ -876,7 +872,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       isWaitCurrentBehviour) {
     return GestureDetector(
         onTap: () {
-          if (isWait.value == true) {
+          if (isWaitIndex.value != -1) {
             notifyUser();
             return;
           }
