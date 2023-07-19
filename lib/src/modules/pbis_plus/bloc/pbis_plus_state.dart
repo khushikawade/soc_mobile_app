@@ -59,7 +59,7 @@ class AddPBISHistorySuccess extends PBISPlusState {
 
 /* --------------------- state to return student details -------------------- */
 class PBISPlusStudentDashboardLogSuccess extends PBISPlusState {
-  final List<PBISPlusTotalInteractionModal> pbisStudentInteractionList;
+  final List<PBISPlusTotalBehaviourModal> pbisStudentInteractionList;
   PBISPlusStudentDashboardLogSuccess(
       {required this.pbisStudentInteractionList});
   @override

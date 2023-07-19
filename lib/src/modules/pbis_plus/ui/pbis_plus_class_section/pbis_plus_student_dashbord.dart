@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -246,7 +247,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------_buildDataTable---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   DataTable _buildDataTable(
-          {required List<PBISPlusTotalInteractionModal> list,
+          {required List<PBISPlusTotalBehaviourModal> list,
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
       DataTable(
@@ -377,7 +378,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   DataRow buildDataRow(
           {required int index,
-          required List<PBISPlusTotalInteractionModal> list,
+          required List<PBISPlusTotalBehaviourModal> list,
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
       DataRow(
@@ -393,7 +394,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
           return dataCell(cellIndex == 0
               ? PBISPlusUtility.convertDateString(list[index].createdAt ?? '')
-              : list[index].engaged.toString() ?? "0");
+              : getCount(cellIndex, pBISPlusCommonBehaviorList, list[index]) ??
+                  '0');
           // return dataCell("0");
         }),
 
@@ -518,9 +520,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             } else if (state is PBISPlusStudentDashboardLogSuccess) {
               return PlusCustomFloatingActionButton(
                 onPressed: () {
-                  _modalBottomSheetMenu(
-                      pbisStudentInteractionList:
-                          state.pbisStudentInteractionList);
+                  //TODDO
+                  // _modalBottomSheetMenu(
+                  //     pbisStudentInteractionList:
+                  //         state.pbisStudentInteractionList);
                 },
               );
             } else {
@@ -677,9 +680,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     classroomCourseId: widget.classroomCourseId!);
               } else if (state is PBISPlusStudentDashboardLogSuccess) {
                 if (widget.isFromStudentPlus == true) {
-                  updateActionCountStudentPlusModuleWidget(
-                    pbisHistoryData: state.pbisStudentInteractionList,
-                  );
+                  //TODDO
+
+                  // updateActionCountStudentPlusModuleWidget(
+                  //   pbisHistoryData: state.pbisStudentInteractionList,
+                  // );
                 }
                 return PBISPlusStudentCardModal(
                     studentProfile: widget.studentProfile,
@@ -817,5 +822,20 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           ]))
               ])
         : Container();
+  }
+
+  String getCount(
+      int cellIndex,
+      List<PBISPlusCommonBehaviorModal> pBISPlusCommonBehaviorList,
+      PBISPlusTotalBehaviourModal list) {
+    print(pBISPlusCommonBehaviorList[cellIndex].name);
+    String value = '0';
+    list.interactionCounts!.forEach((InteractionCounts element) {
+      if (element.behaviourId == pBISPlusCommonBehaviorList[cellIndex].id) {
+        value = element.behaviorCount.toString();
+      }
+    });
+    print(value);
+    return value ?? '0';
   }
 }
