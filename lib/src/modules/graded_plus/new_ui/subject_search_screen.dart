@@ -1013,7 +1013,7 @@ class _GradedPlusSearchScreenPageState
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId: Globals.teacherId,
+        teacherContactId:await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??

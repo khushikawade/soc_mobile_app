@@ -2019,7 +2019,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId: Globals.teacherId,
+        teacherContactId: await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: Overrides.STANDALONE_GRADED_APP
             ? GoogleClassroomOverrides

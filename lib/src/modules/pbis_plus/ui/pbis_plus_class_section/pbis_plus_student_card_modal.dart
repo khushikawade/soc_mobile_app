@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
@@ -611,7 +612,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   .profile?.name?.fullName,
                               studentEmail: widget.studentValueNotifier.value
                                   .profile?.emailAddress,
-                              teacherId: Globals.teacherId,
+                              teacherId: await OcrUtility.getTeacherId(),
                               schoolId: Overrides.SCHOOL_ID,
                               schoolDbn: Globals.schoolDbnC,
                               notes: noteController.text));
