@@ -26,7 +26,7 @@ class PBISPlusEditSkillsBottomSheet extends StatefulWidget {
       {Key? key,
       this.height = 100,
       required this.item,
-      required  this.constraints,
+      required this.constraints,
       required int index,
       required this.onDelete,
       required this.onEditCallBack});
@@ -77,9 +77,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
             ),
             height: pageValue == 0
                 ? widget.height
-                :(widget.constraints!<=700)?
-                MediaQuery.of(context).size.height * 0.49:
-                 MediaQuery.of(context).size.height * 0.4,
+                : (widget.constraints! <= 700)
+                    ? MediaQuery.of(context).size.height * 0.49
+                    : MediaQuery.of(context).size.height * 0.4,
             //saveAndShareOptions
             child: PageView(
                 physics: NeverScrollableScrollPhysics(),
@@ -249,8 +249,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusEditSkillsBottomSheet> {
   Widget _buildSaveButton(PBISPlusCommonBehaviorModal dataList) {
     return Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(
-            left: 40, right: 40, bottom: 18, top: 18),
+        padding: EdgeInsets.only(left: 40, right: 40, bottom: 0, top: 18),
         child: FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
             onPressed: () async {
