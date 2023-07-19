@@ -1,5 +1,6 @@
 import 'dart:isolate';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -73,7 +74,7 @@ class FirebaseAnalyticsService {
         parameters: {
           'appId': Globals.appSetting.schoolNameC,
           'premiumUser': "true", //Globals.isPremiumUser.toString(),
-          'teacherId': Globals.teacherId,
+          'teacherId': await OcrUtility.getTeacherId() ?? '',
           'deviceId': Globals.deviceID ?? 'Virtual Device',
           'platform': Globals.isAndroid! ? 'Android' : 'iOS',
           'deviceType': Globals.deviceType

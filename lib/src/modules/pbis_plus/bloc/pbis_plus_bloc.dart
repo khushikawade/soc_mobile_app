@@ -217,7 +217,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           // Updating the changes to server after UI update to perform in background//no need to wait for APi response.
 
           await sortTheBehaviourInDB(
-              allBehavior: _localData, teacherId: Globals.teacherId ?? '');
+              allBehavior: _localData,
+              teacherId: await OcrUtility.getTeacherId() ?? '');
         } else if (result != true &&
             _localData.isNotEmpty &&
             itemIndex != null) {
@@ -626,8 +627,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               teacherCustomBehaviorList: _localData);
         }
 
-        List<PBISPlusCommonBehaviorModal> list =
-            await getTeacherCustomBehavior(teacherId: Globals.teacherId ?? '');
+        List<PBISPlusCommonBehaviorModal> list = await getTeacherCustomBehavior(
+            teacherId: await OcrUtility.getTeacherId() ?? '');
 
         // Sort the list based on the "order" key
         list = await sortByOrder(list);
@@ -1654,7 +1655,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
-
+     // print(body);
       final url =
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
 

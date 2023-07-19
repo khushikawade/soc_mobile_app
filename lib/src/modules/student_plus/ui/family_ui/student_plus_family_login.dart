@@ -202,7 +202,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
     return GradedPlusCustomFloatingActionButton(
       isExtended: true,
       fabWidth: MediaQuery.of(context).size.width * 0.75,
-      title: 'Generate OTP',
+      title: 'Generate Code',
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
           studentPlusBloc

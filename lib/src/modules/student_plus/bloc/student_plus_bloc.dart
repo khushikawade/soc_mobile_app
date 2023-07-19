@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/services/family_login_override.dart';
@@ -681,7 +682,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       final body = {
         "Student__c": studentDetails.studentIdC,
         "Student_Record_Id": studentDetails.id,
-        "Teacher__c": Globals.teacherId ?? '',
+        "Teacher__c": await OcrUtility.getTeacherId() ?? '',
         "DBN__c": Globals.schoolDbnC ?? "",
         "School_App__c": Overrides.SCHOOL_ID ?? '',
         "Google_Presentation_Id":

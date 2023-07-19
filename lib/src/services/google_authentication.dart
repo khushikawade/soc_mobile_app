@@ -172,6 +172,7 @@ class Authentication {
               await auth.signInWithCredential(credential);
           AdditionalUserInfo userDetails =
               userCredential.additionalUserInfo!; //
+          print('Google Auth Additional Info::::::: $userDetails');
           user = userCredential.user;
           print('Google Auth User::::::: ${userDetails.profile}');
           // Retrieve the refresh token
