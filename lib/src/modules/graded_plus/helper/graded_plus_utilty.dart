@@ -643,19 +643,16 @@ class OcrUtility {
   static getTeacherId() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
-        return Globals.teacherId;
-      } else {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        return prefs.getString(OcrOverrides.teacherId);
-      }
-    } catch (e) {}
+      return prefs.getString(OcrOverrides.teacherId) ?? "";
+    } catch (e) {
+      return "";
+    }
   }
 
-  static setTeacherId(String techerId) async {
+  static setTeacherId(techerId) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(OcrOverrides.teacherId, techerId);
+      prefs.setString(OcrOverrides.teacherId, "$techerId");
     } catch (e) {}
   }
 
