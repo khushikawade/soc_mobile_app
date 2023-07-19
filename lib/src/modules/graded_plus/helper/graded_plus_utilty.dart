@@ -643,10 +643,10 @@ class OcrUtility {
     }
   }
 
-  static setTeacherId(techerId) async {
+  static setTeacherId(String techerId) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(OcrOverrides.teacherId, "$techerId");
+      prefs.setString(OcrOverrides.teacherId, techerId);
     } catch (e) {}
   }
 
