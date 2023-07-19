@@ -75,6 +75,9 @@ class _CommonIntroSectionState extends State<CommonIntroSection> {
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+      refresh: (v) {
+        setState(() {});
+      },
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       //Show home button in standard app and hide in standalone

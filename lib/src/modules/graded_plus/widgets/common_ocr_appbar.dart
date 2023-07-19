@@ -58,6 +58,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   IconData? iconData;
   final String? sectionType;
   final scaffoldKey;
+  final ValueChanged? refresh;
 
   CustomOcrAppBarWidget(
       {required Key? key,
@@ -82,7 +83,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       required this.fromGradedPlus,
       required this.plusAppName,
       required this.iconData,
-      this.sectionType})
+      this.sectionType,
+      required this.refresh})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -551,7 +553,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/

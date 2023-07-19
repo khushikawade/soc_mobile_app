@@ -150,6 +150,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               //   FloatingActionButtonLocation.centerFloat,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                refresh: (v) {
+                  setState(() {});
+                },
                 iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,

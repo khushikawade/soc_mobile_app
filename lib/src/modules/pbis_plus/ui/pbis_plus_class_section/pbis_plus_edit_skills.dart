@@ -698,6 +698,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: PBISPlusAppBar(
+                  refresh: (v) {
+                    setState(() {});
+                  },
                   titleIconData: widget.titleIconData,
                   title: "",
                   backButton: true,

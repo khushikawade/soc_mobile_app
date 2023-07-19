@@ -65,6 +65,9 @@ class _GradedPlusSelectAssessmentTypeSectionState
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      refresh: (v) {
+        setState(() {});
+      },
       iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
@@ -147,7 +150,9 @@ class _GradedPlusSelectAssessmentTypeSectionState
                       operationResult: 'Success');
                   Fluttertoast.cancel();
                   await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => GradedPlusConstructedResponse( titleIconData: widget.titleIconData,)));
+                      builder: (context) => GradedPlusConstructedResponse(
+                            titleIconData: widget.titleIconData,
+                          )));
                 }
                 OcrOverrides.gradedPlusNavBarIsHide.value = false;
 
