@@ -273,6 +273,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       return noClassroomFound();
                     }
                   }
+                  if (state is PBISErrorState) {
+                    return noClassroomFound();
+                  }
                   return Container();
                 },
                 listener: (context, state) async {
