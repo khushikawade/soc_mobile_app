@@ -1213,7 +1213,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "email": email.toString(),
         "DBN": Globals.schoolDbnC,
         "Schoolid": Overrides.SCHOOL_ID,
-        "teacherid": Globals.teacherId
+        "teacherid": await OcrUtility.getTeacherId()
       };
       final ResponseModel response = await _dbServices.postApi(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
