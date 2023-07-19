@@ -635,9 +635,12 @@ class OcrUtility {
       //   return Globals.teacherId;
       // } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return prefs.getString(OcrOverrides.teacherId);
+      print('Teacher Id::::::: ${prefs.getString(OcrOverrides.teacherId)}');
+      return prefs.getString(OcrOverrides.teacherId) ?? '';
       // }
-    } catch (e) {}
+    } catch (e) {
+      throw e;
+    }
   }
 
   static setTeacherId(String techerId) async {

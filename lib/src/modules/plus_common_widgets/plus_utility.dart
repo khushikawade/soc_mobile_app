@@ -41,7 +41,7 @@ class PlusUtility {
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,
-        teacherId: await OcrUtility.getTeacherId(), //contact Id
+        teacherId: await OcrUtility.getTeacherId() ?? '', //contact Id
         activityId: activityId,
         accountId: Globals.appSetting.schoolNameC,
         accountType: 'Free',

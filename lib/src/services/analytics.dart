@@ -74,7 +74,7 @@ class FirebaseAnalyticsService {
         parameters: {
           'appId': Globals.appSetting.schoolNameC,
           'premiumUser': "true", //Globals.isPremiumUser.toString(),
-          'teacherId': await OcrUtility.getTeacherId(),
+          'teacherId': await OcrUtility.getTeacherId() ?? '',
           'deviceId': Globals.deviceID ?? 'Virtual Device',
           'platform': Globals.isAndroid! ? 'Android' : 'iOS',
           'deviceType': Globals.deviceType
