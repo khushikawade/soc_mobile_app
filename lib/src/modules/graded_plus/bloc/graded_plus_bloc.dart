@@ -1265,11 +1265,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             await createContactToSalesforce(email: email.toString());
           }
         } else {
+          print(
+              "--------------------------------------TEACHER ID-------------verifyUserWithDatabase------before else------------${data['Id']}------------------------------");
           Globals.teacherId = data['Id'];
           OcrUtility.setTeacherId(data['Id']);
           if (data['Assessment_App_User__c'] != 'true') {
             Globals.teacherId = data['Id'];
-
+            print(
+                "--------------------------------------TEACHER ID-------------verifyUserWithDatabase------------------${data['Id']}------------------------------");
             OcrUtility.setTeacherId(data['Id']);
             bool result = await updateContactToSalesforce(recordId: data['Id']);
             if (!result) {
@@ -1322,6 +1325,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
+        print(
+            "--------------------------------------TEACHER ID-------------createContactToSalesforce-----createContactToSalesforce------------${response.data["body"]["id"]}------------------------------");
+
         Globals.teacherId = response.data["body"]["id"];
         OcrUtility.setTeacherId(response.data["body"]["id"]);
         return true;
