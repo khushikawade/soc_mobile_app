@@ -4,7 +4,9 @@ import 'dart:math';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes_detail.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -185,25 +187,61 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return widget.isFromStudentPlus == true
-        ? NestedScrollView(
-            controller: _scrollController,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[buildSliverAppBar()];
-            },
-            body: buildTableSection())
-        : Column(children: [
-            sectionHeader(),
-            Flexible(
-                child: CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: _scrollController,
-                    slivers: [
-                  buildSliverAppBar(),
-                  SliverFillRemaining(child: buildTableSection())
-                ]))
-          ]);
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PBISPlusNotesDetailPage(
+                  titleIconData: IconData(0xe895,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  item: PBISPlusNotesUniqueStudentList(
+                    studentId:
+                        widget.studentValueNotifier.value.profile!.id ?? '',
+                    names: StudentName(
+                        fullName: widget.studentValueNotifier.value.profile
+                                ?.name?.fullName ??
+                            "",
+                        familyName: widget.studentValueNotifier.value.profile
+                                ?.name?.familyName ??
+                            "",
+                        givenName: widget.studentValueNotifier.value.profile
+                                ?.name?.givenName ??
+                            ""),
+                    email:
+                        widget.studentValueNotifier.value.profile!.emailAddress,
+                    iconUrlC:
+                        widget.studentValueNotifier.value.profile?.photoUrl ??
+                            "",
+                    notes: null,
+                  ),
+                )));
+      },
+      child: Container(
+        color: Colors.amberAccent,
+        height: 100,
+        width: 100,
+      ),
+    );
+
+    //  widget.isFromStudentPlus == true
+    //     ? NestedScrollView(
+    //         controller: _scrollController,
+    //         headerSliverBuilder:
+    //             (BuildContext context, bool innerBoxIsScrolled) {
+    //           return <Widget>[buildSliverAppBar()];
+    //         },
+    //         body: buildTableSection())
+    //     : Column(children: [
+    //         sectionHeader(),
+    //         Flexible(
+    //             child: CustomScrollView(
+    //                 physics: const AlwaysScrollableScrollPhysics(),
+    //                 controller: _scrollController,
+    //                 slivers: [
+    //               buildSliverAppBar(),
+    //               SliverFillRemaining(child: buildTableSection())
+    //             ]))
+    //       ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
