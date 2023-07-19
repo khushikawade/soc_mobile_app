@@ -501,55 +501,55 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       yield PBISPlusLoading();
       yield AddPBISHistorySuccess();
     }
-    /* -------------------------------------------------------------------------- */
-    /*                    Event to get student details by email                   */
-    /* -------------------------------------------------------------------------- */
-    if (event is GetPBISPlusStudentDashboardLogs) {
-      String sectionTableName = event.isStudentPlus == true
-          ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
-          : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
-      try {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
+    // /* -------------------------------------------------------------------------- */
+    // /*                    Event to get student details by email                   */
+    // /* -------------------------------------------------------------------------- */
+    // if (event is GetPBISPlusStudentDashboardLogs) {
+    //   String sectionTableName = event.isStudentPlus == true
+    //       ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
+    //       : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
+    //   try {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
-            LocalDatabase(sectionTableName);
-        List<PBISPlusTotalInteractionModal>? _localData =
-            await _localDb.getData();
+    //     LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+    //         LocalDatabase(sectionTableName);
+    //     List<PBISPlusTotalInteractionModal>? _localData =
+    //         await _localDb.getData();
 
-        if (_localData.isNotEmpty) {
-          yield PBISPlusStudentDashboardLogSuccess(
-              pbisStudentInteractionList: _localData);
-        } else {
-          yield PBISPlusLoading();
-        }
+    //     if (_localData.isNotEmpty) {
+    //       yield PBISPlusStudentDashboardLogSuccess(
+    //           pbisStudentInteractionList: _localData);
+    //     } else {
+    //       yield PBISPlusLoading();
+    //     }
 
-        List<PBISPlusTotalInteractionModal> pbisStudentDetails =
-            await getPBISPlusStudentDashboardLogs(
-                studentId: event.studentId,
-                teacherEmail: userProfileLocalData[0].userEmail!,
-                classroomCourseId: event.classroomCourseId,
-                isStudentPlus: event.isStudentPlus);
+    //     List<PBISPlusTotalInteractionModal> pbisStudentDetails =
+    //         await getPBISPlusStudentDashboardLogs(
+    //             studentId: event.studentId,
+    //             teacherEmail: userProfileLocalData[0].userEmail!,
+    //             classroomCourseId: event.classroomCourseId,
+    //             isStudentPlus: event.isStudentPlus);
 
-        //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    //     //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
-        await _localDb.clear();
-        pbisStudentDetails
-            .forEach((PBISPlusTotalInteractionModal element) async {
-          await _localDb.addData(element);
-        });
-        yield PBISPlusLoading();
-        yield PBISPlusStudentDashboardLogSuccess(
-            pbisStudentInteractionList: pbisStudentDetails);
-      } catch (e) {
-        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
-            LocalDatabase(sectionTableName);
-        List<PBISPlusTotalInteractionModal>? _localData =
-            await _localDb.getData();
-        yield PBISPlusStudentDashboardLogSuccess(
-            pbisStudentInteractionList: _localData);
-      }
-    }
+    //     await _localDb.clear();
+    //     pbisStudentDetails
+    //         .forEach((PBISPlusTotalInteractionModal element) async {
+    //       await _localDb.addData(element);
+    //     });
+    //     yield PBISPlusLoading();
+    //     yield PBISPlusStudentDashboardLogSuccess(
+    //         pbisStudentInteractionList: pbisStudentDetails);
+    //   } catch (e) {
+    //     LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+    //         LocalDatabase(sectionTableName);
+    //     List<PBISPlusTotalInteractionModal>? _localData =
+    //         await _localDb.getData();
+    //     yield PBISPlusStudentDashboardLogSuccess(
+    //         pbisStudentInteractionList: _localData);
+    //   }
+    // }
     if (event is PBISPlusResetInteractions) {
       try {
         //Save the event records in separate list to make sure not to change on runtime.
@@ -877,6 +877,54 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       } catch (e) {
         yield PBISErrorState(
             error: "Failed to add the note. Please try again later.");
+      }
+    } /* -------------------------------------------------------------------------- */
+    /*                    Event to get student details by email                   */
+    /* -------------------------------------------------------------------------- */
+    if (event is GetPBISPlusStudentDashboardLogs) {
+      String sectionTableName = event.isStudentPlus == true
+          ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
+          : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+            LocalDatabase(sectionTableName);
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
+
+        if (_localData.isNotEmpty) {
+          yield PBISPlusStudentDashboardLogSuccess(
+              pbisStudentInteractionList: _localData);
+        } else {
+          yield PBISPlusLoading();
+        }
+
+        List<PBISPlusTotalInteractionModal> pbisStudentDetails =
+            await getPBISPlusStudentDashboardLogs(
+                studentId: event.studentId,
+                teacherEmail: userProfileLocalData[0].userEmail!,
+                classroomCourseId: event.classroomCourseId,
+                isStudentPlus: event.isStudentPlus);
+
+        //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+        await _localDb.clear();
+        pbisStudentDetails
+            .forEach((PBISPlusTotalInteractionModal element) async {
+          await _localDb.addData(element);
+        });
+        yield PBISPlusLoading();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: pbisStudentDetails);
+      } catch (e) {
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+            LocalDatabase(sectionTableName);
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: _localData);
       }
     }
   }
@@ -1655,7 +1703,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
-     // print(body);
+      // print(body);
       final url =
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/behaviour/add-behaviour';
 
