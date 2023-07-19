@@ -147,47 +147,72 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     /* ------------------------- trigger in case of student in staff section ------------------------ */
     if (event is FetchStudentGradesEvent) {
       try {
-        LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
-            "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
 
-        List<StudentPlusGradeModel>? _localData = await _localDb.getData();
+        LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
+            LocalDatabase(
+                "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+        LocalDatabase<StudentPlusCourseModel> _localStudentCourseDb = LocalDatabase(
+            "${StudentPlusOverrides.studentGradeList}_${userProfileLocalData[0].userEmail}");
 
-        if (_localData.isEmpty) {
+        List<StudentPlusGradeModel>? _localDataGradeList =
+            await _localDbStudentGradeDb.getData();
+        List<StudentPlusCourseModel>? _localCourseDataList =
+            await _localStudentCourseDb.getData();
+
+        if (_localDataGradeList.isEmpty && _localCourseDataList.isEmpty) {
           yield StudentPlusLoading();
         } else {
           yield StudentPlusGradeSuccess(
-              obj: _localData,
-              chipList: getChipsList(list: _localData),
-              courseList: []);
+              obj: _localDataGradeList,
+              chipList: getChipsList(list: _localDataGradeList),
+              courseList: _localCourseDataList);
         }
 
+        //Creating list includes both grades from database and current grades from google classroom
+        List gradeList = await Future.wait([
+          getStudentGradesDetails(studentId: event.studentId ?? ''),
+          getClassroomCourseList(
+              accessToken: userProfileLocalData[0].authorizationToken ?? '',
+              refreshToken: userProfileLocalData[0].refreshToken ?? '')
+        ]);
         //yield StudentPlusLoading();
-        List<StudentPlusGradeModel> list =
-            await getStudentGradesDetails(studentId: event.studentId ?? '');
-        await _localDb.clear();
+        List<StudentPlusGradeModel> list = gradeList[0];
+        List<StudentPlusCourseModel> studentCourseList = gradeList[1];
+        await _localDbStudentGradeDb.clear();
+        await _localStudentCourseDb.clear();
+
+        studentCourseList.forEach((StudentPlusCourseModel e) async {
+          await _localStudentCourseDb.addData(e);
+        });
 
         // list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         list.forEach((StudentPlusGradeModel e) {
-          _localDb.addData(e);
+          _localDbStudentGradeDb.addData(e);
         });
+        //To mimic the state
+        yield StudentPlusLoading();
 
         yield StudentPlusGradeSuccess(
             obj: list,
             chipList: getChipsList(
               list: list,
             ),
-            courseList: []);
+            courseList: studentCourseList);
       } catch (e) {
-        LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
-            "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+        LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
+            LocalDatabase(
+                "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
 
-        List<StudentPlusGradeModel>? _localData = await _localDb.getData();
+        List<StudentPlusGradeModel>? _localDbStudentGradeList =
+            await _localDbStudentGradeDb.getData();
 
         //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         yield StudentPlusGradeSuccess(
-            obj: _localData,
+            obj: _localDbStudentGradeList,
             chipList: getChipsList(
-              list: _localData,
+              list: _localDbStudentGradeList,
             ),
             courseList: []);
       }
@@ -752,7 +777,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             .toList();
 
         //Return only classes where user role is student //using google login
-        list.removeWhere((element) => element.teacherFolder != null);
+      //  list.removeWhere((element) => element.teacherFolder != null);
         return list;
       } else if ((response.statusCode == 401 ||
               // response.data['body'][" status"] != 401 ||
