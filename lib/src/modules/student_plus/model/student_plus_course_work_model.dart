@@ -36,6 +36,8 @@ class StudentPlusCourseWorkModel {
   final String? creatorUserId;
   @HiveField(13)
   final List<StudentWorkSubmission>? studentWorkSubmission;
+  @HiveField(14)
+  final String? studentCourseUserId;
 
   StudentPlusCourseWorkModel({
     this.courseId,
@@ -52,6 +54,7 @@ class StudentPlusCourseWorkModel {
     this.associatedWithDeveloper,
     this.creatorUserId,
     this.studentWorkSubmission,
+    this.studentCourseUserId
   });
 
   factory StudentPlusCourseWorkModel.fromRawJson(String str) =>
@@ -82,6 +85,7 @@ class StudentPlusCourseWorkModel {
             ? []
             : List<StudentWorkSubmission>.from(json["studentWorkSubmission"]!
                 .map((x) => StudentWorkSubmission.fromJson(x))),
+                studentCourseUserId: null
       );
 
   Map<String, dynamic> toJson() => {

@@ -49,8 +49,10 @@ class GetStudentPlusDetails extends StudentPlusEvent {
 /* ---------------- Event use to trigger student grade details --------------- */
 class FetchStudentGradesEvent extends StudentPlusEvent {
   final String? studentId;
+  final String? studentEmail;
   FetchStudentGradesEvent({
     @required this.studentId,
+    required this.studentEmail
   });
 
   @override

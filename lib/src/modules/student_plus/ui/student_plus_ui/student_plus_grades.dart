@@ -43,11 +43,13 @@ class individual extends State<StudentPlusGradesPage> {
 
   @override
   void initState() {
-    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
-            widget.sectionType == 'Family'
-        ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
-        : FetchStudentGradesWithClassroomEvent(
-            studentId: widget.studentDetails.studentIdC));
+    _studentPlusBloc.add(
+        widget.sectionType == 'Staff' || widget.sectionType == 'Family'
+            ? FetchStudentGradesEvent(
+                studentId: widget.studentDetails.studentIdC,
+                studentEmail: widget.studentDetails.emailC)
+            : FetchStudentGradesWithClassroomEvent(
+                studentId: widget.studentDetails.studentIdC));
     // : FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC));
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_grades_screen");
@@ -350,6 +352,8 @@ class individual extends State<StudentPlusGradesPage> {
             textTheme: Theme.of(context).textTheme.headline2),
         subtitle: Utility.textWidget(
             text: studentPlusCourseModel.section == null ||
+                    studentPlusCourseModel.section == '' ||
+                    studentPlusCourseModel.room == '' ||
                     studentPlusCourseModel.room == null
                 ? "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString())}"
                 : "${Utility.convertDateUSFormat(studentPlusCourseModel.updateTime.toString()) ?? ''} | ${studentPlusCourseModel.section} | ${studentPlusCourseModel.room}",
@@ -465,10 +469,12 @@ class individual extends State<StudentPlusGradesPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _studentPlusBloc.add(widget.sectionType == 'Staff' ||
-            widget.sectionType == 'Family'
-        ? FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC)
-        : FetchStudentGradesWithClassroomEvent(
-            studentId: widget.studentDetails.studentIdC));
+    _studentPlusBloc.add(
+        widget.sectionType == 'Staff' || widget.sectionType == 'Family'
+            ? FetchStudentGradesEvent(
+                studentId: widget.studentDetails.studentIdC,
+                studentEmail: widget.studentDetails.emailC)
+            : FetchStudentGradesWithClassroomEvent(
+                studentId: widget.studentDetails.studentIdC));
   }
 }
