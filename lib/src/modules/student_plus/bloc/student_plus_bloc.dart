@@ -3,8 +3,10 @@ import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_met
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_regents_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/services/family_login_override.dart';
 import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -350,6 +352,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
         //yield StudentPlusLoading();
         List list = await getStudentCourseWorkList(
+          studentUserId: event.studentUserId,
           courseId: event.courseWorkId,
           accessToken: userProfileLocalData[0].authorizationToken ?? '',
         );
@@ -382,6 +385,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             await UserGoogleProfile.getUserProfile();
 
         List list = await getStudentCourseWorkList(
+            studentUserId: event.studentUserId,
             courseId: event.courseWorkId,
             accessToken: userProfileLocalData[0].authorizationToken ?? '',
             nextPageToken: event.nextPageToken);
@@ -444,6 +448,40 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         );
       } catch (e) {
         yield StudentPlusErrorReceived(err: e);
+      }
+    }
+
+    if (event is GetStudentRegentsList) {
+      try {
+        LocalDatabase<StudentRegentsModel> _localDb =
+            LocalDatabase(event.studentId);
+
+        List<StudentRegentsModel>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield StudentPlusRegentsLoading();
+        } else {
+          yield StudentPlusRegentsSuccess(obj: _localData);
+        }
+
+        List<StudentRegentsModel> list =
+            await getStudentRegentsDetailList(studentIdC: event.studentId);
+        // Syncing the Local database with remote data
+        await _localDb.clear();
+        list.forEach((StudentRegentsModel e) {
+          _localDb.addData(e);
+        });
+
+        yield StudentPlusDemoLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+        yield StudentPlusRegentsSuccess(obj: list);
+      } catch (e) {
+        LocalDatabase<StudentRegentsModel> _localDb =
+            LocalDatabase(event.studentId);
+
+        List<StudentRegentsModel>? _localData = await _localDb.getData();
+        _localDb.close();
+
+        yield StudentPlusRegentsSuccess(obj: _localData);
       }
     }
 
@@ -695,6 +733,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           }); //change DBN to dynamic
       if (response.statusCode == 200) {
         return StudentPlusDetailsModel.fromJson(response.data['body']);
+      } else {
+        return [];
       }
     } catch (e) {
       throw (e);
@@ -730,7 +770,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       final body = {
         "Student__c": studentDetails.studentIdC,
         "Student_Record_Id": studentDetails.id,
-        "Teacher__c": Globals.teacherId ?? '',
+        "Teacher__c": await OcrUtility.getTeacherId() ?? '',
         "DBN__c": Globals.schoolDbnC ?? "",
         "School_App__c": Overrides.SCHOOL_ID ?? '',
         "Google_Presentation_Id":
@@ -830,18 +870,23 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   Future getStudentCourseWorkList(
       {required String courseId,
       required String accessToken,
-      String? nextPageToken}) async {
+      String? nextPageToken,
+      String? studentUserId}) async {
     try {
-      final ResponseModel response = await _dbServices.getApiNew(
-          'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10',
-          isCompleteUrl: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
-            'G_AuthToken': '$accessToken',
-            'G_RefreshToken': '$accessToken',
-            'nextPageToken': nextPageToken ?? ''
-          });
+      String apiUrl =
+          'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10';
+      if (studentUserId != null && studentUserId != '') {
+        apiUrl =
+            'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10&student_id=$studentUserId';
+      }
+      final ResponseModel response =
+          await _dbServices.getApiNew(apiUrl, isCompleteUrl: true, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+        'G_AuthToken': '$accessToken',
+        'G_RefreshToken': '$accessToken',
+        'nextPageToken': nextPageToken ?? ''
+      });
 
       if (response.statusCode == 200) {
         List<StudentPlusCourseWorkModel> list = response.data["data"]
@@ -899,5 +944,27 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
 
     return updatedList;
+  }
+
+  /* ------------- Function to get student Regents for student Ossid ------------- */
+  Future getStudentRegentsDetailList({required String studentIdC}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Regents_Exam__c/\"Student__c\"='a1J4W00000Fm2QlUAJ'",
+          isCompleteUrl: true,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+          }); //change DBN to dynamic
+      if (response.statusCode == 200) {
+        List<StudentRegentsModel> list = response.data["body"]
+            .map<StudentRegentsModel>((i) => StudentRegentsModel.fromJson(i))
+            .toList();
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw (e);
+    }
   }
 }

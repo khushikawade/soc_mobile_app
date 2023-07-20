@@ -1013,7 +1013,7 @@ class _GradedPlusSearchScreenPageState
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId: Globals.teacherId,
+        teacherContactId:await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
@@ -1063,7 +1063,9 @@ class _GradedPlusSearchScreenPageState
         Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
-          appBar: CustomOcrAppBarWidget(
+          appBar: CustomOcrAppBarWidget(   refresh: (v) {
+            setState(() {});
+          },
             iconData:widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,

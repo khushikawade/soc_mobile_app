@@ -8,18 +8,21 @@ class TranslationAPI {
 
   static Future<String> translate(
       String message, String toLanguageCode, var isUserInteraction) async {
-    final response = await http.post(
-        Uri.parse(
-            'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&format=text'), //q=$message&
-        body: {"q": "$message"});
+    try {
+      final response = await http.post(
+          Uri.parse(
+              'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&format=text'), //q=$message&
+          body: {"q": "$message"});
 
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
-      final translations = body['data']['translations'] as List;
-      final translation = translations.first;
-      return HtmlUnescape().convert(translation['translatedText']);
-    } else {
-      throw Exception();
-    }
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        final translations = body['data']['translations'] as List;
+        final translation = translations.first;
+        return HtmlUnescape().convert(translation['translatedText']);
+      } else {
+        throw Exception();
+      }
+    } catch (e) {}
+    return message;
   }
 }

@@ -149,3 +149,18 @@ class FamilyLoginErrorReceived extends StudentPlusState {
   @override
   List<Object> get props => [err];
 }
+
+/* ---------------------------- state to return Regents loading state ---------------------------- */
+class StudentPlusRegentsLoading extends StudentPlusState {}
+
+/* -------------------- state use to return student regents details --------------- */
+class StudentPlusRegentsSuccess extends StudentPlusState {
+  final List<StudentRegentsModel> obj;
+  StudentPlusRegentsSuccess({required this.obj});
+  StudentPlusRegentsSuccess copyWith({final obj}) {
+    return StudentPlusRegentsSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}

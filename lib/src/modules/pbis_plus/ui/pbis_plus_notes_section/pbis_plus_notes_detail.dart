@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -64,7 +65,9 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             extendBody: true,
-            appBar: PBISPlusUtility.pbisAppBar(
+            appBar: PBISPlusUtility.pbisAppBar(  refresh: (v) {
+            setState(() {});
+          },
               context: context,
               titleIconData: widget.titleIconData,
               title: 'Notes Deatils',
@@ -108,12 +111,22 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             _buildBackIcon(),
             Expanded(
-                child: Text("${widget.item.names!.fullName!}'s" + " Notes",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.w700)))
+                child: Row(children: [
+              Text(("${widget.item.names!.fullName!}'s"),
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.w700)),
+              Utility.textWidget(
+                  text: (" Notes"),
+                  context: context,
+                  textAlign: TextAlign.left,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.w700))
+            ]))
           ]),
           SpacerWidget(_KVertcalSpace / 5),
           BlocConsumer(
@@ -187,14 +200,17 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
                   ? localSimmerWidget(
                       height: MediaQuery.of(context).size.width * 0.3,
                       width: MediaQuery.of(context).size.width * 0.9)
-                  : Text("${obj.notes ?? ""}",
+                  : Utility.textWidget(
+                      text: ("${obj.notes}"),
+                      context: context,
                       textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            color: Color(0xff000000) ==
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffFFFFFF)
-                                : Color(0xff162429),
-                          )),
+                      textTheme:
+                          Theme.of(context).textTheme.subtitle1!.copyWith(
+                                color: Color(0xff000000) ==
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffFFFFFF)
+                                    : Color(0xff162429),
+                              )),
               SpacerWidget(24),
               _buildDateList(obj, isShimmerLoading),
               SpacerWidget(24)
@@ -217,9 +233,11 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
         children: <Widget>[
           isShimmerLoading
               ? localSimmerWidget(height: 15, width: 48)
-              : Text("$item",
+              : Utility.textWidget(
+                  text: ("${item}"),
+                  context: context,
                   textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
                       color:
                           Color(0xff000000) == Theme.of(context).backgroundColor
                               ? Color(0xffA6A6A6)

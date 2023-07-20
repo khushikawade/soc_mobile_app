@@ -84,7 +84,8 @@ class Authentication {
     try {
       final UserCredential userCredential =
           await auth.signInWithCredential(credential);
-
+      AdditionalUserInfo additionalUserInfo =
+          userCredential.additionalUserInfo!;
       user = userCredential.user;
       // Retrieve the refresh token
       // Access the refresh token from the UserCredential
@@ -98,8 +99,8 @@ class Authentication {
       }
 
       //-------------------------------Updating user info locally--------------------------------------------
-      await saveUserProfile(
-          user!, googleSignInAuthentication, userInfo[0].userType ?? '');
+      await saveUserProfile(user!, googleSignInAuthentication,
+          userInfo[0].userType ?? '', additionalUserInfo);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // Handle the case where the user already exists with a different credential
@@ -169,9 +170,11 @@ class Authentication {
           print('Google Auth Credentials::::::: $credential');
           final UserCredential userCredential =
               await auth.signInWithCredential(credential);
-          print(userCredential!.additionalUserInfo!.profile!);
+          AdditionalUserInfo userDetails =
+              userCredential.additionalUserInfo!; //
+          print('Google Auth Additional Info::::::: $userDetails');
           user = userCredential.user;
-          print('Google Auth User::::::: $user');
+          print('Google Auth User::::::: ${userDetails.profile}');
           // Retrieve the refresh token
           // Access the refresh token from the UserCredential
           final String? refreshToken = userCredential.user!.refreshToken!;
@@ -185,7 +188,8 @@ class Authentication {
 
           //-------------------------------Updating user info locally--------------------------------------------
 
-          await saveUserProfile(user!, googleSignInAuthentication, userType);
+          await saveUserProfile(
+              user!, googleSignInAuthentication, userType, userDetails);
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             // Handle the case where the user already exists with a different credential
@@ -223,7 +227,7 @@ class Authentication {
       if (!kIsWeb) {
         await googleSignIn.signOut();
       }
-      await FirebaseAuth.instance.signOut();
+      await googleSignIn.signOut();
       user = null;
     } catch (e) {
       print('Sign Out Error:::::: $e');
@@ -241,14 +245,16 @@ class Authentication {
   static Future<void> saveUserProfile(
       User user,
       GoogleSignInAuthentication googleSignInAuthentication,
-      String userType) async {
+      String userType,
+      AdditionalUserInfo additionalUserInfo) async {
     // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     //clear the existing data
     await UserGoogleProfile.clearUserProfile();
     UserInformation _userInformation = UserInformation(
         userName: user.displayName,
         userEmail: user.email,
-        profilePicture: user.photoURL,
+        profilePicture:
+            additionalUserInfo.profile!["picture"], // user.photoURL,
         authorizationToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
         refreshToken: user.refreshToken ?? "",

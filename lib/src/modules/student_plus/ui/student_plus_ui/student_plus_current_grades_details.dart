@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
-
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
@@ -22,7 +21,9 @@ class StudentPlusGradesDetailPage extends StatefulWidget {
   final StudentPlusCourseModel studentPlusCourseModel;
   final String sectionType;
   const StudentPlusGradesDetailPage(
-      {Key? key, required this.studentPlusCourseModel,required this.sectionType})
+      {Key? key,
+      required this.studentPlusCourseModel,
+      required this.sectionType})
       : super(key: key);
 
   @override
@@ -42,6 +43,7 @@ class _StudentPlusGradesDetailPageState
   void initState() {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _studentPlusBloc.add(FetchStudentCourseWorkEvent(
+        studentUserId: widget.studentPlusCourseModel.studentUserId,
         courseWorkId: widget.studentPlusCourseModel.id ?? ''));
     // TODO: implement initState
     super.initState();
@@ -281,6 +283,7 @@ class _StudentPlusGradesDetailPageState
         nextPageToken != 'localDb') {
       // print("updating new list ");
       _studentPlusBloc.add(GetStudentCourseWorkListByPaginationEvent(
+          studentUserId: widget.studentPlusCourseModel.studentUserId,
           courseWorkId: widget.studentPlusCourseModel.id ?? '',
           nextPageToken: nextPageToken,
           oldList: paginationList));

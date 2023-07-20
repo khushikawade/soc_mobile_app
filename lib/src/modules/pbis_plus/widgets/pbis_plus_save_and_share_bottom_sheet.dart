@@ -249,9 +249,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-      final headerUint8List = widget.headerScreenshotController == null
-          ? null
-          : await widget.headerScreenshotController!.capture();
+      var headerUint8List = null;
+      try {
+        headerUint8List = widget.headerScreenshotController == null
+            ? null
+            : await widget.headerScreenshotController!.capture();
+      } catch (e) {
+        headerUint8List = null;
+      }
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
@@ -260,9 +265,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       final pdf = pdfWidget.Document();
 
       // to get image size
-      Size headerSize = widget.fromClassScreen == true
-          ? Size(0, 0)
-          : await getImageSize(headerUint8List!);
+      Size headerSize =
+          widget.fromClassScreen == true || headerUint8List == null
+              ? Size(0, 0)
+              : await getImageSize(headerUint8List!);
       Size size = uint8List != null
           ? await getImageSize(uint8List)
           : Size(headerSize.width, 0);

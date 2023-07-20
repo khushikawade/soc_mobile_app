@@ -1213,7 +1213,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "email": email.toString(),
         "DBN": Globals.schoolDbnC,
         "Schoolid": Overrides.SCHOOL_ID,
-        "teacherid": Globals.teacherId
+        "teacherid": await OcrUtility.getTeacherId()
       };
       final ResponseModel response = await _dbServices.postApi(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
@@ -1222,8 +1222,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
+        await verifyUserWithDatabase(
+            email: email); //to update teacher id in shared preference
         var res = response.data;
         var data = res["body"];
+        // await OcrUtility.setTeacherId(techerId);
         if (data == true) {
           return true;
         } else {
@@ -1265,12 +1268,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             await createContactToSalesforce(email: email.toString());
           }
         } else {
-          Globals.teacherId = data['Id'];
+          // Globals.teacherId = data['Id'];
           OcrUtility.setTeacherId(data['Id']);
           if (data['Assessment_App_User__c'] != 'true') {
-            Globals.teacherId = data['Id'];
-
-            OcrUtility.setTeacherId(data['Id']);
             bool result = await updateContactToSalesforce(recordId: data['Id']);
             if (!result) {
               await updateContactToSalesforce(recordId: data['Id']);
@@ -1279,8 +1279,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
 
         return true;
-
-        // return data;
       } else {
         return false;
       }
@@ -1322,7 +1320,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        Globals.teacherId = response.data["body"]["id"];
         OcrUtility.setTeacherId(response.data["body"]["id"]);
         return true;
       } else {

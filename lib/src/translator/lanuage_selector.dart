@@ -118,6 +118,7 @@ class LanguageSelector {
                     Radius.circular(AppTheme.kBottomSheetModalUpperRadius))),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         context: context,
+        useRootNavigator: true,
         isScrollControlled: true,
         isDismissible: true,
         enableDrag: true,
