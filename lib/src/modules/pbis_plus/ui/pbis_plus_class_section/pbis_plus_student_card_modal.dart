@@ -132,7 +132,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => TextFormField(
                     minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                    maxLines: 10,
+                    maxLines: 12,
                     focusNode: _focusNode,
                     autofocus: isNotesTextfieldEnable.value,
                     textAlign: isNotesTextfieldEnable.value
