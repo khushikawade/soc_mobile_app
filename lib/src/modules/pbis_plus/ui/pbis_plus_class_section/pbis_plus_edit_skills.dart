@@ -46,8 +46,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<List<PBISPlusCommonBehaviorModal>> additionalBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
   ValueNotifier<bool> updateBehaviorWidget = ValueNotifier<bool>(false);
-   ScrollController ? _scrollBarController;
-   ScrollController ? _gridController;
+  ScrollController? _scrollBarController;
+  ScrollController? _gridController;
   //-------------------------------------------------------------------------------------------------
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -67,13 +67,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   @override
   void initState() {
     super.initState();
-_scrollBarController = ScrollController();
-_gridController=ScrollController();
+    _scrollBarController = ScrollController();
+    _gridController = ScrollController();
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
     pbisPluAdditionalBehaviorBloc.add(PBISPlusGetAdditionalBehavior());
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
     // _scrollController!.addListener();
-    
+
     getCustomValue();
   }
 
@@ -574,51 +574,55 @@ _gridController=ScrollController();
       List<PBISPlusCommonBehaviorModal> skillsList, bool loading) {
     return Expanded(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: ValueListenableBuilder(
           valueListenable: isWaitIndex,
           builder: (context, value, _) {
-            return Scrollbar(
-              
-                isAlwaysShown: true,
-                thickness: CupertinoScrollbar.defaultThickness,
-                controller: _scrollBarController,
-                // showTrackOnHover: true,
-                // hoverThickness: 30.0,
-                // interactive: true,
-                // trackVisibility: true,
-                // thumbVisibility: true,9
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(height: 400),
-                  child: IgnorePointer(
-                    ignoring: isWaitIndex.value != -1,
-                    child: GridView.builder(
-                      controller: _gridController,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(right: 16, left: 10),
-                      physics: 
-                      BouncingScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        childAspectRatio: 0.9,
-                        // Adjust this value to change item aspect ratio
-                        crossAxisSpacing: 0.0,
-                        // Adjust the spacing between items horizontally
-                        mainAxisSpacing: 4.0,
-                        // Adjust the spacing between items vertically
-                      ),
-                      itemCount: skillsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        PBISPlusCommonBehaviorModal item = skillsList[index];
-                        // final isIconDisabled = IsItemExits(item);
-                        return _buildEditSkillIcon(
-                          item,
-                          false,
-                        );
-                      },
-                    ),
-                  ),
-                ));
+            return
+                // Scrollbar(
+                //     isAlwaysShown: true,
+                //     thickness: 8,
+                //     // CupertinoScrollbar.defaultThickness,
+                //     controller: _scrollBarController,
+                //     // showTrackOnHover: true,
+                //     hoverThickness: 8.0,
+                //     // interactive: true,
+                //     // trackVisibility: true,
+                //     // thumbVisibility: true,9
+                //     child: ConstrainedBox(
+                //       constraints: BoxConstraints.tightFor(height: 400),
+                //       child:
+                RawScrollbar(
+              isAlwaysShown: true,
+              controller: _gridController,
+              minThumbLength: 50,
+              thickness: 8,
+              thumbColor: AppTheme.kButtonColor,
+              child: GridView.builder(
+                controller: _gridController,
+                shrinkWrap: true,
+                padding: EdgeInsets.only(right: 24, left: 16),
+                // physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 0.9,
+                  // Adjust this value to change item aspect ratio
+                  crossAxisSpacing: 0.0,
+                  // Adjust the spacing between items horizontally
+                  mainAxisSpacing: 4.0,
+                  // Adjust the spacing between items vertically
+                ),
+                itemCount: skillsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  PBISPlusCommonBehaviorModal item = skillsList[index];
+                  // final isIconDisabled = IsItemExits(item);
+                  return _buildEditSkillIcon(
+                    item,
+                    false,
+                  );
+                },
+              ),
+            );
           }),
     ));
   }
