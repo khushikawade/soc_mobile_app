@@ -132,7 +132,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               valueListenable: isNotesTextfieldEnable,
               builder: (context, value, _) => TextFormField(
                     minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                    maxLines: 12,
+                    maxLines: 10,
                     focusNode: _focusNode,
                     autofocus: isNotesTextfieldEnable.value,
                     textAlign: isNotesTextfieldEnable.value
@@ -395,10 +395,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       //----------------------------------------------------Profile Image-----------------------------------------------------
                       isNotesTextfieldEnable.value == true
                           ? Positioned(
-                              right: 0,
+                              right: 8,
                               top: MediaQuery.of(context).size.width *
                                   0.2 /
-                                  1.55,
+                                  1.30,
                               child: GestureDetector(
                                   // padding: EdgeInsets.zero,
                                   onTap: () {

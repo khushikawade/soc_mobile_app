@@ -112,13 +112,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                 ),
               );
             }
-            return IconButton(
-                icon: Container(
-                  height: 24,
-                  width: 50,
-                  color: Colors.amberAccent,
-                ),
-                onPressed: (() {}));
+            return IconButton(icon: Container(), onPressed: (() {}));
           }),
     ];
 
