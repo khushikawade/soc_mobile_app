@@ -15,10 +15,12 @@ class StudentPlusSearchBarAndDropdown extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StudentPlusSearchBarAndDropdown> createState() => _StudentPlusSearchBarAndDropdownState();
+  State<StudentPlusSearchBarAndDropdown> createState() =>
+      _StudentPlusSearchBarAndDropdownState();
 }
 
-class _StudentPlusSearchBarAndDropdownState extends State<StudentPlusSearchBarAndDropdown> {
+class _StudentPlusSearchBarAndDropdownState
+    extends State<StudentPlusSearchBarAndDropdown> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -78,16 +80,11 @@ class _StudentPlusSearchBarAndDropdownState extends State<StudentPlusSearchBarAn
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Utility.textWidget(
-                        text:
-                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey),
-                        context: context),
+                    Text(
+                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          fontWeight: FontWeight.w300, color: Colors.grey),
+                    ),
                     Icon(
                         widget.sectionType == "Family"
                             ? Icons.arrow_drop_down_circle_sharp

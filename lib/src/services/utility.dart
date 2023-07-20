@@ -10,7 +10,9 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/graded_globals.dart';
 import 'package:dio/dio.dart';
@@ -484,14 +486,18 @@ class Utility {
     }
   }
 
-  static bool? currentScreenSnackBar(String msg, height,
-      {double? marginFromBottom}) {
+  static Future<bool>? currentScreenSnackBar(
+    String msg,
+    height, {
+    double? marginFromBottom,
+  }) async {
     Fluttertoast.cancel();
+    final translatedmsg = await translateString(msg);
     Fluttertoast.showToast(
-        msg: msg,
+        msg: translatedmsg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 5,
         backgroundColor:
             Globals.themeType == 'Dark' ? Colors.white : Colors.black,
         textColor: Globals.themeType != 'Dark' ? Colors.white : Colors.black,
@@ -1047,5 +1053,148 @@ class Utility {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
     await _studentInfoDb.clear();
+  }
+
+  static translateString(String msg) async {
+    try {
+      final toLanguageCode =
+          Translations.supportedLanguagesCodes(Globals.selectedLanguage!);
+      if (toLanguageCode == 'en' || toLanguageCode == '') {
+        return msg;
+      } else {
+        var res = await TranslationAPI.translate(msg, toLanguageCode, false);
+        print(res);
+        return res;
+      }
+    } catch (e) {
+      print("---catch---trsnalation");
+      return msg;
+    }
+  }
+
+  static Widget RichtextWidget(
+      {required String text1,
+      TextStyle? textTheme1,
+      required context,
+      TextAlign? textAlign1,
+      required String text2,
+      TextStyle? textTheme2,
+      maxLines}) {
+    return RichText(
+        text: TextSpan(
+      // Note: Styles for TextSpans must be explicitly defined.
+      // Child text spans will inherit styles from parent
+      style: Theme.of(context).textTheme.headline2,
+      children: <TextSpan>[
+        TextSpan(text: text1, style: textTheme1),
+        TextSpan(text: '  '),
+        TextSpan(
+          text: text2,
+          style: textTheme2,
+        )
+      ],
+    ));
+
+    //   TranslationWidget(
+    // message: text,
+    // toLanguage: Globals.selectedLanguage,
+    // fromLanguage: "en",
+    // builder: (translatedMessage) => Text(
+    //   translatedMessage.toString(),
+    //   textAlign: textAlign ?? null,
+    //   maxLines: maxLines ?? null,
+    //   overflow: maxLines != null ? TextOverflow.ellipsis : null,
+    //   style: textTheme != null
+    //       ? textTheme
+    //       : Theme.of(context).textTheme.headline6!.copyWith(
+    //             fontWeight: FontWeight.bold,
+    //           ),
+    // ),
+    // );
+  }
+
+  // static Widget textSpanWidget(
+  //     {required String text1,
+  //     TextStyle? textTheme1,
+  //     required String text2,
+  //     TextStyle? textTheme2,
+  //     required context,
+  //     TextAlign? textAlign,
+  //     maxLines}) {
+  //   return TranslationWidget(
+  //       message: text1,
+  //       toLanguage: Globals.selectedLanguage,
+  //       fromLanguage: "en",
+  //       builder: (translatedMessage) =>
+  //       RichText(
+  //       text:
+  //       TextSpan(
+  //             text: translatedMessage.toString(),
+  //             style: textTheme != null
+  //                 ? textTheme
+  //                 : Theme.of(context).textTheme.headline6!.copyWith(
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //           )
+
+  //       // Text(
+  //       //   translatedMessage.toString(),
+  //       //   textAlign: textAlign ?? null,
+  //       //   maxLines: maxLines ?? null,
+  //       //   overflow: maxLines != null ? TextOverflow.ellipsis : null,
+  //       //   style: textTheme != null
+  //       //       ? textTheme
+  //       //       : Theme.of(context).textTheme.headline6!.copyWith(
+  //       //             fontWeight: FontWeight.bold,
+  //       //           ),
+  //       // ),
+  //       );
+  // }
+
+  static Widget textSpanWidget({
+    required String text1,
+    TextStyle? textTheme1,
+    String? text2,
+    TextStyle? textTheme2,
+    required context,
+    TextAlign? textAlign,
+    maxLines,
+  }) {
+    return TranslationWidget(
+      message: text1,
+      toLanguage: Globals.selectedLanguage,
+      fromLanguage: "en",
+      builder: (translatedText1) {
+        return TranslationWidget(
+          message: text2,
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedText2) {
+            return RichText(
+              maxLines: maxLines,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: translatedText1.toString(),
+                    style: textTheme1 != null
+                        ? textTheme1
+                        : Theme.of(context).textTheme.headline6!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                  ),
+                  TextSpan(text: '  '),
+                  TextSpan(
+                    text: translatedText2.toString(),
+                    style: textTheme2 != null
+                        ? textTheme2
+                        : Theme.of(context).textTheme.bodyText1,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
