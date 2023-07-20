@@ -187,61 +187,25 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget pbisPlusBody(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PBISPlusNotesDetailPage(
-                  titleIconData: IconData(0xe895,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  item: PBISPlusNotesUniqueStudentList(
-                    studentId:
-                        widget.studentValueNotifier.value.profile!.id ?? '',
-                    names: StudentName(
-                        fullName: widget.studentValueNotifier.value.profile
-                                ?.name?.fullName ??
-                            "",
-                        familyName: widget.studentValueNotifier.value.profile
-                                ?.name?.familyName ??
-                            "",
-                        givenName: widget.studentValueNotifier.value.profile
-                                ?.name?.givenName ??
-                            ""),
-                    email:
-                        widget.studentValueNotifier.value.profile!.emailAddress,
-                    iconUrlC:
-                        widget.studentValueNotifier.value.profile?.photoUrl ??
-                            "",
-                    notes: null,
-                  ),
-                )));
-      },
-      child: Container(
-        color: Colors.amberAccent,
-        height: 100,
-        width: 100,
-      ),
-    );
-
-    //  widget.isFromStudentPlus == true
-    //     ? NestedScrollView(
-    //         controller: _scrollController,
-    //         headerSliverBuilder:
-    //             (BuildContext context, bool innerBoxIsScrolled) {
-    //           return <Widget>[buildSliverAppBar()];
-    //         },
-    //         body: buildTableSection())
-    //     : Column(children: [
-    //         sectionHeader(),
-    //         Flexible(
-    //             child: CustomScrollView(
-    //                 physics: const AlwaysScrollableScrollPhysics(),
-    //                 controller: _scrollController,
-    //                 slivers: [
-    //               buildSliverAppBar(),
-    //               SliverFillRemaining(child: buildTableSection())
-    //             ]))
-    //       ]);
+    return widget.isFromStudentPlus == true
+        ? NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[buildSliverAppBar()];
+            },
+            body: buildTableSection())
+        : Column(children: [
+            sectionHeader(),
+            Flexible(
+                child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    slivers: [
+                  buildSliverAppBar(),
+                  SliverFillRemaining(child: buildTableSection())
+                ]))
+          ]);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -819,7 +783,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return widget.isFromStudentPlus != true
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: [
                 Expanded(
                   flex: 1,
@@ -839,7 +804,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   Expanded(
                       flex: 3,
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
                                 padding: const EdgeInsets.only(left: 23),
@@ -854,8 +819,59 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                       .copyWith(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
-                                ))
-                          ]))
+                                )),
+                          ])),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PBISPlusNotesDetailPage(
+                              titleIconData: IconData(0xe895,
+                                  fontFamily: Overrides.kFontFam,
+                                  fontPackage: Overrides.kFontPkg),
+                              item: PBISPlusNotesUniqueStudentList(
+                                studentId: widget.studentValueNotifier.value
+                                        .profile!.id ??
+                                    '',
+                                names: StudentName(
+                                    fullName: widget.studentValueNotifier.value
+                                            .profile?.name?.fullName ??
+                                        "",
+                                    familyName: widget.studentValueNotifier
+                                            .value.profile?.name?.familyName ??
+                                        "",
+                                    givenName: widget.studentValueNotifier.value
+                                            .profile?.name?.givenName ??
+                                        ""),
+                                email: widget.studentValueNotifier.value
+                                    .profile!.emailAddress,
+                                iconUrlC: widget.studentValueNotifier.value
+                                        .profile?.photoUrl ??
+                                    "",
+                                notes: null,
+                              ),
+                            )));
+                  },
+                  child: Row(children: [
+                    Icon(
+                        IconData(0xe895,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, right: 20),
+                      child: Text("Notes",
+                          textAlign: TextAlign.end,
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    fontSize: 12,
+                                    color: Color(0xff000000) !=
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xff111C20)
+                                        : Color(0xffF7F8F9),
+                                  )),
+                    ),
+                  ]),
+                ),
               ])
         : Container();
   }
