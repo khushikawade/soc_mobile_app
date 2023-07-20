@@ -767,6 +767,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   appBar() {
     return PBISPlusAppBar(
+        refresh: (v) {
+          setState(() {});
+        },
         titleIconData: IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         title: "Dashboard",

@@ -375,7 +375,7 @@ class _StaffPageState extends State<StaffPage> {
         return;
       }
       Utility.showLoadingDialog(
-          context: context, msg: "please wait", isOCR: false);
+          context: context, msg: "Please Wait", isOCR: false);
       await Authentication.refreshAuthenticationToken(
           refreshToken: _profileData[0].refreshToken);
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);

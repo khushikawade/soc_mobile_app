@@ -1063,7 +1063,9 @@ class _GradedPlusSearchScreenPageState
         Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
-          appBar: CustomOcrAppBarWidget(
+          appBar: CustomOcrAppBarWidget(   refresh: (v) {
+            setState(() {});
+          },
             iconData:widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
