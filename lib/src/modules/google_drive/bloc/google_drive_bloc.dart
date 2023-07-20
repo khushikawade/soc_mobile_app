@@ -1253,7 +1253,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (data.length == 0) {
           return data;
         } else {
-          return data[0];
+          var driveFolder = data.firstWhere(
+            (folder) => folder['shared'] == false,
+            orElse: () {
+              //Return empty folder in case no drive folder found //This will help to create a folder
+              return [];
+              // or throw Exception('No matching element found');
+            },
+          );
+
+          return driveFolder;
         }
       } else if (retry > 0) {
         var result = await Authentication.refreshAuthenticationToken(
@@ -1648,7 +1657,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-
+      //Default query to fetch all history assignment - including Constructive and MCQ
       String query =
           '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
       if (searchKey == "" || searchKey == null) {
@@ -1662,7 +1671,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             break;
           case "Constructed Response":
             query =
-                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\' in parents and fullText contains \'Graded%2B\')';
+                '(mimeType=\'application/vnd.google-apps.spreadsheet\' or mimeType=\'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and fullText contains \'Graded%2B\'';
             // query =
             // '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and (fullText contains \'Constructed Response sheet\' or fullText contains \'Graded%2B\'))';
 
@@ -1673,6 +1682,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             query = "'$folderId'+in+parents";
         }
       }
+
+      print('$filterType::::::: $query');
+
       final ResponseModel response = await _dbServices.getApiNew(
           isPagination == true
               ? "$nextPageUrl"
@@ -1733,15 +1745,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         if (filterType == 'Multiple Choice') {
-          _list.removeWhere((element) => (element.description == 'Graded+'
-              // ||
-              // element.description == "Constructed Response sheet"
-              ));
+          _list.removeWhere((element) => (element.description == 'Graded+'));
         } else if (filterType == 'Constructed Response') {
           _list.removeWhere(
               (element) => element.description == 'Multiple Choice Sheet');
         }
-        print(_list.length);
         return _list == null ? [] : [_list, updatedNextUrlLink];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
