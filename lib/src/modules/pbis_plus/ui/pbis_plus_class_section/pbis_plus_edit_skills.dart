@@ -46,6 +46,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<List<PBISPlusCommonBehaviorModal>> additionalBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
   ValueNotifier<bool> updateBehaviorWidget = ValueNotifier<bool>(false);
+  final ScrollController _scrollController = ScrollController();
   //-------------------------------------------------------------------------------------------------
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -69,7 +70,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
     pbisPluAdditionalBehaviorBloc.add(PBISPlusGetAdditionalBehavior());
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
-
+    // _scrollController!.addListener();
     getCustomValue();
   }
 
@@ -574,32 +575,43 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: ValueListenableBuilder(
           valueListenable: isWaitIndex,
           builder: (context, value, _) {
-            return IgnorePointer(
-              ignoring: isWaitIndex.value != -1,
-              child: GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 0.9,
-                  // Adjust this value to change item aspect ratio
-                  crossAxisSpacing: 0.0,
-                  // Adjust the spacing between items horizontally
-                  mainAxisSpacing: 4.0,
-                  // Adjust the spacing between items vertically
-                ),
-                itemCount: skillsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  PBISPlusCommonBehaviorModal item = skillsList[index];
-                  // final isIconDisabled = IsItemExits(item);
-                  return _buildEditSkillIcon(
-                    item,
-                    false,
-                  );
-                },
-              ),
-            );
+            return Scrollbar(
+                controller: _scrollController,
+                // isAlwaysShown: true,
+                // showTrackOnHover: true,
+                hoverThickness: 30.0,
+                // interactive: true,
+                // trackVisibility: true,
+                // thumbVisibility: true,9
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(height: 400),
+                  child: IgnorePointer(
+                    ignoring: isWaitIndex.value != -1,
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(right: 16, left: 16),
+                      physics: BouncingScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 0.9,
+                        // Adjust this value to change item aspect ratio
+                        crossAxisSpacing: 0.0,
+                        // Adjust the spacing between items horizontally
+                        mainAxisSpacing: 4.0,
+                        // Adjust the spacing between items vertically
+                      ),
+                      itemCount: skillsList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        PBISPlusCommonBehaviorModal item = skillsList[index];
+                        // final isIconDisabled = IsItemExits(item);
+                        return _buildEditSkillIcon(
+                          item,
+                          false,
+                        );
+                      },
+                    ),
+                  ),
+                ));
           }),
     ));
   }
