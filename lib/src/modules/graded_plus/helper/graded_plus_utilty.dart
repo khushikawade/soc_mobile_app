@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_mod
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -450,12 +451,16 @@ class OcrUtility {
                           ? Color(0xff111C20)
                           : Color(0xffF7F8F9), //Colors.black54,
                   children: <Widget>[
-                    Text(
-                      "Saving",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.bold),
-                    ),
+                    Utility.textWidget(
+                        textAlign: TextAlign.center,
+                        context: context,
+                        text: 'Saving',
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontWeight: FontWeight.bold)),
                     SpacerWidget(10),
                     ...processList
                         .map((item) => Container(
@@ -470,16 +475,17 @@ class OcrUtility {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    item,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
+                                  Utility.textWidget(
+                                      textAlign: TextAlign.center,
+                                      context: context,
+                                      text: item,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .headline3!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary)),
                                   progressStatusWidget(
                                       value: item,
                                       assessmentExportAndSaveStatus:
@@ -570,27 +576,30 @@ class OcrUtility {
                                     SizedBox(
                                       height: 25,
                                     ),
-                                    Text(
-                                      'Awesome!',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                        'Student Assignments Saved Successfully',
+                                    Utility.textWidget(
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context)
+                                        context: context,
+                                        text: 'Awesome!',
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                fontWeight: FontWeight.bold)),
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text:
+                                            'Student Assignments Saved Successfully',
+                                        textTheme: Theme.of(context)
                                             .textTheme
                                             .headline4!
                                             .copyWith(
                                                 color: Theme.of(context)
                                                     .colorScheme
-                                                    .secondary))
+                                                    .secondary)),
                                   ])),
                           Positioned(
                               top: 0,

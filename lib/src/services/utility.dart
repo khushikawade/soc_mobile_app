@@ -491,7 +491,7 @@ class Utility {
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 5,
         backgroundColor:
             Globals.themeType == 'Dark' ? Colors.white : Colors.black,
         textColor: Globals.themeType != 'Dark' ? Colors.white : Colors.black,
