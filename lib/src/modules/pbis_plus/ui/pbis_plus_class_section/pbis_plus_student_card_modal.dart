@@ -393,28 +393,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           child: addNotes))),
 
                       //----------------------------------------------------Profile Image-----------------------------------------------------
-                      isNotesTextfieldEnable.value == true
-                          ? Positioned(
-                              right: 8,
-                              top: MediaQuery.of(context).size.width *
-                                  0.2 /
-                                  1.30,
-                              child: GestureDetector(
-                                  // padding: EdgeInsets.zero,
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                  },
-                                  child: Icon(Icons.clear,
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xff111C20)
-                                          : Color(0xffF7F8F9),
-                                      size: Globals.deviceType == "phone"
-                                          ? 22
-                                          : 30)))
-                          : SizedBox.shrink(),
 
                       Positioned(
                           top: 00,
@@ -513,6 +491,25 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                 fontWeight: FontWeight.bold)))
                               ])))
                     ]))));
+  }
+
+  Widget closeNotesIcon() {
+    return isNotesTextfieldEnable.value == true
+        ? Positioned(
+            right: 8,
+            top: MediaQuery.of(context).size.width * 0.2 / 1.30,
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Icon(Icons.clear,
+                    color:
+                        Color(0xff000000) == Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                    size: Globals.deviceType == "phone" ? 22 : 30)))
+        : SizedBox.shrink();
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
