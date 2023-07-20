@@ -275,7 +275,8 @@ class _GradedPlusSearchScreenPageState
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   GradedPluSubjectSelection(
-                                                      titleIconData: widget.titleIconData,
+                                                    titleIconData:
+                                                        widget.titleIconData,
                                                     gradedPlusQueImage: widget
                                                         .gradedPlusQueImage,
                                                     isMcqSheet:
@@ -342,60 +343,103 @@ class _GradedPlusSearchScreenPageState
                                                 textTheme: Theme.of(context)
                                                     .textTheme
                                                     .headline2)
-                                            : RichText(
-                                                text: list[index]
-                                                                .standardAndDescriptionC !=
-                                                            null &&
-                                                        list[index]
-                                                                .standardAndDescriptionC!
-                                                                .split(' - ')
-                                                                .length >
-                                                            1
-                                                    ? TextSpan(
-                                                        // Note: Styles for TextSpans must be explicitly defined.
-                                                        // Child text spans will inherit styles from parent
-                                                        style: Theme.of(context)
+                                            : list[index].standardAndDescriptionC !=
+                                                        null &&
+                                                    list[index]
+                                                            .standardAndDescriptionC!
+                                                            .split(' - ')
+                                                            .length >
+                                                        1
+                                                ? Utility.textSpanWidget(
+                                                    textTheme1:
+                                                        Theme.of(context)
                                                             .textTheme
-                                                            .headline2,
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                              text: list[index]
-                                                                  .standardAndDescriptionC!
-                                                                  .split(
-                                                                      ' - ')[0],
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .headline2!
-                                                                  .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  )),
-                                                          TextSpan(text: '  '),
-                                                          TextSpan(
-                                                            text: list[index]
-                                                                .standardAndDescriptionC!
-                                                                .split(
-                                                                    ' - ')[1],
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline2,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : TextSpan(
-                                                        style: Theme.of(context)
+                                                            .headline2!
+                                                            .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                    textTheme2:
+                                                        Theme.of(context)
                                                             .textTheme
-                                                            .headline2,
-                                                        children: [
-                                                            TextSpan(
-                                                                text: list[index]
-                                                                        .standardAndDescriptionC ??
-                                                                    '')
-                                                          ]),
-                                              ),
+                                                            .headline2!,
+                                                    text1: list[index]
+                                                        .standardAndDescriptionC!
+                                                        .split(' - ')[0],
+                                                    text2: list[index]
+                                                        .standardAndDescriptionC!
+                                                        .split(' - ')[1],
+                                                    context: context,
+                                                    textAlign: TextAlign.center,
+                                                  )
+                                                : Utility.textWidget(
+                                                    textTheme: Theme.of(context)
+                                                        .textTheme
+                                                        .headline2,
+                                                    context: context,
+                                                    text: list[index]
+                                                            .standardAndDescriptionC ??
+                                                        '',
+                                                  ),
+
+                                        // ),
+
+                                        //   OLD)
+                                        // RichText(
+                                        //     text: list[index]
+                                        //                     .standardAndDescriptionC !=
+                                        //                 null &&
+                                        //             list[index]
+                                        //                     .standardAndDescriptionC!
+                                        //                     .split(' - ')
+                                        //                     .length >
+                                        //                 1
+                                        //         ? TextSpan(
+                                        //             // Note: Styles for TextSpans must be explicitly defined.
+                                        //             // Child text spans will inherit styles from parent
+                                        // style: Theme.of(context)
+                                        //     .textTheme
+                                        //     .headline2,
+                                        //             children: <TextSpan>[
+                                        //               TextSpan(
+                                        // text: list[index]
+                                        //     .standardAndDescriptionC!
+                                        //     .split(
+                                        //         ' - ')[0],
+                                        // style: Theme.of(
+                                        //         context)
+                                        //     .textTheme
+                                        //     .headline2!
+                                        //     .copyWith(
+                                        //       fontWeight:
+                                        //           FontWeight
+                                        //               .bold,
+                                        //     )),
+                                        //               TextSpan(text: '  '),
+                                        //               TextSpan(
+                                        // text: list[index]
+                                        //     .standardAndDescriptionC!
+                                        //     .split(
+                                        //         ' - ')[1],
+                                        // style: Theme.of(
+                                        //         context)
+                                        //     .textTheme
+                                        //     .headline2,
+                                        //               ),
+                                        //             ],
+                                        //           )
+                                        //         : TextSpan(
+                                        // style: Theme.of(context)
+                                        //     .textTheme
+                                        //     .headline2,
+                                        // children: [
+                                        //     TextSpan(
+                                        // text: list[index]
+                                        //         .standardAndDescriptionC ??
+                                        //     '')
+                                        //               ]),
+                                        //   ),
                                         decoration: BoxDecoration(
                                             color: Color(0xff000000) !=
                                                     Theme.of(context)
@@ -822,11 +866,10 @@ class _GradedPlusSearchScreenPageState
       OcrUtility.showSuccessDialog(context: context);
       Timer(Duration(seconds: 2), () {
         Navigator.pushReplacement(
-
           context,
           MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
-                titleIconData: widget.titleIconData,
+              titleIconData: widget.titleIconData,
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               fileId: Globals.googleExcelSheetId,
@@ -1013,7 +1056,7 @@ class _GradedPlusSearchScreenPageState
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId:await OcrUtility.getTeacherId(),
+        teacherContactId: await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
@@ -1063,10 +1106,11 @@ class _GradedPlusSearchScreenPageState
         Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
-          appBar: CustomOcrAppBarWidget(   refresh: (v) {
-            setState(() {});
-          },
-            iconData:widget.titleIconData,
+          appBar: CustomOcrAppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+            iconData: widget.titleIconData,
             plusAppName: 'GRADED+',
             fromGradedPlus: true,
             onTap: () {
