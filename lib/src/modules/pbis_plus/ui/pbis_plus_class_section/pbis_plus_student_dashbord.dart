@@ -827,7 +827,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return GestureDetector(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PBISPlusNotesDetailPage(
+              builder: (context) => PBISPlusNotesDetailPage( 
                     titleIconData: IconData(0xe895,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
