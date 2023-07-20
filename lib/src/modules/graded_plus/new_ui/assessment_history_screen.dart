@@ -233,7 +233,7 @@ class _GradedPlusAssessmentSummaryState
             //   },
             // ),
           ),
-          SpacerWidget(_KVertcalSpace / 5),
+          // SpacerWidget(_KVertcalSpace / 8),
           Expanded(
             child: RefreshIndicator(
               color: AppTheme.kButtonColor,
