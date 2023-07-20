@@ -1254,7 +1254,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           return data;
         } else {
           var driveFolder = data.firstWhere(
-            (folder) => folder['shared'] == false,
+            (folder) =>
+                // folder['shared'] == false &&
+                folder['ownedByMe'] == true &&
+                folder['trashed'] ==
+                    false, //To access our own folder and not the shared one.
             orElse: () {
               //Return empty folder in case no drive folder found //This will help to create a folder
               return [];
