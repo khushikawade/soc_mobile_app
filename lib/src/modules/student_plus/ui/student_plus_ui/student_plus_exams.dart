@@ -25,7 +25,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusExamsScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
@@ -51,8 +50,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
     super.initState();
 
     if (checkIsRegents() || widget.studentDetails.gradeC == "8") {
-      _studentPlusBloc.add(GetStudentRegentsList(
-          studentId: widget.studentDetails.studentIdC ?? ''));
+      _studentPlusBloc.add(
+          GetStudentRegentsList(studentId: widget.studentDetails.id ?? ''));
     }
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -120,12 +119,21 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
       bloc: _studentPlusBloc,
       builder: (context, state) {
         if (state is StudentPlusRegentsLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              alignment: Alignment.center,
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: AppTheme.kButtonColor,
+              ));
         } else if (state is StudentPlusRegentsSuccess) {
           return Container(
-            height: widget.studentDetails.gradeC == "8"
-                ? MediaQuery.of(context).size.height * 0.46
-                : MediaQuery.of(context).size.height * 0.42,
+            height: widget.sectionType == 'Student'
+                ? widget.studentDetails.gradeC == "8"
+                    ? MediaQuery.of(context).size.height * 0.53
+                    : MediaQuery.of(context).size.height * 0.58
+                : widget.studentDetails.gradeC == "8"
+                    ? MediaQuery.of(context).size.height * 0.46
+                    : MediaQuery.of(context).size.height * 0.5,
             child: regentsListWidget(list: state.obj),
           );
         } else {
@@ -231,7 +239,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0),
       child: DefaultTabController(
-        length: 3,
+        length: widget.studentDetails.gradeC == "8" ? 3 : 2,
         child: ListView(
           shrinkWrap: true,
           children: [
@@ -263,12 +271,12 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               unselectedLabelColor:
                   Globals.themeType == "Dark" ? Colors.grey : Colors.black,
               unselectedLabelStyle: TextStyle(
-                fontSize: 22.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.normal,
                 color: Theme.of(context).colorScheme.primaryVariant,
               ),
               labelStyle: TextStyle(
-                fontSize: 22.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.w500,
                 color: Theme.of(context).colorScheme.primaryVariant,
               ),
@@ -633,11 +641,16 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           padding: EdgeInsets.symmetric(
               vertical: _kLabelSpacing / 4, horizontal: _kLabelSpacing / 2),
           decoration: BoxDecoration(
-            color: AppTheme.kButtonColor,
+            color: StudentPlusUtility.getRegentsColors(
+                studentPlusGradeModel.resultC ?? "0"),
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Utility.textWidget(
-              text: studentPlusGradeModel.resultC ?? '-',
+              text: studentPlusGradeModel.resultC == null
+                  ? "-"
+                  : studentPlusGradeModel.resultC!.toLowerCase() == 'waiver'
+                      ? "W"
+                      :  studentPlusGradeModel.resultC ?? '-',
               context: context,
               textTheme: Theme.of(context)
                   .textTheme
@@ -653,8 +666,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     if (checkIsRegents() || widget.studentDetails.gradeC == "8") {
-      _studentPlusBloc.add(GetStudentRegentsList(
-          studentId: widget.studentDetails.studentIdC ?? ''));
+      _studentPlusBloc.add(
+          GetStudentRegentsList(studentId: widget.studentDetails.id ?? ''));
     }
   }
 

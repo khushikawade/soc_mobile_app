@@ -950,7 +950,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   Future getStudentRegentsDetailList({required String studentIdC}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Regents_Exam__c/\"Student__c\"='a1J4W00000Fm2QlUAJ'",
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Regents_Exam__c/\"Student__c\"='$studentIdC'",
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
