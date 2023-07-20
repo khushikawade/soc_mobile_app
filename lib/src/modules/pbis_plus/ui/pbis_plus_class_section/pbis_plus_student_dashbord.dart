@@ -1,10 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -23,7 +25,9 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -82,6 +86,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   final ValueNotifier<bool> isScrolledUp = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isListScrollUp = ValueNotifier<bool>(false);
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
+  ScrollController _innerScrollController = ScrollController();
+
+  final ValueNotifier<List<PBISPlusTotalBehaviourModal>>
+      pbisStudentInteractionListNotifier =
+      ValueNotifier<List<PBISPlusTotalBehaviourModal>>([]);
 
   void initState() {
     //  Event call to get dashboard details of interaction
@@ -108,13 +117,29 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     }
     _scrollController = ScrollController();
     _scrollController!.addListener(_handleScroll);
+    _innerScrollController.addListener(_onScroll);
+
     super.initState();
+  }
+
+  void _onScroll() {
+    if (_innerScrollController.position.atEdge &&
+        _innerScrollController.position.pixels != 0) {
+      print(
+          " _innerScrollController ${_innerScrollController.position.atEdge}");
+      print(" _innerScrollController ${_innerScrollController.position}");
+      _loadMoreLogsData();
+    }
   }
 
   @override
   void dispose() {
     _scrollController!.removeListener(_handleScroll);
+
     _scrollController!.dispose();
+
+    _innerScrollController.removeListener(_onScroll);
+    _innerScrollController.dispose();
     super.dispose();
   }
 
@@ -187,24 +212,25 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   Widget pbisPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
-        ? NestedScrollView(
-            controller: _scrollController,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[buildSliverAppBar()];
-            },
-            body: buildTableSection())
-        : Column(children: [
-            sectionHeader(),
-            Flexible(
-                child: CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: _scrollController,
-                    slivers: [
-                  buildSliverAppBar(),
-                  SliverFillRemaining(child: buildTableSection())
-                ]))
-          ]);
+        ? buildNestedScrollView()
+        : Column(
+            children: [
+              sectionHeader(),
+              Flexible(
+                child: buildNestedScrollView(),
+              ),
+            ],
+          );
+  }
+
+  NestedScrollView buildNestedScrollView() {
+    return NestedScrollView(
+      controller: _scrollController,
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[buildSliverAppBar()];
+      },
+      body: buildTableSection(),
+    );
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -247,7 +273,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------_buildDataTable---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   DataTable _buildDataTable(
-          {required List<PBISPlusTotalBehaviourModal> list,
+          {required List<PBISPlusTotalBehaviourModal>
+              pbisStudentInteractionLogsList,
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
       DataTable(
@@ -265,65 +292,21 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           dividerThickness: 5.0,
           border: TableBorder(
               horizontalInside: BorderSide(width: 2.0, color: Colors.white)),
-          columns:
-              getList(pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList)
-                  .map((PBISPlusCommonBehaviorModal item) {
+          columns: getTableHeadersList(
+                  pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList)
+              .map((PBISPlusCommonBehaviorModal item) {
             return buildDataColumn(item: item);
           }).toList(),
           rows: List<DataRow>.generate(
-              list.length,
+              pbisStudentInteractionLogsList.length ?? 0,
               (index) => buildDataRow(
                   index: index,
-                  list: list,
-                  pBISPlusCommonBehaviorList: getList(
-                      pBISPlusCommonBehaviorList:
-                          pBISPlusCommonBehaviorList))));
+                  pbisStudentInteractionLogsList: pbisStudentInteractionLogsList ?? [],
+                  pBISPlusCommonBehaviorList: getTableHeadersList(pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList ?? []))));
 
   /*--------------------------------------------------------------------------------------------------------*/
   /*--------------------------------------------buildDataColumn---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
-  // DataColumn buildDataColumn(PBISPlusDataTableModal item,
-  //         List<PBISPlusTotalInteractionModal> list) =>
-  //     DataColumn(
-  //         label: Column(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         Center(
-  //             widthFactor:
-  //                 item.title == 'Date' && list.length > 0 ? 2.45 : null,
-  //             // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
-  //             child: item.title == 'Date' || item.title == 'Total'
-  //                 ? Utility.textWidget(
-  //                     context: context,
-  //                     text: item.title,
-  //                     textAlign: TextAlign.center,
-  //                     textTheme: Globals.deviceType == 'phone'
-  //                         ? Theme.of(context).textTheme.headline5!.copyWith(
-  //                               fontWeight: FontWeight.bold,
-  //                               color: Color(
-  //                                 0xff000000,
-  //                               ),
-  //                             )
-  //                         : Theme.of(context).textTheme.headline1!.copyWith(
-  //                             fontWeight: FontWeight.bold,
-  //                             color: Color(
-  //                               0xff000000,
-  //                             ),
-  //                             fontSize: 16),
-  //                   )
-  //                 : item.imagePath.isNotEmpty
-  //                     ? SvgPicture.asset(
-  //                         item.imagePath,
-  //                         height: Globals.deviceType == 'phone' ? 35 : 25,
-  //                         width: Globals.deviceType == 'phone' ? 35 : 25,
-  //                         // height: Globals.deviceType == 'phone' ? 64 : 74,
-  //                         // width: Globals.deviceType == 'phone' ? 64 : 74,
-  //                       )
-  //                     : SizedBox.shrink()),
-  //       ],
-  //     ));
 
   DataColumn buildDataColumn({required PBISPlusCommonBehaviorModal item}) =>
       DataColumn(
@@ -336,8 +319,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                     Center(
-                        // widthFactor: item.behaviorTitleC == 'Date' ? 2.45 : null,
-                        // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
                         child: item.behaviorTitleC == 'Date' ||
                                 item.behaviorTitleC == 'Total'
                             ? Utility.textWidget(
@@ -376,76 +357,49 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*---------------------------------------------buildDataRow-----------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
 
-  DataRow buildDataRow(
-          {required int index,
-          required List<PBISPlusTotalBehaviourModal> list,
-          required List<PBISPlusCommonBehaviorModal>
-              pBISPlusCommonBehaviorList}) =>
-      DataRow(
-        color: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
+// Function to generate a DataRow widget for a given index in a table.
+  DataRow buildDataRow({
+    required int index, // Index of the row in the table.
+    required List<PBISPlusTotalBehaviourModal>
+        pbisStudentInteractionLogsList, // List of behavior modals for the entire table.
+    required List<PBISPlusCommonBehaviorModal>
+        pBISPlusCommonBehaviorList, // List of common behavior modals.
+  }) {
+    // Get the formatted creation date string or use an empty string if it's null.
+    final createdAt = PBISPlusUtility.convertDateString(
+        pbisStudentInteractionLogsList[index].createdAt ?? '');
+
+    return DataRow(
+      // Set the color of the DataRow to transparent.
+      color: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
           return Colors.transparent; // Use the default value.
-        }),
-        cells: List<DataCell>.generate(pBISPlusCommonBehaviorList.length,
-            (int cellIndex) {
-          if ((pBISPlusCommonBehaviorList.length - 1) == cellIndex) {
-            return totalDataCell("0");
+        },
+      ),
+      cells: List<DataCell>.generate(
+        pBISPlusCommonBehaviorList.length,
+        (int cellIndex) {
+          // If the cell index is the last one (TOTAL), return a DataCell.
+          if (cellIndex == (pBISPlusCommonBehaviorList.length - 1)) {
+            return totalDataCell(sumOfInteraction(
+                pBISPlusCommonBehaviorList: pBISPlusCommonBehaviorList,
+                interactionCounts:
+                    pbisStudentInteractionLogsList[index].interactionCounts ??
+                        []));
           }
 
-          return dataCell(cellIndex == 0
-              ? PBISPlusUtility.convertDateString(list[index].createdAt ?? '')
-              : getCount(cellIndex, pBISPlusCommonBehaviorList, list[index]) ??
-                  '0');
-          // return dataCell("0");
-        }),
+          // Get the count for the current cell index and convert it to a String.
+          final cellCount = getCurrentCellCounts(
+              pBISPlusCommonBehaviorList[cellIndex],
+              pbisStudentInteractionLogsList[index].interactionCounts ?? []);
 
-        // [
+          // Return the appropriate DataCell based on the cell index.
+          return dataCell(cellIndex == 0 ? createdAt : cellCount);
+        },
+      ),
+    );
+  }
 
-        //   dataCell(
-        //       PBISPlusUtility.convertDateString(list[index].createdAt ?? '')),
-        //   dataCell((list[index].engaged ?? 0).toString()),
-        //   dataCell((list[index].niceWork ?? 0).toString()),
-        //   dataCell((list[index].helpful ?? 0).toString()),
-        //   // dataCell((list[index].participation ?? 0).toString()),
-        //   // dataCell((list[index].collaboration ?? 0).toString()),
-        //   // dataCell((list[index].listening ?? 0).toString()),
-        //   DataCell(
-        //     Container(
-        //       padding: Globals.deviceType == 'phone'
-        //           ? EdgeInsets.symmetric(horizontal: 10, vertical: 5)
-        //           : EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-        //       margin: EdgeInsets.only(left: 2),
-        //       decoration: BoxDecoration(
-        //         boxShadow: [],
-        //         color: Color.fromRGBO(148, 148, 148, 1),
-        //         borderRadius: BorderRadius.circular(20),
-        //       ),
-        //       child: Row(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         children: [
-        //           Utility.textWidget(
-        //             context: context,
-        //             text: sumOfInteraction(
-        //               engaged: list[index].engaged ?? 0,
-        //               niceWork: list[index].niceWork ?? 0,
-        //               helpful: list[index].helpful ?? 0,
-        //             ),
-        //             textAlign: TextAlign.center,
-        //             textTheme: Globals.deviceType == 'phone'
-        //                 ? Theme.of(context)
-        //                     .textTheme
-        //                     .headline5!
-        //                     .copyWith(fontWeight: FontWeight.bold)
-        //                 : Theme.of(context).textTheme.headline1!.copyWith(
-        //                     fontWeight: FontWeight.bold, fontSize: 16),
-        //           )
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ],
-      );
   /*--------------------------------------------------------------------------------------------------------*/
   /*-----------------------------------------------dataCell-------------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
@@ -496,15 +450,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           .copyWith(fontWeight: FontWeight.bold, fontSize: 16))
             ])));
   }
-  /*--------------------------------------------------------------------------------------------------------*/
-  /*-------------------------------------------sumOfInteraction---------------------------------------------*/
-  /*--------------------------------------------------------------------------------------------------------*/
-
-  String sumOfInteraction(
-      {required int engaged, required int niceWork, required int helpful}) {
-    int sum = engaged + niceWork + helpful;
-    return sum.toString();
-  }
 
   /*--------------------------------------------------------------------------------------------------------*/
   /*-----------------------------------------floatingActionButton-------------------------------------------*/
@@ -521,9 +466,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               return PlusCustomFloatingActionButton(
                 onPressed: () {
                   //TODDO
-                  // _modalBottomSheetMenu(
-                  //     pbisStudentInteractionList:
-                  //         state.pbisStudentInteractionList);
+                  _modalBottomSheetMenu(
+                      pbisStudentInteractionList:
+                          state.pbisStudentInteractionList);
                 },
               );
             } else {
@@ -537,7 +482,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
 
   void _modalBottomSheetMenu(
-          {required List<PBISPlusTotalInteractionModal>
+          {required List<PBISPlusTotalBehaviourModal>
               pbisStudentInteractionList}) =>
       showModalBottomSheet(
         useRootNavigator: true,
@@ -562,7 +507,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     constraints.maxHeight < 750 && Globals.deviceType == "phone"
                         ? MediaQuery.of(context).size.height * 0.22 //0.45
                         : Globals.deviceType == "phone"
-                            ? MediaQuery.of(context).size.height * 0.19 //0.45
+                            ? MediaQuery.of(context).size.height * 0.28 //0.45
                             : MediaQuery.of(context).size.height * 0.15,
                 title: '',
                 padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
@@ -576,8 +521,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return [buildBehaviourSection(), buildTableSection()];
   }
 
-  List<PBISPlusCommonBehaviorModal> getList(
-      {required List<PBISPlusCommonBehaviorModal> pBISPlusCommonBehaviorList}) {
+// add date and total on table
+  List<PBISPlusCommonBehaviorModal> getTableHeadersList(
+      {required final List<PBISPlusCommonBehaviorModal>
+          pBISPlusCommonBehaviorList}) {
     List<PBISPlusCommonBehaviorModal> list = pBISPlusCommonBehaviorList;
     if (list[0].behaviorTitleC != "Date") {
       list.insert(0, PBISPlusCommonBehaviorModal(behaviorTitleC: "Date"));
@@ -589,8 +536,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   Widget buildTable(
       {required List<PBISPlusCommonBehaviorModal> pBISPlusCommonBehaviorList}) {
-    return BlocBuilder<PBISPlusBloc, PBISPlusState>(
+    return BlocConsumer<PBISPlusBloc, PBISPlusState>(
         bloc: _bloc,
+        listener: (context, state) {
+          if (state is PBISPlusStudentDashboardLogSuccess) {
+            pbisStudentInteractionListNotifier.value = [];
+            pbisStudentInteractionListNotifier.value =
+                state.pbisStudentInteractionList;
+          }
+        },
         builder: (BuildContext contxt, PBISPlusState state) {
           if (state is PBISPlusLoading) {
             return Center(
@@ -598,7 +552,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               backgroundColor: AppTheme.kButtonColor,
             ));
           } else if (state is PBISPlusStudentDashboardLogSuccess) {
-            return state.pbisStudentInteractionList.length > 0
+            return pbisStudentInteractionListNotifier.value.length > 0
                 ? RefreshIndicator(
                     color: AppTheme.kButtonColor,
                     key: refreshKey,
@@ -606,33 +560,42 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     child: ValueListenableBuilder(
                         valueListenable: isListScrollUp,
                         builder: (context, value, child) {
-                          return ListView(
-                              padding: EdgeInsets.only(bottom: 120),
-                              physics: widget.isFromStudentPlus == true
-                                  ? isListScrollUp.value
-                                      ? BouncingScrollPhysics()
-                                      : NeverScrollableScrollPhysics()
-                                  : NeverScrollableScrollPhysics(),
-                              children: [
-                                FittedBox(
-                                    child: Screenshot(
-                                        controller: screenshotController,
-                                        child: Material(
-                                            color: Color(0xff000000) !=
-                                                    Theme.of(context)
-                                                        .backgroundColor
-                                                ? Color(0xffF7F8F9)
-                                                : Color(0xff111C20),
-                                            elevation: 10,
-                                            child: Container(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 10),
-                                                child: _buildDataTable(
-                                                    pBISPlusCommonBehaviorList:
-                                                        pBISPlusCommonBehaviorList,
-                                                    list: state
-                                                        .pbisStudentInteractionList)))))
-                              ]);
+                          return ValueListenableBuilder(
+                              valueListenable:
+                                  pbisStudentInteractionListNotifier,
+                              builder: (context, value, child) {
+                                return ListView(
+                                    controller: _innerScrollController,
+                                    padding: EdgeInsets.only(bottom: 120),
+                                    physics: isListScrollUp.value
+                                        ? BouncingScrollPhysics()
+                                        : NeverScrollableScrollPhysics(),
+                                    children: [
+                                      FittedBox(
+                                          child: Screenshot(
+                                              controller: screenshotController,
+                                              child: Material(
+                                                  color: Color(0xff000000) !=
+                                                          Theme.of(context)
+                                                              .backgroundColor
+                                                      ? Color(0xffF7F8F9)
+                                                      : Color(0xff111C20),
+                                                  elevation: 10,
+                                                  child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 10),
+                                                      child: _buildDataTable(
+                                                          pBISPlusCommonBehaviorList:
+                                                              pBISPlusCommonBehaviorList,
+                                                          pbisStudentInteractionLogsList:
+                                                              pbisStudentInteractionListNotifier
+                                                                  .value))))),
+                                      if (state.isLoading == true)
+                                        buildLoaderWidget()
+                                      else
+                                        buildAllCaughtUp()
+                                    ]);
+                              });
                         }))
                 : RefreshIndicator(
                     key: refreshKey,
@@ -762,8 +725,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         expandedHeight: widget.isFromStudentPlus == true
-            ? MediaQuery.of(context).size.height / 2.2
-            : MediaQuery.of(context).size.height / 1.8,
+            ? MediaQuery.of(context).size.height / 2.3
+            : MediaQuery.of(context).size.height / 1.9,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
@@ -824,18 +787,190 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         : Container();
   }
 
-  String getCount(
-      int cellIndex,
-      List<PBISPlusCommonBehaviorModal> pBISPlusCommonBehaviorList,
-      PBISPlusTotalBehaviourModal list) {
-    print(pBISPlusCommonBehaviorList[cellIndex].name);
-    String value = '0';
-    list.interactionCounts!.forEach((InteractionCounts element) {
-      if (element.behaviourId == pBISPlusCommonBehaviorList[cellIndex].id) {
-        value = element.behaviorCount.toString();
+  /*--------------------------------------------------------------------------------------------------------*/
+  /*-------------------------------------------getCurrentCellCounts---------------------------------------------*/
+  /*--------------------------------------------------------------------------------------------------------*/
+  String getCurrentCellCounts(
+    PBISPlusCommonBehaviorModal pBISPlusCommonBehavior,
+    List<InteractionCounts> interactionList,
+  ) {
+    if (pBISPlusCommonBehavior == null) {
+      return '0'; // Cell index out of bounds, return '0'.
+    }
+
+    for (var element in interactionList) {
+      if (element.behaviourId == pBISPlusCommonBehavior.id) {
+        return element.behaviorCount.toString();
       }
-    });
-    print(value);
-    return value ?? '0';
+    }
+
+    return '0'; // No match found, return '0'.
+  }
+
+  /*--------------------------------------------------------------------------------------------------------*/
+  /*-------------------------------------------sumOfInteraction---------------------------------------------*/
+  /*--------------------------------------------------------------------------------------------------------*/
+
+// Function to calculate the sum of behavior counts for given common behaviors and interaction counts.
+  String sumOfInteraction({
+    required List<PBISPlusCommonBehaviorModal>
+        pBISPlusCommonBehaviorList, // List of common behavior modals.
+    required List<InteractionCounts>
+        interactionCounts, // List of interaction counts, can be null.
+  }) {
+    try {
+      int totalCounts = 0; // Initialize the total count variable to 0.
+
+      // Iterate over each PBISPlusCommonBehaviorModal in the list.
+      for (var currentBehavior in pBISPlusCommonBehaviorList) {
+        // Filter the relevant InteractionCounts based on the behavior id.
+        var filteredInteractions = interactionCounts.where(
+            (interaction) => interaction.behaviourId == currentBehavior.id);
+
+        // Sum the behaviorCount using the fold method.
+        int behaviorCountSum = filteredInteractions.fold(
+          0,
+          (sum, interaction) => sum + interaction.behaviorCount!,
+        );
+
+        // Add the behaviorCount sum to the totalCounts.
+        totalCounts += behaviorCountSum;
+      }
+
+      // Return the total counts as a String.
+      return totalCounts.toString();
+    } catch (e) {
+      print(e);
+      return '0';
+    }
+  }
+
+  Widget buildLoaderWidget() {
+    return Container(
+        padding: EdgeInsets.only(top: 15, bottom: 40),
+        child: Center(
+          child: Platform.isIOS
+              ? CupertinoActivityIndicator(
+                  color: AppTheme.kButtonbackColor,
+                )
+              : Container(
+                  margin: EdgeInsets.only(bottom: 15),
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppTheme.kButtonColor,
+                  ),
+                ),
+        ));
+  }
+
+  Widget buildAllCaughtUp() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          Row(children: [
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+            Container(
+              width: 50,
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return RadialGradient(
+                        center: Alignment.topLeft,
+                        radius: 0.5,
+                        colors: <Color>[
+                          AppTheme.kButtonColor,
+                          AppTheme.kSelectedColor,
+                        ],
+                        tileMode: TileMode.repeated,
+                      ).createShader(bounds);
+                    },
+                    child: Icon(Icons.done, color: AppTheme.kButtonColor),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  AppTheme.kButtonColor,
+                  AppTheme.kSelectedColor,
+                ]),
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+          ]),
+          Container(
+            padding: EdgeInsets.only(top: 15),
+            // height: 80,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Utility.textWidget(
+                    context: context,
+                    text: "You're All Caught Up",
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).colorScheme.background ==
+                                Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black, //AppTheme.kButtonColor,
+                        fontWeight: FontWeight.bold)),
+                SpacerWidget(10),
+                Utility.textWidget(
+                    context: context,
+                    text: "You've seen all available student logs",
+                    // 'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.grey, //AppTheme.kButtonColor,
+                        )),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _loadMoreLogsData() async {
+    _bloc.add(PBISPlusGetMoreStudentDashboardLogs(
+        studentId: widget.isFromStudentPlus == true
+            ? widget.studentValueNotifier.value.profile!.emailAddress!
+            : widget.studentValueNotifier.value.profile!.id ?? '',
+        isStudentPlus: widget.isFromStudentPlus,
+        classroomCourseId: widget.classroomCourseId ?? '',
+        pbisStudentInteractionList: pbisStudentInteractionListNotifier.value));
   }
 }

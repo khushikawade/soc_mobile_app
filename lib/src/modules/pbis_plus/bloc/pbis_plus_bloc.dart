@@ -897,7 +897,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (_localData.isNotEmpty) {
           yield PBISPlusStudentDashboardLogSuccess(
-              pbisStudentInteractionList: _localData);
+              pbisStudentInteractionList: _localData,
+              isLoading: _localData.length >= 20);
         } else {
           yield PBISPlusLoading();
         }
@@ -907,22 +908,56 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 studentId: event.studentId,
                 teacherEmail: userProfileLocalData[0].userEmail!,
                 classroomCourseId: event.classroomCourseId,
-                isStudentPlus: event.isStudentPlus);
+                isStudentPlus: event.isStudentPlus,
+                limit: PBISPlusOverrides.studentDashbordRowsPerPage,
+                offset: 0);
 
         await _localDb.clear();
         pbisStudentDetails.forEach((PBISPlusTotalBehaviourModal element) async {
           await _localDb.addData(element);
         });
+
         yield PBISPlusLoading();
         yield PBISPlusStudentDashboardLogSuccess(
-            pbisStudentInteractionList: pbisStudentDetails);
+            pbisStudentInteractionList: pbisStudentDetails,
+            isLoading: pbisStudentDetails.length >= 20);
       } catch (e) {
         LocalDatabase<PBISPlusTotalBehaviourModal> _localDb =
             LocalDatabase(sectionTableName);
         List<PBISPlusTotalBehaviourModal>? _localData =
             await _localDb.getData();
         yield PBISPlusStudentDashboardLogSuccess(
-            pbisStudentInteractionList: _localData);
+            pbisStudentInteractionList: _localData,
+            isLoading: _localData.length >= 20);
+      }
+    }
+    if (event is PBISPlusGetMoreStudentDashboardLogs) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        List<PBISPlusTotalBehaviourModal> pbisStudentDetails =
+            await getPBISPlusStudentDashboardLogs(
+                studentId: event.studentId,
+                teacherEmail: userProfileLocalData[0].userEmail!,
+                classroomCourseId: event.classroomCourseId,
+                isStudentPlus: event.isStudentPlus,
+                limit: PBISPlusOverrides.studentDashbordRowsPerPage,
+                offset: event.pbisStudentInteractionList.length);
+
+        event.pbisStudentInteractionList.addAll(pbisStudentDetails);
+        yield PBISPlusLoading();
+
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: event.pbisStudentInteractionList,
+            isLoading: pbisStudentDetails.length >= 20);
+      } catch (e) {
+        yield PBISPlusLoading();
+
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: event.pbisStudentInteractionList,
+            isLoading: event.pbisStudentInteractionList.length >= 20);
+        print(e);
       }
     }
   }
@@ -1271,22 +1306,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /* -------Function to get student previous date log details from email ------ */
   /* -------------------------------------------------------------------------- */
 
-  Future<List<PBISPlusTotalBehaviourModal>> getPBISPlusStudentDashboardLogs({
-    required String studentId, //Id/Email
-    required String teacherEmail,
-    int retry = 3,
-    required String classroomCourseId,
-    required bool? isStudentPlus,
-  }) async {
+  Future<List<PBISPlusTotalBehaviourModal>> getPBISPlusStudentDashboardLogs(
+      {required String studentId, //Id/Email
+      required String teacherEmail,
+      int retry = 3,
+      required String classroomCourseId,
+      required bool? isStudentPlus,
+      required int offset,
+      required int limit}) async {
     try {
       // String url = isStudentPlus == true
       //     ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/student/$studentId?teacher_email=$teacherEmail'
       //     : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/$classroomCourseId/student/$studentId?teacher_email=$teacherEmail';
-      String url =
-          '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&classroom_course_id=$classroomCourseId&offset=0&limit=10';
-
+      String url = isStudentPlus == true
+          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&offset=$offset&limit=$limit'
+          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
       print(url);
-
       final ResponseModel response = await _dbServices.getApiNew(url,
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -1305,7 +1340,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             teacherEmail: teacherEmail,
             retry: retry - 1,
             classroomCourseId: classroomCourseId,
-            isStudentPlus: isStudentPlus);
+            isStudentPlus: isStudentPlus,
+            limit: limit,
+            offset: offset);
       }
       return [];
     } catch (e) {

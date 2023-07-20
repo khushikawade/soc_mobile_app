@@ -59,9 +59,10 @@ class AddPBISHistorySuccess extends PBISPlusState {
 
 /* --------------------- state to return student details -------------------- */
 class PBISPlusStudentDashboardLogSuccess extends PBISPlusState {
+  final bool? isLoading;
   final List<PBISPlusTotalBehaviourModal> pbisStudentInteractionList;
   PBISPlusStudentDashboardLogSuccess(
-      {required this.pbisStudentInteractionList});
+      {required this.pbisStudentInteractionList, this.isLoading = false});
   @override
   List<Object> get props => [];
 }
