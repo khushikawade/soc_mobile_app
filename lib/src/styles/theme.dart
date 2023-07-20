@@ -117,7 +117,10 @@ class AppTheme {
   );
 
   static final ThemeData lightTheme = ThemeData(
-
+       scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(Colors.grey[500]),
+        ),
+      highlightColor: Color(0xffffc600),
       // fontFamily: 'Roboto',
       primaryColor: Colors.blue,
       accentColor: kAccentColor,
@@ -264,6 +267,10 @@ class AppTheme {
       ));
 
   static final ThemeData darkTheme = ThemeData(
+     scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(const Color.fromARGB(255, 224, 20, 20)),
+        ),
+          highlightColor: Colors.blueAccent,
       // fontFamily: 'Roboto',
       primaryColor: Colors.black,
       // primarySwatch: Colors.grey,
@@ -619,6 +626,9 @@ class AppTheme {
               //     splashRadius: 0),
 
               //Text theme ends
+               scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(Colors.grey[500]),
+        ),
             ),
         dark: AdaptiveTheme.of(context).lightTheme.copyWith(
               //Primary color
@@ -809,6 +819,9 @@ class AppTheme {
               //     splashRadius: 0),
 
               //Text theme ends
+                      scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(Colors.white),
+        ),
             ));
   }
 
