@@ -620,10 +620,6 @@ class AppTheme {
               //     splashRadius: 0),
 
               //Text theme ends
-              //ONLY FOR IN ANDROID
-              scrollbarTheme: ScrollbarThemeData().copyWith(
-                thumbColor: MaterialStateProperty.all(Colors.grey[500]),
-              ),
             ),
         dark: AdaptiveTheme.of(context).lightTheme.copyWith(
               //Primary color
@@ -804,10 +800,7 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
-              //ONLY FOR IN ANDROID
-              scrollbarTheme: ScrollbarThemeData().copyWith(
-                thumbColor: MaterialStateProperty.all(Colors.white),
-              ),
+
               // checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
               //     shape: RoundedRectangleBorder(
               //       borderRadius: BorderRadius.circular(20),

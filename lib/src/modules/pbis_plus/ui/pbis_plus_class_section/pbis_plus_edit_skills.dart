@@ -578,38 +578,40 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: ValueListenableBuilder(
           valueListenable: isWaitIndex,
           builder: (context, value, _) {
-            return RawScrollbar(
-              isAlwaysShown: true,
-              controller: _gridController,
-              minThumbLength: 24,
-              thickness: 8,
-              padding: EdgeInsets.only(left: 32, right: 16),
-              radius: Radius.circular(8),
-              thumbColor: AppTheme.kButtonColor,
-              child: GridView.builder(
-                controller: _gridController,
-                shrinkWrap: true,
-                padding: EdgeInsets.only(right: 32, left: 0),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 0.9,
-                  // Adjust this value to change item aspect ratio
-                  crossAxisSpacing: 0.0,
-                  // Adjust the spacing between items horizontally
-                  mainAxisSpacing: 4.0,
-                  // Adjust the spacing between items vertically
-                ),
-                itemCount: skillsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  PBISPlusCommonBehaviorModal item = skillsList[index];
-                  // final isIconDisabled = IsItemExits(item);
-                  return _buildEditSkillIcon(
-                    item,
-                    false,
-                  );
-                },
-              ),
-            );
+            return IgnorePointer(
+                ignoring: isWaitIndex.value != -1,
+                child: RawScrollbar(
+                  isAlwaysShown: true,
+                  controller: _gridController,
+                  minThumbLength: 24,
+                  thickness: 8,
+                  padding: EdgeInsets.only(left: 32, right: 16),
+                  radius: Radius.circular(8),
+                  thumbColor: AppTheme.kButtonColor,
+                  child: GridView.builder(
+                    controller: _gridController,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(right: 32, left: 0),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      childAspectRatio: 0.9,
+                      // Adjust this value to change item aspect ratio
+                      crossAxisSpacing: 0.0,
+                      // Adjust the spacing between items horizontally
+                      mainAxisSpacing: 4.0,
+                      // Adjust the spacing between items vertically
+                    ),
+                    itemCount: skillsList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      PBISPlusCommonBehaviorModal item = skillsList[index];
+                      // final isIconDisabled = IsItemExits(item);
+                      return _buildEditSkillIcon(
+                        item,
+                        false,
+                      );
+                    },
+                  ),
+                ));
           }),
     ));
   }
