@@ -693,7 +693,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             : MediaQuery.of(context).size.height * 0.32,
         // height: MediaQuery.of(context).size.height * 0.50,
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(left: 16, right: 16),
+        margin: EdgeInsets.only(left: 16, right: 16, top: 10),
         // padding: EdgeInsets.only(bottom: 40),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
@@ -725,7 +725,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         expandedHeight: widget.isFromStudentPlus == true
-            ? MediaQuery.of(context).size.height / 2.3
+            ? MediaQuery.of(context).size.height / 2.0
             : MediaQuery.of(context).size.height / 1.9,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
