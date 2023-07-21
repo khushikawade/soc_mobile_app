@@ -505,52 +505,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     // /* -------------------------------------------------------------------------- */
     // /*                    Event to get student details by email                   */
     // /* -------------------------------------------------------------------------- */
-    // if (event is GetPBISPlusStudentDashboardLogs) {
-    //   String sectionTableName = event.isStudentPlus == true
-    //       ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
-    //       : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
-    //   try {
-    //     List<UserInformation> userProfileLocalData =
-    //         await UserGoogleProfile.getUserProfile();
 
-    //     LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
-    //         LocalDatabase(sectionTableName);
-    //     List<PBISPlusTotalInteractionModal>? _localData =
-    //         await _localDb.getData();
-
-    //     if (_localData.isNotEmpty) {
-    //       yield PBISPlusStudentDashboardLogSuccess(
-    //           pbisStudentInteractionList: _localData);
-    //     } else {
-    //       yield PBISPlusLoading();
-    //     }
-
-    //     List<PBISPlusTotalInteractionModal> pbisStudentDetails =
-    //         await getPBISPlusStudentDashboardLogs(
-    //             studentId: event.studentId,
-    //             teacherEmail: userProfileLocalData[0].userEmail!,
-    //             classroomCourseId: event.classroomCourseId,
-    //             isStudentPlus: event.isStudentPlus);
-
-    //     //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
-    //     await _localDb.clear();
-    //     pbisStudentDetails
-    //         .forEach((PBISPlusTotalInteractionModal element) async {
-    //       await _localDb.addData(element);
-    //     });
-    //     yield PBISPlusLoading();
-    //     yield PBISPlusStudentDashboardLogSuccess(
-    //         pbisStudentInteractionList: pbisStudentDetails);
-    //   } catch (e) {
-    //     LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
-    //         LocalDatabase(sectionTableName);
-    //     List<PBISPlusTotalInteractionModal>? _localData =
-    //         await _localDb.getData();
-    //     yield PBISPlusStudentDashboardLogSuccess(
-    //         pbisStudentInteractionList: _localData);
-    //   }
-    // }
     if (event is PBISPlusResetInteractions) {
       try {
         //Save the event records in separate list to make sure not to change on runtime.
@@ -819,11 +774,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           (student) => student.studentId == event.studentId,
         );
 
-        // // //*FEED THE NOTES IN LOCAL DB
-        // PBISPlusNotesUniqueStudentList? studentToUpdate = studentItemIndex >= 0
-        //     ? _pbisPlusNotesStudentsList[studentItemIndex]
-        //     : null;
-
         // If the notes exits in the local db then return to notes  to UI
         if (_pbisPlusNotesStudentsList.isEmpty ||
             _pbisPlusNotesStudentsList[studentItemIndex].notes == null ||
@@ -868,7 +818,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             studentEmail: event.studentEmail,
             schoolId: event.schoolId,
             notes: event.notes);
-        print("-----------API DATA--------------$apiData");
+
         if (apiData == true) {
           yield PBISPlusAddNotesSucess();
         } else {
@@ -879,13 +829,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISErrorState(
             error: "Failed to add the note. Please try again later.");
       }
-    } /* -------------------------------------------------------------------------- */
+    }
+
+    /* -------------------------------------------------------------------------- */
     /*                    Event to get student details by email                   */
     /* -------------------------------------------------------------------------- */
     if (event is GetPBISPlusStudentDashboardLogs) {
       String sectionTableName = event.isStudentPlus == true
           ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
           : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
+
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
@@ -931,6 +884,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             isLoading: _localData.length >= 20);
       }
     }
+
+    //Managing pagination with separate event to save only first batch in local db and all other data will be fetched each time
     if (event is PBISPlusGetMoreStudentDashboardLogs) {
       try {
         List<UserInformation> userProfileLocalData =
@@ -1315,9 +1270,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       required int offset,
       required int limit}) async {
     try {
-      // String url = isStudentPlus == true
-      //     ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/student/$studentId?teacher_email=$teacherEmail'
-      //     : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/$classroomCourseId/student/$studentId?teacher_email=$teacherEmail';
       String url = isStudentPlus == true
           ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&offset=$offset&limit=$limit'
           : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
@@ -1784,28 +1736,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     return allBehaviors;
   }
 
-// List<PBISPlusCommonBehaviorModal> sortByOrder(
-//       List<PBISPlusCommonBehaviorModal> allBehaviors) {
-//     allBehaviors.sort((a, b) {
-//       int orderA = int.parse(
-//           a.pBISBehaviorSortOrderC != '' ? a.pBISBehaviorSortOrderC! : '1');
-//       int orderB = int.parse(
-//           b.pBISBehaviorSortOrderC != '' ? b.pBISBehaviorSortOrderC! : '1');
-
-//       return orderA.compareTo(orderB);
-//       // For descending order: return orderB.compareTo(orderA);
-//     });
-
-//     Set<String> uniqueItemBehaviourUrl = {};
-//     List<PBISPlusCommonBehaviorModal> uniqueItems = allBehaviors.where((item) {
-//       bool isUnique =
-//           !uniqueItemBehaviourUrl.contains(item.pBISBehaviorIconURLC);
-//       uniqueItemBehaviourUrl.add(item.pBISBehaviorIconURLC!);
-//       return isUnique;
-//     }).toList();
-
-//     return uniqueItems;
-//   }
   /*----------------------------------------------------------------------------------------------*/
   /*-----------------------------------Function sortTheBehaviourInDB------------------------------*/
   /*----------------------------------------------------------------------------------------------*/
@@ -1823,7 +1753,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           "Sorting_Order": element.pBISBehaviorSortOrderC,
           "Teacher_Id": teacherId
         };
-
         body.add(obj);
       });
 
@@ -1902,8 +1831,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        // final data = response.data as Map<String, dynamic>;
-        // final listData = PbisPlusAddNotes.fromJson(data['body']);
         return true;
       }
       return false;
