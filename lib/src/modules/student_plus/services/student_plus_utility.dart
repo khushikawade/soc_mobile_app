@@ -313,4 +313,23 @@ class StudentPlusUtility {
     // Join the words back into a sentence
     return words.join(' ');
   }
+
+  /* --------------------------- function to get color in Regents screen -------------------------- */
+
+  static Color getRegentsColors(String value) {
+    try {
+      if (value.toLowerCase() == "waiver" || value.toLowerCase() == "w") {
+        return Colors.blue;
+      } else {
+        int result = int.parse(value);
+        if (result >= 65) {
+          return Colors.green;
+        } else {
+          return Colors.grey;
+        }
+      }
+    } catch (e) {
+      return Colors.blue;
+    }
+  }
 }
