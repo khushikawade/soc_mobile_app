@@ -595,8 +595,10 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 RawScrollbar(
               isAlwaysShown: true,
               controller: _gridController,
-              minThumbLength: 50,
+              minThumbLength: 24,
               thickness: 8,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              radius: Radius.circular(8),
               thumbColor: AppTheme.kButtonColor,
               child: GridView.builder(
                 controller: _gridController,
