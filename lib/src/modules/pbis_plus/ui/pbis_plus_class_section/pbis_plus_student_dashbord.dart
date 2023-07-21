@@ -125,9 +125,6 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   void _onScroll() {
     if (_innerScrollController.position.atEdge &&
         _innerScrollController.position.pixels != 0) {
-      print(
-          " _innerScrollController ${_innerScrollController.position.atEdge}");
-      print(" _innerScrollController ${_innerScrollController.position}");
       _loadMoreLogsData();
     }
   }
