@@ -578,33 +578,18 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       child: ValueListenableBuilder(
           valueListenable: isWaitIndex,
           builder: (context, value, _) {
-            return
-                // Scrollbar(
-                //     isAlwaysShown: true,
-                //     thickness: 8,
-                //     // CupertinoScrollbar.defaultThickness,
-                //     controller: _scrollBarController,
-                //     // showTrackOnHover: true,
-                //     hoverThickness: 8.0,
-                //     // interactive: true,
-                //     // trackVisibility: true,
-                //     // thumbVisibility: true,9
-                //     child: ConstrainedBox(
-                //       constraints: BoxConstraints.tightFor(height: 400),
-                //       child:
-                RawScrollbar(
+            return RawScrollbar(
               isAlwaysShown: true,
               controller: _gridController,
               minThumbLength: 24,
               thickness: 8,
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.only(left: 32, right: 16),
               radius: Radius.circular(8),
               thumbColor: AppTheme.kButtonColor,
               child: GridView.builder(
                 controller: _gridController,
                 shrinkWrap: true,
-                padding: EdgeInsets.only(right: 24, left: 16),
-                // physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(right: 32, left: 0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 0.9,
