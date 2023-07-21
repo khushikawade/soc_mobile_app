@@ -3316,21 +3316,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         ...students.map((student) => [
               student.profile!.name!.fullName,
               if (course == true) student.profile!.courseName,
-              //TODOPBIS:  SPREAD SHEET TOP CLOUMN DATA & TOTAL DATA
-              // student.profile!.behavior1?.counter! ?? 0,
-              // student.profile!.behavior2?.counter! ?? 0,
-              // student.profile!.behavior3?.counter! ?? 0,
-              // student.profile!.behavior4?.counter! ?? 0,
-              // student.profile!.behavior5?.counter! ?? 0,
-              // student.profile!.behavior6?.counter! ?? 0,
               (0)
-              //ADD DATA REMAIN
-              // student.profile!.behavior1!.counter! ??
-              //   student.profile!.behavior2!.counter! +
-              //       student.profile!.behavior3!.counter! +
-              //       student.profile!.behavior4!.counter! +
-              //       student.profile!.behavior5!.counter! +
-              //       student.profile!.behavior6!.counter!)
             ]),
       ];
     } catch (e) {
