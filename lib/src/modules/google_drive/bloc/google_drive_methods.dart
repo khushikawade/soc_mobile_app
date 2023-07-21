@@ -71,8 +71,8 @@ class GoogleDriveBlocMethods {
               folderName: folderName);
 
           if (isFolderCreated[0] == true) {
-            bool result = await updateDriveFolderDetails(
-                isFolderCreated[0], userProfileLocalInfo, folderName);
+            bool result = await updateDriveFolderDetails(isFolderCreated[1],
+                userProfileLocalInfo, folderName); //isFolderCreated[0]
             return result;
           } else {
             return false;
