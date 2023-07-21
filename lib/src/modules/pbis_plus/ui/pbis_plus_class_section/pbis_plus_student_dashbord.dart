@@ -7,7 +7,9 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_notes_section/pbis_plus_notes_detail.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -732,6 +734,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   appBar() {
     return PBISPlusAppBar(
+        refresh: (v) {
+          setState(() {});
+        },
         titleIconData: IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         title: "Dashboard",
@@ -743,43 +748,42 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     return widget.isFromStudentPlus != true
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: [
                 Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    alignment: Alignment.centerLeft,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                        IconData(0xe80d,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        color: AppTheme.kButtonColor),
-                  ),
-                ),
+                    flex: 1,
+                    child: IconButton(
+                        alignment: Alignment.centerLeft,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                            IconData(0xe80d,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            color: AppTheme.kButtonColor))),
                 if (isScrolledUp.value == true)
                   Expanded(
                       flex: 3,
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
                                 padding: const EdgeInsets.only(left: 23),
                                 child: Text(
-                                  widget.studentValueNotifier.value.profile
-                                          ?.name?.fullName ??
-                                      '',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                ))
-                          ]))
+                                    widget.studentValueNotifier.value.profile
+                                            ?.name?.fullName ??
+                                        '',
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)))
+                          ])),
+                seeNotesOption()
               ])
         : Container();
   }
@@ -969,5 +973,54 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         isStudentPlus: widget.isFromStudentPlus,
         classroomCourseId: widget.classroomCourseId ?? '',
         pbisStudentInteractionList: pbisStudentInteractionListNotifier.value));
+  }
+
+  Widget seeNotesOption() {
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PBISPlusNotesDetailPage(
+                    titleIconData: IconData(0xe895,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    item: PBISPlusNotesUniqueStudentList(
+                      studentId:
+                          widget.studentValueNotifier.value.profile!.id ?? '',
+                      names: StudentName(
+                          fullName: widget.studentValueNotifier.value.profile
+                                  ?.name?.fullName ??
+                              "",
+                          familyName: widget.studentValueNotifier.value.profile
+                                  ?.name?.familyName ??
+                              "",
+                          givenName: widget.studentValueNotifier.value.profile
+                                  ?.name?.givenName ??
+                              ""),
+                      email: widget
+                          .studentValueNotifier.value.profile!.emailAddress,
+                      iconUrlC:
+                          widget.studentValueNotifier.value.profile?.photoUrl ??
+                              "",
+                      notes: null,
+                    ),
+                  )));
+        },
+        child: Row(children: [
+          Icon(
+              IconData(0xe895,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: AppTheme.kButtonColor),
+          Padding(
+              padding: const EdgeInsets.only(left: 4, right: 20),
+              child: Text("Notes",
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      fontSize: 12,
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9))))
+        ]));
   }
 }

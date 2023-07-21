@@ -257,176 +257,163 @@ class _GradedPlusSearchScreenPageState
                                                     .copyWith(fontWeight: FontWeight.bold)))
                                         : Container()),
                                 Bouncing(
-                                  child: InkWell(
-                                    onTap: () {
-                                      //subLearningStandard = list[index].standardAndDescriptionC;
-                                      //if (pageIndex.value == 2) {
-                                      nycSubIndex1.value = index;
-                                      if (index < standardLearningLength) {
-                                        isSubmitButton.value = false;
-                                        addToRecentList(
-                                            type: 'nyc',
-                                            obj: list[index],
-                                            className: widget.grade!,
-                                            subjectName:
-                                                widget.selectedKeyword!);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  GradedPluSubjectSelection(
-                                                      titleIconData: widget.titleIconData,
-                                                    gradedPlusQueImage: widget
-                                                        .gradedPlusQueImage,
-                                                    isMcqSheet:
-                                                        widget.isMcqSheet,
-                                                    selectedAnswer:
-                                                        widget.selectedAnswer,
-                                                    subjectId: widget.subjectId,
-                                                    // questionImageUrl:
-                                                    //     widget.questionImage ??
-                                                    //         'NA',
-                                                    selectedClass: widget.grade,
-                                                    isSearchPage: true,
-                                                    domainNameC:
-                                                        learningStandard =
-                                                            list[index]
-                                                                .domainNameC,
-                                                    searchClass: widget.grade,
-                                                    selectedSubject:
-                                                        widget.selectedSubject,
-                                                    stateName: widget.stateName,
-                                                  )),
-                                        );
-                                      } else {
-                                        learningStandard =
-                                            list[index].domainNameC;
-                                        subLearningStandard = list[index]
-                                            .standardAndDescriptionC!
-                                            .split(' - ')[0];
-                                        standardDescription = list[index]
-                                            .standardAndDescriptionC!
-                                            .split(' - ')[1];
-                                        standardId = list[index].id;
-                                        addToRecentList(
-                                            type: 'nycSub',
-                                            obj: list[index],
-                                            className: widget.grade!,
-                                            subjectName:
-                                                widget.selectedKeyword!);
-                                        isSubmitButton.value = true;
-                                      }
-                                      // if (nycSubIndex1.value != 50000) {
-                                      //   isSubmitButton.value = true;
-                                      // }
-                                      // }
-                                    },
-                                    child: AnimatedContainer(
-                                      padding: EdgeInsets.only(bottom: 5),
-                                      decoration: BoxDecoration(
-                                        color: (nycSubIndex1.value == index)
-                                            ? AppTheme.kSelectedColor
-                                            : Colors.grey,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8),
-                                        ),
-                                      ),
-                                      duration: Duration(microseconds: 100),
-                                      child: Container(
-                                        padding: EdgeInsets.all(15),
-                                        alignment: Alignment.centerLeft,
-                                        child: index < standardLearningLength
-                                            ? Utility.textWidget(
-                                                text: list[index].domainNameC!,
-                                                context: context,
-                                                textTheme: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2)
-                                            : RichText(
-                                                text: list[index]
-                                                                .standardAndDescriptionC !=
-                                                            null &&
-                                                        list[index]
-                                                                .standardAndDescriptionC!
-                                                                .split(' - ')
-                                                                .length >
-                                                            1
-                                                    ? TextSpan(
-                                                        // Note: Styles for TextSpans must be explicitly defined.
-                                                        // Child text spans will inherit styles from parent
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline2,
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                              text: list[index]
-                                                                  .standardAndDescriptionC!
-                                                                  .split(
-                                                                      ' - ')[0],
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .headline2!
-                                                                  .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  )),
-                                                          TextSpan(text: '  '),
-                                                          TextSpan(
-                                                            text: list[index]
-                                                                .standardAndDescriptionC!
-                                                                .split(
-                                                                    ' - ')[1],
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline2,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : TextSpan(
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline2,
-                                                        children: [
-                                                            TextSpan(
-                                                                text: list[index]
-                                                                        .standardAndDescriptionC ??
-                                                                    '')
-                                                          ]),
-                                              ),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff000000) !=
-                                                    Theme.of(context)
-                                                        .backgroundColor
-                                                ? Color(0xffF7F8F9)
-                                                : Color(0xff111C20),
-                                            border: Border.all(
+                                    child: InkWell(
+                                        onTap: () {
+                                          //subLearningStandard = list[index].standardAndDescriptionC;
+                                          //if (pageIndex.value == 2) {
+                                          nycSubIndex1.value = index;
+                                          if (index < standardLearningLength) {
+                                            isSubmitButton.value = false;
+                                            addToRecentList(
+                                                type: 'nyc',
+                                                obj: list[index],
+                                                className: widget.grade!,
+                                                subjectName:
+                                                    widget.selectedKeyword!);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GradedPluSubjectSelection(
+                                                        titleIconData: widget
+                                                            .titleIconData,
+                                                        gradedPlusQueImage: widget
+                                                            .gradedPlusQueImage,
+                                                        isMcqSheet:
+                                                            widget.isMcqSheet,
+                                                        selectedAnswer: widget
+                                                            .selectedAnswer,
+                                                        subjectId:
+                                                            widget.subjectId,
+                                                        // questionImageUrl:
+                                                        //     widget.questionImage ??
+                                                        //         'NA',
+                                                        selectedClass:
+                                                            widget.grade,
+                                                        isSearchPage: true,
+                                                        domainNameC:
+                                                            learningStandard =
+                                                                list[index]
+                                                                    .domainNameC,
+                                                        searchClass:
+                                                            widget.grade,
+                                                        selectedSubject: widget
+                                                            .selectedSubject,
+                                                        stateName:
+                                                            widget.stateName,
+                                                      )),
+                                            );
+                                          } else {
+                                            learningStandard =
+                                                list[index].domainNameC;
+                                            subLearningStandard = list[index]
+                                                .standardAndDescriptionC!
+                                                .split(' - ')[0];
+                                            standardDescription = list[index]
+                                                .standardAndDescriptionC!
+                                                .split(' - ')[1];
+                                            standardId = list[index].id;
+                                            addToRecentList(
+                                                type: 'nycSub',
+                                                obj: list[index],
+                                                className: widget.grade!,
+                                                subjectName:
+                                                    widget.selectedKeyword!);
+                                            isSubmitButton.value = true;
+                                          }
+                                          // if (nycSubIndex1.value != 50000) {
+                                          //   isSubmitButton.value = true;
+                                          // }
+                                          // }
+                                        },
+                                        child: AnimatedContainer(
+                                            padding: EdgeInsets.only(bottom: 5),
+                                            decoration: BoxDecoration(
                                               color:
                                                   (nycSubIndex1.value == index)
                                                       ? AppTheme.kSelectedColor
                                                       : Colors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(8),
+                                              ),
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                            duration:
+                                                Duration(microseconds: 100),
+                                            child: Container(
+                                                padding: EdgeInsets.all(15),
+                                                alignment: Alignment.centerLeft,
+                                                child: index <
+                                                        standardLearningLength
+                                                    ? Utility.textWidget(
+                                                        text: list[index]
+                                                            .domainNameC!,
+                                                        context: context,
+                                                        textTheme: Theme.of(context)
+                                                            .textTheme
+                                                            .headline2)
+                                                    : list[index].standardAndDescriptionC != null &&
+                                                            list[index].standardAndDescriptionC!.split(' - ').length >
+                                                                1
+                                                        ? 
+                                                        //To manage translation of text
+                                                        Utility
+                                                            .textSpanWidget(
+                                                            textTheme1:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headline2!
+                                                                    .copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                            textTheme2:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headline2!,
+                                                            text1: list[index]
+                                                                .standardAndDescriptionC!
+                                                                .split(
+                                                                    ' - ')[0],
+                                                            text2: list[index]
+                                                                .standardAndDescriptionC!
+                                                                .split(
+                                                                    ' - ')[1],
+                                                            context: context,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          )
+                                                        : Utility.textWidget(
+                                                            textTheme: Theme.of(context)
+                                                                .textTheme
+                                                                .headline2,
+                                                            context: context,
+                                                            text: list[index].standardAndDescriptionC ??
+                                                                ''),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xff000000) != Theme.of(context).backgroundColor
+                                                        ? Color(0xffF7F8F9)
+                                                        : Color(0xff111C20),
+                                                    border: Border.all(
+                                                        color: (nycSubIndex1.value == index)
+                                                            ? AppTheme.kSelectedColor
+                                                            : Colors.grey),
+                                                    borderRadius: BorderRadius.circular(8)))))),
                                 index == list.length - 1
                                     ? SizedBox(
-                                        height: 20,
+                                        height: 20
                                       )
                                     : Container()
                               ]);
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return SpacerWidget(_KVertcalSpace / 3.75);
-                        },
-                      ),
+                        }
+                      )
                     );
-            },
+            }
           );
         });
   }
@@ -822,11 +809,10 @@ class _GradedPlusSearchScreenPageState
       OcrUtility.showSuccessDialog(context: context);
       Timer(Duration(seconds: 2), () {
         Navigator.pushReplacement(
-
           context,
           MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
-                titleIconData: widget.titleIconData,
+              titleIconData: widget.titleIconData,
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               fileId: Globals.googleExcelSheetId,
@@ -1013,7 +999,7 @@ class _GradedPlusSearchScreenPageState
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId:await OcrUtility.getTeacherId(),
+        teacherContactId: await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: GoogleClassroomOverrides
                 ?.studentAssessmentAndClassroomObj?.courseId ??
@@ -1038,12 +1024,6 @@ class _GradedPlusSearchScreenPageState
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    // if (showDialogSetState != null) {
-    //   showDialogSetState!(() {
-    //     GradedGlobals.loadingMessage = 'Result Detail is Updating';
-    //   });
-    // }
-
     ocrAssessmentBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
@@ -1064,17 +1044,19 @@ class _GradedPlusSearchScreenPageState
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
-            iconData:widget.titleIconData,
-            plusAppName: 'GRADED+',
-            fromGradedPlus: true,
-            onTap: () {
-              Utility.scrollToTop(scrollController: _scrollController);
-            },
-            isSuccessState: ValueNotifier<bool>(true),
-            isBackButton: true,
-            isBackOnSuccess: isBackFromCamera,
-            key: _scaffoldKey,
-          ),
+              refresh: (v) {
+                setState(() {});
+              },
+              iconData: widget.titleIconData,
+              plusAppName: 'GRADED+',
+              fromGradedPlus: true,
+              onTap: () {
+                Utility.scrollToTop(scrollController: _scrollController);
+              },
+              isSuccessState: ValueNotifier<bool>(true),
+              isBackButton: true,
+              isBackOnSuccess: isBackFromCamera,
+              key: _scaffoldKey),
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
@@ -1082,50 +1064,48 @@ class _GradedPlusSearchScreenPageState
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: SearchBar(
-                    stateName: widget.stateName!,
-                    //    isCommonCore: widget.isCommonCore,
-                    isSearchPage: true,
-                    readOnly: false,
-                    controller: searchController,
-                    onSaved: (value) {
-                      if (searchController.text.isEmpty) {
-                        _ocrBloc.add(FetchRecentSearch(
-                            type: 'nycSub',
-                            subjectName: widget.selectedKeyword,
-                            // isSearchPage: true,
-                            className: widget.grade));
-                        _ocrBloc2.add(FetchRecentSearch(
-                            type: 'nyc',
-                            subjectName: widget.selectedKeyword,
-                            // isSearchPage: true,
-                            className: widget.grade));
-                      } else {
-                        _debouncer.run(() async {
-                          _ocrBloc.add(SearchSubjectDetails(
-                              subjectSelected: widget.selectedSubject,
-                              stateName: widget.stateName!,
-                              searchKeyword: searchController.text,
-                              type: 'nycSub',
-                              selectedKeyword: widget.selectedKeyword,
-                              isSearchPage: true,
-                              grade: widget.grade));
-                          _ocrBloc2.add(SearchSubjectDetails(
-                            subjectSelected: widget.selectedSubject,
-                            searchKeyword: searchController.text,
-                            type: 'nyc',
-                            stateName: widget.stateName!,
-                            selectedKeyword: widget.selectedKeyword,
-                            isSearchPage: true,
-                            grade: widget.grade,
-                          ));
-                          setState(() {});
-                        });
-                      }
-                    },
-                  ),
-                ),
+                    // padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: SearchBar(
+                        stateName: widget.stateName!,
+                        //    isCommonCore: widget.isCommonCore,
+                        isSearchPage: true,
+                        readOnly: false,
+                        controller: searchController,
+                        onSaved: (value) {
+                          if (searchController.text.isEmpty) {
+                            _ocrBloc.add(FetchRecentSearch(
+                                type: 'nycSub',
+                                subjectName: widget.selectedKeyword,
+                                // isSearchPage: true,
+                                className: widget.grade));
+                            _ocrBloc2.add(FetchRecentSearch(
+                                type: 'nyc',
+                                subjectName: widget.selectedKeyword,
+                                // isSearchPage: true,
+                                className: widget.grade));
+                          } else {
+                            _debouncer.run(() async {
+                              _ocrBloc.add(SearchSubjectDetails(
+                                  subjectSelected: widget.selectedSubject,
+                                  stateName: widget.stateName!,
+                                  searchKeyword: searchController.text,
+                                  type: 'nycSub',
+                                  selectedKeyword: widget.selectedKeyword,
+                                  isSearchPage: true,
+                                  grade: widget.grade));
+                              _ocrBloc2.add(SearchSubjectDetails(
+                                subjectSelected: widget.selectedSubject,
+                                searchKeyword: searchController.text,
+                                type: 'nyc',
+                                stateName: widget.stateName!,
+                                selectedKeyword: widget.selectedKeyword,
+                                isSearchPage: true,
+                                grade: widget.grade,
+                              ));
+                              setState(() {});
+                            });
+                          }
+                        })),
                 // SpacerWidget(10),
                 //FetchRecentSearch for nyc sub domain
                 BlocListener<OcrBloc, OcrState>(
@@ -1184,20 +1164,20 @@ class _GradedPlusSearchScreenPageState
                     }
                     // do stuff here based on BlocA's state
                   },
-                  child: Container(),
+                  child: Container()
                 ),
                 SpacerWidget(20),
                 verticalListWidget()
-              ],
-            ),
-          ),
+              ]
+            )
+          )
         ),
         googleBlocListener(),
         excelBlocListener(),
         slideBlocListener(),
         ocrAssessmentBlocListener(),
         classRoomBlocListener()
-      ],
+      ]
     );
   }
 }

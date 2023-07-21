@@ -393,6 +393,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           child: addNotes))),
 
                       //----------------------------------------------------Profile Image-----------------------------------------------------
+
                       Positioned(
                           top: 00,
                           child: GestureDetector(
@@ -492,6 +493,25 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     ]))));
   }
 
+  Widget closeNotesIcon() {
+    return isNotesTextfieldEnable.value == true
+        ? Positioned(
+            right: 8,
+            top: MediaQuery.of(context).size.width * 0.2 / 1.30,
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Icon(Icons.clear,
+                    color:
+                        Color(0xff000000) == Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                    size: Globals.deviceType == "phone" ? 22 : 30)))
+        : SizedBox.shrink();
+  }
+
 /*-------------------------------------------------------------------------------------------------------------- */
 /*---------------------------------------------buildBehaviorGridView-------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -520,7 +540,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       child: ShimmerLoading(
                           isLoading: loading,
                           child: PBISPlusActionInteractionButton(
-                            
                               index: index,
                               isCustomBehavior: isCustomBehavior,
                               size: widget.isFromDashboardPage == true ||
@@ -538,7 +557,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 valueChange.value = !valueChange
                                     .value; // Update the changes on bool change detect
                               },
-                              isLoading:  widget.isFromStudentPlus ==true?true: widget.isLoading,
+                              isLoading: widget.isFromStudentPlus == true
+                                  ? true
+                                  : widget.isLoading,
                               isFromStudentPlus: widget.isFromStudentPlus,
                               studentValueNotifier: widget.studentValueNotifier,
                               iconData: behaviorList[index],

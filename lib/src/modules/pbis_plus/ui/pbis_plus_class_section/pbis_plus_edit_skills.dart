@@ -678,7 +678,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 builder: (BuildContext context, BoxConstraints constraints) {
               return PBISPlusEditSkillsBottomSheet(
                   index: index,
-                  constraints: constraints,
+                  constraints: constraints.maxHeight,
                   item: item,
                   height: MediaQuery.of(context).size.height * 0.35,
                   onDelete: onDelete,
@@ -698,6 +698,9 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: PBISPlusAppBar(
+                  refresh: (v) {
+                    setState(() {});
+                  },
                   titleIconData: widget.titleIconData,
                   title: "",
                   backButton: true,
