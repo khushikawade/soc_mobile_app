@@ -10,7 +10,7 @@ class StudentPlusInitial extends StudentPlusState {}
 
 class StudentPlusLoading extends StudentPlusState {}
 
-class StudentPlusDemoLoading extends StudentPlusState {}
+// class StudentPlusDemoLoading extends StudentPlusState {}
 
 class StudentPlusGetDetailsLoading extends StudentPlusState {}
 

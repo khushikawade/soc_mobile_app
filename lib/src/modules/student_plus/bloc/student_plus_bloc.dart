@@ -172,10 +172,12 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         if (_localDataGradeList.isEmpty && _localCourseDataList.isEmpty) {
           yield StudentPlusLoading();
         } else {
+          //Fetch student courses as per their email
           List<StudentPlusCourseModel> courseList =
               checkAndGetStudentCourseDetails(
-                  list: _localCourseDataList,
+                  classroomCourseList: _localCourseDataList,
                   studentEmail: event.studentEmail ?? '');
+
           yield StudentPlusGradeSuccess(
               obj: _localDataGradeList,
               chipList: getChipsList(list: _localDataGradeList),
@@ -189,12 +191,10 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
               accessToken: userProfileLocalData[0].authorizationToken ?? '',
               isGradedPlus: true,
               refreshToken: userProfileLocalData[0].refreshToken ?? '')
-          // getClassroomCourseList(
-          //     accessToken: userProfileLocalData[0].authorizationToken ?? '',
-          //     refreshToken: userProfileLocalData[0].refreshToken ?? '')
         ]);
+
         //yield StudentPlusLoading();
-        List<StudentPlusGradeModel> list = gradeList[0];
+        List<StudentPlusGradeModel> studentPlusGradeList = gradeList[0];
         List<ClassroomCourse> studentCourseList = gradeList[1][0];
         await _localDbStudentGradeDb.clear();
         await _localStudentCourseDb.clear();
@@ -203,21 +203,20 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           await _localStudentCourseDb.addData(e);
         });
 
-        // list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-        list.forEach((StudentPlusGradeModel e) {
+        studentPlusGradeList.forEach((StudentPlusGradeModel e) {
           _localDbStudentGradeDb.addData(e);
         });
+
         //To mimic the state
         yield StudentPlusLoading();
         List<StudentPlusCourseModel> courseList =
             checkAndGetStudentCourseDetails(
-                list: studentCourseList,
+                classroomCourseList: studentCourseList,
                 studentEmail: event.studentEmail ?? '');
+
         yield StudentPlusGradeSuccess(
-            obj: list,
-            chipList: getChipsList(
-              list: list,
-            ),
+            obj: studentPlusGradeList,
+            chipList: getChipsList(list: studentPlusGradeList),
             courseList: courseList);
       } catch (e) {
         LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
@@ -235,7 +234,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
         List<StudentPlusCourseModel> courseList =
             checkAndGetStudentCourseDetails(
-                list: _localCourseDataList,
+                classroomCourseList: _localCourseDataList,
                 studentEmail: event.studentEmail ?? '');
         yield StudentPlusGradeSuccess(
             obj: _localDataGradeList,
@@ -281,11 +280,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
               refreshToken: userProfileLocalData[0].refreshToken ?? '')
         ]);
 
-        List<StudentPlusGradeModel> list =
-            // gradeList[0] == null || gradeList[0].length == 0
-            //     ? []
-            // :
-            gradeList[0];
+        List<StudentPlusGradeModel> list = gradeList[0];
 
         List<StudentPlusCourseModel> studentCourseList = gradeList[1];
 
@@ -364,7 +359,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           _localDb.addData(e);
         });
 
-        yield StudentPlusDemoLoading();
+        yield StudentPlusLoading();
         yield StudentPlusCourseWorkSuccess(
             obj: studentPlusCourseWorkModel, nextPageToken: list[0]);
       } catch (e) {
@@ -395,7 +390,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         studentPlusCourseWorkModel.addAll(event.oldList);
         studentPlusCourseWorkModel.addAll(list[1]);
 
-        yield StudentPlusDemoLoading();
+        yield StudentPlusLoading();
         yield StudentPlusCourseWorkSuccess(
             obj: studentPlusCourseWorkModel, nextPageToken: list[0]);
       } catch (e) {
@@ -455,7 +450,6 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       try {
         LocalDatabase<StudentRegentsModel> _localDb =
             LocalDatabase(event.studentId);
-
         List<StudentRegentsModel>? _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
@@ -464,16 +458,17 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           yield StudentPlusRegentsSuccess(obj: _localData);
         }
 
-        List<StudentRegentsModel> list =
+        List<StudentRegentsModel> studentRegentList =
             await getStudentRegentsDetailList(studentIdC: event.studentId);
+
         // Syncing the Local database with remote data
         await _localDb.clear();
-        list.forEach((StudentRegentsModel e) {
+        studentRegentList.forEach((StudentRegentsModel e) {
           _localDb.addData(e);
         });
 
-        yield StudentPlusDemoLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield StudentPlusRegentsSuccess(obj: list);
+        yield StudentPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+        yield StudentPlusRegentsSuccess(obj: studentRegentList);
       } catch (e) {
         LocalDatabase<StudentRegentsModel> _localDb =
             LocalDatabase(event.studentId);
@@ -866,7 +861,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-  /* ------------------ Function to call get student Course work api ------------------ */
+  /* ------------------ Function to call get student Course work api //Course Assignments ------------------ */
   Future getStudentCourseWorkList(
       {required String courseId,
       required String accessToken,
@@ -875,6 +870,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     try {
       String apiUrl =
           'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10';
+
       if (studentUserId != null && studentUserId != '') {
         apiUrl =
             'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/studentPlus/grades/student-classroom-grade/course/$courseId?pageSize=10&student_id=$studentUserId';
@@ -905,45 +901,35 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-  /* ---------------------- function to get course list according to student ---------------------- */
-
-  getCourseListStudentWise() async {
-    PBISPlusBloc pbisPlusBloc = PBISPlusBloc();
-
-    String plusClassroomDBTableName = PBISPlusOverrides.pbisPlusClassroomDB;
-    List<UserInformation> userProfileLocalData =
-        await UserGoogleProfile.getUserProfile();
-
-    LocalDatabase<ClassroomCourse> _localDb =
-        LocalDatabase(plusClassroomDBTableName);
-    List<ClassroomCourse>? _localData = await _localDb.getData();
-  }
-
+/* ---------------------- function to get course list according to student email address---------------------- */
   List<StudentPlusCourseModel> checkAndGetStudentCourseDetails(
-      {required List<ClassroomCourse> list, required String studentEmail}) {
-    List<StudentPlusCourseModel> updatedList = [];
-    for (var j = 0; j < list.length; j++) {
-      if (list[j].students != null) {
-        for (var i = 0; i < list[j].students!.length; i++) {
-          if (studentEmail == list[j].students![i].profile!.emailAddress) {
-            updatedList.add(StudentPlusCourseModel(
-                id: list[j].id,
-                name: list[j].name,
-                courseState: list[j].courseState,
-                room: list[j].room,
-                section: list[j].section,
-                updateTime: list[j].updateTime == null
-                    ? null
-                    : DateTime.parse(list[j].updateTime ?? ''),
-                studentUserId: list[j].students![i].profile!.id));
+      {required List<ClassroomCourse> classroomCourseList,
+      required String studentEmail}) {
+    List<StudentPlusCourseModel> studentPlusCourseList = [];
 
+    for (var j = 0; j < classroomCourseList.length; j++) {
+      if (classroomCourseList[j].students != null) {
+        for (var i = 0; i < classroomCourseList[j].students!.length; i++) {
+          if (studentEmail ==
+              classroomCourseList[j].students![i].profile!.emailAddress) {
+            studentPlusCourseList.add(StudentPlusCourseModel(
+                id: classroomCourseList[j].id,
+                name: classroomCourseList[j].name,
+                courseState: classroomCourseList[j].courseState,
+                room: classroomCourseList[j].room,
+                section: classroomCourseList[j].section,
+                updateTime: classroomCourseList[j].updateTime == null
+                    ? null
+                    : DateTime.parse(classroomCourseList[j].updateTime ?? ''),
+                studentUserId:
+                    classroomCourseList[j].students![i].profile!.id));
             break;
           }
         }
       }
     }
 
-    return updatedList;
+    return studentPlusCourseList;
   }
 
   /* ------------- Function to get student Regents for student Ossid ------------- */
@@ -953,7 +939,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Regents_Exam__c/\"Student__c\"='$studentIdC'",
           isCompleteUrl: true,
           headers: {
-            "Content-Type": "application/json;charset=UTF-8",
+            "Content-Type": "application/json;charset=UTF-8"
           }); //change DBN to dynamic
       if (response.statusCode == 200) {
         List<StudentRegentsModel> list = response.data["body"]
