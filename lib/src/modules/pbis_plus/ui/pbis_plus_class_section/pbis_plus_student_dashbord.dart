@@ -369,15 +369,14 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         pbisStudentInteractionLogsList[index].createdAt ?? '');
 
     return DataRow(
-      // Set the color of the DataRow to transparent.
-      color: MaterialStateProperty.resolveWith<Color?>(
-        (Set<MaterialState> states) {
-          return Colors.transparent; // Use the default value.
-        },
-      ),
-      cells: List<DataCell>.generate(
-        pBISPlusCommonBehaviorList.length,
-        (int cellIndex) {
+        // Set the color of the DataRow to transparent.
+        color: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            return Colors.transparent; // Use the default value.
+          },
+        ),
+        cells: List<DataCell>.generate(pBISPlusCommonBehaviorList.length,
+            (int cellIndex) {
           // If the cell index is the last one (TOTAL), return a DataCell.
           if (cellIndex == (pBISPlusCommonBehaviorList.length - 1)) {
             return totalDataCell(sumOfInteraction(
@@ -394,9 +393,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
           // Return the appropriate DataCell based on the cell index.
           return dataCell(cellIndex == 0 ? createdAt : cellCount);
-        },
-      ),
-    );
+        }));
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -641,13 +638,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     isFromStudentPlus: widget.isFromStudentPlus,
                     classroomCourseId: widget.classroomCourseId!);
               } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                if (widget.isFromStudentPlus == true) {
-                  //TODDO
+                // if (widget.isFromStudentPlus == true) {
+                //   //TODDO
 
-                  // updateActionCountStudentPlusModuleWidget(
-                  //   pbisHistoryData: state.pbisStudentInteractionList,
-                  // );
-                }
+                //   // updateActionCountStudentPlusModuleWidget(
+                //   //   pbisHistoryData: state.pbisStudentInteractionList,
+                //   // );
+                // }
                 return PBISPlusStudentCardModal(
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
@@ -796,7 +793,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     List<InteractionCounts> interactionList,
   ) {
     if (pBISPlusCommonBehavior == null) {
-      return '0'; // Cell index out of bounds, return '0'.
+      return '0';
+      // Cell index out of bounds, return '0'.
     }
 
     for (var element in interactionList) {
