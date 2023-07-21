@@ -46,7 +46,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<List<PBISPlusCommonBehaviorModal>> additionalBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
   ValueNotifier<bool> updateBehaviorWidget = ValueNotifier<bool>(false);
-  ScrollController? _scrollBarController;
+
   ScrollController? _gridController;
   //-------------------------------------------------------------------------------------------------
 
@@ -67,7 +67,6 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   @override
   void initState() {
     super.initState();
-    _scrollBarController = ScrollController();
     _gridController = ScrollController();
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
     pbisPluAdditionalBehaviorBloc.add(PBISPlusGetAdditionalBehavior());
