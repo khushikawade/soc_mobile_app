@@ -31,6 +31,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_regents_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -131,6 +132,7 @@ void main() async {
           ..registerAdapter(StudentNameAdapter())
           ..registerAdapter(PBISStudentNotesAdapter())
           ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())
+          ..registerAdapter(StudentRegentsModelAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

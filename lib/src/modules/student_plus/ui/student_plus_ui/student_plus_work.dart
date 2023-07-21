@@ -207,7 +207,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               }),
             );
           },
-          child: Icon(
+          child:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         Icon(
             IconData(0xe87d,
                 fontFamily: Overrides.kFontFam,
                 fontPackage: Overrides.kFontPkg),

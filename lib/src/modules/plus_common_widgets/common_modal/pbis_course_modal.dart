@@ -25,6 +25,12 @@ class ClassroomCourse {
   String? assessmentCId; //used in GRADED+
   @HiveField(9)
   String? courseWorkURL; //used in GRADED+
+  @HiveField(10)
+  String? section; //used in GRADED+
+  @HiveField(11)
+  String? room;
+  @HiveField(12)
+  String? updateTime;
 
   ClassroomCourse(
       {this.id,
@@ -36,7 +42,10 @@ class ClassroomCourse {
       this.students,
       this.courseWorkId,
       this.assessmentCId,
-      this.courseWorkURL});
+      this.courseWorkURL,
+      this.room,
+      this.section,
+      this.updateTime});
 
   ClassroomCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -45,6 +54,10 @@ class ClassroomCourse {
     ownerId = json['ownerId'] ?? '';
     enrollmentCode = json['enrollmentCode'] ?? '';
     courseState = json['courseState'] ?? '';
+    room = json['room'] ?? '';
+    section = json['section'] ?? '';
+
+    updateTime = json["updateTime"] ?? '';
     if (json['students'] != null) {
       students = <ClassroomStudents>[];
       json['students'].forEach((v) {
@@ -63,6 +76,9 @@ class ClassroomCourse {
     data['ownerId'] = this.ownerId;
     data['enrollmentCode'] = this.enrollmentCode;
     data['courseState'] = this.courseState;
+    data['room'] = this.room;
+    data['section'] = this.section;
+    data['updateTime'] = this.updateTime;
     if (this.students != null) {
       data['students'] = this.students!.map((v) => v.toJson()).toList();
     } else {
