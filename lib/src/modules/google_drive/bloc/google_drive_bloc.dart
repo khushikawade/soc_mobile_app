@@ -1232,21 +1232,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isCompleteUrl: true);
 
-      // if (response.statusCode != 401 &&
-      //     response.statusCode == 200 &&
-      //     response.data['statusCode'] != 500) {
-      //   var data = response.data['body']['files'];
-
-      //   if (data.length == 0) {
-      //     return data;
-      //   } else {
-      //     return data[0];
-      //   }
-      // } else if (response.statusCode == 401 ||
-      //     response.data['statusCode'] == 500) {
-      //   return response.statusCode == 401 ? response.statusCode : 500;
-      // }
-      // return "";
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['files'];
 
@@ -1265,7 +1250,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               // or throw Exception('No matching element found');
             },
           );
-
           return driveFolder;
         }
       } else if (retry > 0) {
@@ -3328,21 +3312,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         ...students.map((student) => [
               student.profile!.name!.fullName,
               if (course == true) student.profile!.courseName,
-              //TODOPBIS:  SPREAD SHEET TOP CLOUMN DATA & TOTAL DATA
-              // student.profile!.behavior1?.counter! ?? 0,
-              // student.profile!.behavior2?.counter! ?? 0,
-              // student.profile!.behavior3?.counter! ?? 0,
-              // student.profile!.behavior4?.counter! ?? 0,
-              // student.profile!.behavior5?.counter! ?? 0,
-              // student.profile!.behavior6?.counter! ?? 0,
               (0)
-              //ADD DATA REMAIN
-              // student.profile!.behavior1!.counter! ??
-              //   student.profile!.behavior2!.counter! +
-              //       student.profile!.behavior3!.counter! +
-              //       student.profile!.behavior4!.counter! +
-              //       student.profile!.behavior5!.counter! +
-              //       student.profile!.behavior6!.counter!)
             ]),
       ];
     } catch (e) {

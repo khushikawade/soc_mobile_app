@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_mod
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -430,35 +431,40 @@ class OcrUtility {
     required ValueNotifier<LoadingStatusModel> assessmentExportAndSaveStatus,
   }) async {
     return showDialog<void>(
-      useRootNavigator: false,
-      context: context!,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          if (state != null) {
-            state(setState);
-          }
+        useRootNavigator: false,
+        context: context!,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            if (state != null) {
+              state(setState);
+            }
 
-          return WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  backgroundColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9), //Colors.black54,
-                  children: <Widget>[
-                    Text(
-                      "Saving",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SpacerWidget(10),
-                    ...processList
-                        .map((item) => Container(
+            return WillPopScope(
+                onWillPop: () async => false,
+                child: SimpleDialog(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                    backgroundColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9), //Colors.black54,
+                    children: <Widget>[
+                      Utility.textWidget(
+                          textAlign: TextAlign.center,
+                          context: context,
+                          text: 'Saving',
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontWeight: FontWeight.bold)),
+                      SpacerWidget(10),
+                      ...processList
+                          .map((item) => Container(
                               margin: EdgeInsets.symmetric(vertical: 7),
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               height: 55,
@@ -467,31 +473,29 @@ class OcrUtility {
                                       Border.all(color: AppTheme.kButtonColor),
                                   borderRadius: BorderRadius.circular(10)),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    item,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
-                                  progressStatusWidget(
-                                      value: item,
-                                      assessmentExportAndSaveStatus:
-                                          assessmentExportAndSaveStatus)
-                                ],
-                              ),
-                            ))
-                        .toList(),
-                  ]));
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text: item,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline3!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary)),
+                                    progressStatusWidget(
+                                        value: item,
+                                        assessmentExportAndSaveStatus:
+                                            assessmentExportAndSaveStatus)
+                                  ])))
+                          .toList(),
+                    ]));
+          });
         });
-      },
-    );
   }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -511,14 +515,11 @@ class OcrUtility {
             assessmentExportAndSaveStatus
                 .value.saveAssessmentResultToDashboard!)) {
       return Icon(
-        IconData(0xe877,
-            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        color: AppTheme.kButtonColor,
-      );
+          IconData(0xe877,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor);
     } else {
-      return CupertinoActivityIndicator(
-        color: AppTheme.kButtonColor,
-      );
+      return CupertinoActivityIndicator(color: AppTheme.kButtonColor);
     }
   }
 
@@ -561,7 +562,7 @@ class OcrUtility {
                                   BoxShadow(
                                       color: Colors.black,
                                       offset: Offset(0, 2),
-                                      blurRadius: 10),
+                                      blurRadius: 10)
                                 ],
                               ),
                               child: Column(
@@ -570,21 +571,24 @@ class OcrUtility {
                                     SizedBox(
                                       height: 25,
                                     ),
-                                    Text(
-                                      'Awesome!',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                        'Student Assignments Saved Successfully',
+                                    Utility.textWidget(
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context)
+                                        context: context,
+                                        text: 'Awesome!',
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                fontWeight: FontWeight.bold)),
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text:
+                                            'Student Assignments Saved Successfully',
+                                        textTheme: Theme.of(context)
                                             .textTheme
                                             .headline4!
                                             .copyWith(
@@ -596,16 +600,14 @@ class OcrUtility {
                               top: 0,
                               child: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Color(0xff000000) !=
-                                                Theme.of(context)
-                                                    .backgroundColor
-                                            ? Color(0xff111C20)
-                                            : Color(0xffF7F8F9),
-                                        width: 8),
-                                    //color: AppTheme.kButtonColor,
-                                    shape: BoxShape.circle,
-                                  ),
+                                      border: Border.all(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xff111C20)
+                                              : Color(0xffF7F8F9),
+                                          width: 8),
+                                      shape: BoxShape.circle),
                                   child: Container(
                                       decoration: BoxDecoration(
                                         color: AppTheme.kButtonColor,
@@ -631,13 +633,8 @@ class OcrUtility {
 
   static getTeacherId() async {
     try {
-      // if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
-      //   return Globals.teacherId;
-      // } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      print('Teacher Id::::::: ${prefs.getString(OcrOverrides.teacherId)}');
       return prefs.getString(OcrOverrides.teacherId) ?? '';
-      // }
     } catch (e) {
       throw e;
     }
