@@ -7,20 +7,16 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_current_grades_details.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class StudentPlusGradesPage extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
@@ -247,20 +243,47 @@ class individual extends State<StudentPlusGradesPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
-              child: FittedBox(
-            child: Utility.textWidget(
-                text: chipValue == '1'
-                    ? '1st'
-                    : chipValue == '2'
-                        ? '2nd'
-                        : chipValue == '3'
-                            ? '3rd'
-                            : chipValue == '4'
-                                ? '4th'
-                                : chipValue,
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline4),
-          )),
+              child: chipValue == 'Current'
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            child: SvgPicture.asset(
+                              'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+                              // color: AppTheme.kButtonColor,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Utility.textWidget(
+                              text: chipValue,
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(fontSize: 10))
+                        ],
+                      ),
+                    )
+                  : Utility.textWidget(
+                      text: chipValue == '1'
+                          ? '1st'
+                          : chipValue == '2'
+                              ? '2nd'
+                              : chipValue == '3'
+                                  ? '3rd'
+                                  : chipValue == '4'
+                                      ? '4th'
+                                      : chipValue,
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(fontSize: 10))),
         ),
       ),
     );
