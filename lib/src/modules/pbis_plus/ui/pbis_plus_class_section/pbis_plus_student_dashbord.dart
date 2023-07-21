@@ -90,9 +90,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
   ScrollController _innerScrollController = ScrollController();
 
-  final ValueNotifier<List<PBISPlusTotalBehaviourModal>>
+  final ValueNotifier<List<PBISPlusStudentDashboardTotalBehaviourModal>>
       pbisStudentInteractionListNotifier =
-      ValueNotifier<List<PBISPlusTotalBehaviourModal>>([]);
+      ValueNotifier<List<PBISPlusStudentDashboardTotalBehaviourModal>>([]);
 
   void initState() {
     //  Event call to get dashboard details of interaction
@@ -272,7 +272,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------_buildDataTable---------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
   DataTable _buildDataTable(
-          {required List<PBISPlusTotalBehaviourModal>
+          {required List<PBISPlusStudentDashboardTotalBehaviourModal>
               pbisStudentInteractionLogsList,
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
@@ -359,7 +359,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 // Function to generate a DataRow widget for a given index in a table.
   DataRow buildDataRow({
     required int index, // Index of the row in the table.
-    required List<PBISPlusTotalBehaviourModal>
+    required List<PBISPlusStudentDashboardTotalBehaviourModal>
         pbisStudentInteractionLogsList, // List of behavior modals for the entire table.
     required List<PBISPlusCommonBehaviorModal>
         pBISPlusCommonBehaviorList, // List of common behavior modals.
@@ -481,7 +481,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
 
   void _modalBottomSheetMenu(
-          {required List<PBISPlusTotalBehaviourModal>
+          {required List<PBISPlusStudentDashboardTotalBehaviourModal>
               pbisStudentInteractionList}) =>
       showModalBottomSheet(
         useRootNavigator: true,

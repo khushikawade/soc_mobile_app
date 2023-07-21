@@ -133,7 +133,8 @@ void main() async {
           ..registerAdapter(StudentNameAdapter())
           ..registerAdapter(PBISStudentNotesAdapter())
           ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())
-          ..registerAdapter(PBISPlusTotalBehaviourModalAdapter())
+          ..registerAdapter(
+              PBISPlusStudentDashboardTotalBehaviourModalAdapter())
           ..registerAdapter(InteractionCountsAdapter())
           ..registerAdapter(StudentRegentsModelAdapter())
 

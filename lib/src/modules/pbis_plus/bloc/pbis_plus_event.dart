@@ -202,7 +202,7 @@ class PBISPlusGetMoreStudentDashboardLogs extends PBISPlusEvent {
   final String studentId;
   final String classroomCourseId;
   final bool? isStudentPlus;
-  List<PBISPlusTotalBehaviourModal> pbisStudentInteractionList;
+  List<PBISPlusStudentDashboardTotalBehaviourModal> pbisStudentInteractionList;
 
   PBISPlusGetMoreStudentDashboardLogs(
       {required this.pbisStudentInteractionList,

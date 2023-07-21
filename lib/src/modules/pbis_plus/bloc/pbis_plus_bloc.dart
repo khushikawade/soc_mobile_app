@@ -843,9 +843,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<PBISPlusTotalBehaviourModal> _localDb =
+        LocalDatabase<PBISPlusStudentDashboardTotalBehaviourModal> _localDb =
             LocalDatabase(sectionTableName);
-        List<PBISPlusTotalBehaviourModal>? _localData =
+        List<PBISPlusStudentDashboardTotalBehaviourModal>? _localData =
             await _localDb.getData();
 
         if (_localData.isNotEmpty) {
@@ -856,7 +856,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusLoading();
         }
 
-        List<PBISPlusTotalBehaviourModal> pbisStudentDetails =
+        List<PBISPlusStudentDashboardTotalBehaviourModal> pbisStudentDetails =
             await getPBISPlusStudentDashboardLogs(
                 studentId: event.studentId,
                 teacherEmail: userProfileLocalData[0].userEmail!,
@@ -866,7 +866,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 offset: 0);
 
         await _localDb.clear();
-        pbisStudentDetails.forEach((PBISPlusTotalBehaviourModal element) async {
+        pbisStudentDetails.forEach(
+            (PBISPlusStudentDashboardTotalBehaviourModal element) async {
           await _localDb.addData(element);
         });
 
@@ -875,9 +876,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             pbisStudentInteractionList: pbisStudentDetails,
             isLoading: pbisStudentDetails.length >= 20);
       } catch (e) {
-        LocalDatabase<PBISPlusTotalBehaviourModal> _localDb =
+        LocalDatabase<PBISPlusStudentDashboardTotalBehaviourModal> _localDb =
             LocalDatabase(sectionTableName);
-        List<PBISPlusTotalBehaviourModal>? _localData =
+        List<PBISPlusStudentDashboardTotalBehaviourModal>? _localData =
             await _localDb.getData();
         yield PBISPlusStudentDashboardLogSuccess(
             pbisStudentInteractionList: _localData,
@@ -891,7 +892,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        List<PBISPlusTotalBehaviourModal> pbisStudentDetails =
+        List<PBISPlusStudentDashboardTotalBehaviourModal> pbisStudentDetails =
             await getPBISPlusStudentDashboardLogs(
                 studentId: event.studentId,
                 teacherEmail: userProfileLocalData[0].userEmail!,
@@ -1261,14 +1262,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /* -------Function to get student previous date log details from email ------ */
   /* -------------------------------------------------------------------------- */
 
-  Future<List<PBISPlusTotalBehaviourModal>> getPBISPlusStudentDashboardLogs(
-      {required String studentId, //Id/Email
-      required String teacherEmail,
-      int retry = 3,
-      required String classroomCourseId,
-      required bool? isStudentPlus,
-      required int offset,
-      required int limit}) async {
+  Future<List<PBISPlusStudentDashboardTotalBehaviourModal>>
+      getPBISPlusStudentDashboardLogs(
+          {required String studentId, //Id/Email
+          required String teacherEmail,
+          int retry = 3,
+          required String classroomCourseId,
+          required bool? isStudentPlus,
+          required int offset,
+          required int limit}) async {
     try {
       String url = isStudentPlus == true
           ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&offset=$offset&limit=$limit'
@@ -1283,8 +1285,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return response.data['body']
-            .map<PBISPlusTotalBehaviourModal>(
-                (i) => PBISPlusTotalBehaviourModal.fromJson(i))
+            .map<PBISPlusStudentDashboardTotalBehaviourModal>(
+                (i) => PBISPlusStudentDashboardTotalBehaviourModal.fromJson(i))
             .toList();
       } else if (retry > 0) {
         return getPBISPlusStudentDashboardLogs(

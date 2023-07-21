@@ -6,18 +6,18 @@ part of 'pbis_plus_total_behaviour_modal.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PBISPlusTotalBehaviourModalAdapter
-    extends TypeAdapter<PBISPlusTotalBehaviourModal> {
+class PBISPlusStudentDashboardTotalBehaviourModalAdapter
+    extends TypeAdapter<PBISPlusStudentDashboardTotalBehaviourModal> {
   @override
-  final int typeId = 55;
+  final int typeId = 57;
 
   @override
-  PBISPlusTotalBehaviourModal read(BinaryReader reader) {
+  PBISPlusStudentDashboardTotalBehaviourModal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PBISPlusTotalBehaviourModal(
+    return PBISPlusStudentDashboardTotalBehaviourModal(
       schoolId: fields[0] as String?,
       studentId: fields[1] as String?,
       teacherEmail: fields[2] as String?,
@@ -28,7 +28,8 @@ class PBISPlusTotalBehaviourModalAdapter
   }
 
   @override
-  void write(BinaryWriter writer, PBISPlusTotalBehaviourModal obj) {
+  void write(
+      BinaryWriter writer, PBISPlusStudentDashboardTotalBehaviourModal obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -51,7 +52,7 @@ class PBISPlusTotalBehaviourModalAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PBISPlusTotalBehaviourModalAdapter &&
+      other is PBISPlusStudentDashboardTotalBehaviourModalAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
