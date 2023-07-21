@@ -202,7 +202,10 @@ class GoogleSlidesPresentationBloc
 
         //GET STUDENT PRESENTATION FILE NAME
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
-            .createStudentGooglePresentationFileName(event.studentDetails);
+            .createStudentGooglePresentationFileName(
+                filterName: event.filterName,
+                studentDetails: event.studentDetails,
+                studentGooglePresentationFileName: true);
 
         //CREATE STUDENT PRESENTATION TO DRIVE
         List GooglePresentationCreateResponse =

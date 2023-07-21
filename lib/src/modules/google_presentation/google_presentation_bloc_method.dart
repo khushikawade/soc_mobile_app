@@ -320,22 +320,32 @@ class GooglePresentationBlocMethods {
   }
 
   static String createStudentGooglePresentationFileName(
-      StudentPlusDetailsModel studentDetails) {
+      {required StudentPlusDetailsModel studentDetails,
+      required final String filterName,
+      bool? studentGooglePresentationFileName = false}) {
     try {
-      //create file name for student Presentation
+      // Create file name for student Presentation
       String fileName = '';
 
-      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
-        fileName += studentDetails.lastNameC! + "_";
+      // Add last name if available
+      if (studentDetails.lastNameC?.isNotEmpty == true) {
+        fileName += studentDetails.lastNameC! + " ";
       }
 
-      if (studentDetails.firstNameC != null &&
-          studentDetails.firstNameC != '') {
-        fileName += studentDetails.firstNameC! + "_";
+      // Add first name if available
+      if (studentDetails.firstNameC?.isNotEmpty == true) {
+        fileName += studentDetails.firstNameC!;
+      }
+      // Add date if required
+      if (studentGooglePresentationFileName == true) {
+        fileName += "_${DateFormat('MM/dd/yy').format(DateTime.now())}";
+      }
+      // Add underscore for filter name if available
+      if (filterName.trim().isNotEmpty) {
+        fileName += "_${filterName.trimLeft()}";
       }
 
-      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
-      return fileName ?? '';
+      return fileName;
     } catch (e) {
       throw (e);
     }

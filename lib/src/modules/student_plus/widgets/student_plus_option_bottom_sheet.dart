@@ -25,6 +25,7 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
   StudentPlusDetailsModel studentDetails;
+  final String? filterName;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
 
   StudentPlusOptionBottomSheet(
@@ -32,7 +33,8 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
       this.title,
       this.height = 200,
       required this.resultSummaryIconsModalList,
-      required this.studentDetails});
+      required this.studentDetails,
+      required this.filterName});
 
   @override
   State<StudentPlusOptionBottomSheet> createState() =>
@@ -312,19 +314,24 @@ class _GradedPlusResultOptionBottomSheetState
             updateStudentGooglePresentation();
           }
           if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
-            if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
-              isStateRecived.value = !isStateRecived.value;
-              // Navigator.of(context).pop();
-              navigateToPage(pageIndex: 0);
-              Utility.currentScreenSnackBar(
-                  "Student presentation synced to google drive successfully.",
-                  null);
-            } else {
-              widget.studentDetails = state.studentDetails;
-              //now update the save the student google Presentation work on database
-              studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
-                  studentDetails: state.studentDetails));
-            }
+            // if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
+            //   isStateRecived.value = !isStateRecived.value;
+            //   // Navigator.of(context).pop();
+            //   navigateToPage(pageIndex: 0);
+            //   Utility.currentScreenSnackBar(
+            //       "Student presentation synced to google drive successfully.",
+            //       null);
+            // } else {
+            //   widget.studentDetails = state.studentDetails;
+            //   //now update the save the student google Presentation work on database
+            //   studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+            //       studentDetails: state.studentDetails));
+            // }
+            widget.studentDetails = state.studentDetails;
+            //now update the save the student google Presentation work on database
+            studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                filterName: widget.filterName ?? '',
+                studentDetails: state.studentDetails));
           }
         });
   }
@@ -338,6 +345,7 @@ class _GradedPlusResultOptionBottomSheetState
 
     googleSlidesPresentationBloc
         .add(StudentPlusCreateGooglePresentationForStudent(
+      filterName: widget.filterName ?? '',
       studentPlusDriveFolderId:
           userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
       studentDetails: widget.studentDetails,
@@ -353,10 +361,21 @@ class _GradedPlusResultOptionBottomSheetState
 
     List<StudentPlusWorkModel>? _localData = await _localDb.getData();
     _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+    List<StudentPlusWorkModel> studentWorkUpdatedList = [];
+    //Filtered Records
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i].subjectC == widget.filterName ||
+          widget.filterName == '' ||
+          widget.filterName ==
+              "${_localData[i].firstName ?? ''} ${_localData[i].lastName ?? ''}") {
+        studentWorkUpdatedList.add(_localData[i]);
+      }
+    }
 
     googleSlidesPresentationBloc.add(
         StudentPlusUpdateGooglePresentationForStudent(
-            studentDetails: widget.studentDetails, allRecords: _localData));
+            studentDetails: widget.studentDetails,
+            allRecords: studentWorkUpdatedList));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/

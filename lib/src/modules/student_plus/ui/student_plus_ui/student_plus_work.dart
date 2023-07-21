@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/model/student_google_presentation_detail_modal.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
@@ -71,6 +72,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
   ];
+  final StudentPlusBloc _studentPlusForStudentGooglePresentationBloc =
+      StudentPlusBloc();
   @override
   void initState() {
     _studentPlusBloc.add(
@@ -153,6 +156,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         ),
         //googleSlidesPresentationBlocListener(),
         googleDriveBlocListener(),
+        _studentPlusForStudentGooglePresentationBlocListener()
       ],
     );
   }
@@ -457,9 +461,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               valueListenable: filterNotifier,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (filterNotifier.value == '' &&
-                    state is StudentPlusWorkSuccess &&
-                    state.obj.length > 0) {
+                if (state is StudentPlusWorkSuccess && state.obj.length > 0) {
                   return PlusCustomFloatingActionButton(onPressed: () async {
                     //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
@@ -469,9 +471,14 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                             null ||
                         userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             "") {
+                      Utility.showLoadingDialog(
+                          context: context, isOCR: true, msg: 'Please Wait...');
                       _checkDriveFolderExistsOrNot();
                     } else {
-                      _shareBottomSheetMenu();
+                      Utility.showLoadingDialog(
+                          context: context, isOCR: true, msg: 'Please Wait...');
+                      getStundentGooglePresentationDetails();
+                      // _shareBottomSheetMenu();
                     }
                   });
                 } else {
@@ -481,17 +488,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
   }
 
-  _shareBottomSheetMenu() async {
-    // if (widget.studentDetails.studentGooglePresentationUrl != null &&
-    //     widget.studentDetails.studentGooglePresentationUrl != '') {
-    //   resultSummaryIconsModalList.add(
-    //     ResultSummaryIcons(
-    //       title: 'Open Presentation',
-    //       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-    //     ),
-    //   );
-    // }
-    // print(widget.studentDetails.studentGooglePresentationUrl);
+  _shareBottomSheetMenu(
+      {required StudentPlusDetailsModel studentDetails}) async {
+    Navigator.of(context).pop();
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -506,7 +505,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return StudentPlusOptionBottomSheet(
-                  studentDetails: widget.studentDetails,
+                  filterName: filterNotifier.value ?? '',
+                  studentDetails: studentDetails,
                   resultSummaryIconsModalList: resultSummaryIconsModalList,
                   height: MediaQuery.of(context).size.height * 0.35);
             },
@@ -526,9 +526,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
           //Checking Google Folder State
           if (state is GoogleFolderCreated) {
-            Navigator.of(context).pop();
-
-            _shareBottomSheetMenu();
+            getStundentGooglePresentationDetails();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
@@ -546,8 +544,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   void _checkDriveFolderExistsOrNot() async {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: 'Please Wait...');
     //FOR STUDENT PLUS
 
     //this is get the user profile details
@@ -563,5 +559,43 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         token: userProfile.authorizationToken,
         folderName: "SOLVED STUDENT+",
         refreshToken: userProfile.refreshToken));
+  }
+
+  void getStundentGooglePresentationDetails() {
+    _studentPlusForStudentGooglePresentationBloc.add(
+        StundetPlusGetStundentGooglePresentationDetails(
+            studentDetails: widget.studentDetails,
+            schoolDBN: Globals.schoolDbnC ?? '',
+            filterName: filterNotifier.value ?? ''));
+  }
+
+  BlocListener _studentPlusForStudentGooglePresentationBlocListener() {
+    return BlocListener(
+        bloc: _studentPlusForStudentGooglePresentationBloc,
+        child: Container(),
+        listener: (context, state) async {
+          if (state is StundetPlusGetStundentGooglePresentationDetailsSuccess) {
+            if (state.studentGooglePresentationDetail != false) {
+              StudentGooglePresentationDetailModal obj =
+                  state.studentGooglePresentationDetail;
+              widget.studentDetails.studentGooglePresentationId =
+                  obj.googlePresentationId ?? "";
+              widget.studentDetails.studentGooglePresentationUrl =
+                  obj.googlePresentationURL ?? '';
+            } else {
+              print("file is not available");
+              widget.studentDetails.studentGooglePresentationId = '';
+              widget.studentDetails.studentGooglePresentationUrl = '';
+            }
+
+            _shareBottomSheetMenu(studentDetails: widget.studentDetails);
+          }
+          if (state is StudentPlusErrorReceived) {
+            Navigator.of(context).pop();
+
+            Utility.currentScreenSnackBar(
+                "Something Went Wrong. Please Try Again.", null);
+          }
+        });
   }
 }

@@ -149,3 +149,14 @@ class FamilyLoginErrorReceived extends StudentPlusState {
   @override
   List<Object> get props => [err];
 }
+
+/* ------------------------ state use to return family login Error ----------------------- */
+class StundetPlusGetStundentGooglePresentationDetailsSuccess
+    extends StudentPlusState {
+  var studentGooglePresentationDetail;
+  StundetPlusGetStundentGooglePresentationDetailsSuccess(
+      {this.studentGooglePresentationDetail});
+
+  @override
+  List<Object> get props => [];
+}
