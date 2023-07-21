@@ -318,7 +318,7 @@ class StudentPlusUtility {
 
   static Color getRegentsColors(String value) {
     try {
-      if (value.toLowerCase() == "waiver") {
+      if (value.toLowerCase() == "waiver" || value.toLowerCase() == "w") {
         return Colors.blue;
       } else {
         int result = int.parse(value);
