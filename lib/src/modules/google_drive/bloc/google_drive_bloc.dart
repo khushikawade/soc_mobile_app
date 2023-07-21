@@ -1232,28 +1232,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isCompleteUrl: true);
 
-      // if (response.statusCode != 401 &&
-      //     response.statusCode == 200 &&
-      //     response.data['statusCode'] != 500) {
-      //   var data = response.data['body']['files'];
-
-      //   if (data.length == 0) {
-      //     return data;
-      //   } else {
-      //     return data[0];
-      //   }
-      // } else if (response.statusCode == 401 ||
-      //     response.data['statusCode'] == 500) {
-      //   return response.statusCode == 401 ? response.statusCode : 500;
-      // }
-      // return "";
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['files'];
 
         if (data.length == 0) {
           return data;
         } else {
-          return data[0];
+          var driveFolder = data.firstWhere(
+            (folder) =>
+                // folder['shared'] == false &&
+                folder['ownedByMe'] == true &&
+                folder['trashed'] ==
+                    false, //To access our own folder and not the shared one.
+            orElse: () {
+              //Return empty folder in case no drive folder found //This will help to create a folder
+              return [];
+              // or throw Exception('No matching element found');
+            },
+          );
+          return driveFolder;
         }
       } else if (retry > 0) {
         var result = await Authentication.refreshAuthenticationToken(
