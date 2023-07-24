@@ -466,17 +466,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
+                    //ShOW LOADING
+                    Utility.showLoadingDialog(
+                        context: context, isOCR: true, msg: 'Please Wait...');
 
                     if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             null ||
                         userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             "") {
-                      Utility.showLoadingDialog(
-                          context: context, isOCR: true, msg: 'Please Wait...');
                       _checkDriveFolderExistsOrNot();
                     } else {
-                      Utility.showLoadingDialog(
-                          context: context, isOCR: true, msg: 'Please Wait...');
                       getStundentGooglePresentationDetails();
                       // _shareBottomSheetMenu();
                     }
@@ -490,6 +489,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
   _shareBottomSheetMenu(
       {required StudentPlusDetailsModel studentDetails}) async {
+    //to remove loading popup
     Navigator.of(context).pop();
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -526,6 +526,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
           //Checking Google Folder State
           if (state is GoogleFolderCreated) {
+            //Trigger this event to get the student google presentations details
             getStundentGooglePresentationDetails();
           }
           if (state is ErrorState) {
@@ -561,6 +562,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         refreshToken: userProfile.refreshToken));
   }
 
+// get the student google presentation details
   void getStundentGooglePresentationDetails() {
     _studentPlusForStudentGooglePresentationBloc.add(
         StundetPlusGetStundentGooglePresentationDetails(
@@ -576,14 +578,19 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         listener: (context, state) async {
           if (state is StundetPlusGetStundentGooglePresentationDetailsSuccess) {
             if (state.studentGooglePresentationDetail != false) {
+              print(
+                  "stundent google spresentation file id and url is  available");
+
               StudentGooglePresentationDetailModal obj =
                   state.studentGooglePresentationDetail;
+
               widget.studentDetails.studentGooglePresentationId =
                   obj.googlePresentationId ?? "";
               widget.studentDetails.studentGooglePresentationUrl =
                   obj.googlePresentationURL ?? '';
             } else {
-              print("file is not available");
+              print(
+                  "stundent google spresentation file id and url is not available");
               widget.studentDetails.studentGooglePresentationId = '';
               widget.studentDetails.studentGooglePresentationUrl = '';
             }

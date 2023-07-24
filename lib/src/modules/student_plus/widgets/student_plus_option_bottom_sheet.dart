@@ -75,6 +75,8 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   void dispose() {
+    _pageController.dispose();
+
     // TODO: implement dispose
     super.dispose();
   }
@@ -167,8 +169,6 @@ class _GradedPlusResultOptionBottomSheetState
         break;
 
       case 'Sync Presentation':
-        // _pageController.animateToPage(1,
-        //     duration: const Duration(milliseconds: 100), curve: Curves.ease);
         navigateToPage(pageIndex: 1);
 
         if (widget.studentDetails.studentGooglePresentationId == null ||
@@ -287,7 +287,6 @@ class _GradedPlusResultOptionBottomSheetState
             widget.studentDetails.studentGooglePresentationUrl = '';
             isStateRecived.value = !isStateRecived.value;
             navigateToPage(pageIndex: 0);
-            // Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
               await Authentication.reAuthenticationRequired(
@@ -314,24 +313,26 @@ class _GradedPlusResultOptionBottomSheetState
             updateStudentGooglePresentation();
           }
           if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
-            // if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
-            //   isStateRecived.value = !isStateRecived.value;
-            //   // Navigator.of(context).pop();
-            //   navigateToPage(pageIndex: 0);
-            //   Utility.currentScreenSnackBar(
-            //       "Student presentation synced to google drive successfully.",
-            //       null);
-            // } else {
-            //   widget.studentDetails = state.studentDetails;
-            //   //now update the save the student google Presentation work on database
-            //   studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
-            //       studentDetails: state.studentDetails));
-            // }
-            widget.studentDetails = state.studentDetails;
-            //now update the save the student google Presentation work on database
-            studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
-                filterName: widget.filterName ?? '',
-                studentDetails: state.studentDetails));
+            print(
+                "need to save the student presentation on databse ${state.isSaveStudentGooglePresentationWorkOnDataBase}");
+            if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
+              isStateRecived.value = !isStateRecived.value;
+              // Navigator.of(context).pop();
+              navigateToPage(pageIndex: 0);
+              Utility.currentScreenSnackBar(
+                  "Student presentation synced to google drive successfully.",
+                  null);
+            } else {
+              // widget.studentDetails = state.studentDetails;
+              // //now update the save the student google Presentation work on database
+              // studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+              //     studentDetails: state.studentDetails));
+              widget.studentDetails = state.studentDetails;
+              //now update the save the student google Presentation work on database
+              studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                  filterName: widget.filterName ?? '',
+                  studentDetails: state.studentDetails));
+            }
           }
         });
   }

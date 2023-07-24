@@ -354,16 +354,14 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
     if (event is SaveStudentGooglePresentationWorkEvent) {
       try {
-        // //update the student google Presentation Url
-        // event.studentDetails.studentGooglePresentationUrl =
-        //     StudentPlusOverrides.studentPlusGooglePresentationBaseUrl +
-        //         (event.studentDetails.studentGooglePresentationId ?? '');
-
+//GET STUDENT PRESENTATION FILE NAME
+//this function will return the file name
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
             .createStudentGooglePresentationFileName(
                 filterName: event.filterName,
                 studentDetails: event.studentDetails);
 
+//save student google presetnaion deatils on database
         var isStudentGooglePresentationWorkSaved =
             await saveStudentGooglePresentationWorkDetails(
           title: studentGooglePresentationFileName,
@@ -493,12 +491,12 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             await UserGoogleProfile.getUserProfile();
 
         //GET STUDENT PRESENTATION FILE NAME
-
+//this function will return the file name
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
             .createStudentGooglePresentationFileName(
                 filterName: event.filterName,
                 studentDetails: event.studentDetails);
-        print(studentGooglePresentationFileName);
+
         List list = await stundetPlusGetStundentGooglePresentationDetails(
             googlePresentationTitle: studentGooglePresentationFileName,
             schoolDBN: event.schoolDBN,
@@ -751,8 +749,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
       // print(body);
-      print(
-          "saveStudentGooglePresentationWorkEvent api response rec. ${response.statusCode}");
+      print("saveStudentGooglePresentationWorkEvent  ${response.statusCode}");
       if (response.statusCode == 200) {
         return true;
       } else {
