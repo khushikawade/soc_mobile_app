@@ -34,13 +34,14 @@ class StudentPlusCourseModelAdapter
       calendarId: fields[13] as String?,
       room: fields[15] as String?,
       section: fields[14] as String?,
+      studentUserId: fields[16] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusCourseModel obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -72,7 +73,9 @@ class StudentPlusCourseModelAdapter
       ..writeByte(14)
       ..write(obj.section)
       ..writeByte(15)
-      ..write(obj.room);
+      ..write(obj.room)
+      ..writeByte(16)
+      ..write(obj.studentUserId);
   }
 
   @override

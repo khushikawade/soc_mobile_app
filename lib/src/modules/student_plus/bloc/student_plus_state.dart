@@ -10,7 +10,7 @@ class StudentPlusInitial extends StudentPlusState {}
 
 class StudentPlusLoading extends StudentPlusState {}
 
-class StudentPlusDemoLoading extends StudentPlusState {}
+// class StudentPlusDemoLoading extends StudentPlusState {}
 
 class StudentPlusGetDetailsLoading extends StudentPlusState {}
 
@@ -156,6 +156,18 @@ class StundetPlusGetStundentGooglePresentationDetailsSuccess
   var studentGooglePresentationDetail;
   StundetPlusGetStundentGooglePresentationDetailsSuccess(
       {this.studentGooglePresentationDetail});
+}
+
+/* ---------------------------- state to return Regents loading state ---------------------------- */
+class StudentPlusRegentsLoading extends StudentPlusState {}
+
+/* -------------------- state use to return student regents details --------------- */
+class StudentPlusRegentsSuccess extends StudentPlusState {
+  final List<StudentRegentsModel> obj;
+  StudentPlusRegentsSuccess({required this.obj});
+  StudentPlusRegentsSuccess copyWith({final obj}) {
+    return StudentPlusRegentsSuccess(obj: obj ?? this.obj);
+  }
 
   @override
   List<Object> get props => [];

@@ -1,3 +1,5 @@
+import 'package:Soc/src/services/utility.dart';
+
 class StudentPlusOverrides {
   /* -------------------------------------------------------------------------- */
   /*                  List of Static word used in student plus                  */

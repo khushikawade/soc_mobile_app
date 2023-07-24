@@ -264,6 +264,7 @@ class AppTheme {
       ));
 
   static final ThemeData darkTheme = ThemeData(
+
       // fontFamily: 'Roboto',
       primaryColor: Colors.black,
       // primarySwatch: Colors.grey,
@@ -807,8 +808,6 @@ class AppTheme {
               //     side: BorderSide(
               //         width: 1.5, color: Theme.of(context).primaryColor),
               //     splashRadius: 0),
-
-              //Text theme ends
             ));
   }
 

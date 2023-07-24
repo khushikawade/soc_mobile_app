@@ -393,7 +393,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                           child: addNotes))),
 
                       //----------------------------------------------------Profile Image-----------------------------------------------------
-
+                      closeNotesIcon(),
                       Positioned(
                           top: 00,
                           child: GestureDetector(
