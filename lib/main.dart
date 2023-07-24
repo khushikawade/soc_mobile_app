@@ -31,6 +31,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_regents_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -50,6 +51,7 @@ import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
 import 'src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
@@ -131,6 +133,10 @@ void main() async {
           ..registerAdapter(StudentNameAdapter())
           ..registerAdapter(PBISStudentNotesAdapter())
           ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())
+          ..registerAdapter(
+              PBISPlusStudentDashboardTotalBehaviourModalAdapter())
+          ..registerAdapter(InteractionCountsAdapter())
+          ..registerAdapter(StudentRegentsModelAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

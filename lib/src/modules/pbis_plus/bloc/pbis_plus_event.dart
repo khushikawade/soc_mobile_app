@@ -197,3 +197,19 @@ class PbisPlusAddPBISInteraction extends PBISPlusEvent {
   @override
   List<Object> get props => [studentId!, classroomCourseId!, behaviour!];
 }
+
+class PBISPlusGetMoreStudentDashboardLogs extends PBISPlusEvent {
+  final String studentId;
+  final String classroomCourseId;
+  final bool? isStudentPlus;
+  List<PBISPlusStudentDashboardTotalBehaviourModal> pbisStudentInteractionList;
+
+  PBISPlusGetMoreStudentDashboardLogs(
+      {required this.pbisStudentInteractionList,
+      required this.studentId,
+      required this.classroomCourseId,
+      required this.isStudentPlus});
+
+  @override
+  List<Object> get props => [pbisStudentInteractionList];
+}

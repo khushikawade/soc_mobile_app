@@ -46,6 +46,8 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   ValueNotifier<List<PBISPlusCommonBehaviorModal>> additionalBehaviorList =
       ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
   ValueNotifier<bool> updateBehaviorWidget = ValueNotifier<bool>(false);
+
+  ScrollController? _gridController;
   //-------------------------------------------------------------------------------------------------
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -65,10 +67,11 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
   @override
   void initState() {
     super.initState();
-
+    _gridController = ScrollController();
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
     pbisPluAdditionalBehaviorBloc.add(PBISPlusGetAdditionalBehavior());
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
+    // _scrollController!.addListener();
 
     getCustomValue();
   }
@@ -570,38 +573,41 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       List<PBISPlusCommonBehaviorModal> skillsList, bool loading) {
     return Expanded(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: ValueListenableBuilder(
-          valueListenable: isWaitIndex,
-          builder: (context, value, _) {
-            return IgnorePointer(
-              ignoring: isWaitIndex.value != -1,
-              child: GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 0.9,
-                  // Adjust this value to change item aspect ratio
-                  crossAxisSpacing: 0.0,
-                  // Adjust the spacing between items horizontally
-                  mainAxisSpacing: 4.0,
-                  // Adjust the spacing between items vertically
-                ),
-                itemCount: skillsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  PBISPlusCommonBehaviorModal item = skillsList[index];
-                  // final isIconDisabled = IsItemExits(item);
-                  return _buildEditSkillIcon(
-                    item,
-                    false,
-                  );
-                },
-              ),
-            );
-          }),
-    ));
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            child: ValueListenableBuilder(
+                valueListenable: isWaitIndex,
+                builder: (context, value, _) {
+                  return IgnorePointer(
+                      ignoring: isWaitIndex.value != -1,
+                      child: RawScrollbar(
+                          isAlwaysShown: true,
+                          controller: _gridController,
+                          // minThumbLength: 30,
+                          thickness: 8,
+                          padding: EdgeInsets.only(left: 32, right: 16),
+                          radius: Radius.circular(8),
+                          thumbColor: AppTheme.kButtonColor,
+                          child: GridView.builder(
+                              controller: _gridController,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(right: 32, left: 0),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  childAspectRatio: 0.9,
+                                  // Adjust this value to change item aspect ratio
+                                  crossAxisSpacing: 0.0,
+                                  // Adjust the spacing between items horizontally
+                                  mainAxisSpacing: 4.0
+                                  // Adjust the spacing between items vertically
+                                  ),
+                              itemCount: skillsList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                PBISPlusCommonBehaviorModal item =
+                                    skillsList[index];
+                                // final isIconDisabled = IsItemExits(item);
+                                return _buildEditSkillIcon(item, false);
+                              })));
+                })));
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -614,40 +620,34 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
     return Draggable(
       data: item,
       child: Container(
-        width: 40,
-        height: 40,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 0,
-              blurRadius: 1,
-              offset: Offset(0, 0),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: isIconDisabled
-                ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
-                : _buildIcons(item: item),
+          width: 40,
+          height: 40,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 0,
+                blurRadius: 1,
+                offset: Offset(0, 0),
+              ),
+            ],
           ),
-        ),
-      ),
+          child: Center(
+              child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: isIconDisabled
+                      ? Opacity(opacity: 0.2, child: _buildIcons(item: item))
+                      : _buildIcons(item: item)))),
       feedback:
           Container(width: 80, height: 80, child: _buildIcons(item: item)),
       childWhenDragging: Container(),
       onDragCompleted: () {
         //This call will hide the replaced icon from additional list
-        updateAdditinalBehviourStatus(
-          isShow: false,
-          item: item,
-        );
+        updateAdditinalBehviourStatus(isShow: false, item: item);
       },
       onDragStarted: () {
         changedIndex.value = -1;

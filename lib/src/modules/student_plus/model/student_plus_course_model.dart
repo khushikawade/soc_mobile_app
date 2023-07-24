@@ -41,6 +41,9 @@ class StudentPlusCourseModel {
   final String? section;
   @HiveField(15)
   final String? room;
+
+  @HiveField(16)
+  final String? studentUserId;
   final GradebookSettings? gradebookSettings;
 
   StudentPlusCourseModel(
@@ -60,7 +63,7 @@ class StudentPlusCourseModel {
       this.calendarId,
       this.gradebookSettings,
       this.room,
-      this.section});
+      this.section,this.studentUserId});
 
   factory StudentPlusCourseModel.fromRawJson(String str) =>
       StudentPlusCourseModel.fromJson(json.decode(str));
