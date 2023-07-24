@@ -264,13 +264,7 @@ class PbisPlusBottomNavBar {
           inactiveColorPrimary: CupertinoColors.systemGrey),
       PersistentBottomNavBarItem(
           icon: bottomNavBarIcons(
-            iconData:
-
-                //  IconData(0xe895,
-                //     fontFamily: Overrides.kFontFam,
-                //     fontPackage: Overrides.kFontPkg)),
-                // bottomNavBarIcons(
-                getStaffIconCode(),
+            iconData: getStaffIconCode(),
           ),
           title: 'Staff',
           activeColorPrimary: AppTheme.kButtonColor,
