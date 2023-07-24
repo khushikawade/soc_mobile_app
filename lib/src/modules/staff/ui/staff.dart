@@ -382,7 +382,10 @@ class _StaffPageState extends State<StaffPage> {
 
       //Creating fresh sessionID
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
-      Navigator.pop(context);
+      if (Navigator.of(context).canPop()) {
+        Navigator.pop(context, true);
+      }
+
       navigatorToScreen(actionName: actionName);
     }
   }
