@@ -392,6 +392,10 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                               0.8,
                                           child: addNotes))),
 
+                      ///-------------------------------CLOSE BUTTON------------------------------------
+
+                      closeNotesIcon(),
+
                       //----------------------------------------------------Profile Image-----------------------------------------------------
                       closeNotesIcon(),
                       Positioned(

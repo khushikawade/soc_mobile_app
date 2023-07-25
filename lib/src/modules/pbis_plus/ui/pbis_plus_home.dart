@@ -194,7 +194,9 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
 
   void backOnTap() {
     //To go back to the staff screen of standard app
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   void pBISPlusGetDefaultSchoolBehavior() {
