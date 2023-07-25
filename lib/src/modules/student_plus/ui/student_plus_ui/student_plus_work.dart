@@ -518,7 +518,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
+                  state.errorMsg == 'NO_CONNECTION' ||
+                          state.errorMsg == 'Connection failed' ||
+                          state.errorMsg == 'Software caused connection abort'
+                      ? 'Make sure you have a proper Internet connection'
+                      : "Something Went Wrong. Please Try Again.",
+                  null);
             }
           }
         });
@@ -573,7 +578,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           if (state is StudentPlusErrorReceived) {
             Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
-                "Something Went Wrong. Please Try Again.", null);
+                state.err == 'NO_CONNECTION' ||
+                        state.err == 'Connection failed' ||
+                        state.err == 'Software caused connection abort'
+                    ? 'Make sure you have a proper Internet connection'
+                    : "Something Went Wrong. Please Try Again.",
+                null);
           }
         });
   }

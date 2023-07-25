@@ -295,8 +295,10 @@ class _GradedPlusResultOptionBottomSheetState
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
+                  state.errorMsg == 'NO_CONNECTION' ||
+                          state.errorMsg == 'Connection failed' ||
+                          state.errorMsg == 'Software caused connection abort'
+                      ? 'Make sure you have a proper Internet connection'
                       : state.errorMsg == "404"
                           ? "Ahh! Looks like the Google Presentation moved to trash. Try again to create a new Google Presentation."
                           : "Something Went Wrong. Please Try Again.",
@@ -394,7 +396,12 @@ class _GradedPlusResultOptionBottomSheetState
             widget.studentDetails.studentGooglePresentationUrl = '';
             // Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
-                "Something went wrong. Please try Again.", null);
+                state.err == 'NO_CONNECTION' ||
+                        state.err == 'Connection failed' ||
+                        state.err == 'Software caused connection abort'
+                    ? 'Make sure you have a proper Internet connection'
+                    : "Something Went Wrong. Please Try Again.",
+                null);
             isStateRecived.value = !isStateRecived.value;
             navigateToPage(pageIndex: 0);
           }
