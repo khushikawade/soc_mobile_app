@@ -156,13 +156,13 @@ class GetStudentListFamilyLogin extends StudentPlusEvent {
 }
 
 /* ---------------- Event use to trigger get student google presentation details --------------- */
-class StundetPlusGetStundentGooglePresentationDetails extends StudentPlusEvent {
+class GetStudentPlusWorkGooglePresentationDetails extends StudentPlusEvent {
   final StudentPlusDetailsModel studentDetails;
 
   final String schoolDBN;
   final String filterName;
 
-  StundetPlusGetStundentGooglePresentationDetails(
+  GetStudentPlusWorkGooglePresentationDetails(
       {required this.studentDetails,
       required this.schoolDBN,
       required this.filterName});

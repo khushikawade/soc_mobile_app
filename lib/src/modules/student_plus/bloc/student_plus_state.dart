@@ -151,10 +151,10 @@ class FamilyLoginErrorReceived extends StudentPlusState {
 }
 
 /* ------------------------ state use to return family login Error ----------------------- */
-class StundetPlusGetStundentGooglePresentationDetailsSuccess
+class GetStudentPlusWorkGooglePresentationDetailsSuccess
     extends StudentPlusState {
   var studentGooglePresentationDetail;
-  StundetPlusGetStundentGooglePresentationDetailsSuccess(
+  GetStudentPlusWorkGooglePresentationDetailsSuccess(
       {this.studentGooglePresentationDetail});
 }
 

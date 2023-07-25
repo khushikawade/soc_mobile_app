@@ -401,14 +401,13 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
     if (event is SaveStudentGooglePresentationWorkEvent) {
       try {
-//GET STUDENT PRESENTATION FILE NAME
-//this function will return the file name
+        //GET STUDENT PRESENTATION FILE NAME
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
             .createStudentGooglePresentationFileName(
-                filterName: event.filterName,
+                filterWorkName: event.filterName,
                 studentDetails: event.studentDetails);
 
-//save student google presetnaion deatils on database
+        // API Call //save student google presentation details to database
         var isStudentGooglePresentationWorkSaved =
             await saveStudentGooglePresentationWorkDetails(
           title: studentGooglePresentationFileName,
@@ -431,6 +430,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
+
     /* ----------------------------- Event to search student using Email ---------------------------- */
     if (event is StudentPlusSearchByEmail) {
       try {
@@ -558,7 +558,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       }
     }
 
-    if (event is StundetPlusGetStundentGooglePresentationDetails) {
+    if (event is GetStudentPlusWorkGooglePresentationDetails) {
       try {
         // String tableName =
         //     '${event.studentDetails.studentIdC}_${event.studentDetails.lastNameC}_${event.studentDetails.firstNameC}_${event.filterName}';
@@ -572,22 +572,21 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             await UserGoogleProfile.getUserProfile();
 
         //GET STUDENT PRESENTATION FILE NAME
-//this function will return the file name
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
             .createStudentGooglePresentationFileName(
-                filterName: event.filterName,
+                filterWorkName: event.filterName,
                 studentDetails: event.studentDetails);
 
-        List list = await stundetPlusGetStundentGooglePresentationDetails(
+        //API call to fetch google classroom presentation
+        List list = await getStudentPlusGooglePresentationDetails(
             googlePresentationTitle: studentGooglePresentationFileName,
             schoolDBN: event.schoolDBN,
             studentOsis: event.studentDetails.studentIdC ?? '',
             teacherEmail: _userProfileLocalData[0].userEmail ?? '');
 
         if (list[0] == true) {
-          print("StundetPlusGetStundentGooglePresentationDetailsSuccess  ");
           yield StudentPlusLoading();
-          yield StundetPlusGetStundentGooglePresentationDetailsSuccess(
+          yield GetStudentPlusWorkGooglePresentationDetailsSuccess(
               studentGooglePresentationDetail: list[1]);
         } else {
           yield StudentPlusLoading();
@@ -772,7 +771,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
             "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
-          }); //change DBN to dynamic
+          });
+
       if (response.statusCode == 200) {
         return StudentPlusDetailsModel.fromJson(response.data['body']);
       } else {
@@ -793,6 +793,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             "Content-Type": "application/json;charset=UTF-8",
             "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
           });
+
       if (response.statusCode == 200) {
         return response.data["body"]
                 .map<StudentPlusGradeModel>(
@@ -822,17 +823,18 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         "Google_Presentation_URL":
             studentDetails.studentGooglePresentationUrl ?? ''
       };
+
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
+
       final url =
           'https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/add-presentation';
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
-      // print(body);
-      print("saveStudentGooglePresentationWorkEvent  ${response.statusCode}");
+
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -853,7 +855,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
             "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
-          }); //change DBN to dynamic
+          });
       if (response.statusCode == 200) {
         return response.data["body"]
             .map<StudentPlusDetailsModel>(
@@ -870,13 +872,12 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       {required String accessToken, required String refreshToken}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-        'https://classroom.googleapis.com/v1/courses',
-        isCompleteUrl: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $accessToken'
-        },
-      );
+          'https://classroom.googleapis.com/v1/courses',
+          isCompleteUrl: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': 'Bearer $accessToken'
+          });
       if (response.statusCode == 200) {
         List<StudentPlusCourseModel> list = response.data["courses"]
             .map<StudentPlusCourseModel>(
@@ -950,33 +951,30 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   }
 
   /* ------------------ Function to call get student google presentation details ------------------ */
-  Future<List> stundetPlusGetStundentGooglePresentationDetails(
+  Future<List> getStudentPlusGooglePresentationDetails(
       {required String studentOsis,
       required String schoolDBN,
       required String googlePresentationTitle,
       required String teacherEmail,
       int retry = 3}) async {
     try {
-      print("stundetPlusGetStundentGooglePresentationDetails API CALLED");
       final ResponseModel response = await _dbServices.getApiNew(
           'https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/get-presentation/$studentOsis?dbn=$schoolDBN&title=$googlePresentationTitle&email=$teacherEmail',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
             "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
-          }); //c
+          });
 
-      print(
-          "studentGooglePresentationFileName RECIVED ${response.statusCode} ");
       if (response.statusCode == 200) {
-        List data = response.data["body"]
+        List<StudentGooglePresentationDetailModal> data = response.data["body"]
             .map<StudentGooglePresentationDetailModal>(
                 (i) => StudentGooglePresentationDetailModal.fromJson(i))
             .toList();
 
         return [true, data.isNotEmpty ? data[0] : false];
       } else if (retry > 0) {
-        return stundetPlusGetStundentGooglePresentationDetails(
+        return getStudentPlusGooglePresentationDetails(
             studentOsis: studentOsis,
             googlePresentationTitle: googlePresentationTitle,
             schoolDBN: schoolDBN,
@@ -1016,7 +1014,6 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         }
       }
     }
-
     return studentPlusCourseList;
   }
 
@@ -1026,9 +1023,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Regents_Exam__c/\"Student__c\"='$studentIdC'",
           isCompleteUrl: true,
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8"
-          }); //change DBN to dynamic
+          headers: {"Content-Type": "application/json;charset=UTF-8"});
+
       if (response.statusCode == 200) {
         List<StudentRegentsModel> list = response.data["body"]
             .map<StudentRegentsModel>((i) => StudentRegentsModel.fromJson(i))
