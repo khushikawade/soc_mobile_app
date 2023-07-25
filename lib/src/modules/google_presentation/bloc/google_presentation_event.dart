@@ -49,11 +49,11 @@ class StudentPlusCreateGooglePresentationForStudent
     extends GoogleSlidesPresentationEvent {
   final StudentPlusDetailsModel studentDetails;
   final String studentPlusDriveFolderId;
-
-  StudentPlusCreateGooglePresentationForStudent({
-    required this.studentPlusDriveFolderId,
-    required this.studentDetails,
-  });
+  final String filterName;
+  StudentPlusCreateGooglePresentationForStudent(
+      {required this.studentPlusDriveFolderId,
+      required this.studentDetails,
+      required this.filterName});
 
   @override
   List<Object> get props => [];
