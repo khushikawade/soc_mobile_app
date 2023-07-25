@@ -62,9 +62,10 @@ class FetchStudentGradesEvent extends StudentPlusEvent {
 
 class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
   final StudentPlusDetailsModel studentDetails;
-  SaveStudentGooglePresentationWorkEvent({
-    required this.studentDetails,
-  });
+  final String filterName;
+
+  SaveStudentGooglePresentationWorkEvent(
+      {required this.studentDetails, required this.filterName});
 
   @override
   List<Object> get props => [studentDetails!];
@@ -152,6 +153,19 @@ class GetStudentListFamilyLogin extends StudentPlusEvent {
   List<Object> get props => [];
   @override
   String toString() => '';
+}
+
+/* ---------------- Event use to trigger get student google presentation details --------------- */
+class GetStudentPlusWorkGooglePresentationDetails extends StudentPlusEvent {
+  final StudentPlusDetailsModel studentDetails;
+
+  final String schoolDBN;
+  final String filterName;
+
+  GetStudentPlusWorkGooglePresentationDetails(
+      {required this.studentDetails,
+      required this.schoolDBN,
+      required this.filterName});
 }
 
 /* ---------------- Event use to trigger get Regents list in Exam section --------------- */

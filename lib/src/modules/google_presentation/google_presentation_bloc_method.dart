@@ -62,9 +62,8 @@ class GooglePresentationBlocMethods {
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method updateStudentLocalDBWithGooglePresentationUrl------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-  static updateStudentLocalDBWithGooglePresentationUrl({
-    required StudentPlusDetailsModel studentDetails,
-  }) async {
+  static updateStudentLocalDBWithGooglePresentationUrl(
+      {required StudentPlusDetailsModel studentDetails}) async {
     try {
       //this will get the all students saved in local db
       LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
@@ -106,7 +105,7 @@ class GooglePresentationBlocMethods {
         'Attend %',
         'Gender',
         'Age',
-        'DOB',
+        'DOB'
       ];
 
       List<String> listOfFieldsForEveryStudentSlide = [
@@ -149,9 +148,9 @@ class GooglePresentationBlocMethods {
                 "scaleY": 1,
                 "translateX": 2005000,
                 "translateY": 850000,
-                "unit": "EMU",
+                "unit": "EMU"
               }
-            },
+            }
           }
         };
 
@@ -320,22 +319,34 @@ class GooglePresentationBlocMethods {
   }
 
   static String createStudentGooglePresentationFileName(
-      StudentPlusDetailsModel studentDetails) {
+      {required StudentPlusDetailsModel studentDetails,
+      required final String filterWorkName,
+      bool? studentGooglePresentationFileName = false}) {
     try {
-      //create file name for student Presentation
+      // Create file name for student Presentation
       String fileName = '';
 
-      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
-        fileName += studentDetails.lastNameC! + "_";
+      // Add last name if available
+      if (studentDetails.lastNameC?.isNotEmpty == true) {
+        fileName += studentDetails.lastNameC!;
       }
 
-      if (studentDetails.firstNameC != null &&
-          studentDetails.firstNameC != '') {
-        fileName += studentDetails.firstNameC! + "_";
+      // Add first name if available
+      if (studentDetails.firstNameC?.isNotEmpty == true) {
+        fileName += ' ' + studentDetails.firstNameC!;
       }
 
-      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
-      return fileName ?? '';
+      // Adding date to google presentation only since date in the database may differ while fetching by name which contain current date in the search key
+      if (studentGooglePresentationFileName == true) {
+        fileName += "_${DateFormat('MM/dd/yy').format(DateTime.now())}";
+      }
+
+      // Add underscore for filtered work name if available
+      if (filterWorkName.trim().isNotEmpty) {
+        fileName += "_${filterWorkName.trimLeft()}";
+      }
+
+      return fileName;
     } catch (e) {
       throw (e);
     }
