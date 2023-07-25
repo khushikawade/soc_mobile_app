@@ -23,7 +23,6 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
-import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -31,7 +30,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -72,7 +70,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       ScreenshotController(); // screenshot of whole list
   PBISPlusBloc pbisBloc = PBISPlusBloc();
   AnimationController? _animationController;
-  final Map<String, PBISPlusBloc> _blocMap = {};
+  // final Map<String, PBISPlusBloc> _blocMap = {};
   @override
   void initState() {
     super.initState();
@@ -299,7 +297,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       _animationController!.stop();
                     }
 
-                    callCourseBlocInstance(state.googleClassroomCourseList);
+                    // callCourseBlocInstance(state.googleClassroomCourseList);
                   }
                   if (state is PBISErrorState) {
                     if (state.error == 'ReAuthentication is required') {
@@ -507,43 +505,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         ),
       ),
       googleClassroomCourseList[index].students!.length > 0
-          ? BlocConsumer(
-              bloc: getBlocForCourse(googleClassroomCourseList[index].id ?? ''),
-              listener: (context, state) {
-                print(state);
-                if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
-                  print(" state is recived for ${state.classroomCourse.name}");
-                  googleClassroomCourseList[index] = state.classroomCourse;
-                }
-              },
-              builder: (context, state) {
-                print(state);
-                if (state is PBISPlusGetStudentBehaviorByCourseSuccess) {
-                  return renderStudents(
-                    googleClassroomCourseList[index].students!,
-                    index,
-                    googleClassroomCourseList[index].id!,
-                    false,
-                    isScreenShimmerLoading,
-                  );
-                }
-                if (state is PBISPlusLoading) {
-                  return renderStudents(
-                    googleClassroomCourseList[index].students!,
-                    index,
-                    googleClassroomCourseList[index].id!,
-                    true,
-                    isScreenShimmerLoading,
-                  );
-                }
-                return renderStudents(
-                  googleClassroomCourseList[index].students!,
-                  index,
-                  googleClassroomCourseList[index].id!,
-                  true,
-                  isScreenShimmerLoading,
-                );
-              })
+          ? renderStudents(
+              googleClassroomCourseList[index].students!,
+              index,
+              googleClassroomCourseList[index].id!,
+              isStudentInteractionLoading,
+              isScreenShimmerLoading,
+            )
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -1002,29 +970,29 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     }
   }
 
-  Future<void> callCourseBlocInstance(
-      List<ClassroomCourse> googleClassroomCourseList) async {
-    //Fetch logged in user profile
-    List<UserInformation> userProfileLocalData =
-        await UserGoogleProfile.getUserProfile();
-    googleClassroomCourseList
-        .asMap()
-        .forEach((int index, ClassroomCourse course) {
-      PBISPlusBloc currentCourseBlocInstance =
-          getBlocForCourse(course.id ?? '');
-      if (course.students != null && course.students!.isNotEmpty) {
-        currentCourseBlocInstance.add(PBISPlusGetStudentBehaviorByCourse(
-            index: index,
-            classroomCourse: course,
-            teacherEmail: userProfileLocalData[0].userEmail!));
-      }
-    });
-  }
+  // Future<void> callCourseBlocInstance(
+  //     List<ClassroomCourse> googleClassroomCourseList) async {
+  //   //Fetch logged in user profile
+  //   List<UserInformation> userProfileLocalData =
+  //       await UserGoogleProfile.getUserProfile();
+  //   googleClassroomCourseList
+  //       .asMap()
+  //       .forEach((int index, ClassroomCourse course) {
+  //     PBISPlusBloc currentCourseBlocInstance =
+  //         getBlocForCourse(course.id ?? '');
+  //     if (course.students != null && course.students!.isNotEmpty) {
+  //       currentCourseBlocInstance.add(PBISPlusGetStudentBehaviorByCourse(
+  //           index: index,
+  //           classroomCourse: course,
+  //           teacherEmail: userProfileLocalData[0].userEmail!));
+  //     }
+  //   });
+  // }
 
-  PBISPlusBloc getBlocForCourse(String courseId) {
-    if (!_blocMap.containsKey(courseId)) {
-      _blocMap[courseId] = PBISPlusBloc();
-    } else {}
-    return _blocMap[courseId] ?? PBISPlusBloc();
-  }
+  // PBISPlusBloc getBlocForCourse(String courseId) {
+  //   if (!_blocMap.containsKey(courseId)) {
+  //     _blocMap[courseId] = PBISPlusBloc();
+  //   } else {}
+  //   return _blocMap[courseId] ?? PBISPlusBloc();
+  // }
 }

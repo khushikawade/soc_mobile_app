@@ -317,7 +317,7 @@ class BehaviorList {
     id = json['Id'] ?? "";
     name = json['Name'] ?? '';
     iconURL = json['Icon_URL'] ?? '';
-    defaultBehavior = json['Default'] == "true" ? true : false;
+    defaultBehavior = json['Default'] == "true";
     behaviorCount = json['Behavior_Count'] ?? 0;
   }
 
