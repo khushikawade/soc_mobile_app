@@ -313,20 +313,15 @@ class _GradedPlusResultOptionBottomSheetState
             updateStudentGooglePresentation();
           }
           if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
-            print(
-                "need to save the student presentation on databse ${state.isSaveStudentGooglePresentationWorkOnDataBase}");
             if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
               isStateRecived.value = !isStateRecived.value;
-              // Navigator.of(context).pop();
+
               navigateToPage(pageIndex: 0);
               Utility.currentScreenSnackBar(
                   "Student presentation synced to google drive successfully.",
                   null);
             } else {
-              // widget.studentDetails = state.studentDetails;
               // //now update the save the student google Presentation work on database
-              // studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
-              //     studentDetails: state.studentDetails));
               widget.studentDetails = state.studentDetails;
               //now update the save the student google Presentation work on database
               studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
@@ -344,13 +339,12 @@ class _GradedPlusResultOptionBottomSheetState
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    googleSlidesPresentationBloc
-        .add(StudentPlusCreateGooglePresentationForStudent(
-      filterName: widget.filterName ?? '',
-      studentPlusDriveFolderId:
-          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-      studentDetails: widget.studentDetails,
-    ));
+    googleSlidesPresentationBloc.add(
+        StudentPlusCreateGooglePresentationForStudent(
+            filterName: widget.filterName ?? '',
+            studentPlusDriveFolderId:
+                userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+            studentDetails: widget.studentDetails));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
