@@ -333,3 +333,19 @@ class AuthenticateEmail extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class UpdateGradedPlusStudentResult extends OcrEvent {
+  final String oldStudentId;
+  final String mewStudentId;
+  final String studentName;
+  final String result;
+  final String assessmentId;
+  UpdateGradedPlusStudentResult(
+      {required this.oldStudentId,
+      required this.mewStudentId,
+      required this.result,
+      required this.studentName,
+      required this.assessmentId});
+  @override
+  List<Object> get props => [];
+}
