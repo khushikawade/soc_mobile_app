@@ -58,20 +58,35 @@ class SearchBar extends StatelessWidget {
                 return TextFormField(
                   readOnly: readOnly ?? false,
                   autofocus: isSearchPage == true ? true : false,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                  // style: TextStyle(
+                  //     color: Theme.of(context).colorScheme.primaryVariant),
+                  style: Theme.of(context).textTheme.headline5,
+
                   //  focusNode: myFocusNode,
                   controller: controller,
                   cursorColor: Theme.of(context).colorScheme.primaryVariant,
                   decoration: InputDecoration(
+                    // contentPadding: EdgeInsets.symmetric(vertical: 16),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    //   borderSide: BorderSide(
+                    //       color: readOnly == true
+                    //           ? Theme.of(context).colorScheme.secondary
+                    //           : AppTheme.kButtonColor,
+                    //       width: 2),
+                    // ),
+                    // enabledBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    //   borderSide: BorderSide(
+                    //       color: Theme.of(context).colorScheme.secondary,
+                    //       width: 2),
+                    // ),
+
                     contentPadding: EdgeInsets.symmetric(vertical: 16),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      borderSide: BorderSide(
-                          color: readOnly == true
-                              ? Theme.of(context).colorScheme.secondary
-                              : AppTheme.kButtonColor,
-                          width: 2),
+                      borderSide:
+                          BorderSide(color: AppTheme.kButtonColor, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
@@ -86,15 +101,25 @@ class SearchBar extends StatelessWidget {
                         Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Theme.of(context).colorScheme.secondary
                             : Color.fromARGB(255, 12, 20, 23),
-                    prefixIcon: Icon(
-                      const IconData(0xe805,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: Color(0xffAAAAAA),
-                      size: Globals.deviceType == "phone" ? 18 : 16,
-                    ),
+                    // prefixIcon: Icon(
+                    //   const IconData(0xe805,
+                    //       fontFamily: Overrides.kFontFam,
+                    //       fontPackage: Overrides.kFontPkg),
+                    //   color: Color(0xffAAAAAA),
+                    //   size: Globals.deviceType == "phone" ? 18 : 16,
+                    // ),
+                    prefix: SizedBox(width: 20),
                     suffixIcon: controller.text.isEmpty
-                        ? null
+                        ? IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                                const IconData(0xe805,
+                                    fontFamily: Overrides.kFontFam,
+                                    fontPackage: Overrides.kFontPkg),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                                size: Globals.deviceType == "phone" ? 20 : 28))
                         : suffixIcon == null
                             ? InkWell(
                                 onTap: () {
