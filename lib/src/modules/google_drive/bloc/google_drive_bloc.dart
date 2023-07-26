@@ -2158,7 +2158,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return [false, 'ReAuthentication is required'];
     } catch (e) {
-      return [false, e.toString()];
+      // return [false, e.toString()];
+      throw (e);
     }
   }
 

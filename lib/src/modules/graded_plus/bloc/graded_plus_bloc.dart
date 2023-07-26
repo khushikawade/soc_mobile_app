@@ -715,6 +715,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield StateListFetchSuccessfully(stateList: stateList);
       }
     }
+
+    if (event is UpdateGradedPlusStudentResult) {
+      try {
+        var result = await updateResultToDashboard(
+            assessmentId: event.assessmentId,
+            oldStudentId: event.oldStudentId,
+            studentId: event.mewStudentId,
+            result: event.result,
+            studentName: event.studentName);
+
+        if (result == true) {
+          yield UpdateResultToDashboardSuccess();
+        } else {
+          yield OcrErrorReceived(err: result.toString());
+        }
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'updateAssessmentToDashboard Event');
+        yield OcrErrorReceived(err: e.toString());
+        // if (e == 'NO_CONNECTION') {
+        //   Utility.currentScreenSnackBar("No Internet Connection", null);
+
+        // }
+        yield OcrErrorReceived(err: e.toString());
+        throw (e);
+      }
+    }
   }
 
   // ---------- Function to update stateList according to to user location and last selection ---------
@@ -1514,6 +1541,41 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, 'saveResultToDashboard Method');
+      throw (e);
+    }
+  }
+
+  Future updateResultToDashboard({
+    required String assessmentId,
+    required String oldStudentId,
+    required String studentId,
+    required String studentName,
+    required String result,
+  }) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+        "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/updateGradedPlusStudentResult",
+        isGoogleApi: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+        },
+        body: {
+          "Assessment_Id": assessmentId,
+          "Student__c_old": oldStudentId,
+          "Student__c": studentId,
+          "Student_Name__c": studentName,
+          "Result__c": result
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'updateResultToDashboard Method');
       throw (e);
     }
   }
