@@ -162,45 +162,51 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             LocalDatabase(
                 "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
 
-        LocalDatabase<ClassroomCourse> _localStudentCourseDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+        LocalDatabase<StudentPlusCourseModel> _localStudentCourseDb =
+            LocalDatabase(
+                "${PBISPlusOverrides.pbisPlusClassroomDB}_${event.studentEmail}");
 
         List<StudentPlusGradeModel>? _localDataGradeList =
             await _localDbStudentGradeDb.getData();
-        List<ClassroomCourse>? _localCourseDataList =
+        List<StudentPlusCourseModel>? _localCourseDataList =
             await _localStudentCourseDb.getData();
 
         if (_localDataGradeList.isEmpty && _localCourseDataList.isEmpty) {
           yield StudentPlusLoading();
         } else {
           //Fetch student courses as per their email
-          List<StudentPlusCourseModel> courseList =
-              checkAndGetStudentCourseDetails(
-                  classroomCourseList: _localCourseDataList,
-                  studentEmail: event.studentEmail ?? '');
+          // List<StudentPlusCourseModel> courseList =
+          //     checkAndGetStudentCourseDetails(
+          //         classroomCourseList: _localCourseDataList,
+          //         studentEmail: event.studentEmail ?? '');
 
           yield StudentPlusGradeSuccess(
               obj: _localDataGradeList,
               chipList: getChipsList(list: _localDataGradeList),
-              courseList: courseList);
+              courseList:
+                  event.studentEmail == null ? [] : _localCourseDataList);
         }
 
         //Creating list includes both grades from database and current grades from google classroom
         List gradeList = await Future.wait([
           getStudentGradesDetails(studentId: event.studentId ?? ''),
-          pbisPlusBloc.importPBISClassroomRoster(
+          getClassroomCourseList(
               accessToken: userProfileLocalData[0].authorizationToken ?? '',
-              isGradedPlus: true,
+              studentEmail: event.studentEmail,
               refreshToken: userProfileLocalData[0].refreshToken ?? '')
+          // pbisPlusBloc.importPBISClassroomRoster(
+          //     accessToken: userProfileLocalData[0].authorizationToken ?? '',
+          //     isGradedPlus: true,
+          //     refreshToken: userProfileLocalData[0].refreshToken ?? '')
         ]);
 
         //yield StudentPlusLoading();
         List<StudentPlusGradeModel> studentPlusGradeList = gradeList[0];
-        List<ClassroomCourse> studentCourseList = gradeList[1][0];
+        List<StudentPlusCourseModel> studentCourseList = gradeList[1];
         await _localDbStudentGradeDb.clear();
         await _localStudentCourseDb.clear();
 
-        studentCourseList.forEach((ClassroomCourse e) async {
+        studentCourseList.forEach((StudentPlusCourseModel e) async {
           await _localStudentCourseDb.addData(e);
         });
 
@@ -210,122 +216,120 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
         //To mimic the state
         yield StudentPlusLoading();
-        List<StudentPlusCourseModel> courseList =
-            checkAndGetStudentCourseDetails(
-                classroomCourseList: studentCourseList,
-                studentEmail: event.studentEmail ?? '');
+        // List<StudentPlusCourseModel> courseList =
+        //     checkAndGetStudentCourseDetails(
+        //         classroomCourseList: studentCourseList,
+        //         studentEmail: event.studentEmail ?? '');
 
         yield StudentPlusGradeSuccess(
             obj: studentPlusGradeList,
             chipList: getChipsList(list: studentPlusGradeList),
-            courseList: courseList);
+            courseList: event.studentEmail == null ? [] : studentCourseList);
       } catch (e) {
         LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
             LocalDatabase(
                 "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
 
-        LocalDatabase<ClassroomCourse> _localStudentCourseDb =
-            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+        LocalDatabase<StudentPlusCourseModel> _localStudentCourseDb =
+            LocalDatabase(
+                "${PBISPlusOverrides.pbisPlusClassroomDB}_${event.studentEmail}");
 
         List<StudentPlusGradeModel>? _localDataGradeList =
             await _localDbStudentGradeDb.getData();
-        List<ClassroomCourse>? _localCourseDataList =
+        List<StudentPlusCourseModel>? _localCourseDataList =
             await _localStudentCourseDb.getData();
 
         //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-        List<StudentPlusCourseModel> courseList =
-            checkAndGetStudentCourseDetails(
-                classroomCourseList: _localCourseDataList,
-                studentEmail: event.studentEmail ?? '');
+
         yield StudentPlusGradeSuccess(
             obj: _localDataGradeList,
             chipList: getChipsList(list: _localDataGradeList),
-            courseList: courseList);
+            courseList: event.studentEmail == null ? [] : _localCourseDataList);
       }
     }
 
-    /* --------------------------- Function to fetch current grades with classRoom -------------------------- */
-    if (event is FetchStudentGradesWithClassroomEvent) {
-      try {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
+    // /* --------------------------- Function to fetch current grades with classRoom -------------------------- */
+    // if (event is FetchStudentGradesWithClassroomEvent) {
+    //   try {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeList =
-            LocalDatabase(
-                "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
-        LocalDatabase<StudentPlusCourseModel> _localStudentCourseDb = LocalDatabase(
-            "${StudentPlusOverrides.studentGradeList}_${userProfileLocalData[0].userEmail}");
+    //     LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeList =
+    //         LocalDatabase(
+    //             "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+    //     LocalDatabase<StudentPlusCourseModel> _localStudentCourseDb = LocalDatabase(
+    //         "${StudentPlusOverrides.studentGradeList}_${userProfileLocalData[0].userEmail}");
 
-        List<StudentPlusGradeModel>? _localData =
-            await _localDbStudentGradeList.getData();
-        List<StudentPlusCourseModel>? _localCourseData =
-            await _localStudentCourseDb.getData();
+    //     List<StudentPlusGradeModel>? _localData =
+    //         await _localDbStudentGradeList.getData();
+    //     List<StudentPlusCourseModel>? _localCourseData =
+    //         await _localStudentCourseDb.getData();
 
-        if (_localData.isEmpty && _localCourseData.isEmpty) {
-          yield StudentPlusLoading();
-        } else {
-          yield StudentPlusGradeSuccess(
-              obj: _localData,
-              chipList: getChipsList(
-                list: _localData,
-              ),
-              courseList: _localCourseData);
-        }
-        //-----------------------------------------------------------------------------------
+    //     if (_localData.isEmpty && _localCourseData.isEmpty) {
+    //       yield StudentPlusLoading();
+    //     } else {
+    //       yield StudentPlusGradeSuccess(
+    //           obj: _localData,
+    //           chipList: getChipsList(
+    //             list: _localData,
+    //           ),
+    //           courseList: _localCourseData);
+    //     }
+    //     //-----------------------------------------------------------------------------------
 
-        //Creating list includes both grades from database and current grades from google classroom
-        List gradeList = await Future.wait([
-          getStudentGradesDetails(studentId: event.studentId ?? ''),
-          getClassroomCourseList(
-              accessToken: userProfileLocalData[0].authorizationToken ?? '',
-              refreshToken: userProfileLocalData[0].refreshToken ?? '')
-        ]);
+    //     //Creating list includes both grades from database and current grades from google classroom
+    //     List gradeList = await Future.wait([
+    //       getStudentGradesDetails(studentId: event.studentId ?? ''),
+    //       getClassroomCourseList(
+    //           accessToken: userProfileLocalData[0].authorizationToken ?? '',
+    //           refreshToken: userProfileLocalData[0].refreshToken ?? '')
+    //     ]);
 
-        List<StudentPlusGradeModel> list = gradeList[0];
+    //     List<StudentPlusGradeModel> list = gradeList[0];
 
-        List<StudentPlusCourseModel> studentCourseList = gradeList[1];
+    //     List<StudentPlusCourseModel> studentCourseList = gradeList[1];
 
-        //-----------------------------------------------------------------------------------
-        await _localDbStudentGradeList.clear();
-        await _localStudentCourseDb.clear();
+    //     //-----------------------------------------------------------------------------------
+    //     await _localDbStudentGradeList.clear();
+    //     await _localStudentCourseDb.clear();
 
-        list.forEach((StudentPlusGradeModel e) {
-          _localDbStudentGradeList.addData(e);
-        });
+    //     list.forEach((StudentPlusGradeModel e) {
+    //       _localDbStudentGradeList.addData(e);
+    //     });
 
-        studentCourseList.forEach((StudentPlusCourseModel e) async {
-          await _localStudentCourseDb.addData(e);
-        });
-        //-----------------------------------------------------------------------------------
-        //To mimic the state
-        yield StudentPlusLoading();
+    //     studentCourseList.forEach((StudentPlusCourseModel e) async {
+    //       await _localStudentCourseDb.addData(e);
+    //     });
+    //     //-----------------------------------------------------------------------------------
+    //     //To mimic the state
+    //     yield StudentPlusLoading();
 
-        yield StudentPlusGradeSuccess(
-            obj: list,
-            chipList: getChipsList(list: list),
-            courseList: studentCourseList);
-      } catch (e) {
-        List<UserInformation> userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
-        LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
-            "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+    //     yield StudentPlusGradeSuccess(
+    //         obj: list,
+    //         chipList: getChipsList(list: list),
+    //         courseList: studentCourseList);
+    //   } catch (e) {
+    //     List<UserInformation> userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
+    //     LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
+    //         "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
 
-        List<StudentPlusGradeModel>? _localData = await _localDb.getData();
+    //     List<StudentPlusGradeModel>? _localData = await _localDb.getData();
 
-        LocalDatabase<StudentPlusCourseModel> _localCourseDb = LocalDatabase(
-            "${StudentPlusOverrides.studentGradeList}_${userProfileLocalData[0].userEmail}");
+    //     LocalDatabase<StudentPlusCourseModel> _localCourseDb = LocalDatabase(
+    //         "${StudentPlusOverrides.studentGradeList}_${userProfileLocalData[0].userEmail}");
 
-        List<StudentPlusCourseModel>? _localCourseData =
-            await _localCourseDb.getData();
-        //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
-        yield StudentPlusGradeSuccess(
-            obj: _localData,
-            chipList: getChipsList(
-              list: _localData,
-            ),
-            courseList: _localCourseData);
-      }
-    }
+    //     List<StudentPlusCourseModel>? _localCourseData =
+    //         await _localCourseDb.getData();
+    //     //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+    //     yield StudentPlusGradeSuccess(
+    //         obj: _localData,
+    //         chipList: getChipsList(
+    //           list: _localData,
+    //         ),
+    //         courseList: _localCourseData);
+    //   }
+    // }
 
     /* --------------- Event to get course work list by course id  Google classroom --------------- */
     if (event is FetchStudentCourseWorkEvent) {
@@ -869,17 +873,24 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
   /* ------------------ Function to call get student course list ------------------ */
   Future getClassroomCourseList(
-      {required String accessToken, required String refreshToken}) async {
+      {required String accessToken,
+      required String refreshToken,
+      String? studentEmail}) async {
     try {
-      final ResponseModel response = await _dbServices.getApiNew(
-          'https://classroom.googleapis.com/v1/courses',
+      String url =
+          'https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/get-coursework-count';
+      if (studentEmail != null && studentEmail != '') {
+        url =
+            "https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/get-coursework-count?studentEmail=$studentEmail";
+      }
+      final ResponseModel response = await _dbServices.getApiNew(url,
           isCompleteUrl: true,
           headers: {
             'Content-Type': 'application/json',
-            'authorization': 'Bearer $accessToken'
+            'g_authtoken': '$accessToken'
           });
       if (response.statusCode == 200) {
-        List<StudentPlusCourseModel> list = response.data["courses"]
+        List<StudentPlusCourseModel> list = response.data["body"]
             .map<StudentPlusCourseModel>(
                 (i) => StudentPlusCourseModel.fromJson(i))
             .toList();

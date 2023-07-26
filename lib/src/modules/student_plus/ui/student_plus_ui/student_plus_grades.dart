@@ -39,13 +39,22 @@ class individual extends State<StudentPlusGradesPage> {
 
   @override
   void initState() {
-    _studentPlusBloc.add(
-        widget.sectionType == 'Staff' || widget.sectionType == 'Family'
-            ? FetchStudentGradesEvent(
-                studentId: widget.studentDetails.studentIdC,
-                studentEmail: widget.studentDetails.emailC)
-            : FetchStudentGradesWithClassroomEvent(
-                studentId: widget.studentDetails.studentIdC));
+    _studentPlusBloc.add(FetchStudentGradesEvent(
+            studentId: widget.studentDetails.studentIdC,
+            studentEmail: widget.sectionType == 'Family' ||
+                    widget.sectionType == 'Student'
+                ? null
+                : widget.studentDetails.emailC)
+
+        // widget.sectionType == 'Staff' || widget.sectionType == 'Family'
+        //     ? FetchStudentGradesEvent(
+        //         studentId: widget.studentDetails.studentIdC,
+        //         studentEmail: widget.studentDetails.emailC)
+        //     : FetchStudentGradesWithClassroomEvent(
+        //       studentEmail: ,
+        //         studentId: widget.studentDetails.studentIdC)
+
+        );
     // : FetchStudentGradesEvent(studentId: widget.studentDetails.studentIdC));
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_grades_screen");
@@ -122,8 +131,8 @@ class individual extends State<StudentPlusGradesPage> {
                           //     ?
                           GradesWidget(
                               chipList: state.chipList,
-                              obj: state.obj,
-                              courseList: state.courseList);
+                              obj: state.obj ?? [],
+                              courseList: state.courseList ?? []);
                       // : Expanded(
                       //     child: NoDataFoundErrorWidget(
                       //       errorMessage:
@@ -158,7 +167,7 @@ class individual extends State<StudentPlusGradesPage> {
       builder: (context, value, child) {
         return Container(
           height: widget.sectionType == "Student"
-              ? MediaQuery.of(context).size.height * 0.75
+              ? MediaQuery.of(context).size.height * 0.76
               : MediaQuery.of(context).size.height * 0.62,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -321,7 +330,10 @@ class individual extends State<StudentPlusGradesPage> {
               },
             ),
           )
-        : SizedBox.shrink();
+        : RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: ListView(children: [Container()]));
     //  Container(
     //     height: MediaQuery.of(context).size.height * 0.5,
     //     child: NoDataFoundErrorWidget(
@@ -367,7 +379,7 @@ class individual extends State<StudentPlusGradesPage> {
                         studentPlusCourseModel: studentPlusCourseModel,
                       )));
         },
-        contentPadding: EdgeInsets.symmetric(horizontal: 5),
+        contentPadding: EdgeInsets.only(left: 5, right: 15),
         minLeadingWidth: 0,
         title: Utility.textWidget(
             text: studentPlusCourseModel.name ?? '',
@@ -385,6 +397,13 @@ class individual extends State<StudentPlusGradesPage> {
                 .textTheme
                 .subtitle1!
                 .copyWith(color: Colors.grey)),
+        trailing: Utility.textWidget(
+            text: studentPlusCourseModel.courseWorkCount ?? '',
+            context: context,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline2!
+                .copyWith(color: AppTheme.kButtonColor)),
       ),
     );
   }
@@ -474,7 +493,7 @@ class individual extends State<StudentPlusGradesPage> {
                       .copyWith(fontWeight: FontWeight.bold)),
               trailing: Utility.textWidget(
                   text: selectedValue.value == "Current"
-                      ? "Average"
+                      ? "Total"
                       : StudentPlusOverrides.gradesTitleRight,
                   context: context,
                   textTheme: Theme.of(context)
@@ -492,12 +511,20 @@ class individual extends State<StudentPlusGradesPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _studentPlusBloc.add(
-        widget.sectionType == 'Staff' || widget.sectionType == 'Family'
-            ? FetchStudentGradesEvent(
-                studentId: widget.studentDetails.studentIdC,
-                studentEmail: widget.studentDetails.emailC)
-            : FetchStudentGradesWithClassroomEvent(
-                studentId: widget.studentDetails.studentIdC));
+    _studentPlusBloc.add(FetchStudentGradesEvent(
+            studentId: widget.studentDetails.studentIdC,
+            studentEmail: widget.sectionType == 'Family' ||
+                    widget.sectionType == 'Student'
+                ? null
+                : widget.studentDetails.emailC)
+
+        // widget.sectionType == 'Staff' || widget.sectionType == 'Family'
+        //     ? FetchStudentGradesEvent(
+        //         studentId: widget.studentDetails.studentIdC,
+        //         studentEmail: widget.studentDetails.emailC)
+        //     : FetchStudentGradesWithClassroomEvent(
+        //         studentId: widget.studentDetails.studentIdC)
+
+        );
   }
 }
