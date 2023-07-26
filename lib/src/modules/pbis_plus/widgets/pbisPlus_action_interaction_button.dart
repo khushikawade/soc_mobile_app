@@ -75,7 +75,6 @@ class PBISPlusActionInteractionButtonState
       ) {
         _isOffline = connectivity == ConnectivityResult.none;
         return InkWell(
-          onTap: () {},
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,8 +144,8 @@ class PBISPlusActionInteractionButtonState
                             Widget? child) {
                           return Container(
                               height:
-                                  widget.isFromStudentPlus == true ? 28 : 24,
-                              width: widget.isFromStudentPlus == true ? 28 : 24,
+                                  widget.isFromStudentPlus == true ? 28 : 26,
+                              width: widget.isFromStudentPlus == true ? 28 : 26,
                               alignment: Alignment.center,
                               // padding: EdgeInsets.all(6),
                               decoration: BoxDecoration(
@@ -327,21 +326,13 @@ class PBISPlusActionInteractionButtonState
     // return viewCount;
     return FittedBox(
       child: Padding(
-        padding: Globals.deviceType != 'phone'
-            ? EdgeInsets.zero
-            // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
-            : EdgeInsets.zero,
+        padding: EdgeInsets.all(3),
         child: Utility.textWidget(
             text: getCountsById(widget.iconData.id ?? '').toString(),
             context: context,
             textAlign: TextAlign.center,
             textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
                 color: Colors.grey[600],
-                // Color(0xff000000) ==
-                //         Theme.of(context)
-                //             .backgroundColor
-                //     ? Colors.grey[600]
-                //     : Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 14)),
       ),
@@ -360,7 +351,8 @@ class PBISPlusActionInteractionButtonState
 
   void updateCountsId(PBISPlusCommonBehaviorModal iconData) {
     bool isAlready = false;
-
+    print(
+        ' added ${iconData.behaviorTitleC} is default ${widget.isCustomBehavior}');
     for (BehaviorList item
         in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
       if (item.id == iconData.id) {
@@ -371,7 +363,7 @@ class PBISPlusActionInteractionButtonState
 
     if (isAlready == false) {
       widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
-          defaultBehavior: widget.isCustomBehavior == true ? true : false,
+          defaultBehavior: widget.isCustomBehavior != true,
           id: iconData.id,
           name: iconData.behaviorTitleC,
           behaviorCount: 1));

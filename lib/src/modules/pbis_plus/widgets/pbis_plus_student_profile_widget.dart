@@ -209,36 +209,26 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                               //     :
                                               //TODOPBIS:
                                               Text(
-                                            PBISPlusUtility
-                                                .numberAbbreviationFormat(
-                                                    // widget
-                                                    //       .studentValueNotifier
-                                                    //       .value
-                                                    //       .profile!
-                                                    //       .behavior1!
-                                                    //       .counter! +
-                                                    //   widget.studentValueNotifier.value.profile!
-                                                    //       .behavior2!.counter! +
-                                                    //   widget.studentValueNotifier.value.profile!
-                                                    //       .behavior3!.counter!
-                                                    PBISPlusUtility.getStudentTotalCounts(
-                                                        student: widget
-                                                            .studentValueNotifier!
+                                            PBISPlusUtility.numberAbbreviationFormat(
+                                                PBISPlusUtility.getStudentTotalCounts(
+                                                    student: widget
+                                                        .studentValueNotifier!
+                                                        .value,
+                                                    isCustomBehavior:
+                                                        PBISPlusOverrides
+                                                            .isCustomBehavior
                                                             .value,
-                                                        isCustomBehavior:
-                                                            PBISPlusOverrides
-                                                                .isCustomBehavior
-                                                                .value,
-                                                        teacherCustomBehaviorList:
-                                                            PBISPlusOverrides
-                                                                .teacherCustomBehaviorList
-                                                                .value)),
+                                                    teacherCustomBehaviorList:
+                                                        PBISPlusOverrides
+                                                            .teacherCustomBehaviorList
+                                                            .value)),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle1!
                                                 .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  color: Colors.grey[600],
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           );
                                         },
                                       );

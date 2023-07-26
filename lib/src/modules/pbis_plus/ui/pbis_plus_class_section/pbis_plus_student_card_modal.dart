@@ -71,7 +71,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
   // PBISPlusBloc pBISPlusNotesBloc = PBISPlusBloc();
   ValueNotifier<int> behvaiourIconListCount = ValueNotifier<int>(0);
   ValueNotifier<double> cardHeight = ValueNotifier<double>(1);
-  bool? isCustomBehavior = false;
+  // bool? isCustomBehavior = false;
   FocusNode _focusNode = FocusNode();
 
   PBISPlusBloc pbisPluDefaultBehaviorBloc = PBISPlusBloc();
@@ -294,9 +294,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                   child: ValueListenableBuilder(
                       valueListenable: isNotesTextfieldEnable,
                       builder: (context, value, _) => Container(
-                          // margin: isNotesTextfieldEnable.value
-                          //     ? EdgeInsets.only(top: 16)
-                          //     : EdgeInsets.zero,
+                    
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(12),
@@ -580,7 +578,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                           isLoading: loading,
                           child: PBISPlusActionInteractionButton(
                               index: index,
-                              isCustomBehavior: isCustomBehavior,
+                              isCustomBehavior: PBISPlusOverrides.isCustomBehavior.value,
                               size: widget.isFromDashboardPage == true ||
                                       widget.studentProfile == true
                                   ? 48

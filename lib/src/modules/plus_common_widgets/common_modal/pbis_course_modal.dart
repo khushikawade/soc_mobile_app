@@ -27,7 +27,6 @@ class ClassroomCourse {
   @HiveField(9)
   String? courseWorkURL; //used in GRADED+
   @HiveField(10)
-  bool? isBehviourLoading;
   String? section; //used in GRADED+
   @HiveField(11)
   String? room;
@@ -45,7 +44,6 @@ class ClassroomCourse {
       this.courseWorkId,
       this.assessmentCId,
       this.courseWorkURL,
-      this.isBehviourLoading = true,
       this.room,
       this.section,
       this.updateTime});

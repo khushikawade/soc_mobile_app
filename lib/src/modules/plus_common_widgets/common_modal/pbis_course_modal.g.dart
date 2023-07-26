@@ -27,8 +27,8 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       courseWorkId: fields[7] as String?,
       assessmentCId: fields[8] as String?,
       courseWorkURL: fields[9] as String?,
-      isBehviourLoading: fields[10] as bool?,
       room: fields[11] as String?,
+      section: fields[10] as String?,
       updateTime: fields[12] as String?,
     );
   }
@@ -58,7 +58,7 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       ..writeByte(9)
       ..write(obj.courseWorkURL)
       ..writeByte(10)
-      ..write(obj.isBehviourLoading)
+      ..write(obj.section)
       ..writeByte(11)
       ..write(obj.room)
       ..writeByte(12)
