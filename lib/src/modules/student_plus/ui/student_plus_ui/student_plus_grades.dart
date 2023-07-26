@@ -233,17 +233,17 @@ class individual extends State<StudentPlusGradesPage> {
                     //padding: EdgeInsets.symmetric(horizontal: 20),
                     margin: EdgeInsets.only(left: 5),
                     decoration: BoxDecoration(
-                      boxShadow: [],
-                      color: //Colors.transparent,
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      border: Border.all(
-                          color: selectedValue.value == chipValue
-                              ? AppTheme.kSelectedColor
-                              : Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                        boxShadow: [],
+                        color: //Colors.transparent,
+                            Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffF7F8F9)
+                                : Color(0xff111C20),
+                        border: Border.all(
+                            color: selectedValue.value == chipValue
+                                ? AppTheme.kSelectedColor
+                                : Colors.grey),
+                        borderRadius: BorderRadius.circular(20)),
                     child: Center(
                         child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -256,7 +256,7 @@ class individual extends State<StudentPlusGradesPage> {
                                       width: 20,
                                       child: SvgPicture.asset(
                                           'assets/ocr_result_section_bottom_button_icons/Classroom.svg')),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 10),
                                   Utility.textWidget(
                                       text: chipValue,
                                       context: context,
