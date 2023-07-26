@@ -314,7 +314,7 @@ class BehaviorList {
       this.behaviorCount});
 
   BehaviorList.fromJson(Map<String, dynamic> json) {
-    id = json['Id'] ?? "";
+    id = _parseId(json['Id']);
     name = json['Name'] ?? '';
     iconURL = json['Icon_URL'] ?? '';
     defaultBehavior = json['Default'] == "true";
@@ -329,5 +329,18 @@ class BehaviorList {
     data['Default'] = this.defaultBehavior;
     data['Behavior_Count'] = this.behaviorCount;
     return data;
+  }
+
+  String _parseId(dynamic id) {
+    try {
+      if (id is int) {
+        return id.toString();
+      } else {
+        return id ?? '';
+      }
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 }

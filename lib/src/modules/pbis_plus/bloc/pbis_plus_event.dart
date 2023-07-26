@@ -198,14 +198,4 @@ class PbisPlusAddPBISInteraction extends PBISPlusEvent {
   List<Object> get props => [studentId!, classroomCourseId!, behaviour!];
 }
 
-class PBISPlusGetStudentBehaviorByCourse extends PBISPlusEvent {
-  ClassroomCourse classroomCourse;
-  int index;
-  final String? teacherEmail;
-  PBISPlusGetStudentBehaviorByCourse(
-      {required this.teacherEmail,
-      required this.classroomCourse,
-      required this.index});
-  @override
-  List<Object> get props => [];
-}
+

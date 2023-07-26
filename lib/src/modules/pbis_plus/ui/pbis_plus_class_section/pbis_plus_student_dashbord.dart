@@ -58,7 +58,8 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.constraint,
       this.studentProfile,
       // this.pBISPlusCommonBehaviorList,
-      required this.pBISPlusBloc,this.sectionType})
+      required this.pBISPlusBloc,
+      this.sectionType})
       : super(key: key);
 
   @override

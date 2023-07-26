@@ -29,7 +29,8 @@ class ProfilePage extends StatefulWidget {
       required this.profile,
       this.hideStateSelection,
       required this.fromGradedPlus,
-      required this.plusAppName,required this.sectionType})
+      required this.plusAppName,
+      required this.sectionType})
       : super(key: key);
 
   @override
@@ -59,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
-             sectionType: widget.sectionType,
+            sectionType: widget.sectionType,
             iconData: null,
             plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,

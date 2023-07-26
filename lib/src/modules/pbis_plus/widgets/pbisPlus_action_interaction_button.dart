@@ -355,6 +355,7 @@ class PBISPlusActionInteractionButtonState
         item.behaviorCount = item.behaviorCount! + 1;
       }
     }
+
     if (isAlready == false) {
       widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
           defaultBehavior: widget.isCustomBehavior == true ? true : false,
@@ -362,7 +363,7 @@ class PBISPlusActionInteractionButtonState
           name: iconData.behaviorTitleC,
           behaviorCount: 1));
     }
-    print("isAlready $isAlready");
+
     onTapDetect.value =
         !onTapDetect.value; //Update interaction text count in card
 

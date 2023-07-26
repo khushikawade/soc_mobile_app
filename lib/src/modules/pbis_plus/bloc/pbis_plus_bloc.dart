@@ -173,6 +173,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<ClassroomCourse> _localDb =
             LocalDatabase(plusClassroomDBTableName);
+        // await _localDb.clear();
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
@@ -188,12 +189,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         SharedPreferences clearRosterCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            await clearRosterCache.getBool('delete_local_Roster_cache');
+            await clearRosterCache.getBool('delete_local_Roster_cache_1');
 
         if (clearCacheResult != true) {
           await _localDb.close();
           _localData.clear();
-          await clearRosterCache.setBool('delete_local_Roster_cache', true);
+          await clearRosterCache.setBool('delete_local_Roster_cache_1', true);
         }
 
         //API call to refresh with the latest data in the local DB
@@ -210,23 +211,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           if (_localData.isEmpty) {
             sort(obj: coursesList);
             yield PBISPlusInitialImportRosterSuccess(
-                googleClassroomCourseList: responseList[0]);
+                googleClassroomCourseList: coursesList);
           }
 
-          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
+          List pbisTotaldefaultAndCustomBehviour = [];
+
           //Get PBISTotal interaction only if Section is PBIS+
+
           if (event.isGradedPlus == false) {
-            pbisTotalInteractionList = await pBISPlusGetStudentBehaviorBySection(
-                teacherEmail: userProfileLocalData[0].userEmail!);
+            pbisTotaldefaultAndCustomBehviour = await Future.wait([
+              pBISPlusGetStudentBehaviorBySection(
+                section: 'default',
+                teacherEmail: userProfileLocalData[0].userEmail!,
+                schoolId: Overrides.SCHOOL_ID,
+              ),
+              pBISPlusGetStudentBehaviorBySection(
+                section: 'custom',
+                teacherEmail: userProfileLocalData[0].userEmail!,
+                schoolId: Overrides.SCHOOL_ID,
+              ),
+            ]);
           }
 
           // Merge Student Interaction with Google Classroom Rosters
           List<ClassroomCourse> classroomStudentProfile =
               await assignStudentTotalInteraction(
-                  pbisTotalInteractionList, coursesList);
+                  classroomCourseList: coursesList,
+                  pbisTotaldefaultAndCustomBehviour:
+                      pbisTotaldefaultAndCustomBehviour);
 
           await _localDb.clear();
-
           classroomStudentProfile.forEach((ClassroomCourse e) {
             _localDb.addData(e);
           });
@@ -255,10 +269,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
         sort(obj: _localData);
-        // _localDb.close();
+
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        // sort(obj: _localData);
-        // await getFilteredStudentList(_localData);
+
         yield PBISPlusImportRosterSuccess(
             googleClassroomCourseList: _localData);
       }
@@ -458,7 +471,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        // String? _objectName = "${PBISPlusOverrides.pbisStudentInteractionDB}";
         // LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
         // List<ClassroomCourse> _localData = await _localDb.getData();
 
@@ -998,54 +1010,54 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
-    if (event is PBISPlusGetStudentBehaviorByCourse) {
-      String courseLocalDbTable =
-          '${event.classroomCourse.id}_${event.classroomCourse.name}';
-      LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
-          LocalDatabase(courseLocalDbTable);
-      List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
-      try {
-        if (_localData.isEmpty) {
-          print("EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
-          yield PBISPlusLoading();
-        } else {
-          print("NOT EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
-          ClassroomCourse classroomStudentProfile =
-              await assignStudentTotalBehavior(
-                  event.classroomCourse, _localData);
-          yield PBISPlusLoading();
-          yield PBISPlusGetStudentBehaviorByCourseSuccess(
-              classroomCourse: classroomStudentProfile);
-        }
+    // if (event is PBISPlusGetStudentBehaviorByCourse) {
+    //   String courseLocalDbTable =
+    //       '${event.classroomCourse.id}_${event.classroomCourse.name}';
+    //   LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
+    //       LocalDatabase(courseLocalDbTable);
+    //   List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
+    //   try {
+    //     if (_localData.isEmpty) {
+    //       print("EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
+    //       yield PBISPlusLoading();
+    //     } else {
+    //       print("NOT EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
+    //       ClassroomCourse classroomStudentProfile =
+    //           await assignStudentTotalBehavior(
+    //               event.classroomCourse, _localData);
+    //       yield PBISPlusLoading();
+    //       yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //           classroomCourse: classroomStudentProfile);
+    //     }
 
-        List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList =
-            await pBISPlusGetStudentBehaviorBySection(
-          section: 'default',
-          teacherEmail: event.teacherEmail ?? '',
-          schoolId: Overrides.SCHOOL_ID,
-        );
+    //     List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList =
+    //         await pBISPlusGetStudentBehaviorBySection(
+    //       section: 'default',
+    //       teacherEmail: event.teacherEmail ?? '',
+    //       schoolId: Overrides.SCHOOL_ID,
+    //     );
 
-        if (pbisTotalBehaviorList.isNotEmpty) {
-          await _localDb.clear();
-          pbisTotalBehaviorList.forEach((element) async {
-            await _localDb.addData(element);
-          });
-        }
+    //     if (pbisTotalBehaviorList.isNotEmpty) {
+    //       await _localDb.clear();
+    //       pbisTotalBehaviorList.forEach((element) async {
+    //         await _localDb.addData(element);
+    //       });
+    //     }
 
-        ClassroomCourse classroomStudentProfile =
-            await assignStudentTotalBehavior(
-                event.classroomCourse, pbisTotalBehaviorList);
-        yield PBISPlusLoading();
-        yield PBISPlusGetStudentBehaviorByCourseSuccess(
-            classroomCourse: classroomStudentProfile);
-      } catch (e) {
-        print(e);
-        if (_localData.isEmpty) {
-          yield PBISPlusGetStudentBehaviorByCourseSuccess(
-              classroomCourse: event.classroomCourse);
-        }
-      }
-    }
+    //     ClassroomCourse classroomStudentProfile =
+    //         await assignStudentTotalBehavior(
+    //             event.classroomCourse, pbisTotalBehaviorList);
+    //     yield PBISPlusLoading();
+    //     yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //         classroomCourse: classroomStudentProfile);
+    //   } catch (e) {
+    //     print(e);
+    //     if (_localData.isEmpty) {
+    //       yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //           classroomCourse: event.classroomCourse);
+    //     }
+    //   }
+    // }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -1205,10 +1217,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*-----------------Function to assign the student interaction with classroom--------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  // List<ClassroomCourse> assignStudentTotalInteraction(
-  //   List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList,
-  //   List<ClassroomCourse> classroomCourseList,
-  // ) {
+  // List<ClassroomCourse> assignStudentTotalInteraction({
+  //   required List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList,
+  //   required List<ClassroomCourse> classroomCourseList,
+  // }) {
   //   List<ClassroomCourse> classroomStudentProfile = [];
 
   //   // classroomStudentProfile.clear();
@@ -1231,6 +1243,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
   //       for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
   //         for (int k = 0; k < pbisTotalBehaviorList.length; k++) {
+
   //           if (classroomCourseList[i].id ==
   //                   pbisTotalBehaviorList[k].classroomCourseId &&
   //               classroomCourseList[i].students![j].profile!.id ==
@@ -1265,9 +1278,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   //           // classroomCourse.students![j].profile!.behavior1?.counter = 0;
   //           // classroomCourse.students![j].profile!.behavior2?.counter = 0;
   //           // classroomCourse.students![j].profile!.behavior3?.counter = 0;
-  //           classroomCourse.students![j].profile!.engaged = 0;
-  //           classroomCourse.students![j].profile!.niceWork = 0;
-  //           classroomCourse.students![j].profile!.helpful = 0;
+  //           // classroomCourse.students![j].profile!.engaged = 0;
+  //           // classroomCourse.students![j].profile!.niceWork = 0;
+  //           // classroomCourse.students![j].profile!.helpful = 0;
   //         }
   //       }
 
@@ -1276,6 +1289,57 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   //   }
   //   return classroomStudentProfile;
   // }
+
+  List<ClassroomCourse> assignStudentTotalInteraction({
+    required List? pbisTotaldefaultAndCustomBehviour,
+    required List<ClassroomCourse> classroomCourseList,
+  }) {
+    List<ClassroomCourse> classroomStudentProfile = [];
+
+    if (pbisTotaldefaultAndCustomBehviour == null ||
+        pbisTotaldefaultAndCustomBehviour.isEmpty) {
+      // Add 0 interaction counts to all the students in the classroomCourseList
+      classroomStudentProfile.addAll(classroomCourseList);
+    } else {
+      for (int i = 0; i < classroomCourseList.length; i++) {
+        ClassroomCourse classroomCourse = classroomCourseList[i];
+
+        for (int j = 0; j < classroomCourse.students!.length; j++) {
+          // Define defaultBehviour and customBehviour lists directly inside the loop
+          List<PBISPlusTotalBehaviorModal> defaultBehviour =
+              pbisTotaldefaultAndCustomBehviour[0];
+          List<PBISPlusTotalBehaviorModal> customBehviour =
+              pbisTotaldefaultAndCustomBehviour[1];
+
+          for (int d = 0; d < defaultBehviour.length; d++) {
+            if (classroomCourse.id == defaultBehviour[d].classroomCourseId &&
+                classroomCourse.students![j].profile!.emailAddress ==
+                    defaultBehviour[d].studentEmail) {
+              classroomCourse.students![j].profile!.behaviorList!
+                  .addAll(defaultBehviour[d].behaviorList!);
+
+              break;
+            }
+          }
+
+          for (int c = 0; c < customBehviour.length; c++) {
+            if (classroomCourse.id == customBehviour[c].classroomCourseId &&
+                classroomCourse.students![j].profile!.emailAddress ==
+                    customBehviour[c].studentEmail) {
+              classroomCourse.students![j].profile!.behaviorList!
+                  .addAll(customBehviour[c].behaviorList!);
+
+              break;
+            }
+          }
+        }
+
+        classroomStudentProfile.add(classroomCourse);
+      }
+    }
+
+    return classroomStudentProfile;
+  }
 
   /*----------------------------------------------------------------------------------------------*/
   /*---------------------------------Function getPBISPlusHistoryData------------------------------*/
@@ -2041,7 +2105,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        print("pBISPlusGetStudentBehaviorByCourse api is recived");
+        print("pBISPlusGetStudentBehaviorBySection $section api is recived");
         return response.data['body']
             .map<PBISPlusTotalBehaviorModal>(
                 (i) => PBISPlusTotalBehaviorModal.fromJson(i))
@@ -2070,42 +2134,5 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             note.names!.fullName != null &&
             note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase()))
         .toList();
-  }
-
-  ClassroomCourse assignStudentTotalBehavior(ClassroomCourse classroomCourse,
-      List<PBISPlusTotalBehaviorModal> pbisTotalInteractionList) {
-    classroomCourse.students!.forEach((ClassroomStudents classroomStudents) {
-      pbisTotalInteractionList.forEach((PBISPlusTotalBehaviorModal behvoiur) {
-        if (classroomStudents.profile!.id == behvoiur.studentId) {
-          classroomStudents.profile!.behaviorList = behvoiur.behaviorList;
-        }
-      });
-    });
-    return classroomCourse;
-  }
-
-  Future<List<ClassroomCourse>>
-      assignStudentTotalBehaviorWithClassroomCoursesList(
-          List<ClassroomCourse> classroomCourseList) async {
-    print(classroomCourseList);
-
-    for (var classroomCourse in classroomCourseList) {
-      String courseLocalDbTable =
-          '${classroomCourse.id}_${classroomCourse.name}';
-      LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
-          LocalDatabase(courseLocalDbTable);
-      List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
-
-      for (var classroomStudent in classroomCourse.students ?? []) {
-        for (var behavior in _localData) {
-          print("behvire added");
-          if (classroomStudent.profile!.id == behavior.studentId) {
-            classroomStudent.profile!.behaviorList = behavior.behaviorList;
-          }
-        }
-      }
-    }
-    print(classroomCourseList);
-    return classroomCourseList;
   }
 }

@@ -259,17 +259,17 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       return noClassroomFound();
                     }
                   }
-                  // if (state is PBISPlusInitialImportRosterSuccess) {
-                  //   if (state.googleClassroomCourseList.isNotEmpty ?? false) {
-                  //     return buildList(
-                  //         googleClassroomCourseList:
-                  //             state.googleClassroomCourseList,
-                  //         isStudentInteractionLoading: true,
-                  //         isScreenShimmerLoading: false);
-                  //   } else {
-                  //     return noClassroomFound();
-                  //   }
-                  // }
+                  if (state is PBISPlusInitialImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      return buildList(
+                          googleClassroomCourseList:
+                              state.googleClassroomCourseList,
+                          isStudentInteractionLoading: true,
+                          isScreenShimmerLoading: false);
+                    } else {
+                      return noClassroomFound();
+                    }
+                  }
                   return noClassroomFound();
                 },
                 listener: (context, state) async {
@@ -619,20 +619,24 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   valueListenable: studentValueNotifier,
                   builder: (BuildContext context, ClassroomStudents value,
                       Widget? child) {
-                    return Text(
-                      //TODOPBIS:
-                      PBISPlusUtility.numberAbbreviationFormat(
-                          PBISPlusUtility.getStudentTotalCounts(
-                              student: studentValueNotifier!.value,
-                              isCustomBehavior:
-                                  PBISPlusOverrides.isCustomBehavior.value,
-                              teacherCustomBehaviorList: PBISPlusOverrides
-                                  .teacherCustomBehaviorList.value)),
-                      style: TextStyle(
-                        color: Theme.of(context).backgroundColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
+                    return ValueListenableBuilder(
+                        valueListenable: PBISPlusOverrides.isCustomBehavior,
+                        builder: (context, value, _) {
+                          return Text(
+                            //TODOPBIS:
+                            PBISPlusUtility.numberAbbreviationFormat(
+                                PBISPlusUtility.getStudentTotalCounts(
+                                    student: studentValueNotifier!.value,
+                                    isCustomBehavior: PBISPlusOverrides
+                                        .isCustomBehavior.value,
+                                    teacherCustomBehaviorList: PBISPlusOverrides
+                                        .teacherCustomBehaviorList.value)),
+                            style: TextStyle(
+                              color: Theme.of(context).backgroundColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        });
                   })),
         ),
       );

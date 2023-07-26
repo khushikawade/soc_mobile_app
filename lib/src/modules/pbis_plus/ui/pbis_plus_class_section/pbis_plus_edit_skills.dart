@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_common_popup.dart';
@@ -90,13 +91,13 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
 /*-------------------------------------------------setToggleValue----------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------------------- */
 
-  void setToggleValue({bool? value}) async {
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setBool(Strings.isCustomBehavior,
-          value ?? PBISPlusOverrides.isCustomBehavior.value);
-    } catch (e) {}
-  }
+  // void setToggleValue({bool? value}) async {
+  //   try {
+  //     SharedPreferences pref = await SharedPreferences.getInstance();
+  //     pref.setBool(Strings.isCustomBehavior,
+  //         value ?? PBISPlusOverrides.isCustomBehavior.value);
+  //   } catch (e) {}
+  // }
 
 /*-------------------------------------------------------------------------------------------------------------- */
 /*---------------------------------------------------BODY FRAME------------------------------------------------- */
@@ -146,7 +147,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                     }
                     changedIndex.value = -1;
                     PBISPlusOverrides.isCustomBehavior.value = value;
-                    setToggleValue(value: value);
+                    PBISPlusUtility.setToggleValue(value: value);
                   },
                   trackColor:
                       Color(0xff000000) == Theme.of(context).backgroundColor
