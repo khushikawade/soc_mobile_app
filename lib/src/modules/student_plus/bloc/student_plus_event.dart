@@ -49,9 +49,9 @@ class GetStudentPlusDetails extends StudentPlusEvent {
 /* ---------------- Event use to trigger student grade details --------------- */
 class FetchStudentGradesEvent extends StudentPlusEvent {
   final String? studentId;
-  FetchStudentGradesEvent({
-    @required this.studentId,
-  });
+  final String? studentEmail;
+  FetchStudentGradesEvent(
+      {@required this.studentId, required this.studentEmail});
 
   @override
   List<Object> get props => [studentId!];
@@ -62,9 +62,10 @@ class FetchStudentGradesEvent extends StudentPlusEvent {
 
 class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
   final StudentPlusDetailsModel studentDetails;
-  SaveStudentGooglePresentationWorkEvent({
-    required this.studentDetails,
-  });
+  final String filterName;
+
+  SaveStudentGooglePresentationWorkEvent(
+      {required this.studentDetails, required this.filterName});
 
   @override
   List<Object> get props => [studentDetails!];
@@ -84,7 +85,9 @@ class StudentPlusSearchByEmail extends StudentPlusEvent {
 /* ---------------- Event use to trigger student current grade details --------------- */
 class FetchStudentCourseWorkEvent extends StudentPlusEvent {
   final String courseWorkId;
-  FetchStudentCourseWorkEvent({required this.courseWorkId});
+  final String? studentUserId;
+  FetchStudentCourseWorkEvent(
+      {required this.courseWorkId, required this.studentUserId});
   @override
   List<Object> get props => [];
   @override
@@ -95,11 +98,13 @@ class FetchStudentCourseWorkEvent extends StudentPlusEvent {
 class GetStudentCourseWorkListByPaginationEvent extends StudentPlusEvent {
   final String courseWorkId;
   final String? nextPageToken;
+  final String? studentUserId;
   final List<StudentPlusCourseWorkModel> oldList;
   GetStudentCourseWorkListByPaginationEvent(
       {required this.courseWorkId,
       required this.nextPageToken,
-      required this.oldList});
+      required this.oldList,
+      required this.studentUserId});
   @override
   List<Object> get props => [];
   @override
@@ -144,6 +149,29 @@ class VerifyOtpFamilyLogin extends StudentPlusEvent {
 /* ---------------- Event use to trigger get student list for family login --------------- */
 class GetStudentListFamilyLogin extends StudentPlusEvent {
   GetStudentListFamilyLogin();
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
+/* ---------------- Event use to trigger get student google presentation details --------------- */
+class GetStudentPlusWorkGooglePresentationDetails extends StudentPlusEvent {
+  final StudentPlusDetailsModel studentDetails;
+
+  final String schoolDBN;
+  final String filterName;
+
+  GetStudentPlusWorkGooglePresentationDetails(
+      {required this.studentDetails,
+      required this.schoolDBN,
+      required this.filterName});
+}
+
+/* ---------------- Event use to trigger get Regents list in Exam section --------------- */
+class GetStudentRegentsList extends StudentPlusEvent {
+  final String studentId;
+  GetStudentRegentsList({required this.studentId});
   @override
   List<Object> get props => [];
   @override

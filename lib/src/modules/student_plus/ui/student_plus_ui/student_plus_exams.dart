@@ -4,11 +4,14 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_regents_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_bottomsheet.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
 
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
@@ -21,7 +24,7 @@ import 'package:Soc/src/styles/theme.dart';
 
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentPlusExamsScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
@@ -37,12 +40,19 @@ class StudentPlusExamsScreen extends StatefulWidget {
 
 class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
   static const double _kLabelSpacing = 20.0;
-  final _controller = TextEditingController();
+  // final _controller = TextEditingController();
   FocusNode myFocusNode = new FocusNode();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
 
   @override
   void initState() {
     super.initState();
+
+    if (checkIsRegents() || widget.studentDetails.gradeC == "8") {
+      _studentPlusBloc.add(
+          GetStudentRegentsList(studentId: widget.studentDetails.id ?? ''));
+    }
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_exams_screen");
@@ -53,185 +63,243 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackgroundImgWidget(),
-        Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: StudentPlusAppBar(
-               sectionType:widget.sectionType,
+    return Stack(children: [
+      CommonBackgroundImgWidget(),
+      Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: StudentPlusAppBar(
+              sectionType: widget.sectionType,
               refresh: (v) {
                 setState(() {});
               },
-              titleIconCode: 0xe881,
-            ),
-            body: body()),
-      ],
-    );
+              titleIconCode: 0xe881),
+          body: body())
+    ]);
   }
 
   Widget body() {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: StudentPlusOverrides.kSymmetricPadding),
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          PlusScreenTitleWidget(
-              kLabelSpacing: _kLabelSpacing,
-              text: StudentPlusOverrides.studentPlusExamsTitle),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-          widget.sectionType == "Student"
-              ? Container()
-              : PlusAppSearchBar(
-                  sectionName: 'STUDENT+',
-                  hintText:
-                      '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                  isMainPage: false,
-                  autoFocus: false,
-                  onTap: () async {
-                    if (widget.sectionType == "Family") {
-                      showModalBottomSheet(
-                        useRootNavigator: true,
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(42),
-                            topRight: Radius.circular(42),
-                          ),
-                        ),
-                        builder: (_) => LayoutBuilder(builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return StudentPlusFamilyStudentList(
-                            height: MediaQuery.of(context).size.height *
-                                0.4, //0.45,
-                            currentIndex: 1,
-                          );
-                        }),
-                      );
-                    } else {
-                      var result = await pushNewScreen(
-                        context,
-                        screen: StudentPlusSearchScreen(
-                          fromStudentPlusDetailPage: true,
-                          index: 1,
-                          studentDetails: widget.studentDetails,
-                        ),
-                        withNavBar: false,
-                      );
-                      if (result == true) {
-                        Utility.closeKeyboard(context);
-                      }
-                    }
-                  },
-                  controller: _controller,
+        padding: EdgeInsets.symmetric(
+            horizontal: StudentPlusOverrides.kSymmetricPadding),
+        child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+              PlusScreenTitleWidget(
                   kLabelSpacing: _kLabelSpacing,
-                  focusNode: myFocusNode,
-                ),
-          tabWidget(),
-        ],
+                  text: StudentPlusOverrides.studentPlusExamsTitle),
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+              widget.sectionType == "Student"
+                  ? Container()
+                  : StudentPlusSearchBarAndDropdown(
+                      sectionType: widget.sectionType,
+                      studentDetails: widget.studentDetails),
+              //tabWidget(),
+              if (checkIsRegents()) ...[
+                regentsTitleWidget(),
+                SpacerWidget(_kLabelSpacing / 2),
+                regentsHeaderTitle(), // widget to show header of list
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+                blocRegentsBuilder()
+              ] else
+                tabWidget()
+            ]));
+  }
+
+  /* ------------------------------ bloc builder for Regents details ------------------------------ */
+  Widget blocRegentsBuilder() {
+    return BlocBuilder(
+        bloc: _studentPlusBloc,
+        builder: (context, state) {
+          if (state is StudentPlusRegentsLoading) {
+            return Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                alignment: Alignment.center,
+                child: CircularProgressIndicator.adaptive(
+                  backgroundColor: AppTheme.kButtonColor,
+                ));
+          } else if (state is StudentPlusRegentsSuccess) {
+            return Container(
+              height: widget.sectionType == 'Student'
+                  ? widget.studentDetails.gradeC == "8"
+                      ? MediaQuery.of(context).size.height * 0.53
+                      : MediaQuery.of(context).size.height * 0.58
+                  : widget.studentDetails.gradeC == "8"
+                      ? MediaQuery.of(context).size.height * 0.46
+                      : MediaQuery.of(context).size.height * 0.5,
+              child: regentsListWidget(list: state.obj),
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  /* ---------- Widget to show vertical list of Regents list ---------- */
+  Widget regentsListWidget({
+    required List<StudentRegentsModel> list,
+  }) {
+    return list.length > 0
+        ? RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: ListView.builder(
+                //  physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
+                scrollDirection: Axis.vertical,
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildListTile(
+                      index: index, studentPlusGradeModel: list[index]);
+                }))
+        : RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: ListView(children: [Container()]));
+  }
+
+  /* ------------------ Widget to show marking period header ------------------ */
+  Widget regentsTitleWidget() {
+    return Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 2),
+        width: MediaQuery.of(context).size.width,
+        child: Utility.textWidget(
+            context: context,
+            text: 'Regents',
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(fontWeight: FontWeight.bold)));
+  }
+
+  /* ------------------- widget to show title of regents list ------------------ */
+  Widget regentsHeaderTitle() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            height: 50.0,
+            margin: const EdgeInsets.only(bottom: 6.0),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Theme.of(context).backgroundColor == Color(0xff000000)
+                    ? Color(0xff162429)
+                    : Color(0xffF7F8F9),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.5),
+                      offset: Offset(0.0, 1.0),
+                      blurRadius: 6.0)
+                ]),
+            child: Container(
+                child: ListTile(
+              leading: Utility.textWidget(
+                  text: "Exam",
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              trailing: Utility.textWidget(
+                  text: "Score",
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+            )),
+          ),
+        ),
       ),
     );
   }
 
   Widget tabWidget() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 0),
-      child: DefaultTabController(
-        length: 2,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            TabBar(
-              onTap: (i) {
-                print(i);
-                if (i == 0) {
-                  PlusUtility.updateLogs(
-                      activityType: 'STUDENT+',
-                      userType: 'Teacher',
-                      activityId: '50',
-                      description: 'Student+ MATH Screen',
-                      operationResult: 'Success');
-                }
-                if (i == 1) {
-                  PlusUtility.updateLogs(
-                      activityType: 'STUDENT+',
-                      userType: 'Teacher',
-                      activityId: '51',
-                      description: 'Student+ ELA Screen',
-                      operationResult: 'Success');
-                }
-              },
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: Theme.of(context)
-                  .colorScheme
-                  .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
-              indicatorColor: AppTheme.kButtonColor,
-              unselectedLabelColor:
-                  Globals.themeType == "Dark" ? Colors.grey : Colors.black,
-              unselectedLabelStyle: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.primaryVariant,
-              ),
-              labelStyle: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.primaryVariant,
-              ),
-              tabs: [
-                Tab(text: "MATH"),
-                // TranslationWidget(
-                //   message: "MATH",
-                //   toLanguage: Globals.selectedLanguage,
-                //   fromLanguage: "en",
-                //   builder: (translatedMessage) => Tab(
-                //     text: translatedMessage.toString(),
-                //   ),
-                // ),
-                Tab(text: "ELA")
-                // TranslationWidget(
-                //   message: "ELA",
-                //   toLanguage: Globals.selectedLanguage,
-                //   fromLanguage: "en",
-                //   builder: (translatedMessage) => Tab(
-                //     text: translatedMessage.toString(),
-                //   ),
-                // ),
-              ],
-            ),
-            Container(
-              height: Globals.deviceType == "phone" &&
-                      MediaQuery.of(context).orientation == Orientation.portrait
-                  ? (widget.sectionType == "Student"
-                      ? MediaQuery.of(context).size.height * 0.7
-                      : MediaQuery.of(context).size.height * 0.57) //61
-                  : Globals.deviceType == "phone" &&
-                          MediaQuery.of(context).orientation ==
-                              Orientation.landscape
-                      ? MediaQuery.of(context).size.height * 0.65
-                      : MediaQuery.of(context).size.height * 0.75,
-              decoration: BoxDecoration(
-                  border:
-                      Border(top: BorderSide(color: Colors.grey, width: 0.5))),
-              child: TabBarView(
-                children: <Widget>[
-                  Tab(
-                    child: tabScreenWidget(isMathSection: true),
+        padding: EdgeInsets.symmetric(horizontal: 0),
+        child: DefaultTabController(
+            length: widget.studentDetails.gradeC == "8" ? 3 : 2,
+            child: ListView(shrinkWrap: true, children: [
+              TabBar(
+                  onTap: (i) {
+                    print(i);
+                    if (i == 0) {
+                      PlusUtility.updateLogs(
+                          activityType: 'STUDENT+',
+                          userType: 'Teacher',
+                          activityId: '50',
+                          description: 'Student+ MATH Screen',
+                          operationResult: 'Success');
+                    }
+                    if (i == 1) {
+                      PlusUtility.updateLogs(
+                          activityType: 'STUDENT+',
+                          userType: 'Teacher',
+                          activityId: '51',
+                          description: 'Student+ ELA Screen',
+                          operationResult: 'Success');
+                    }
+                  },
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
+                  indicatorColor: AppTheme.kButtonColor,
+                  unselectedLabelColor:
+                      Globals.themeType == "Dark" ? Colors.grey : Colors.black,
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).colorScheme.primaryVariant,
                   ),
-                  Tab(
-                    child: tabScreenWidget(isMathSection: false),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                  labelStyle: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.primaryVariant,
+                  ),
+                  tabs: [
+                    Tab(text: "MATH"),
+                    Tab(text: "ELA"),
+                    if (widget.studentDetails.gradeC == "8")
+                      Tab(text: "REGENTS")
+                  ]),
+              Container(
+                  height: Globals.deviceType == "phone" &&
+                          MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                      ? (widget.sectionType == "Student"
+                          ? MediaQuery.of(context).size.height * 0.7
+                          : MediaQuery.of(context).size.height * 0.57) //61
+                      : Globals.deviceType == "phone" &&
+                              MediaQuery.of(context).orientation ==
+                                  Orientation.landscape
+                          ? MediaQuery.of(context).size.height * 0.65
+                          : MediaQuery.of(context).size.height * 0.75,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(color: Colors.grey, width: 0.5))),
+                  child: TabBarView(children: <Widget>[
+                    Tab(child: tabScreenWidget(isMathSection: true)),
+                    Tab(child: tabScreenWidget(isMathSection: false)),
+                    //--------------------------------------------------------------------------
+                    if (widget.studentDetails.gradeC == "8")
+                      Tab(
+                          child: ListView(
+                              physics: NeverScrollableScrollPhysics(),
+                              children: [
+                            // regentsTitleWidget(),
+                            SpacerWidget(_kLabelSpacing / 2),
+                            regentsHeaderTitle(), // widget to show header of list
+                            SpacerWidget(
+                                StudentPlusOverrides.kSymmetricPadding / 2),
+                            blocRegentsBuilder()
+                          ]))
+                    //--------------------------------------------------------------------------
+                  ]))
+            ])));
   }
 
   /* -------------- Widget return exam tab view for ELA and MATH ------------- */
@@ -484,5 +552,73 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             style: Theme.of(context).textTheme.headline4)
       ],
     );
+  }
+
+  /* ---------- Widget to show list tile (to show Regents) ---------- */
+  Widget _buildListTile(
+      {required StudentRegentsModel studentPlusGradeModel,
+      required int index}) {
+    return Container(
+        height: 54,
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? AppTheme.klistTilePrimaryDark
+                    : AppTheme
+                        .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? AppTheme.klistTileSecoandryDark
+                    : AppTheme
+                        .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
+            ),
+        child: ListTile(
+            leading: Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Utility.textWidget(
+                    text: studentPlusGradeModel.examC ?? '-',
+                    maxLines: 2,
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2!)),
+            trailing: Container(
+                padding: EdgeInsets.symmetric(
+                    vertical: _kLabelSpacing / 4,
+                    horizontal: _kLabelSpacing / 2),
+                decoration: BoxDecoration(
+                    color: StudentPlusUtility.getRegentsColors(
+                        studentPlusGradeModel.resultC ?? "0"),
+                    borderRadius: BorderRadius.circular(20.0)),
+                child: Utility.textWidget(
+                    text: studentPlusGradeModel.resultC != null &&
+                                studentPlusGradeModel.resultC!.toLowerCase() ==
+                                    'waiver' ||
+                            studentPlusGradeModel.resultC!.toLowerCase() == 'w'
+                        ? "W"
+                        : studentPlusGradeModel.resultC ?? '-',
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.black)))));
+  }
+
+  /* ------------------------- function call when pull to refresh perform ------------------------- */
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    if (checkIsRegents() || widget.studentDetails.gradeC == "8") {
+      _studentPlusBloc.add(
+          GetStudentRegentsList(studentId: widget.studentDetails.id ?? ''));
+    }
+  }
+
+  bool checkIsRegents() {
+    if (widget.studentDetails.gradeC == "9" ||
+        widget.studentDetails.gradeC == "10" ||
+        widget.studentDetails.gradeC == "11" ||
+        widget.studentDetails.gradeC == "12") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

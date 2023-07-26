@@ -1,23 +1,17 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/google_authentication.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 part 'google_presentation_event.dart';
 part 'google_presentation_state.dart';
 
@@ -202,7 +196,10 @@ class GoogleSlidesPresentationBloc
 
         //GET STUDENT PRESENTATION FILE NAME
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
-            .createStudentGooglePresentationFileName(event.studentDetails);
+            .createStudentGooglePresentationFileName(
+                filterWorkName: event.filterName,
+                studentDetails: event.studentDetails,
+                studentGooglePresentationFileName: true);
 
         //CREATE STUDENT PRESENTATION TO DRIVE
         List GooglePresentationCreateResponse =

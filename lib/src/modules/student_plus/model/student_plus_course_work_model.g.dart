@@ -33,13 +33,14 @@ class StudentPlusCourseWorkModelAdapter
       creatorUserId: fields[12] as String?,
       studentWorkSubmission:
           (fields[13] as List?)?.cast<StudentWorkSubmission>(),
+      studentCourseUserId: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusCourseWorkModel obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.courseId)
       ..writeByte(1)
@@ -67,7 +68,9 @@ class StudentPlusCourseWorkModelAdapter
       ..writeByte(12)
       ..write(obj.creatorUserId)
       ..writeByte(13)
-      ..write(obj.studentWorkSubmission);
+      ..write(obj.studentWorkSubmission)
+      ..writeByte(14)
+      ..write(obj.studentCourseUserId);
   }
 
   @override

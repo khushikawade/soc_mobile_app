@@ -22,19 +22,17 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool? isGradedPlus;
+  final ValueChanged? refresh;
 
-  // final Widget? titleWidget;
-  // final Widget? leadingWidget;
-  PBISPlusAppBar({
-    Key? key,
-    this.titleIconData,
-    this.backButton,
-    required this.title,
-    required this.scaffoldKey,
-    this.isGradedPlus = false,
-    // this.titleWidget,
-    // this.leadingWidget
-  })  : preferredSize = Size.fromHeight(60.0),
+  PBISPlusAppBar(
+      {Key? key,
+      this.titleIconData,
+      this.backButton,
+      required this.title,
+      required this.scaffoldKey,
+      this.isGradedPlus = false,
+      required this.refresh})
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
   final Size preferredSize;
@@ -49,7 +47,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
         Container(
       child: Row(
         children: [
-          _translateButton(setState, context),
+          _translateButton(context),
           _openAccessibility(context),
         ],
       ),
@@ -103,7 +101,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
-                            sectionType: "Staff",
+                                sectionType: "Staff",
                                 plusAppName: 'PBIS+',
                                 fromGradedPlus: false,
                                 hideStateSelection: true,
@@ -142,7 +140,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     return _userInformation[0];
   }
 
-  Widget _translateButton(StateSetter setState, BuildContext context) {
+  Widget _translateButton(BuildContext context) {
     return IconButton(
         // key: _bshowcase,
         onPressed: () async {
@@ -153,7 +151,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/

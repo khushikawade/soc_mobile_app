@@ -150,6 +150,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               //   FloatingActionButtonLocation.centerFloat,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                refresh: (v) {
+                  setState(() {});
+                },
                 iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
@@ -867,7 +870,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           pointPossible: Globals.pointPossible ?? "0"));
     } else {
       CreateAssessmentScreenMethod.navigateToSubjectSection(
-         titleIconData: widget.titleIconData,
+          titleIconData: widget.titleIconData,
           context: context,
           classSuggestions: widget.classSuggestions,
           classController: classController,

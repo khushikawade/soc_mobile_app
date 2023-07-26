@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -426,7 +427,12 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                               0.8,
                                           child: addNotes))),
 
+                      ///-------------------------------CLOSE BUTTON------------------------------------
+
+                      closeNotesIcon(),
+
                       //----------------------------------------------------Profile Image-----------------------------------------------------
+                      closeNotesIcon(),
                       Positioned(
                           top: 00,
                           child: GestureDetector(
@@ -524,6 +530,25 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                                 fontWeight: FontWeight.bold)))
                               ])))
                     ]))));
+  }
+
+  Widget closeNotesIcon() {
+    return isNotesTextfieldEnable.value == true
+        ? Positioned(
+            right: 8,
+            top: MediaQuery.of(context).size.width * 0.2 / 1.30,
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Icon(Icons.clear,
+                    color:
+                        Color(0xff000000) == Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                    size: Globals.deviceType == "phone" ? 22 : 30)))
+        : SizedBox.shrink();
   }
 
 /*-------------------------------------------------------------------------------------------------------------- */
@@ -647,7 +672,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   .profile?.name?.fullName,
                               studentEmail: widget.studentValueNotifier.value
                                   .profile?.emailAddress,
-                              teacherId: Globals.teacherId,
+                              teacherId: await OcrUtility.getTeacherId(),
                               schoolId: Overrides.SCHOOL_ID,
                               schoolDbn: Globals.schoolDbnC,
                               notes: noteController.text));

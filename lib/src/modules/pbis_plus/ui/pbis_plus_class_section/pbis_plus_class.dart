@@ -111,6 +111,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             extendBody: true,
             backgroundColor: Colors.transparent,
             appBar: PBISPlusUtility.pbisAppBar(
+                refresh: (v) {
+                  setState(() {});
+                },
                 context: context,
                 titleIconData: widget.titleIconData,
                 title: 'Class',
@@ -236,8 +239,15 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             child: BlocConsumer(
                 bloc: pbisPlusClassroomBloc,
                 builder: (context, state) {
+                  if (state is PBISPlusInitial) {
+                    Container(
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator.adaptive(
+                          backgroundColor: AppTheme.kButtonColor,
+                        ));
+                  }
                   if (state is PBISPlusClassRoomShimmerLoading) {
-                    return (state.shimmerCoursesList?.isNotEmpty ?? false)
+                    return (state!.shimmerCoursesList?.isNotEmpty ?? false)
                         ? buildList(
                             googleClassroomCourseList: state.shimmerCoursesList,
                             isStudentInteractionLoading: false,
@@ -270,7 +280,10 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                       return noClassroomFound();
                     }
                   }
-                  return noClassroomFound();
+                  if (state is PBISErrorState) {
+                    return noClassroomFound();
+                  }
+                  return Container();
                 },
                 listener: (context, state) async {
                   if (state is PBISPlusImportRosterSuccess) {

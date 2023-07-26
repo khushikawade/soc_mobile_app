@@ -31,6 +31,9 @@ class _GradedPlusStaffState extends State<GradedPlusStaff> {
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+      refresh: (v) {
+        setState(() {});
+      },
       iconData: null,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,

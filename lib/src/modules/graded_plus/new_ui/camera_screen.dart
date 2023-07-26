@@ -169,7 +169,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
     SystemChrome.setEnabledSystemUIOverlays([]);
-
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
@@ -624,6 +623,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           context,
                           null);
                     }
+                    SystemChrome.setEnabledSystemUIOverlays(
+                        SystemUiOverlay.values);
                   },
                 )),
         FutureBuilder(

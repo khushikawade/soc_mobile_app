@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_mod
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -430,35 +431,40 @@ class OcrUtility {
     required ValueNotifier<LoadingStatusModel> assessmentExportAndSaveStatus,
   }) async {
     return showDialog<void>(
-      useRootNavigator: false,
-      context: context!,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          if (state != null) {
-            state(setState);
-          }
+        useRootNavigator: false,
+        context: context!,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            if (state != null) {
+              state(setState);
+            }
 
-          return WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  backgroundColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9), //Colors.black54,
-                  children: <Widget>[
-                    Text(
-                      "Saving",
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SpacerWidget(10),
-                    ...processList
-                        .map((item) => Container(
+            return WillPopScope(
+                onWillPop: () async => false,
+                child: SimpleDialog(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                    backgroundColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9), //Colors.black54,
+                    children: <Widget>[
+                      Utility.textWidget(
+                          textAlign: TextAlign.center,
+                          context: context,
+                          text: 'Saving',
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontWeight: FontWeight.bold)),
+                      SpacerWidget(10),
+                      ...processList
+                          .map((item) => Container(
                               margin: EdgeInsets.symmetric(vertical: 7),
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               height: 55,
@@ -467,31 +473,29 @@ class OcrUtility {
                                       Border.all(color: AppTheme.kButtonColor),
                                   borderRadius: BorderRadius.circular(10)),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    item,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
-                                  progressStatusWidget(
-                                      value: item,
-                                      assessmentExportAndSaveStatus:
-                                          assessmentExportAndSaveStatus)
-                                ],
-                              ),
-                            ))
-                        .toList(),
-                  ]));
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text: item,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline3!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary)),
+                                    progressStatusWidget(
+                                        value: item,
+                                        assessmentExportAndSaveStatus:
+                                            assessmentExportAndSaveStatus)
+                                  ])))
+                          .toList(),
+                    ]));
+          });
         });
-      },
-    );
   }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -511,14 +515,11 @@ class OcrUtility {
             assessmentExportAndSaveStatus
                 .value.saveAssessmentResultToDashboard!)) {
       return Icon(
-        IconData(0xe877,
-            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        color: AppTheme.kButtonColor,
-      );
+          IconData(0xe877,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor);
     } else {
-      return CupertinoActivityIndicator(
-        color: AppTheme.kButtonColor,
-      );
+      return CupertinoActivityIndicator(color: AppTheme.kButtonColor);
     }
   }
 
@@ -530,126 +531,113 @@ class OcrUtility {
     BuildContext? context,
   }) async {
     return showDialog<void>(
-      useRootNavigator: false,
-      context: context!,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async => false,
-            child: SimpleDialog(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                backgroundColor: Colors.transparent,
-                children: <Widget>[
-                  Container(
-                    color: Colors.transparent,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.18,
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(top: 45),
-                            decoration: BoxDecoration(
-                              color: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black,
-                                    offset: Offset(0, 2),
-                                    blurRadius: 10),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: 25,
-                                ),
-                                Text(
-                                  'Awesome!',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'Student Assignments Saved Successfully',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
-                                ),
-                              ],
-                            )
-                            // child: FittedBox(child: pbisStudentDetailWidget)
-                            ),
-                        Positioned(
-                          top: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xff000000) !=
-                                          Theme.of(context).backgroundColor
-                                      ? Color(0xff111C20)
-                                      : Color(0xffF7F8F9),
-                                  width: 8),
-                              //color: AppTheme.kButtonColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Container(
+        useRootNavigator: false,
+        context: context!,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                  backgroundColor: Colors.transparent,
+                  children: <Widget>[
+                    Container(
+                        color: Colors.transparent,
+                        child: Stack(alignment: Alignment.center, children: <
+                            Widget>[
+                          Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.only(top: 45),
                               decoration: BoxDecoration(
-                                color: AppTheme.kButtonColor,
-                                //color: AppTheme.kButtonColor,
-                                shape: BoxShape.circle,
-                              ),
-                              height: 80,
-                              width: 80,
-                              child: Icon(
-                                IconData(0xe877,
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
                                 color: Color(0xff000000) !=
                                         Theme.of(context).backgroundColor
                                     ? Color(0xff111C20)
                                     : Color(0xffF7F8F9),
-                                size: 40,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black,
+                                      offset: Offset(0, 2),
+                                      blurRadius: 10)
+                                ],
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ]));
-      },
-    );
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 25,
+                                    ),
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text: 'Awesome!',
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                fontWeight: FontWeight.bold)),
+                                    Utility.textWidget(
+                                        textAlign: TextAlign.center,
+                                        context: context,
+                                        text:
+                                            'Student Assignments Saved Successfully',
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline4!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary))
+                                  ])),
+                          Positioned(
+                              top: 0,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xff111C20)
+                                              : Color(0xffF7F8F9),
+                                          width: 8),
+                                      shape: BoxShape.circle),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.kButtonColor,
+                                        //color: AppTheme.kButtonColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      height: 80,
+                                      width: 80,
+                                      child: Icon(
+                                          IconData(0xe877,
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xff111C20)
+                                              : Color(0xffF7F8F9),
+                                          size: 40))))
+                        ]))
+                  ]));
+        });
   }
 
   static getTeacherId() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (Globals.teacherId != null && Globals.teacherId.isNotEmpty) {
-        return Globals.teacherId;
-      } else {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        return prefs.getString(OcrOverrides.teacherId);
-      }
-    } catch (e) {}
+      return prefs.getString(OcrOverrides.teacherId) ?? '';
+    } catch (e) {
+      throw e;
+    }
   }
 
   static setTeacherId(String techerId) async {

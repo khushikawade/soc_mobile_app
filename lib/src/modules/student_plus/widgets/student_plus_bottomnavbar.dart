@@ -94,8 +94,12 @@ class StudentPlusBottomNavBar {
     );
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
       icon: ResultSummaryIcons(
-          sectionType == "Student" ? "0xe80a" : getStaffIconCode(),
-          sectionType == "Student" ? 'Student' : 'Staff',
+          getIconCode(sectionType: sectionType ?? "Staff"),
+          sectionType == "Student"
+              ? 'Student'
+              : sectionType == 'Family'
+                  ? "Family"
+                  : 'Staff',
           context),
       activeColorPrimary: AppTheme.kButtonColor,
       inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -104,19 +108,39 @@ class StudentPlusBottomNavBar {
     return persistentBottomNavBarItemList;
   }
 
-  /* --------- function to get staff icon code from main bottom navBar -------- */
-  static String getStaffIconCode() {
-    String staffIconCode = '0xe808';
+  /* --------- function to get section icon code from main bottom navBar -------- */
+  static String getIconCode({required String sectionType}) {
+    String IconCode = '0xe808';
     for (var i = 0;
         i < Globals.appSetting.bottomNavigationC!.split(";").length;
         i++) {
-      if (Globals.appSetting.bottomNavigationC!.split(";").contains('staff')) {
-        staffIconCode =
-            Globals.appSetting.bottomNavigationC!.split(";")[i].split("_")[1];
-        return staffIconCode;
+      if (sectionType == "Staff") {
+        if (Globals.appSetting.bottomNavigationC!
+            .split(";")
+            .contains('staff')) {
+          IconCode =
+              Globals.appSetting.bottomNavigationC!.split(";")[i].split("_")[1];
+          return IconCode;
+        }
+      } else if (sectionType == "Student") {
+        if (Globals.appSetting.bottomNavigationC!
+            .split(";")
+            .contains('student')) {
+          IconCode =
+              Globals.appSetting.bottomNavigationC!.split(";")[i].split("_")[1];
+          return IconCode;
+        }
+      } else {
+        if (Globals.appSetting.bottomNavigationC!
+            .split(";")
+            .contains('family')) {
+          IconCode =
+              Globals.appSetting.bottomNavigationC!.split(";")[i].split("_")[1];
+          return IconCode;
+        }
       }
     }
-    return staffIconCode;
+    return IconCode;
   }
 
   /* -------------------- bottom navigation bar item widget ------------------- */

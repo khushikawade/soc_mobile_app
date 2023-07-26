@@ -36,23 +36,25 @@ class StudentPlusCourseWorkModel {
   final String? creatorUserId;
   @HiveField(13)
   final List<StudentWorkSubmission>? studentWorkSubmission;
+  @HiveField(14)
+  final String? studentCourseUserId;
 
-  StudentPlusCourseWorkModel({
-    this.courseId,
-    this.id,
-    this.title,
-    this.description,
-    this.state,
-    this.alternateLink,
-    this.creationTime,
-    this.updateTime,
-    this.maxPoints,
-    this.workType,
-    this.submissionModificationMode,
-    this.associatedWithDeveloper,
-    this.creatorUserId,
-    this.studentWorkSubmission,
-  });
+  StudentPlusCourseWorkModel(
+      {this.courseId,
+      this.id,
+      this.title,
+      this.description,
+      this.state,
+      this.alternateLink,
+      this.creationTime,
+      this.updateTime,
+      this.maxPoints,
+      this.workType,
+      this.submissionModificationMode,
+      this.associatedWithDeveloper,
+      this.creatorUserId,
+      this.studentWorkSubmission,
+      this.studentCourseUserId});
 
   factory StudentPlusCourseWorkModel.fromRawJson(String str) =>
       StudentPlusCourseWorkModel.fromJson(json.decode(str));
@@ -61,28 +63,28 @@ class StudentPlusCourseWorkModel {
 
   factory StudentPlusCourseWorkModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusCourseWorkModel(
-        courseId: json["courseId"],
-        id: json["id"],
-        title: json["title"],
-        description: json["description"],
-        state: json["state"],
-        alternateLink: json["alternateLink"],
-        creationTime: json["creationTime"] == null
-            ? null
-            : DateTime.parse(json["creationTime"]),
-        updateTime: json["updateTime"] == null
-            ? null
-            : DateTime.parse(json["updateTime"]),
-        maxPoints: json["maxPoints"],
-        workType: json["workType"],
-        submissionModificationMode: json["submissionModificationMode"],
-        associatedWithDeveloper: json["associatedWithDeveloper"],
-        creatorUserId: json["creatorUserId"],
-        studentWorkSubmission: json["studentWorkSubmission"] == null
-            ? []
-            : List<StudentWorkSubmission>.from(json["studentWorkSubmission"]!
-                .map((x) => StudentWorkSubmission.fromJson(x))),
-      );
+          courseId: json["courseId"],
+          id: json["id"],
+          title: json["title"],
+          description: json["description"],
+          state: json["state"],
+          alternateLink: json["alternateLink"],
+          creationTime: json["creationTime"] == null
+              ? null
+              : DateTime.parse(json["creationTime"]),
+          updateTime: json["updateTime"] == null
+              ? null
+              : DateTime.parse(json["updateTime"]),
+          maxPoints: json["maxPoints"],
+          workType: json["workType"],
+          submissionModificationMode: json["submissionModificationMode"],
+          associatedWithDeveloper: json["associatedWithDeveloper"],
+          creatorUserId: json["creatorUserId"],
+          studentWorkSubmission: json["studentWorkSubmission"] == null
+              ? []
+              : List<StudentWorkSubmission>.from(json["studentWorkSubmission"]!
+                  .map((x) => StudentWorkSubmission.fromJson(x))),
+          studentCourseUserId: null);
 
   Map<String, dynamic> toJson() => {
         "courseId": courseId,

@@ -123,6 +123,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   final editingStudentIdController = TextEditingController();
   final studentScoreController = TextEditingController();
   String? pointPossible;
+  String oldStudentId = ''; // Used in case of update record to dashboard
 
   // ValueNotifier<List<StudentAssessmentInfo>> studentRecordList =
   //     ValueNotifier([]);
@@ -211,6 +212,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              refresh: (v) {
+                setState(() {});
+              },
               iconData: widget.titleIconData,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
@@ -1398,6 +1402,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       required String pointPossible,
       required String answerKey,
       required String studentSelection}) {
+    oldStudentId = controllerTwo.text;
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -1466,6 +1471,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 disableSlidableAction.value = true;
 
                 Navigator.pop(context, false);
+
+                _ocrBloc.add(UpdateGradedPlusStudentResult(
+                    mewStudentId: id.text,
+                    oldStudentId: oldStudentId,
+                    result: score.text,
+                    studentName: name.text,
+                    assessmentId: Globals.currentAssessmentId));
 
                 //!UNCOMMENT Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(

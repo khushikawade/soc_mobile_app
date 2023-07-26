@@ -59,6 +59,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   IconData? iconData;
   final String? sectionType;
   final scaffoldKey;
+  final ValueChanged? refresh;
 
   CustomOcrAppBarWidget(
       {required Key? key,
@@ -83,7 +84,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       required this.fromGradedPlus,
       required this.plusAppName,
       required this.iconData,
-      this.sectionType})
+      this.sectionType,
+      required this.refresh})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -345,18 +347,20 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         (_) => false);
                     return;
                   }
+
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
                   await UserGoogleProfile.clearUserProfile();
                   await GoogleClassroom.clearClassroomCourses();
-                  Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  await Authentication.signOut(context: context);
+                  await Utility.clearStudentInfo(tableName: 'student_info');
+                  await Utility.clearStudentInfo(
+                      tableName: 'history_student_info');
 
                   LocalDatabase<PBISPlusNotesUniqueStudentList>
                       _pbisPlusStudentListDB =
                       LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-                  _pbisPlusStudentListDB.clear();
+                  await _pbisPlusStudentListDB.clear();
 
                   // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
@@ -365,6 +369,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       activityId: '3',
                       description: 'User profile logout',
                       operationResult: 'Success');
+
                   // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
                   if (Overrides.STANDALONE_GRADED_APP) {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -552,7 +557,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/

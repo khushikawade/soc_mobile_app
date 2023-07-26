@@ -374,10 +374,17 @@ class _StaffPageState extends State<StaffPage> {
         //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
+      Utility.showLoadingDialog(
+          context: context, msg: "Please Wait", isOCR: false);
+      await Authentication.refreshAuthenticationToken(
+          refreshToken: _profileData[0].refreshToken);
       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
       //Creating fresh sessionID
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      if (Navigator.of(context).canPop()) {
+        Navigator.pop(context, true);
+      }
 
       navigatorToScreen(actionName: actionName);
     }

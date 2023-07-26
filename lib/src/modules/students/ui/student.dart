@@ -443,14 +443,13 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
-          onTap: () {
-            Utility.scrollToTop(scrollController: _scrollController);
-          },
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
+            onTap: () {
+              Utility.scrollToTop(scrollController: _scrollController);
+            },
+            marginLeft: 30,
+            refresh: (v) {
+              setState(() {});
+            }),
         body: //widget.isCustomSection == false &&
             Globals.appSetting.studentBannerImageC != null &&
                     Globals.appSetting.studentBannerImageC != ""
@@ -586,39 +585,6 @@ class _StudentPageState extends State<StudentPage> {
       withNavBar: false,
     );
   }
-
-  // popupModal({required String message}) {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) =>
-  //           OrientationBuilder(builder: (context, orientation) {
-  //             return CommonPopupWidget(
-  //               isLogout: true,
-  //               orientation: orientation,
-  //               context: context,
-  //               message: message,
-  //               title: "Action Required",
-  //               confirmationOnPress: () async {
-  //                 await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //                     "logout");
-  //                 await UserGoogleProfile.clearUserProfile();
-  //                 await GoogleClassroom.clearClassroomCourses();
-  //                 await Authentication.signOut(context: context);
-  //                 Utility.clearStudentInfo(tableName: 'student_info');
-  //                 Utility.clearStudentInfo(tableName: 'history_student_info');
-  //                 // Globals.googleDriveFolderId = null;
-  //                 PlusUtility.updateLogs(
-  //                     activityType: 'GRADED+',
-  //                     userType: 'Teacher',
-  //                     activityId: '3',
-  //                     description: 'User profile logout',
-  //                     operationResult: 'Success');
-  //                 Navigator.pop(context);
-  //                 studentPlusLogin();
-  //               },
-  //             );
-  //           }));
-  // }
 
   /* ---------------------------- Function call in case of student Plus --------------------------- */
   Future studentPlusLogin() async {

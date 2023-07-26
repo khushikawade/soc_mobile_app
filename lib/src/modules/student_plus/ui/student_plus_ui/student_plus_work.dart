@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_family_student_list.dart';
+import 'package:Soc/src/modules/student_plus/model/student_google_presentation_detail_modal.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_searchbar_and_dropdown_widget.dart';
 import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_presentation/bloc/google_presentation_bloc.dart';
@@ -19,21 +19,15 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart'
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
   StudentPlusDetailsModel studentDetails;
@@ -47,29 +41,34 @@ class StudentPlusWorkScreen extends StatefulWidget {
 }
 
 class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
-  static const double _kLabelSpacing =
-      20.0; // Used for space between the  widget
+  // Used for space between the  widget
+  static const double _kLabelSpacing = 20.0;
   // controller used for search page
-  final _controller = TextEditingController();
+  // final _controller = TextEditingController();
+//------------------------------------------------------------------------------------------------------
+
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
-  ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
-  // List<StudentPlusWorkModel> studentWorkUpdatedList = [];
-  FocusNode myFocusNode = new FocusNode();
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
+  final StudentPlusBloc _studentPlusForStudentGooglePresentationBloc =
+      StudentPlusBloc();
   final GoogleSlidesPresentationBloc googleSlidesPresentationBloc =
       GoogleSlidesPresentationBloc();
+//------------------------------------------------------------------------------------------------------
+
+  ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  FocusNode myFocusNode = new FocusNode();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
+//------------------------------------------------------------------------------------------------------
+
   List<ResultSummaryIcons> resultSummaryIconsModalList = [
+    ResultSummaryIcons(title: 'Sync Presentation', svgPath: ''),
     ResultSummaryIcons(
-      title: 'Sync Presentation',
-      svgPath: '',
-    ),
-    ResultSummaryIcons(
-      title: 'Open Presentation',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-    ),
+        title: 'Open Presentation',
+        svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg')
   ];
+//------------------------------------------------------------------------------------------------------
+
   @override
   void initState() {
     _studentPlusBloc.add(
@@ -93,108 +92,57 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackgroundImgWidget(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: StudentPlusAppBar(
+    return Stack(children: [
+      CommonBackgroundImgWidget(),
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: StudentPlusAppBar(
             sectionType: widget.sectionType,
             titleIconCode: 0xe885,
             isWorkPage: true,
             refresh: (v) {
               setState(() {});
-            },
-          ),
-          body: Container(
+            }),
+        body: Container(
             padding: EdgeInsets.symmetric(
                 horizontal: StudentPlusOverrides.kSymmetricPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PlusScreenTitleWidget(
-                        kLabelSpacing: _kLabelSpacing,
-                        text: StudentPlusOverrides.studentPlusWorkTitle),
-                    BlocBuilder<StudentPlusBloc, StudentPlusState>(
-                        bloc: _studentPlusBloc,
-                        builder: (BuildContext contxt, StudentPlusState state) {
-                          if (state is StudentPlusLoading) {
-                            return Container();
-                            // return CupertinoActivityIndicator();
-                          } else if (state is StudentPlusWorkSuccess) {
-                            return state.obj.length > 0
-                                ? filterIcon(list: state.obj)
-                                : Container();
-                          } else {
-                            return Container();
-                          }
-                        })
-                    // filterIcon()
-                  ],
-                ),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                widget.sectionType == "Student"
-                    ? Container()
-                    : PlusAppSearchBar(
-                        sectionName: 'STUDENT+',
-                        hintText:
-                            '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
-                        isMainPage: false,
-                        autoFocus: false,
-                        onTap: () {
-                          if (widget.sectionType == "Family") {
-                            showModalBottomSheet(
-                              useRootNavigator: true,
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(42),
-                                  topRight: Radius.circular(42),
-                                ),
-                              ),
-                              builder: (_) => LayoutBuilder(builder:
-                                  (BuildContext context,
-                                      BoxConstraints constraints) {
-                                return StudentPlusFamilyStudentList(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.4, //0.45,
-                                  currentIndex: 2,
-                                );
-                              }),
-                            );
-                          } else {
-                            pushNewScreen(
-                              context,
-                              screen: StudentPlusSearchScreen(
-                                  fromStudentPlusDetailPage: true,
-                                  index: 2,
-                                  studentDetails: widget.studentDetails),
-                              withNavBar: false,
-                            );
-                          }
-                        },
-                        controller: _controller,
-                        kLabelSpacing: _kLabelSpacing,
-                        focusNode: myFocusNode,
-                      ),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-                listViewWidget(),
-                SpacerWidget(20)
-              ],
-            ),
-          ),
-          floatingActionButton: fab(),
-        ),
-        //googleSlidesPresentationBlocListener(),
-        googleDriveBlocListener(),
-      ],
-    );
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                PlusScreenTitleWidget(
+                    kLabelSpacing: _kLabelSpacing,
+                    text: StudentPlusOverrides.studentPlusWorkTitle),
+                BlocBuilder<StudentPlusBloc, StudentPlusState>(
+                    bloc: _studentPlusBloc,
+                    builder: (BuildContext contxt, StudentPlusState state) {
+                      if (state is StudentPlusLoading) {
+                        return Container();
+                        // return CupertinoActivityIndicator();
+                      } else if (state is StudentPlusWorkSuccess) {
+                        return state.obj.length > 0
+                            ? filterIcon(list: state.obj)
+                            : Container();
+                      } else {
+                        return Container();
+                      }
+                    })
+              ]),
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+              widget.sectionType == "Student"
+                  ? Container()
+                  : StudentPlusSearchBarAndDropdown(
+                      sectionType: widget.sectionType,
+                      studentDetails: widget.studentDetails),
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+              listViewWidget(),
+              SpacerWidget(20)
+            ])),
+        floatingActionButton: fab(),
+      ),
+      googleDriveBlocListener(),
+      _studentPlusForStudentGooglePresentationBlocListener()
+    ]);
   }
 
   /* ----------------------- Widget to show filter icon ----------------------- */
@@ -497,13 +445,14 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               valueListenable: filterNotifier,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (filterNotifier.value == '' &&
-                    state is StudentPlusWorkSuccess &&
-                    state.obj.length > 0) {
+                if (state is StudentPlusWorkSuccess && state.obj.length > 0) {
                   return PlusCustomFloatingActionButton(onPressed: () async {
                     //GET THE CURRENT USER PROFILE DETAIL
                     List<UserInformation> userProfileInfoData =
                         await UserGoogleProfile.getUserProfile();
+                    //ShOW LOADING
+                    Utility.showLoadingDialog(
+                        context: context, isOCR: true, msg: 'Please Wait...');
 
                     if (userProfileInfoData[0].studentPlusGoogleDriveFolderId ==
                             null ||
@@ -511,7 +460,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                             "") {
                       _checkDriveFolderExistsOrNot();
                     } else {
-                      _shareBottomSheetMenu();
+                      getStundentGooglePresentationDetails();
                     }
                   });
                 } else {
@@ -521,36 +470,29 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         });
   }
 
-  _shareBottomSheetMenu() async {
-    // if (widget.studentDetails.studentGooglePresentationUrl != null &&
-    //     widget.studentDetails.studentGooglePresentationUrl != '') {
-    //   resultSummaryIconsModalList.add(
-    //     ResultSummaryIcons(
-    //       title: 'Open Presentation',
-    //       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-    //     ),
-    //   );
-    // }
-    // print(widget.studentDetails.studentGooglePresentationUrl);
+  _shareBottomSheetMenu(
+      {required StudentPlusDetailsModel studentDetails}) async {
+    //to remove loading popup
+    Navigator.of(context).pop();
     final result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
+        isDismissible: false,
+        enableDrag: false,
         backgroundColor: Colors.transparent,
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
         builder: (BuildContext context) {
           return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return StudentPlusOptionBottomSheet(
-                  studentDetails: widget.studentDetails,
-                  resultSummaryIconsModalList: resultSummaryIconsModalList,
-                  height: MediaQuery.of(context).size.height * 0.35);
-            },
-          );
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return StudentPlusOptionBottomSheet(
+                filterName: filterNotifier.value ?? '',
+                studentDetails: studentDetails,
+                resultSummaryIconsModalList: resultSummaryIconsModalList,
+                height: MediaQuery.of(context).size.height * 0.35);
+          });
         });
     if (result != null) {
       widget.studentDetails = result;
@@ -562,13 +504,10 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         bloc: googleDriveBloc,
         child: Container(),
         listener: (context, state) async {
-          print("On student work ------------$state---------");
-
           //Checking Google Folder State
           if (state is GoogleFolderCreated) {
-            Navigator.of(context).pop();
-
-            _shareBottomSheetMenu();
+            //Trigger this event to get the student google presentations details
+            getStundentGooglePresentationDetails();
           }
           if (state is ErrorState) {
             Navigator.of(context).pop();
@@ -579,17 +518,19 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
-                  "Something Went Wrong. Please Try Again.", null);
+                  state.errorMsg == 'NO_CONNECTION' ||
+                          state.errorMsg == 'Connection failed' ||
+                          state.errorMsg == 'Software caused connection abort'
+                      ? 'Make sure you have a proper Internet connection'
+                      : "Something Went Wrong. Please Try Again.",
+                  null);
             }
           }
         });
   }
 
   void _checkDriveFolderExistsOrNot() async {
-    Utility.showLoadingDialog(
-        context: context, isOCR: true, msg: 'Please Wait...');
     //FOR STUDENT PLUS
-
     //this is get the user profile details
     final List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
@@ -603,5 +544,47 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         token: userProfile.authorizationToken,
         folderName: "SOLVED STUDENT+",
         refreshToken: userProfile.refreshToken));
+  }
+
+// get the student google presentation details
+  void getStundentGooglePresentationDetails() {
+    _studentPlusForStudentGooglePresentationBloc.add(
+        GetStudentPlusWorkGooglePresentationDetails(
+            studentDetails: widget.studentDetails,
+            schoolDBN: Globals.schoolDbnC ?? '',
+            filterName: filterNotifier.value ?? ''));
+  }
+
+  BlocListener _studentPlusForStudentGooglePresentationBlocListener() {
+    return BlocListener(
+        bloc: _studentPlusForStudentGooglePresentationBloc,
+        child: Container(),
+        listener: (context, state) async {
+          if (state is GetStudentPlusWorkGooglePresentationDetailsSuccess) {
+            if (state.studentGooglePresentationDetail != false) {
+              StudentGooglePresentationDetailModal obj =
+                  state.studentGooglePresentationDetail;
+              widget.studentDetails.studentGooglePresentationId =
+                  obj.googlePresentationId ?? "";
+              widget.studentDetails.studentGooglePresentationUrl =
+                  obj.googlePresentationURL ?? '';
+            } else {
+              widget.studentDetails.studentGooglePresentationId = '';
+              widget.studentDetails.studentGooglePresentationUrl = '';
+            }
+
+            _shareBottomSheetMenu(studentDetails: widget.studentDetails);
+          }
+          if (state is StudentPlusErrorReceived) {
+            Navigator.of(context).pop();
+            Utility.currentScreenSnackBar(
+                state.err == 'NO_CONNECTION' ||
+                        state.err == 'Connection failed' ||
+                        state.err == 'Software caused connection abort'
+                    ? 'Make sure you have a proper Internet connection'
+                    : "Something Went Wrong. Please Try Again.",
+                null);
+          }
+        });
   }
 }

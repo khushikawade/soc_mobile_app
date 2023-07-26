@@ -44,13 +44,14 @@ class PBISPlusUtility {
       required IconData titleIconData,
       required title,
       required GlobalKey<ScaffoldState> scaffoldKey,
-      bool? isGradedPlus}) {
+      bool? isGradedPlus,
+      required ValueChanged? refresh}) {
     return PBISPlusAppBar(
-      scaffoldKey: scaffoldKey,
-      title: title,
-      titleIconData: titleIconData,
-      isGradedPlus: isGradedPlus,
-    );
+        scaffoldKey: scaffoldKey,
+        title: title,
+        titleIconData: titleIconData,
+        isGradedPlus: isGradedPlus,
+        refresh: refresh);
   }
 
   static String convertDateString(String? dateString) {

@@ -60,6 +60,9 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
             sectionType: widget.sectionType,
             iconData: null,
             plusAppName: widget.plusAppName,

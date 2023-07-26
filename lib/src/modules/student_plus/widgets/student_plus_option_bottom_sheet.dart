@@ -25,6 +25,7 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
   StudentPlusDetailsModel studentDetails;
+  final String? filterName;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
 
   StudentPlusOptionBottomSheet(
@@ -32,7 +33,8 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
       this.title,
       this.height = 200,
       required this.resultSummaryIconsModalList,
-      required this.studentDetails});
+      required this.studentDetails,
+      required this.filterName});
 
   @override
   State<StudentPlusOptionBottomSheet> createState() =>
@@ -73,6 +75,8 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   void dispose() {
+    _pageController.dispose();
+
     // TODO: implement dispose
     super.dispose();
   }
@@ -165,8 +169,6 @@ class _GradedPlusResultOptionBottomSheetState
         break;
 
       case 'Sync Presentation':
-        // _pageController.animateToPage(1,
-        //     duration: const Duration(milliseconds: 100), curve: Curves.ease);
         navigateToPage(pageIndex: 1);
 
         if (widget.studentDetails.studentGooglePresentationId == null ||
@@ -285,7 +287,6 @@ class _GradedPlusResultOptionBottomSheetState
             widget.studentDetails.studentGooglePresentationUrl = '';
             isStateRecived.value = !isStateRecived.value;
             navigateToPage(pageIndex: 0);
-            // Navigator.of(context).pop();
 
             if (state.errorMsg == 'ReAuthentication is required') {
               await Authentication.reAuthenticationRequired(
@@ -294,8 +295,10 @@ class _GradedPlusResultOptionBottomSheetState
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
+                  state.errorMsg == 'NO_CONNECTION' ||
+                          state.errorMsg == 'Connection failed' ||
+                          state.errorMsg == 'Software caused connection abort'
+                      ? 'Make sure you have a proper Internet connection'
                       : state.errorMsg == "404"
                           ? "Ahh! Looks like the Google Presentation moved to trash. Try again to create a new Google Presentation."
                           : "Something Went Wrong. Please Try Again.",
@@ -314,15 +317,17 @@ class _GradedPlusResultOptionBottomSheetState
           if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
             if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
               isStateRecived.value = !isStateRecived.value;
-              // Navigator.of(context).pop();
+
               navigateToPage(pageIndex: 0);
               Utility.currentScreenSnackBar(
                   "Student presentation synced to google drive successfully.",
                   null);
             } else {
+              // //now update the save the student google Presentation work on database
               widget.studentDetails = state.studentDetails;
               //now update the save the student google Presentation work on database
               studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                  filterName: widget.filterName ?? '',
                   studentDetails: state.studentDetails));
             }
           }
@@ -336,12 +341,12 @@ class _GradedPlusResultOptionBottomSheetState
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    googleSlidesPresentationBloc
-        .add(StudentPlusCreateGooglePresentationForStudent(
-      studentPlusDriveFolderId:
-          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-      studentDetails: widget.studentDetails,
-    ));
+    googleSlidesPresentationBloc.add(
+        StudentPlusCreateGooglePresentationForStudent(
+            filterName: widget.filterName ?? '',
+            studentPlusDriveFolderId:
+                userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+            studentDetails: widget.studentDetails));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
@@ -353,10 +358,21 @@ class _GradedPlusResultOptionBottomSheetState
 
     List<StudentPlusWorkModel>? _localData = await _localDb.getData();
     _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+    List<StudentPlusWorkModel> studentWorkUpdatedList = [];
+    //Filtered Records
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i].subjectC == widget.filterName ||
+          widget.filterName == '' ||
+          widget.filterName ==
+              "${_localData[i].firstName ?? ''} ${_localData[i].lastName ?? ''}") {
+        studentWorkUpdatedList.add(_localData[i]);
+      }
+    }
 
     googleSlidesPresentationBloc.add(
         StudentPlusUpdateGooglePresentationForStudent(
-            studentDetails: widget.studentDetails, allRecords: _localData));
+            studentDetails: widget.studentDetails,
+            allRecords: studentWorkUpdatedList));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
@@ -380,7 +396,12 @@ class _GradedPlusResultOptionBottomSheetState
             widget.studentDetails.studentGooglePresentationUrl = '';
             // Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
-                "Something went wrong. Please try Again.", null);
+                state.err == 'NO_CONNECTION' ||
+                        state.err == 'Connection failed' ||
+                        state.err == 'Software caused connection abort'
+                    ? 'Make sure you have a proper Internet connection'
+                    : "Something Went Wrong. Please Try Again.",
+                null);
             isStateRecived.value = !isStateRecived.value;
             navigateToPage(pageIndex: 0);
           }
