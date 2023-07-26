@@ -65,7 +65,7 @@ class PBISPlusUtility {
     return outputFormat.format(date);
   }
 
-  static String getStudentTotalCounts(
+  static int getStudentTotalCounts(
       {required ClassroomStudents student,
       required bool? isCustomBehavior,
       required List<PBISPlusCommonBehaviorModal> teacherCustomBehaviorList}) {
@@ -90,10 +90,10 @@ class PBISPlusUtility {
             .fold(0, (sum, count) => sum + count);
       }
 
-      return totalCounts?.toString() ?? "0";
+      return totalCounts ?? 0;
     } catch (e) {
       print(e);
-      return "0";
+      return 0;
     }
   }
 

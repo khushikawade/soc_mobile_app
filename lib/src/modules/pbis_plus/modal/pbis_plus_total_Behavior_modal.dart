@@ -2,7 +2,7 @@ import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_mod
 import 'package:hive/hive.dart';
 part 'pbis_plus_total_Behavior_modal.g.dart';
 
-@HiveType(typeId: 55)
+@HiveType(typeId: 59)
 class PBISPlusTotalBehaviorModal {
   @HiveField(0)
   String? schoolAppC;
