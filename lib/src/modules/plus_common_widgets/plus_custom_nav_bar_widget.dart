@@ -29,19 +29,16 @@ class PlusCustomNavBarWidget extends StatelessWidget {
             decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(25),
-                  topLeft: Radius.circular(25),
-                ),
+                    topRight: Radius.circular(25),
+                    topLeft: Radius.circular(25)),
                 boxShadow: [
                   BoxShadow(
                       color: Theme.of(context)
                           .colorScheme
                           .primaryVariant
-                          .withOpacity(0.1),
-                      blurRadius: 5.0,
-                      offset: Offset(0, -8)),
+                          .withOpacity(0.5),
+                      blurRadius: 10.0)
                 ]),
-            // height: 140.0,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: items.map((item) {
