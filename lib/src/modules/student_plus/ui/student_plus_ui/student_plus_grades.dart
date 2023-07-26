@@ -249,16 +249,11 @@ class individual extends State<StudentPlusGradesPage> {
                       child: Row(
                         children: [
                           Container(
-                            height: 10,
-                            width: 10,
-                            child: SvgPicture.asset(
-                              'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
-                              // color: AppTheme.kButtonColor,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
+                              height: 10,
+                              width: 10,
+                              child: SvgPicture.asset(
+                                  'assets/ocr_result_section_bottom_button_icons/Classroom.svg')),
+                          SizedBox(width: 5),
                           Utility.textWidget(
                               text: chipValue,
                               context: context,
