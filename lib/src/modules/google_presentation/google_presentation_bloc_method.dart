@@ -214,18 +214,23 @@ class GooglePresentationBlocMethods {
       allRecords
           .asMap()
           .forEach((int index, StudentPlusWorkModel element) async {
-        String pageObjectUniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+        String pageObjectuniqueId = "pageObjectId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
 
-        String tableObjectUniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+        String tableObjectuniqueId = "tableObjectId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
+        String imageObjectuniqueId = "imageObjectuniqueId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
 
         //--------------------------------------------------------------------------------------
         // Preparing all other blank slide (based on student detail length) type to add assessment images
         Map slideObject = {
           "createSlide": {
             "insertionIndex": index + 1, //Location to add new slides
-            "objectId": pageObjectUniqueId,
+            "objectId": pageObjectuniqueId,
             "slideLayoutReference": {"predefinedLayout": "BLANK"}
           }
         };
@@ -239,9 +244,9 @@ class GooglePresentationBlocMethods {
             "createImage": {
               "url": element.assessmentImageC,
               "elementProperties": {
-                "pageObjectId": pageObjectUniqueId,
+                "pageObjectId": pageObjectuniqueId,
               },
-              "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+              "objectId": imageObjectuniqueId
             }
           };
           slideRequiredObjectsList.add(obj);
@@ -253,9 +258,9 @@ class GooglePresentationBlocMethods {
           "createTable": {
             "rows": listOfFieldsForEveryStudentSlide.length, //pass no. of names
             "columns": 2, //key:value
-            "objectId": tableObjectUniqueId,
+            "objectId": tableObjectuniqueId,
             "elementProperties": {
-              "pageObjectId": pageObjectUniqueId,
+              "pageObjectId": pageObjectuniqueId,
               "size": {
                 "width": {"magnitude": 6000000, "unit": "EMU"},
                 "height": {"magnitude": 3000000, "unit": "EMU"}
@@ -279,7 +284,7 @@ class GooglePresentationBlocMethods {
             slideRequiredObjectsList.add(
               {
                 "insertText": {
-                  "objectId": tableObjectUniqueId,
+                  "objectId": tableObjectuniqueId,
                   "cellLocation": {
                     "rowIndex": rowIndex,
                     "columnIndex": columnIndex
@@ -295,7 +300,7 @@ class GooglePresentationBlocMethods {
             //update the textstyle and fontsize of table cells
             slideRequiredObjectsList.add({
               "updateTextStyle": {
-                "objectId": tableObjectUniqueId,
+                "objectId": tableObjectuniqueId,
                 "style": {
                   "fontSize": {"magnitude": 10, "unit": "PT"},
                   "bold": columnIndex == 0
