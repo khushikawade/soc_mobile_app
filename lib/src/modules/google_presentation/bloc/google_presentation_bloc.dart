@@ -579,12 +579,12 @@ class GoogleSlidesPresentationBloc
       };
       //---------------------------------------------------------------------------------
       final ResponseModel response = await _dbServices.postApi(
-          'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+          '${GoogleOverrides.Google_BRIDGE_API_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           body: body,
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return [true, true];
       } else if (retry > 0) {
         // var result = googleDriveBloc
