@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -74,7 +75,6 @@ class PBISPlusActionInteractionButtonState
       ) {
         _isOffline = connectivity == ConnectivityResult.none;
         return InkWell(
-          onTap: () {},
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,8 +144,8 @@ class PBISPlusActionInteractionButtonState
                             Widget? child) {
                           return Container(
                               height:
-                                  widget.isFromStudentPlus == true ? 28 : 24,
-                              width: widget.isFromStudentPlus == true ? 28 : 24,
+                                  widget.isFromStudentPlus == true ? 28 : 26,
+                              width: widget.isFromStudentPlus == true ? 28 : 26,
                               alignment: Alignment.center,
                               // padding: EdgeInsets.all(6),
                               decoration: BoxDecoration(
@@ -171,7 +171,7 @@ class PBISPlusActionInteractionButtonState
                                               //     : Colors.white,
                                               fontWeight: FontWeight.w600,
                                               fontSize: 18))
-                                  : _getCounts());
+                                  : buildCounts());
                         }),
                   )
                 ],
@@ -224,14 +224,7 @@ class PBISPlusActionInteractionButtonState
       _showMessage.value = false;
     });
 
-    interactionBloc.add(PbisPlusAddPBISInteraction(
-        context: context,
-        scaffoldKey: widget.scaffoldKey,
-        studentId: widget.studentValueNotifier.value.profile!.id,
-        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
-        classroomCourseId: widget.classroomCourseId,
-        behaviour: widget.iconData,
-        isCustomBehavior: widget.isCustomBehavior));
+    updateCountsId(widget.iconData);
 
     return true;
   }
@@ -295,43 +288,97 @@ class PBISPlusActionInteractionButtonState
   //   return !isLiked;
   // }
 
-  _getCounts() {
-    String title = widget.iconData.behaviorTitleC!;
-    var map = {
-      //TODOPBIS:
-      'Engaged': widget.studentValueNotifier.value.profile!.engaged,
-      'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
-      'Helpful': widget.studentValueNotifier.value.profile!.helpful,
-      'Participation': ++participation.value,
-      'Collaboration': ++collaboration.value,
-      'Listening': ++listening.value,
+  // _getCounts() {
+  //   String title = widget.iconData.behaviorTitleC!;
+  //   var map = {
+  //     //TODOPBIS:
+  //     'Engaged': widget.studentValueNotifier.value.profile!.engaged,
+  //     'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
+  //     'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+  //     'Participation': ++participation.value,
+  //     'Collaboration': ++collaboration.value,
+  //     'Listening': ++listening.value,
 
-      // widget.studentValueNotifier.value.profile!.niceWork,
-      // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
-    };
+  //     // widget.studentValueNotifier.value.profile!.niceWork,
+  //     // 'Helpful': widget.studentValueNotifier.value.profile!.helpful,
+  //   };
 
-    int viewCount = map[title] ?? 0;
+  //   int viewCount = map[title] ?? 0;
+  //   // return viewCount;
+  //   return Padding(
+  //     padding: Globals.deviceType != 'phone'
+  //         ? EdgeInsets.zero
+  //         // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
+  //         : EdgeInsets.zero,
+  //     child: Utility.textWidget(
+  //         text: viewCount.toString(),
+  //         context: context,
+  //         textAlign: TextAlign.center,
+  //         textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+  //             color: Color(0xff000000) == Theme.of(context).backgroundColor
+  //                 ? Color(0xff111C20)
+  //                 : Color(0xff111C20),
+  //             fontSize: 12)),
+  //   );
+  // }
+
+  buildCounts() {
     // return viewCount;
     return FittedBox(
-      child: Padding(
-        padding: Globals.deviceType != 'phone'
-            ? EdgeInsets.zero
-            // const EdgeInsets.only(top: 10, left: 10)//old by Nikhar
-            : EdgeInsets.zero,
-        child: Utility.textWidget(
-            text: viewCount.toString(),
-            context: context,
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
-                color: Colors.grey[600],
-                // Color(0xff000000) ==
-                //         Theme.of(context)
-                //             .backgroundColor
-                //     ? Colors.grey[600]
-                //     : Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14)),
-      ),
-    );
+        child: Padding(
+            padding: EdgeInsets.all(3),
+            child: Utility.textWidget(
+                text: getCountsById(widget.iconData.id ?? '').toString(),
+                context: context,
+                textAlign: TextAlign.center,
+                textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14))));
+  }
+
+  int? getCountsById(String id) {
+    for (BehaviorList item
+        in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
+      if (item.id == id) {
+        return item.behaviorCount ?? 0;
+      }
+    }
+    return 0; // Return null if the ID is not found
+  }
+
+  void updateCountsId(PBISPlusCommonBehaviorModal iconData) {
+    bool isAlready = false;
+
+    for (BehaviorList item
+        in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
+      if (item.id == iconData.id) {
+        isAlready = true;
+        item.behaviorCount = item.behaviorCount! + 1;
+      }
+    }
+
+    if (isAlready == false) {
+      widget.studentValueNotifier.value.profile!.behaviorList!.add(BehaviorList(
+          defaultBehavior: widget.isCustomBehavior != true,
+          id: iconData.id,
+          name: iconData.behaviorTitleC,
+          behaviorCount: 1));
+    }
+
+    //Update interaction text count in card
+    onTapDetect.value = !onTapDetect.value;
+
+    widget.onValueUpdate(
+        widget.studentValueNotifier); //return updated count to other screens
+
+    interactionBloc.add(PbisPlusAddPBISInteraction(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        studentId: widget.studentValueNotifier.value.profile!.id,
+        studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
+        classroomCourseId: widget.classroomCourseId,
+        behaviour: widget.iconData,
+        isCustomBehavior: widget.isCustomBehavior));
   }
 }
