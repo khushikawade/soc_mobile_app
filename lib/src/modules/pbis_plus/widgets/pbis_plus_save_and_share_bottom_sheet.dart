@@ -235,7 +235,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
                 })),
-            SpacerWidget(16)
+            Platform.isIOS ? SpacerWidget(48) : SpacerWidget(16)
           ]),
     );
   }
