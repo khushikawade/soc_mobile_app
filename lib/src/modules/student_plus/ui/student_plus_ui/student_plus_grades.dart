@@ -506,7 +506,7 @@ class individual extends State<StudentPlusGradesPage> {
                       .copyWith(fontWeight: FontWeight.bold)),
               trailing: Utility.textWidget(
                   text: selectedValue.value == "Current"
-                      ? "Total"
+                      ? "Assignment"
                       : StudentPlusOverrides.gradesTitleRight,
                   context: context,
                   textTheme: Theme.of(context)
@@ -525,11 +525,12 @@ class individual extends State<StudentPlusGradesPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _studentPlusBloc.add(FetchStudentGradesEvent(
-            studentId: widget.studentDetails.studentIdC,
+            studentId: widget.studentDetails.studentIdC, //student osis
+            //Student email is not required in Family and Student section since #FAMILY is not logged in with google account and #Student is already having their own data so not need to fetch the garde by specific email filter
             studentEmail: widget.sectionType == 'Family' ||
                     widget.sectionType == 'Student'
                 ? null
-                : widget.studentDetails.emailC)
+                : widget.studentDetails.emailC) //classroom email
 
         // widget.sectionType == 'Staff' || widget.sectionType == 'Family'
         //     ? FetchStudentGradesEvent(
