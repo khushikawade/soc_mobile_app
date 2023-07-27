@@ -771,7 +771,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         automaticallyImplyLeading: false,
         expandedHeight: widget.isFromStudentPlus == true
             ? MediaQuery.of(context).size.height / 2.0
-            : MediaQuery.of(context).size.height / 2.1,
+            // : MediaQuery.of(context).size.height / 2.1,//IF PADDING BETWEEN THE CARD AND TABLE DECREASE THEN CUT IN SMALL DEVICES
+            : MediaQuery.of(context).size.height / 1.9,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
