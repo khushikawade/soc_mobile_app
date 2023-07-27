@@ -14,6 +14,8 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -1063,6 +1065,27 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<ClassroomCourse> localClassroomCourseworkList = [];
         localClassroomCourseworkList.addAll(event.classroomCourseworkList);
 
+// Getting local saved PBISP Plus Default School Behavior
+// Getting local saved PBISP Plus Custom School Behavior
+//------------------------------------------------------------------------------------------//
+
+        LocalDatabase<PBISPlusCommonBehaviorModal>
+            pbisPlusTeacherCustomBehaviorLocalDb = LocalDatabase(
+                PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+
+        List<PBISPlusCommonBehaviorModal>?
+            pbisPlusTeacherCustomBehaviorLocalData =
+            await pbisPlusTeacherCustomBehaviorLocalDb.getData();
+
+        LocalDatabase<PBISPlusCommonBehaviorModal>
+            pbisPlusTeacherDefaultBehaviorLocalDb = LocalDatabase(
+                PBISPlusOverrides.PbisPlusDefaultBehaviorLocalDbTable);
+
+        List<PBISPlusCommonBehaviorModal>?
+            pbisPlusTeacherDefaultBehaviorLocalData =
+            await pbisPlusTeacherDefaultBehaviorLocalDb.getData();
+
+//------------------------------------------------------------------------------------------//
         //REMOVE THE ALL OBJECT FROM LIST IF EXISTS
         if (localClassroomCourseworkList.length > 0 &&
             localClassroomCourseworkList[0].name == 'All') {
@@ -1088,7 +1111,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               spreadSheetFileObj: event.spreadSheetFileObj,
               classroomCourseworkList: localClassroomCourseworkList,
               userProfile: _profileData[0],
-              refreshToken: _profileData[0].refreshToken);
+              refreshToken: _profileData[0].refreshToken,
+              pbisPlusTeacherCustomBehaviorLocalData:
+                  pbisPlusTeacherCustomBehaviorLocalData,
+              pbisPlusTeacherDefaultBehaviorLocalData:
+                  pbisPlusTeacherDefaultBehaviorLocalData);
         }
 
         if (isBlankSpreadsheetTabsAdded == true &&
@@ -3198,6 +3225,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       required UserInformation userProfile,
       required String? refreshToken,
       required final List<ClassroomCourse> classroomCourseworkList,
+      required final List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherCustomBehaviorLocalData,
+      required final List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherDefaultBehaviorLocalData,
       int retry = 3}) async {
     try {
       final pbisBloc = PBISPlusBloc();
@@ -3205,7 +3236,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String spreadSheetFileUrl = spreadSheetFileObj['fileUrl'] ?? '';
       // Update data to each tab of the spreadsheet
       final List<Map<String, dynamic>> updatedTabs = updateTabsInSpreadSheet(
-          classroomCourseworkList: classroomCourseworkList);
+          classroomCourseworkList: classroomCourseworkList,
+          pbisPlusTeacherCustomBehaviorLocalData:
+              pbisPlusTeacherCustomBehaviorLocalData,
+          pbisPlusTeacherDefaultBehaviorLocalData:
+              pbisPlusTeacherDefaultBehaviorLocalData);
 
       final Map<String, dynamic> body = {
         "data": updatedTabs,
@@ -3251,6 +3286,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               classroomCourseworkList: classroomCourseworkList,
               spreadSheetFileObj: spreadSheetFileObj,
               userProfile: _userProfileLocalData[0],
+              pbisPlusTeacherCustomBehaviorLocalData:
+                  pbisPlusTeacherCustomBehaviorLocalData,
+              pbisPlusTeacherDefaultBehaviorLocalData:
+                  pbisPlusTeacherDefaultBehaviorLocalData,
               retry: retry - 1);
         } else {
           return 'ReAuthentication is required';
@@ -3266,23 +3305,65 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*----------------------------------------------------------------------------------------------*/
   /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
   /*------------------------------------------PART B----------------------------------------------*/
+  // List<Map<String, dynamic>> updateTabsInSpreadSheet({
+  //   required final List<ClassroomCourse> classroomCourseworkList,
+  // }) {
+  //   try {
+  //     return classroomCourseworkList.map((course) {
+  //       return {
+  //         // 'range': '${course.name}!A1:E${course.students!.length + 1}',
+  //         //Checking the tab is either for Student or for Courses and adding the columns accordingly
+  //         'range':
+  //             '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
+  //         'majorDimension': 'ROWS',
+  //         //building row with the student information
+  //         'values': _buildRows(
+  //             students: course.students ?? [],
+  //             //Checking if the tab is building for courses or tabs //returns true or false
+  //             course: (course.name == 'Students' &&
+  //                 classroomCourseworkList.length == 1)),
+  //       };
+  //     }).toList();
+  //   } catch (e) {
+  //     print("errorr ------------------->> $e");
+  //     return [];
+  //   }
+  // }
+
   List<Map<String, dynamic>> updateTabsInSpreadSheet({
     required final List<ClassroomCourse> classroomCourseworkList,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherCustomBehaviorLocalData,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherDefaultBehaviorLocalData,
   }) {
     try {
       return classroomCourseworkList.map((course) {
+        print(
+          '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : '${getTableRange(range: (pbisPlusTeacherCustomBehaviorLocalData.length + pbisPlusTeacherDefaultBehaviorLocalData.length))}'}${course.students!.length + 1}',
+        );
+        print(
+            '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}');
         return {
           // 'range': '${course.name}!A1:E${course.students!.length + 1}',
           //Checking the tab is either for Student or for Courses and adding the columns accordingly
+          // 'range':
+          //     '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
+
           'range':
-              '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
+              '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : '${getTableRange(range: (pbisPlusTeacherCustomBehaviorLocalData.length + pbisPlusTeacherDefaultBehaviorLocalData.length))}'}${course.students!.length + 1}',
+
           'majorDimension': 'ROWS',
           //building row with the student information
           'values': _buildRows(
               students: course.students ?? [],
               //Checking if the tab is building for courses or tabs //returns true or false
               course: (course.name == 'Students' &&
-                  classroomCourseworkList.length == 1)),
+                  classroomCourseworkList.length == 1),
+              pbisPlusTeacherCustomBehaviorLocalData:
+                  pbisPlusTeacherCustomBehaviorLocalData,
+              pbisPlusTeacherDefaultBehaviorLocalData:
+                  pbisPlusTeacherDefaultBehaviorLocalData),
         };
       }).toList();
     } catch (e) {
@@ -3295,15 +3376,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
   /*------------------------------------------PART C----------------------------------------------*/
 
-  List<List<dynamic>> _buildRows(
-      {required List<ClassroomStudents> students, required bool course}) {
+  List<List<dynamic>> _buildRows({
+    required List<ClassroomStudents> students,
+    required bool course,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherCustomBehaviorLocalData,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherDefaultBehaviorLocalData,
+  }) {
     try {
-      List<String> headingRowName = // always first row for the Headings
-          ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'];
+      // List<String> headingRowName = // always first row for the Headings
+      //     ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'];
 
-      if (course == true) {
-        headingRowName.insert(1, 'Course');
-      }
+      List<String> headingRowName = buildHeadingRowName(
+          pbisPlusTeacherCustomBehaviorLocalData:
+              pbisPlusTeacherCustomBehaviorLocalData,
+          pbisPlusTeacherDefaultBehaviorLocalData:
+              pbisPlusTeacherDefaultBehaviorLocalData); // always first row for the Headings
+
+//TODDO
+      // if (course == true) {
+      //   headingRowName.insert(1, 'Course');
+      // }
 
       return [
         // always first row for the Headings
@@ -3361,5 +3455,55 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  String getTableRange({required int range}) {
+    try {
+      // Define a mapping of list length to output characters
+      Map<int, String> lengthToChar = {
+        1: 'c',
+        2: 'd',
+        3: 'e',
+        4: 'f',
+        5: 'g',
+        6: 'h',
+        7: 'i',
+        8: 'j',
+        9: 'k',
+        10: 'l',
+        11: 'm',
+        12: 'n',
+      };
+      // If the list length is found in the mapping, return the corresponding character
+      if (lengthToChar.containsKey(range)) {
+        return lengthToChar[range]!;
+      }
+
+      return '';
+    } catch (e) {
+      print(e);
+      throw (e);
+    }
+  }
+
+  List<String> buildHeadingRowName(
+      {required List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherCustomBehaviorLocalData,
+      required List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherDefaultBehaviorLocalData}) {
+    List<String>? headingRowName = [];
+
+    pbisPlusTeacherDefaultBehaviorLocalData.forEach((element) {
+      headingRowName.add(element.behaviorTitleC ?? "");
+    });
+
+    pbisPlusTeacherCustomBehaviorLocalData.forEach((element) {
+      headingRowName.add(element.behaviorTitleC ?? "");
+    });
+
+    headingRowName.insert(0, 'Name');
+    headingRowName.add('Total');
+
+    return headingRowName;
   }
 }
