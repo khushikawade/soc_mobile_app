@@ -51,7 +51,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
                 FamilyVerificationCommonWidget.familyCircularIcon(
                     context: context,
                     assetImageUrl: 'assets/images/login_lock.png'),
-                SpacerWidget(40),
+                SpacerWidget(36),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Utility.textWidget(
@@ -59,12 +59,11 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
                       text: 'Enter your email',
                       textTheme: Theme.of(context).textTheme.headline3),
                 ),
-                SpacerWidget(20),
+                SpacerWidget(18),
                 textFormFieldWidget(),
-                SpacerWidget(MediaQuery.of(context).viewInsets.bottom / 1.5),
-                // SpacerWidget(20),
-                // SpacerWidget(MediaQuery.of(context).size.height * 0.05),
-                // SpacerWidget(60),
+                SpacerWidget(MediaQuery.of(context).viewInsets.bottom / 2.5),
+                SpacerWidget(MediaQuery.of(context).size.height * 0.2),
+               
               ],
             ),
           ),
@@ -116,12 +115,12 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
   /* ------------------------ Widget to get student email (Text form field) ----------------------- */
   Widget textFormFieldWidget() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.only(left: 20 ,right: 20,bottom: 20),
       child: Form(
         key: _formKey,
         child: TextFormField(
           scrollPadding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 240),
+              bottom: MediaQuery.of(context).viewInsets.bottom ),
           autofocus: false,
           style: Theme.of(context).textTheme.headline3,
           autovalidateMode: AutovalidateMode.onUserInteraction,
