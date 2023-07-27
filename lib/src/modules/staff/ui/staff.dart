@@ -569,30 +569,29 @@ class _StaffPageState extends State<StaffPage> {
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return CommonPopupWidget(
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message: message,
-                title: "Action Required",
-                confirmationOnPress: () async {
-                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      "logout");
-                  await UserGoogleProfile.clearUserProfile();
-                  await GoogleClassroom.clearClassroomCourses();
-                  await Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
-                  // Globals.googleDriveFolderId = null;
-                  PlusUtility.updateLogs(
-                      activityType: 'GRADED+',
-                      userType: 'Teacher',
-                      activityId: '3',
-                      description: 'User profile logout',
-                      operationResult: 'Success');
-                  Navigator.pop(context);
-                  staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
-                },
-              );
+                  isLogout: true,
+                  orientation: orientation,
+                  context: context,
+                  message: message,
+                  title: "Action Required",
+                  confirmationOnPress: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "logout");
+                    await UserGoogleProfile.clearUserProfile();
+                    await GoogleClassroom.clearClassroomCourses();
+                    await Authentication.signOut(context: context);
+                    Utility.clearStudentInfo(tableName: 'student_info');
+                    Utility.clearStudentInfo(tableName: 'history_student_info');
+                    // Globals.googleDriveFolderId = null;
+                    PlusUtility.updateLogs(
+                        activityType: 'GRADED+',
+                        userType: 'Teacher',
+                        activityId: '3',
+                        description: 'User profile logout',
+                        operationResult: 'Success');
+                    Navigator.pop(context);
+                    staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
+                  });
             }));
   }
 }
