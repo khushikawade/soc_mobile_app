@@ -132,6 +132,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               widget.sectionType == "Student"
                   ? Container()
                   : StudentPlusSearchBarAndDropdown(
+                    index: 2,
                       sectionType: widget.sectionType,
                       studentDetails: widget.studentDetails),
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
