@@ -536,7 +536,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 content: false,
                 height:
                     constraints.maxHeight < 750 && Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.22 //0.45
+                        ? MediaQuery.of(context).size.height * 0.26 //0.45
                         : Globals.deviceType == "phone"
                             ? MediaQuery.of(context).size.height * 0.28 //0.45
                             : MediaQuery.of(context).size.height * 0.15,

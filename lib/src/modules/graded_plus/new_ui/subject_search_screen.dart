@@ -223,14 +223,15 @@ class _GradedPlusSearchScreenPageState
                                             padding:
                                                 EdgeInsets.only(bottom: 10),
                                             child: Utility.textWidget(
-                                                text: 'Recent Searches',
-                                                context: context,
-                                                textTheme: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold)))
+                                              text: 'Recent Searches',
+                                              context: context,
+                                              textTheme: Theme.of(context)
+                                                  .textTheme
+                                                  .headline1!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w100),
+                                            ))
                                         : Container(),
                                     index == 0 && standardLearningLength != 0
                                         ? Container(
