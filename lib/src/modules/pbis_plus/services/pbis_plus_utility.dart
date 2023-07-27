@@ -11,7 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PBISPlusUtility {
-  static final _digitRoundOffAbbreviations = ['k', 'M', 'B', 'T'];
+  static var f = NumberFormat.compact();
+  // static final _digitRoundOffAbbreviations = ['k', 'M', 'B', 'T'];
 
   static final LocalDatabase<ClassroomCourse> classroomLocalDb =
       LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
@@ -19,17 +20,28 @@ class PBISPlusUtility {
   static final LocalDatabase<PBISPlusCommonBehaviorModal> customUserBehaviorDB =
       LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+
+// //Used to round off any digit greater than 999
+//   static String numberAbbreviationFormat(value) {
+//     try {
+//       if (value < 1000) return '$value';
+//       final exp = (value / 1e3).floor();
+//       final suffixIndex = (exp - 1) % _digitRoundOffAbbreviations.length;
+//       final suffix = _digitRoundOffAbbreviations[suffixIndex];
+//       final truncated = (value / (1e3 * exp)).toStringAsFixed(1);
+//       return '$truncated$suffix';
+//     } catch (e) {
+//       return value;
+//     }
+//   }
+
 //Used to round off any digit greater than 999
+
   static String numberAbbreviationFormat(value) {
     try {
-      if (value < 1000) return '$value';
-      final exp = (value / 1e3).floor();
-      final suffixIndex = (exp - 1) % _digitRoundOffAbbreviations.length;
-      final suffix = _digitRoundOffAbbreviations[suffixIndex];
-      final truncated = (value / (1e3 * exp)).toStringAsFixed(1);
-      return '$truncated$suffix';
+      return f.format(value).toString();
     } catch (e) {
-      return value;
+      return value ?? '0';
     }
   }
 
