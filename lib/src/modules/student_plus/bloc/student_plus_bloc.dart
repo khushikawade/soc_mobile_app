@@ -421,14 +421,16 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           //     .updateStudentLocalDBWithGooglePresentationUrl(
           //   studentDetails: event.studentDetails,
           // );
-
+          yield StudentPlusLoading();
           yield SaveStudentGooglePresentationWorkEventSuccess(
               studentDetails: event.studentDetails);
         } else {
+          yield StudentPlusLoading();
           yield StudentPlusErrorReceived(
               err: isStudentGooglePresentationWorkSaved);
         }
       } catch (e) {
+        yield StudentPlusLoading();
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
