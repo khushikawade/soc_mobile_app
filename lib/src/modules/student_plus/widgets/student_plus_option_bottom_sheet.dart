@@ -27,14 +27,15 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
   StudentPlusDetailsModel studentDetails;
   final String? filterName;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
-
+  int? studentGooglePresentationRecordId;
   StudentPlusOptionBottomSheet(
       {Key? key,
       this.title,
       this.height = 200,
       required this.resultSummaryIconsModalList,
       required this.studentDetails,
-      required this.filterName});
+      required this.filterName,
+      required this.studentGooglePresentationRecordId});
 
   @override
   State<StudentPlusOptionBottomSheet> createState() =>
@@ -282,6 +283,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
+          print("state recived $state");
           if (state is GoogleSlidesPresentationErrorState) {
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
@@ -327,6 +329,7 @@ class _GradedPlusResultOptionBottomSheetState
               widget.studentDetails = state.studentDetails;
               //now update the save the student google Presentation work on database
               studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                studentGooglePresentationRecordId: widget.studentGooglePresentationRecordId,
                   filterName: widget.filterName ?? '',
                   studentDetails: state.studentDetails));
             }
@@ -383,6 +386,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
+          print("state recived $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             // Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(

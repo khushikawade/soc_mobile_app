@@ -63,9 +63,11 @@ class FetchStudentGradesEvent extends StudentPlusEvent {
 class SaveStudentGooglePresentationWorkEvent extends StudentPlusEvent {
   final StudentPlusDetailsModel studentDetails;
   final String filterName;
-
+  int? studentGooglePresentationRecordId;
   SaveStudentGooglePresentationWorkEvent(
-      {required this.studentDetails, required this.filterName});
+      {required this.studentDetails,
+      required this.filterName,
+      required this.studentGooglePresentationRecordId});
 
   @override
   List<Object> get props => [studentDetails!];

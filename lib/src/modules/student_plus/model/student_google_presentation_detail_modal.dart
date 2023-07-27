@@ -46,8 +46,8 @@ class StudentGooglePresentationDetailModal {
     title = json['Title'];
     dBNC = json['DBN__c'];
     schoolAppC = json['School_App__c'];
-    googlePresentationId = json['Google_Presentation_Id'];
-    googlePresentationURL = json['Google_Presentation_URL'];
+    googlePresentationId = json['Google_Presentation_Id'] ?? '';
+    googlePresentationURL = json['Google_Presentation_URL'] ?? '';
     createdAt = json['CreatedAt'];
     updatedAt = json['UpdatedAt'];
     studentRecordId = json['Student_Record_Id'];
