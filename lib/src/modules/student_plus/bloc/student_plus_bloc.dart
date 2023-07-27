@@ -597,8 +597,6 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
-
-    
   }
 
   /* -------------------------------------------------------------------------- */
@@ -813,6 +811,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       {required StudentPlusDetailsModel studentDetails,
       required String title}) async {
     try {
+      print("save id ${studentDetails.studentGooglePresentationId}");
       final body = {
         "Student__c": studentDetails.studentIdC,
         "Student_Record_Id": studentDetails.id,
@@ -830,7 +829,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
-
+      print("saveStudentGooglePresentationWorkDetails api called");
       final url =
           'https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/add-presentation';
 

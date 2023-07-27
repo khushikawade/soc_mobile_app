@@ -282,6 +282,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
+          print("state recived $state");
           if (state is GoogleSlidesPresentationErrorState) {
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
@@ -383,6 +384,7 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
+          print("state recived $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
             // Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(

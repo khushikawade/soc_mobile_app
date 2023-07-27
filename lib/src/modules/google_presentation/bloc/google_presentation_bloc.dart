@@ -367,6 +367,7 @@ class GoogleSlidesPresentationBloc
           if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
               countGooglePresentationSlideAndTrashStatus[0][1] <=
                   event.allRecords.length) {
+            print("update the  new slides google presentation");
             List updatedPresentationResponse =
                 await updateNewSlidesToGooglePresentation(
                     presentationId:
@@ -381,7 +382,7 @@ class GoogleSlidesPresentationBloc
               //update the Presentation link on studentDetails
               event.studentDetails.studentGooglePresentationUrl =
                   countGooglePresentationSlideAndTrashStatus[1][1];
-
+              print("StudentPlusUpdateStudentWorkGooglePresentationSuccess");
               yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                   studentDetails: event.studentDetails,
                   //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
@@ -398,6 +399,7 @@ class GoogleSlidesPresentationBloc
           else if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
               countGooglePresentationSlideAndTrashStatus[0][1] >
                   event.allRecords.length) {
+            print("no need to update the sldies");
             yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
                 //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
@@ -502,7 +504,7 @@ class GoogleSlidesPresentationBloc
         'Content-Type': 'application/json',
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
-
+      print("check this $presentationFileId");
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationFileId";
 
@@ -510,7 +512,7 @@ class GoogleSlidesPresentationBloc
           headers: headers, isCompleteUrl: true);
 
       print(
-          "getSlidesCountFromGooglePresentation API $response.data['statusCode']");
+          "getSlidesCountFromGooglePresentation API ${response.data['statusCode']}");
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['slides'];
@@ -629,7 +631,8 @@ class GoogleSlidesPresentationBloc
 
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
-
+      print(
+          "checkGooglePresentationInTrashed API ${response.data['statusCode']}");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body'];
         bool? isTrashed = data['trashed'];

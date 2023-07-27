@@ -564,6 +564,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             if (state.studentGooglePresentationDetail != false) {
               StudentGooglePresentationDetailModal obj =
                   state.studentGooglePresentationDetail;
+              print("fild id ---------${obj.googlePresentationId}");
               widget.studentDetails.studentGooglePresentationId =
                   obj.googlePresentationId ?? "";
               widget.studentDetails.studentGooglePresentationUrl =
