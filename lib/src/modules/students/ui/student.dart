@@ -3,12 +3,12 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
@@ -568,20 +568,16 @@ class _StudentPageState extends State<StudentPage> {
   }
 
   navigateToStudentPlus() async {
-    PlusUtility.updateLogs(
-        activityType: 'GRADED+',
-        userType: 'Student',
-        activityId: '2',
-        description: 'Student+ Accessed(Login)/Login Id:',
-        operationResult: 'Success');
+    // PlusUtility.updateLogs(
+    //     activityType: 'GRADED+',
+    //     userType: 'Student',
+    //     activityId: '2',
+    //     description: 'Student+ Accessed(Login)/Login Id:',
+    //     operationResult: 'Success');
 
     pushNewScreen(
       context,
-      screen: StudentPlusHome(
-        sectionType: "Student",
-        studentPlusStudentInfo: StudentPlusDetailsModel(),
-        index: 0,
-      ),
+      screen: PlusSplashScreen(actionName: 'STUDENT+', sectionType: 'Student'),
       withNavBar: false,
     );
   }
