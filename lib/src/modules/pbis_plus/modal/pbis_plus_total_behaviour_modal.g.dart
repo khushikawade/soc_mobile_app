@@ -9,7 +9,7 @@ part of 'pbis_plus_total_behaviour_modal.dart';
 class PBISPlusStudentDashboardTotalBehaviourModalAdapter
     extends TypeAdapter<PBISPlusStudentDashboardTotalBehaviourModal> {
   @override
-  final int typeId = 57;
+  final int typeId = 55;
 
   @override
   PBISPlusStudentDashboardTotalBehaviourModal read(BinaryReader reader) {

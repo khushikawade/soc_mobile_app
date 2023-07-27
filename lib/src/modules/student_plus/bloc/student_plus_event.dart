@@ -114,8 +114,10 @@ class GetStudentCourseWorkListByPaginationEvent extends StudentPlusEvent {
 /* ---------------- Event use to trigger student work details --------------- */
 class FetchStudentGradesWithClassroomEvent extends StudentPlusEvent {
   final String? studentId;
+  final String? studentEmail;
   FetchStudentGradesWithClassroomEvent({
     @required this.studentId,
+    required this.studentEmail
   });
 
   @override
