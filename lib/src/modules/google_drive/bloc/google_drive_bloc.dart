@@ -3339,11 +3339,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }) {
     try {
       return classroomCourseworkList.map((course) {
-        print(
-          '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : '${getTableRange(range: (pbisPlusTeacherCustomBehaviorLocalData.length + pbisPlusTeacherDefaultBehaviorLocalData.length))}'}${course.students!.length + 1}',
-        );
-        print(
-            '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}');
         return {
           // 'range': '${course.name}!A1:E${course.students!.length + 1}',
           //Checking the tab is either for Student or for Courses and adding the columns accordingly
@@ -3394,40 +3389,60 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           pbisPlusTeacherDefaultBehaviorLocalData:
               pbisPlusTeacherDefaultBehaviorLocalData); // always first row for the Headings
 
-//TODDO
-      // if (course == true) {
-      //   headingRowName.insert(1, 'Course');
-      // }
-
-      // ...students.map((student) => [
-      //             student.profile!.name!.fullName,
-      //
-      //             student.profile!.engaged,
-      //             student.profile!.niceWork,
-      //             student.profile!.helpful,
-      //             student.profile!.engaged! +
-      //                 student.profile!.niceWork! +
-      //                 student.profile!.helpful!,
-      //           ]),
+// TODDO
+      if (course == true) {
+        headingRowName.insert(1, 'Course');
+      }
 
       return [
         // always first row for the Headings
         headingRowName,
 
         //stduent information
+
         ...students.map((student) {
+          int total = 0;
+
           List rows = [
             student.profile!.name!.fullName,
             if (course == true) student.profile!.courseName,
           ];
 
+          // ADD COUNTS FOR DEAFULT BEHVIOURS
           pbisPlusTeacherDefaultBehaviorLocalData.forEach((i) {
+            bool found = false;
             student.profile!.behaviorList!.forEach((k) {
               if (i.id == k.id) {
-                rows.add(k.behaviorCount);
+                found = true;
+                rows.add('${k.behaviorCount}');
+                total += k.behaviorCount!;
               }
             });
+//IF BEHAVIOUR IS NOT FOUNT IN STUDENT PROFILE LIST THEN ADD 0
+            if (found == false) {
+              rows.add('0');
+            }
           });
+          // ADD COUNTS FOR CUSTOM BEHVIOURS
+
+          pbisPlusTeacherCustomBehaviorLocalData.forEach((i) {
+            bool found = false;
+
+            student.profile!.behaviorList!.forEach((k) {
+              if (i.id == k.id) {
+                found = true;
+                rows.add('${k.behaviorCount}');
+                total += k.behaviorCount!;
+              }
+            }); //IF BEHAVIOUR IS NOT FOUNT IN STUDENT PROFILE LIST THEN ADD 0
+
+            if (found == false) {
+              rows.add('0');
+            }
+          });
+          //ADD TOTAL IN LAST
+          rows.add('$total');
+
           return rows;
         }),
       ];
@@ -3507,6 +3522,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+////--------------------------------------ADD FIRST ROW IN TABLE AND TAB----------------------//////
+
   List<String> buildHeadingRowName(
       {required List<PBISPlusCommonBehaviorModal>
           pbisPlusTeacherCustomBehaviorLocalData,
@@ -3514,15 +3531,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           pbisPlusTeacherDefaultBehaviorLocalData}) {
     List<String>? headingRowName = [];
 
+//ADD DEFAULT BEHVIOUR NAMES
     pbisPlusTeacherDefaultBehaviorLocalData.forEach((element) {
       headingRowName.add(element.behaviorTitleC ?? "");
     });
-
+//ADD CUSTOM BEHVIOUR NAMES
     pbisPlusTeacherCustomBehaviorLocalData.forEach((element) {
       headingRowName.add(element.behaviorTitleC ?? "");
     });
 
+// ADD NAME FOR STUDENT NAME
     headingRowName.insert(0, 'Name');
+    // ADD THIS FOR TOTAL BEHVIOUR COUNTS
     headingRowName.add('Total');
 
     return headingRowName;
