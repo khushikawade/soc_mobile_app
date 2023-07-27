@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_additional_behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -12,7 +13,6 @@ import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
@@ -44,6 +44,124 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*------------------------------------PBISPlusImportRoster--------------------------------------*/
     /*----------------------------------------------------------------------------------------------*/
 
+//     if (event is PBISPlusImportRoster) {
+//       String plusClassroomDBTableName = event.isGradedPlus == true
+//           ? OcrOverrides.gradedPlusStandardClassroomDB
+//           : PBISPlusOverrides.pbisPlusClassroomDB;
+//       try {
+//         //Fetch logged in user profile
+//         List<UserInformation> userProfileLocalData =
+//             await UserGoogleProfile.getUserProfile();
+
+//         LocalDatabase<ClassroomCourse> _localDb =
+//             LocalDatabase(plusClassroomDBTableName);
+
+// //Clear Roster local data to manage loading issue
+//         SharedPreferences clearRosterCache =
+//             await SharedPreferences.getInstance();
+//         final clearCacheResult =
+//             await clearRosterCache.getBool('delete_local_Roster_cache_1');
+
+//         if (clearCacheResult != true) {
+//           await _localDb.clear();
+
+//           await clearRosterCache.setBool('delete_local_Roster_cache_1', true);
+//         }
+
+//         //  await _localDb.clear();
+//         List<ClassroomCourse>? _localData = await _localDb.getData();
+
+//         if (_localData.isEmpty) {
+//           //Managing dummy response for shimmer loading
+//           var list = await _getRosterShimmerListData();
+//           yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
+//         } else {
+//           sort(obj: _localData);
+//           yield PBISPlusImportRosterSuccess(
+//               googleClassroomCourseList: _localData);
+//         }
+
+//         //API call to refresh with the latest data in the local DB
+//         List responseList = await importPBISClassroomRoster(
+//             accessToken: userProfileLocalData[0].authorizationToken,
+//             refreshToken: userProfileLocalData[0].refreshToken,
+//             isGradedPlus: event.isGradedPlus);
+
+//         if (responseList[1] == '') {
+//           List<ClassroomCourse> coursesList = responseList[0];
+
+//           //Returning Google Classroom Course List from API response if local data is empty
+//           //This will used to show shimmer loading on PBIS Score circle // Class Screen
+//           // if (_localData.isEmpty) {
+//           //   sort(obj: coursesList);
+//           //   yield PBISPlusInitialImportRosterSuccess(
+//           //       googleClassroomCourseList: responseList[0]);
+//           // }
+
+//           // List<PBISPlusTotalBehaviorModal> pbisTotalInteractionList = [];
+//           //Get PBISTotal interaction only if Section is PBIS+
+//           // if (event.isGradedPlus == false) {
+//           //   pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+//           //       teacherEmail: userProfileLocalData[0].userEmail!);
+//           // }
+//           // if (event.isGradedPlus == false) {
+//           //   pbisTotalInteractionList =
+//           //       await getPBISTotalInteractionBySchoolAndTeacher(
+//           //           teacherEmail: userProfileLocalData[0].userEmail!,
+//           //           schoolId: Overrides.SCHOOL_ID);
+//           // }
+//           // print(pbisTotalInteractionList);
+//           // Merge Student Interaction with Google Classroom Rosters
+//           // List<ClassroomCourse> classroomStudentProfile =
+//           //     await assignStudentTotalInteraction(
+//           //         pbisTotalInteractionList, coursesList);
+
+//           // Merge Student local Interaction with Google Classroom Rosters
+
+//           coursesList =
+//               await assignStudentTotalBehaviorWithClassroomCoursesList(
+//                   coursesList);
+
+//           await _localDb.clear();
+
+//           coursesList.forEach((ClassroomCourse e) {
+//             _localDb.addData(e);
+//           });
+
+//           PlusUtility.updateLogs(
+//               activityType: event.isGradedPlus == true ? 'GRADED+' : 'PBIS+',
+//               userType: 'Teacher',
+//               activityId: '24',
+//               description: 'Import Roster Successfully From PBIS+',
+//               operationResult: 'Success');
+
+//           yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+//           sort(obj: coursesList);
+//           // await getFilteredStudentList(_localData);
+//           print("api  courses lenght ${coursesList.length}");
+//           yield PBISPlusImportRosterSuccess(
+//               googleClassroomCourseList: coursesList);
+//         } else {
+//           yield PBISErrorState(
+//             error: 'ReAuthentication is required',
+//           );
+//         }
+//       } catch (e) {
+//         print(e);
+
+//         LocalDatabase<ClassroomCourse> _localDb =
+//             LocalDatabase(plusClassroomDBTableName);
+//         List<ClassroomCourse>? _localData = await _localDb.getData();
+//         sort(obj: _localData);
+//         // _localDb.close();
+//         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+//         // sort(obj: _localData);
+//         // await getFilteredStudentList(_localData);
+//         yield PBISPlusImportRosterSuccess(
+//             googleClassroomCourseList: _localData);
+//       }
+//     }
+
     if (event is PBISPlusImportRoster) {
       String plusClassroomDBTableName = event.isGradedPlus == true
           ? OcrOverrides.gradedPlusStandardClassroomDB
@@ -55,6 +173,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<ClassroomCourse> _localDb =
             LocalDatabase(plusClassroomDBTableName);
+        // await _localDb.clear();
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
@@ -70,12 +189,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         SharedPreferences clearRosterCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            await clearRosterCache.getBool('delete_local_Roster_cache');
+            await clearRosterCache.getBool('delete_local_Roster_cache_1');
 
         if (clearCacheResult != true) {
           await _localDb.close();
           _localData.clear();
-          await clearRosterCache.setBool('delete_local_Roster_cache', true);
+          await clearRosterCache.setBool('delete_local_Roster_cache_1', true);
         }
 
         //API call to refresh with the latest data in the local DB
@@ -86,29 +205,39 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
+          List pbisTotalDefaultAndCustomBehaviourInteractionList = [];
 
           //Returning Google Classroom Course List from API response if local data is empty
           //This will used to show shimmer loading on PBIS Score circle // Class Screen
           if (_localData.isEmpty) {
             sort(obj: coursesList);
             yield PBISPlusInitialImportRosterSuccess(
-                googleClassroomCourseList: responseList[0]);
+                googleClassroomCourseList: coursesList);
           }
 
-          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList = [];
           //Get PBISTotal interaction only if Section is PBIS+
           if (event.isGradedPlus == false) {
-            pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
-                teacherEmail: userProfileLocalData[0].userEmail!);
+            pbisTotalDefaultAndCustomBehaviourInteractionList =
+                await Future.wait([
+              pBISPlusGetStudentBehaviorBySection(
+                  section: 'default',
+                  teacherEmail: userProfileLocalData[0].userEmail!,
+                  schoolId: Overrides.SCHOOL_ID),
+              pBISPlusGetStudentBehaviorBySection(
+                  section: 'custom',
+                  teacherEmail: userProfileLocalData[0].userEmail!,
+                  schoolId: Overrides.SCHOOL_ID)
+            ]);
           }
 
           // Merge Student Interaction with Google Classroom Rosters
           List<ClassroomCourse> classroomStudentProfile =
               await assignStudentTotalInteraction(
-                  pbisTotalInteractionList, coursesList);
+                  classroomCourseList: coursesList,
+                  pbisTotalDefaultAndCustomBehaviourInteractionList:
+                      pbisTotalDefaultAndCustomBehaviourInteractionList);
 
           await _localDb.clear();
-
           classroomStudentProfile.forEach((ClassroomCourse e) {
             _localDb.addData(e);
           });
@@ -126,9 +255,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: classroomStudentProfile);
         } else {
-          yield PBISErrorState(
-            error: 'ReAuthentication is required',
-          );
+          yield PBISErrorState(error: 'ReAuthentication is required');
         }
       } catch (e) {
         print(e);
@@ -137,10 +264,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(plusClassroomDBTableName);
         List<ClassroomCourse>? _localData = await _localDb.getData();
         sort(obj: _localData);
-        // _localDb.close();
+
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        // sort(obj: _localData);
-        // await getFilteredStudentList(_localData);
+
         yield PBISPlusImportRosterSuccess(
             googleClassroomCourseList: _localData);
       }
@@ -341,22 +467,21 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        String? _objectName = "${PBISPlusOverrides.pbisStudentInteractionDB}";
-        LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
-        List<ClassroomCourse> _localData = await _localDb.getData();
+        // LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
+        // List<ClassroomCourse> _localData = await _localDb.getData();
 
-        yield PBISPlusLoading();
-        if (_localData.isNotEmpty) {
-          for (int i = 0; i < _localData.length; i++) {
-            for (int j = 0; j < _localData[i].students!.length; j++) {
-              if (_localData[i].students![j].profile!.id == event.studentId) {
-                ClassroomCourse obj = _localData[i];
+        // yield PBISPlusLoading();
+        // if (_localData.isNotEmpty) {
+        //   for (int i = 0; i < _localData.length; i++) {
+        //     for (int j = 0; j < _localData[i].students!.length; j++) {
+        //       if (_localData[i].students![j].profile!.id == event.studentId) {
+        //         ClassroomCourse obj = _localData[i];
 
-                _localDb.putAt(i, obj);
-              }
-            }
-          }
-        }
+        //         _localDb.putAt(i, obj);
+        //       }
+        //     }
+        //   }
+        // }
         Map body = {
           "Student_Id": event.studentId!,
           "Student_Email": event.studentEmail,
@@ -831,6 +956,54 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
 
+    // if (event is PBISPlusGetStudentBehaviorByCourse) {
+    //   String courseLocalDbTable =
+    //       '${event.classroomCourse.id}_${event.classroomCourse.name}';
+    //   LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
+    //       LocalDatabase(courseLocalDbTable);
+    //   List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
+    //   try {
+    //     if (_localData.isEmpty) {
+    //       print("EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
+    //       yield PBISPlusLoading();
+    //     } else {
+    //       print("NOT EMPTYYYYYYYYYYYYYYY  $courseLocalDbTable");
+    //       ClassroomCourse classroomStudentProfile =
+    //           await assignStudentTotalBehavior(
+    //               event.classroomCourse, _localData);
+    //       yield PBISPlusLoading();
+    //       yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //           classroomCourse: classroomStudentProfile);
+    //     }
+
+    //     List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList =
+    //         await pBISPlusGetStudentBehaviorBySection(
+    //       section: 'default',
+    //       teacherEmail: event.teacherEmail ?? '',
+    //       schoolId: Overrides.SCHOOL_ID,
+    //     );
+
+    //     if (pbisTotalBehaviorList.isNotEmpty) {
+    //       await _localDb.clear();
+    //       pbisTotalBehaviorList.forEach((element) async {
+    //         await _localDb.addData(element);
+    //       });
+    //     }
+
+    //     ClassroomCourse classroomStudentProfile =
+    //         await assignStudentTotalBehavior(
+    //             event.classroomCourse, pbisTotalBehaviorList);
+    //     yield PBISPlusLoading();
+    //     yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //         classroomCourse: classroomStudentProfile);
+    //   } catch (e) {
+    //     print(e);
+    //     if (_localData.isEmpty) {
+    //       yield PBISPlusGetStudentBehaviorByCourseSuccess(
+    //           classroomCourse: event.classroomCourse);
+    //     }
+    //   }
+    // }
     /* -------------------------------------------------------------------------- */
     /*                    Event to get student details by email                   */
     /* -------------------------------------------------------------------------- */
@@ -845,6 +1018,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<PBISPlusStudentDashboardTotalBehaviourModal> _localDb =
             LocalDatabase(sectionTableName);
+
         List<PBISPlusStudentDashboardTotalBehaviourModal>? _localData =
             await _localDb.getData();
 
@@ -1043,105 +1217,161 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
-      {required String teacherEmail, int retry = 3}) async {
-    try {
-      print(
-          "------------teacherEmail ------===========-${teacherEmail}==============----------------");
-      final ResponseModel response = await _dbServices.getApiNew(
-          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-          },
-          isCompleteUrl: true);
+  // Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
+  //     {required String teacherEmail, int retry = 3}) async {
+  //   try {
+  //     print(
+  //         "------------teacherEmail ------===========-${teacherEmail}==============----------------");
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         isCompleteUrl: true);
 
-      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        return response.data['body']
-            .map<PBISPlusTotalInteractionModal>(
-                (i) => PBISPlusTotalInteractionModal.fromJson(i))
-            .toList();
-      } else if (retry > 0) {
-        return getPBISTotalInteractionByTeacher(
-            teacherEmail: teacherEmail, retry: retry - 1);
-      }
-      return [];
-    } catch (e) {
-      throw (e);
-    }
-  }
+  //     if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //       return response.data['body']
+  //           .map<PBISPlusTotalInteractionModal>(
+  //               (i) => PBISPlusTotalInteractionModal.fromJson(i))
+  //           .toList();
+  //     } else if (retry > 0) {
+  //       return getPBISTotalInteractionByTeacher(
+  //           teacherEmail: teacherEmail, retry: retry - 1);
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
 
   /*----------------------------------------------------------------------------------------------*/
   /*-----------------Function to assign the student interaction with classroom--------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  List<ClassroomCourse> assignStudentTotalInteraction(
-    List<PBISPlusTotalInteractionModal> pbisTotalInteractionList,
-    List<ClassroomCourse> classroomCourseList,
-  ) {
+  // List<ClassroomCourse> assignStudentTotalInteraction({
+  //   required List<PBISPlusTotalBehaviorModal> pbisTotalBehaviorList,
+  //   required List<ClassroomCourse> classroomCourseList,
+  // }) {
+  //   List<ClassroomCourse> classroomStudentProfile = [];
+
+  //   // classroomStudentProfile.clear();
+  //   if (pbisTotalBehaviorList.length == 0) {
+  //     //Add 0 interaction counts to all the post in case of no interaction found
+  //     classroomStudentProfile.addAll(classroomCourseList);
+  //   } else {
+  //     for (int i = 0; i < classroomCourseList.length; i++) {
+  //       ClassroomCourse classroomCourse = ClassroomCourse();
+  //       classroomCourse
+  //         ..id = classroomCourseList[i].id
+  //         ..name = classroomCourseList[i].name
+  //         ..enrollmentCode = classroomCourseList[i].enrollmentCode
+  //         ..descriptionHeading = classroomCourseList[i].descriptionHeading
+  //         ..ownerId = classroomCourseList[i].ownerId
+  //         ..courseState = classroomCourseList[i].courseState
+  //         ..students = classroomCourseList[i].students;
+
+  //       bool interactionCountsFound = false;
+
+  //       for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
+  //         for (int k = 0; k < pbisTotalBehaviorList.length; k++) {
+
+  //           if (classroomCourseList[i].id ==
+  //                   pbisTotalBehaviorList[k].classroomCourseId &&
+  //               classroomCourseList[i].students![j].profile!.id ==
+  //                   pbisTotalBehaviorList[k].studentId) {
+  //             //TODOPBIS:
+  //             // classroomCourse.students![j].profile!.behavior1!.counter =
+  //             //     pbisTotalInteractionList[k].engaged;
+  //             // classroomCourse.students![j].profile!.behavior2!.counter =
+  //             //     pbisTotalInteractionList[k].niceWork;
+  //             // classroomCourse.students![j].profile!.behavior3!.counter =
+  //             //     pbisTotalInteractionList[k].helpful;
+  //             // classroomCourse.students![j].profile!.engaged =
+  //             //     pbisTotalInteractionList[k].engaged;
+  //             // classroomCourse.students![j].profile!.niceWork =
+  //             //     pbisTotalInteractionList[k].niceWork;
+  //             // classroomCourse.students![j].profile!.helpful =
+  //             //     pbisTotalInteractionList[k].helpful;
+  //             classroomCourse.students![j].profile!.behaviorList =
+  //                 pbisTotalBehaviorList[k].behaviorList;
+  //             interactionCountsFound = true;
+  //             // print(classroomCourse.students![j].profile!.studentInteraction);
+  //             break;
+  //           }
+  //         }
+  //       }
+
+  //       //Adding 0 interaction where no interaction added yet
+  //       if (!interactionCountsFound) {
+  //         // If no interaction counts were found, set all counts to 0
+  //         for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
+  //           //TODOPBIS::
+  //           // classroomCourse.students![j].profile!.behavior1?.counter = 0;
+  //           // classroomCourse.students![j].profile!.behavior2?.counter = 0;
+  //           // classroomCourse.students![j].profile!.behavior3?.counter = 0;
+  //           // classroomCourse.students![j].profile!.engaged = 0;
+  //           // classroomCourse.students![j].profile!.niceWork = 0;
+  //           // classroomCourse.students![j].profile!.helpful = 0;
+  //         }
+  //       }
+
+  //       classroomStudentProfile.add(classroomCourse);
+  //     }
+  //   }
+  //   return classroomStudentProfile;
+  // }
+
+//-----------------------------------------------------------------------------------------------
+//Updating student interaction to Roster list
+  List<ClassroomCourse> assignStudentTotalInteraction({
+    required List? pbisTotalDefaultAndCustomBehaviourInteractionList,
+    required List<ClassroomCourse> classroomCourseList,
+  }) {
     List<ClassroomCourse> classroomStudentProfile = [];
 
-    // classroomStudentProfile.clear();
-    if (pbisTotalInteractionList.length == 0) {
-      //Add 0 interaction counts to all the post in case of no interaction found
+    if (pbisTotalDefaultAndCustomBehaviourInteractionList == null ||
+        pbisTotalDefaultAndCustomBehaviourInteractionList.isEmpty) {
+      // Add 0 interaction counts to all the students in the classroomCourseList
       classroomStudentProfile.addAll(classroomCourseList);
     } else {
       for (int i = 0; i < classroomCourseList.length; i++) {
-        ClassroomCourse classroomCourse = ClassroomCourse();
-        classroomCourse
-          ..id = classroomCourseList[i].id
-          ..name = classroomCourseList[i].name
-          ..enrollmentCode = classroomCourseList[i].enrollmentCode
-          ..descriptionHeading = classroomCourseList[i].descriptionHeading
-          ..ownerId = classroomCourseList[i].ownerId
-          ..courseState = classroomCourseList[i].courseState
-          ..students = classroomCourseList[i].students;
+        ClassroomCourse classroomCourse = classroomCourseList[i];
 
-        bool interactionCountsFound = false;
+        for (int j = 0; j < classroomCourse.students!.length; j++) {
+          // Define defaultBehviour and customBehviour lists directly inside the loop
+          List<PBISPlusTotalBehaviorModal> defaultBehviour =
+              pbisTotalDefaultAndCustomBehaviourInteractionList[0];
+          List<PBISPlusTotalBehaviorModal> customBehviour =
+              pbisTotalDefaultAndCustomBehaviourInteractionList[1];
 
-        for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
-          for (int k = 0; k < pbisTotalInteractionList.length; k++) {
-            if (classroomCourseList[i].id ==
-                    pbisTotalInteractionList[k].classroomCourseId &&
-                classroomCourseList[i].students![j].profile!.id ==
-                    pbisTotalInteractionList[k].studentId) {
-              //TODOPBIS:
-              // classroomCourse.students![j].profile!.behavior1!.counter =
-              //     pbisTotalInteractionList[k].engaged;
-              // classroomCourse.students![j].profile!.behavior2!.counter =
-              //     pbisTotalInteractionList[k].niceWork;
-              // classroomCourse.students![j].profile!.behavior3!.counter =
-              //     pbisTotalInteractionList[k].helpful;
-              classroomCourse.students![j].profile!.engaged =
-                  pbisTotalInteractionList[k].engaged;
-              classroomCourse.students![j].profile!.niceWork =
-                  pbisTotalInteractionList[k].niceWork;
-              classroomCourse.students![j].profile!.helpful =
-                  pbisTotalInteractionList[k].helpful;
-              interactionCountsFound = true;
-              // print(classroomCourse.students![j].profile!.studentInteraction);
+          for (int d = 0; d < defaultBehviour.length; d++) {
+            if (classroomCourse.id == defaultBehviour[d].classroomCourseId &&
+                classroomCourse.students![j].profile!.emailAddress ==
+                    defaultBehviour[d].studentEmail) {
+              classroomCourse.students![j].profile!.behaviorList!
+                  .addAll(defaultBehviour[d].behaviorList!);
+
               break;
             }
           }
-        }
 
-        //Adding 0 interaction where no interaction added yet
-        if (!interactionCountsFound) {
-          // If no interaction counts were found, set all counts to 0
-          for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
-            //TODOPBIS::
-            // classroomCourse.students![j].profile!.behavior1?.counter = 0;
-            // classroomCourse.students![j].profile!.behavior2?.counter = 0;
-            // classroomCourse.students![j].profile!.behavior3?.counter = 0;
-            classroomCourse.students![j].profile!.engaged = 0;
-            classroomCourse.students![j].profile!.niceWork = 0;
-            classroomCourse.students![j].profile!.helpful = 0;
+          for (int c = 0; c < customBehviour.length; c++) {
+            if (classroomCourse.id == customBehviour[c].classroomCourseId &&
+                classroomCourse.students![j].profile!.emailAddress ==
+                    customBehviour[c].studentEmail) {
+              classroomCourse.students![j].profile!.behaviorList!
+                  .addAll(customBehviour[c].behaviorList!);
+
+              break;
+            }
           }
         }
 
         classroomStudentProfile.add(classroomCourse);
       }
     }
+
     return classroomStudentProfile;
   }
 
@@ -1841,17 +2071,83 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       throw (e);
     }
   }
-}
+
+  // Future<List<PBISPlusTotalBehaviorModal>>
+  //     getPBISTotalInteractionBySchoolAndTeacher (
+  //         {required String teacherEmail,
+  //         required String schoolId,
+  //         int retry = 3}) async {
+  //   try {
+
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/teacher/$teacherEmail?schoolId=$schoolId',
+  //         headers: {
+  //           'Content-Type': 'application/json;charset=UTF-8',
+  //           'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //         },
+  //         isCompleteUrl: true);
+
+  //     if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //       return response.data['body']
+  //           .map<PBISPlusTotalBehaviorModal>(
+  //               (i) => PBISPlusTotalBehaviorModal.fromJson(i))
+  //           .toList();
+  //     } else if (retry > 0) {
+  //       return getPBISTotalInteractionBySchoolAndTeacher(
+  //           teacherEmail: teacherEmail, retry: retry - 1, schoolId: schoolId);
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  Future<List<PBISPlusTotalBehaviorModal>> pBISPlusGetStudentBehaviorBySection(
+      {required String teacherEmail,
+      required String schoolId,
+      required String section,
+      int retry = 3}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          // 'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/teacher/$teacherEmail?schoolId=$schoolId&classroomId=$classroomCourseId',
+
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/$section?teacher_email=$teacherEmail&schoolId=$schoolId',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<PBISPlusTotalBehaviorModal> interactionList = response.data['body']
+            .map<PBISPlusTotalBehaviorModal>(
+                (i) => PBISPlusTotalBehaviorModal.fromJson(i))
+            .toList();
+
+        return interactionList;
+      } else if (retry > 0) {
+        return pBISPlusGetStudentBehaviorBySection(
+            teacherEmail: teacherEmail,
+            retry: retry - 1,
+            schoolId: schoolId,
+            section: section);
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
 
 /*----------------------------------------------------------------------------------------------*/
 /*---------------------------------------Function searchNotesList-------------------------------*/
 /*----------------------------------------------------------------------------------------------*/
-List<PBISPlusNotesUniqueStudentList> searchStudentList(
-    List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
-  return notesList
-      .where((note) =>
-          note.names != null &&
-          note.names!.fullName != null &&
-          note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase()))
-      .toList();
+  List<PBISPlusNotesUniqueStudentList> searchStudentList(
+      List<PBISPlusNotesUniqueStudentList> notesList, String keyword) {
+    return notesList
+        .where((note) =>
+            note.names != null &&
+            note.names!.fullName != null &&
+            note.names!.fullName!.toLowerCase().contains(keyword.toLowerCase()))
+        .toList();
+  }
 }

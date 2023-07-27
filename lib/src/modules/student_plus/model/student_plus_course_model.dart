@@ -44,6 +44,8 @@ class StudentPlusCourseModel {
 
   @HiveField(16)
   final String? studentUserId;
+  @HiveField(17)
+  final String? courseWorkCount;
   final GradebookSettings? gradebookSettings;
 
   StudentPlusCourseModel(
@@ -63,7 +65,9 @@ class StudentPlusCourseModel {
       this.calendarId,
       this.gradebookSettings,
       this.room,
-      this.section,this.studentUserId});
+      this.section,
+      this.studentUserId,
+      this.courseWorkCount});
 
   factory StudentPlusCourseModel.fromRawJson(String str) =>
       StudentPlusCourseModel.fromJson(json.decode(str));
@@ -94,6 +98,7 @@ class StudentPlusCourseModel {
             : TeacherFolder.fromJson(json["teacherFolder"]),
         guardiansEnabled: json["guardiansEnabled"],
         calendarId: json["calendarId"],
+        courseWorkCount: json["courseWorkCount"].toString(),
         gradebookSettings: json["gradebookSettings"] == null
             ? null
             : GradebookSettings.fromJson(json["gradebookSettings"]),
@@ -117,6 +122,7 @@ class StudentPlusCourseModel {
         "guardiansEnabled": guardiansEnabled,
         "calendarId": calendarId,
         "gradebookSettings": gradebookSettings?.toJson(),
+        "courseWorkCount": courseWorkCount.toString()
       };
 }
 

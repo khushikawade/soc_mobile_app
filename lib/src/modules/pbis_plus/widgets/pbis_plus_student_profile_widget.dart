@@ -92,144 +92,146 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
 
     /*-------------------------------------------------END--------------------------------------------------------*/
 
-    return Stack(
-      children: [
-        Container(
-            margin: widget.countWidget == true
-                ? EdgeInsets.all(10)
-                : EdgeInsets.zero,
-            child: widget.isFromStudentPlus == true &&
-                    widget.studentProfile != null
-                ? studentProfilePicture()
-                : (widget.studentValueNotifier!.value.profile!.photoUrl!
-                            .contains('default-user') &&
-                        !widget.studentValueNotifier!.value.profile!.photoUrl!
-                            .contains('default-user=')
-                    ? CircleAvatar(
-                        radius: widget.profilePictureSize,
-                        backgroundColor: Color(0xff000000) ==
-                                Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                        child: Text(
-                          firstName + lastName,
-                          // widget.studentValueNotifier.value.profile!.name!
-                          //         .givenName!
-                          //         .toUpperCase()
-                          //         .substring(0, 1) +
-                          //     widget.studentValueNotifier.value.profile!.name!
-                          //         .familyName!
-                          //         .toUpperCase()
-                          //         .substring(0, 1),
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    color: Color(0xff000000) !=
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffF7F8F9)
-                                        : Color(0xff111C20),
-                                  ),
-                        ),
-                      )
-                    : CachedNetworkImage(
-                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                          radius: widget.profilePictureSize,
-                          backgroundImage: imageProvider,
-                        ),
-                        imageUrl: widget.imageUrl!,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Container(
-                            // padding: EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.grey[300]!,
-                                width: 0.5,
-                              ),
+    return Stack(children: [
+      Container(
+          margin:
+              widget.countWidget == true ? EdgeInsets.all(10) : EdgeInsets.zero,
+          child: widget.isFromStudentPlus == true &&
+                  widget.studentProfile != null
+              ? studentProfilePicture()
+              : (widget.studentValueNotifier!.value.profile!.photoUrl!
+                          .contains('default-user') &&
+                      !widget.studentValueNotifier!.value.profile!.photoUrl!
+                          .contains('default-user=')
+                  ? CircleAvatar(
+                      radius: widget.profilePictureSize,
+                      backgroundColor:
+                          Color(0xff000000) == Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      child: Text(
+                        firstName + lastName,
+                        // widget.studentValueNotifier.value.profile!.name!
+                        //         .givenName!
+                        //         .toUpperCase()
+                        //         .substring(0, 1) +
+                        //     widget.studentValueNotifier.value.profile!.name!
+                        //         .familyName!
+                        //         .toUpperCase()
+                        //         .substring(0, 1),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffF7F8F9)
+                                  : Color(0xff111C20),
                             ),
-                            child: CircleAvatar(
-                              radius: widget.profilePictureSize,
-                              backgroundColor: Colors.transparent,
-                              child: Icon(
-                                Icons.person,
-                                // size: profilePictureSize,
-                                color: Colors.grey[300]!,
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                            radius: widget.profilePictureSize,
+                            backgroundImage: imageProvider,
+                          ),
+                      imageUrl: widget.imageUrl!,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              // padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.grey[300]!,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: widget.profilePictureSize,
+                                backgroundColor: Colors.transparent,
+                                child: Icon(
+                                  Icons.person,
+                                  // size: profilePictureSize,
+                                  color: Colors.grey[300]!,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        errorWidget: (context, url, error) => CircleAvatar(
-                            radius: widget.profilePictureSize,
-                            child: Icon(Icons.error)),
-                      ))),
-        if (widget.countWidget == true)
-          Positioned(
+                      errorWidget: (context, url, error) => CircleAvatar(
+                          radius: widget.profilePictureSize,
+                          child: Icon(Icons.error))))),
+      if (widget.countWidget == true)
+        Positioned(
             right: 0,
             top: 32,
             child: Container(
-              padding: EdgeInsets.all(5),
-              width: PBISPlusOverrides.circleSize,
-              height: PBISPlusOverrides.circleSize,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: ValueListenableBuilder(
-                        valueListenable:
-                            widget?.valueChange ?? ValueNotifier(false),
-                        builder: (BuildContext context, value, Widget? child) {
-                          return ValueListenableBuilder<ClassroomStudents>(
-                            valueListenable: widget.studentValueNotifier!,
-                            builder: (BuildContext context,
-                                ClassroomStudents value, Widget? child) {
-                              return
-                                  // widget.isLoading == true
-                                  //     ? ShimmerLoading(
-                                  //         child: Container(
-                                  //           height: 10,
-                                  //           width: 10,
-                                  //           color: Colors.black,
-                                  //         ),
-                                  //         isLoading: widget.isLoading)
-                                  //     :
-                                  //TODOPBIS:
-                                  Text(
-                                      PBISPlusUtility.numberAbbreviationFormat(
-                                          // widget
-                                          //       .studentValueNotifier
-                                          //       .value
-                                          //       .profile!
-                                          //       .behavior1!
-                                          //       .counter! +
-                                          //   widget.studentValueNotifier.value.profile!
-                                          //       .behavior2!.counter! +
-                                          //   widget.studentValueNotifier.value.profile!
-                                          //       .behavior3!.counter!
-                                          widget.studentValueNotifier!.value
-                                                  .profile!.engaged! +
-                                              widget.studentValueNotifier!.value
-                                                  .profile!.niceWork! +
-                                              widget.studentValueNotifier!.value
-                                                  .profile!.helpful!),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.w600,
-                                          ));
-                            },
-                          );
-                        })),
-              ),
-            ),
-          ),
-      ],
-    );
+                padding: EdgeInsets.all(5),
+                width: PBISPlusOverrides.circleSize,
+                height: PBISPlusOverrides.circleSize,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                    child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: ValueListenableBuilder(
+                            valueListenable: PBISPlusOverrides.isCustomBehavior,
+                            builder:
+                                (BuildContext context, value, Widget? child) {
+                              return ValueListenableBuilder(
+                                  valueListenable: PBISPlusOverrides
+                                      .teacherCustomBehaviorList,
+                                  builder: (BuildContext context, value,
+                                      Widget? child) {
+                                    return ValueListenableBuilder(
+                                        valueListenable: widget.valueChange,
+                                        builder: (BuildContext context, value,
+                                            Widget? child) {
+                                          return ValueListenableBuilder<
+                                                  ClassroomStudents>(
+                                              valueListenable:
+                                                  widget.studentValueNotifier!,
+                                              builder: (BuildContext context,
+                                                  ClassroomStudents value,
+                                                  Widget? child) {
+                                                return
+                                                    // widget.isLoading == true
+                                                    //     ? ShimmerLoading(
+                                                    //         child: Container(
+                                                    //           height: 10,
+                                                    //           width: 10,
+                                                    //           color: Colors.black,
+                                                    //         ),
+                                                    //         isLoading: widget.isLoading)
+                                                    //     :
+                                                    //TODOPBIS:
+                                                    Text(
+                                                        PBISPlusUtility.numberAbbreviationFormat(PBISPlusUtility.getStudentTotalCounts(
+                                                            student: widget
+                                                                .studentValueNotifier!
+                                                                .value,
+                                                            isCustomBehavior:
+                                                                PBISPlusOverrides
+                                                                    .isCustomBehavior
+                                                                    .value,
+                                                            teacherCustomBehaviorList:
+                                                                PBISPlusOverrides
+                                                                    .teacherCustomBehaviorList
+                                                                    .value)),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1!
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .grey[600],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold));
+                                              });
+                                        });
+                                  });
+                            })))))
+    ]);
   }
 
   Widget studentProfilePicture() {

@@ -9,7 +9,7 @@ part of 'student_google_presentation_detail_modal.dart';
 class StudentGooglePresentationDetailModalAdapter
     extends TypeAdapter<StudentGooglePresentationDetailModal> {
   @override
-  final int typeId = 44;
+  final int typeId = 57;
 
   @override
   StudentGooglePresentationDetailModal read(BinaryReader reader) {

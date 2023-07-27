@@ -1,4 +1,6 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:flutter/widgets.dart';
 
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
@@ -12,7 +14,7 @@ class PBISPlusOverrides {
   //     'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
-  static final String pbisStudentInteractionDB = 'pbis_student_interaction';
+ // static final String pbisStudentInteractionDB = 'pbis_student_interaction';
   // used to save local db of student details
   // static final String PBISPlusStudentDetail = 'PBISPlus_student_details';
   static final String PBISPlusStudentDetail =
@@ -44,6 +46,11 @@ class PBISPlusOverrides {
       'pbis_plus_additional_behavior';
   static final String PbisPlusTeacherCustomBehaviorLocalDbTable =
       'pbis_plus_custom_behavior';
+  static final ValueNotifier<bool> isCustomBehavior =
+      ValueNotifier<bool>(false);
+  static final ValueNotifier<List<PBISPlusCommonBehaviorModal>>
+      teacherCustomBehaviorList =
+      ValueNotifier<List<PBISPlusCommonBehaviorModal>>([]);
 
   static final List<String> soundPath = [
     "pbis_sound/sound1.wav",
