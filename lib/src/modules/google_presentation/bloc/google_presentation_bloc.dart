@@ -357,6 +357,7 @@ class GoogleSlidesPresentationBloc
             (countGooglePresentationSlideAndTrashStatus[1][0] == true &&
                 countGooglePresentationSlideAndTrashStatus[1][1] == true)) {
           //if the api response return (404) the resource you are trying to access doesn't e
+          yield GooglePresentationLoading();
           yield GoogleSlidesPresentationErrorState(errorMsg: "404");
         }
 
@@ -383,12 +384,14 @@ class GoogleSlidesPresentationBloc
               event.studentDetails.studentGooglePresentationUrl =
                   countGooglePresentationSlideAndTrashStatus[1][1];
               print("StudentPlusUpdateStudentWorkGooglePresentationSuccess");
+              yield GooglePresentationLoading();
               yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                   studentDetails: event.studentDetails,
                   //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
                   isSaveStudentGooglePresentationWorkOnDataBase:
                       countGooglePresentationSlideAndTrashStatus[0][1] == 0);
             } else {
+              yield GooglePresentationLoading();
               yield GoogleSlidesPresentationErrorState(
                   errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
                       .toString());
@@ -400,6 +403,7 @@ class GoogleSlidesPresentationBloc
               countGooglePresentationSlideAndTrashStatus[0][1] >
                   event.allRecords.length) {
             print("no need to update the sldies");
+            yield GooglePresentationLoading();
             yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
                 //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
@@ -408,6 +412,7 @@ class GoogleSlidesPresentationBloc
           }
           //---------------------------
           else {
+            yield GooglePresentationLoading();
             yield GoogleSlidesPresentationErrorState(
                 errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
                     .toString());
@@ -415,6 +420,7 @@ class GoogleSlidesPresentationBloc
         }
       } catch (e) {
         print(e);
+        yield GooglePresentationLoading();
         yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
       }
     }
@@ -505,6 +511,7 @@ class GoogleSlidesPresentationBloc
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
       print("check this $presentationFileId");
+      print("getSlidesCountFromGooglePresentation API CALLED");
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationFileId";
 
@@ -628,7 +635,7 @@ class GoogleSlidesPresentationBloc
 
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$presentationFileId?fields=trashed,webViewLink";
-
+      print("checkGooglePresentationInTrashed API CALEED}");
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
       print(

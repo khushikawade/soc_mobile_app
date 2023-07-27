@@ -410,6 +410,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         // API Call //save student google presentation details to database
         var isStudentGooglePresentationWorkSaved =
             await saveStudentGooglePresentationWorkDetails(
+          studentGooglePresentationRecordId:
+              event.studentGooglePresentationRecordId,
           title: studentGooglePresentationFileName,
           studentDetails: event.studentDetails,
         );
@@ -809,7 +811,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   /* ------------- Function to save Student Google Presentation Work on database ------------- */
   Future saveStudentGooglePresentationWorkDetails(
       {required StudentPlusDetailsModel studentDetails,
-      required String title}) async {
+      required String title,
+      required int? studentGooglePresentationRecordId}) async {
     try {
       print("save id ${studentDetails.studentGooglePresentationId}");
       final body = {
@@ -824,6 +827,11 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         "Google_Presentation_URL":
             studentDetails.studentGooglePresentationUrl ?? ''
       };
+
+      //   only add when need to update the google presentation id and url
+      if (studentGooglePresentationRecordId != null) {
+        body.addAll({"Id": studentGooglePresentationRecordId});
+      }
 
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
