@@ -31,6 +31,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          resizeToAvoidBottomInset: true,
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: FamilyVerificationCommonWidget.familyLoginAppBar(
@@ -60,9 +61,10 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
                 ),
                 SpacerWidget(20),
                 textFormFieldWidget(),
-                SpacerWidget(20),
-                SpacerWidget(MediaQuery.of(context).size.height * 0.05),
-                SpacerWidget(60),
+                SpacerWidget(MediaQuery.of(context).viewInsets.bottom / 1.5),
+                // SpacerWidget(20),
+                // SpacerWidget(MediaQuery.of(context).size.height * 0.05),
+                // SpacerWidget(60),
               ],
             ),
           ),
@@ -118,8 +120,8 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
       child: Form(
         key: _formKey,
         child: TextFormField(
-          scrollPadding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          scrollPadding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 240),
           autofocus: false,
           style: Theme.of(context).textTheme.headline3,
           autovalidateMode: AutovalidateMode.onUserInteraction,
