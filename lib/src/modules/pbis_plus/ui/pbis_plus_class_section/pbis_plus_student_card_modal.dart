@@ -445,7 +445,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                               builder: (context) =>
                                                   PBISPlusStudentDashBoard(
                                                       pBISPlusBloc:
-                                                          pBISPlusBloc,
+                                                        PBISPlusOverrides.isCustomBehavior.value == true
+                  ? pbisPluCustomBehaviorBloc
+                  : pbisPluDefaultBehaviorBloc,
                                                       constraint:
                                                           widget.constraint,
                                                       scaffoldKey:
