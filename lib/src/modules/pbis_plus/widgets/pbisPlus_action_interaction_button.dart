@@ -325,18 +325,16 @@ class PBISPlusActionInteractionButtonState
   buildCounts() {
     // return viewCount;
     return FittedBox(
-      child: Padding(
-        padding: EdgeInsets.all(3),
-        child: Utility.textWidget(
-            text: getCountsById(widget.iconData.id ?? '').toString(),
-            context: context,
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w600,
-                fontSize: 14)),
-      ),
-    );
+        child: Padding(
+            padding: EdgeInsets.all(3),
+            child: Utility.textWidget(
+                text: getCountsById(widget.iconData.id ?? '').toString(),
+                context: context,
+                textAlign: TextAlign.center,
+                textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14))));
   }
 
   int? getCountsById(String id) {
@@ -351,8 +349,7 @@ class PBISPlusActionInteractionButtonState
 
   void updateCountsId(PBISPlusCommonBehaviorModal iconData) {
     bool isAlready = false;
-    print(
-        ' added ${iconData.behaviorTitleC} is default ${widget.isCustomBehavior}');
+
     for (BehaviorList item
         in widget.studentValueNotifier.value.profile!.behaviorList ?? []) {
       if (item.id == iconData.id) {
@@ -369,8 +366,8 @@ class PBISPlusActionInteractionButtonState
           behaviorCount: 1));
     }
 
-    onTapDetect.value =
-        !onTapDetect.value; //Update interaction text count in card
+    //Update interaction text count in card
+    onTapDetect.value = !onTapDetect.value;
 
     widget.onValueUpdate(
         widget.studentValueNotifier); //return updated count to other screens

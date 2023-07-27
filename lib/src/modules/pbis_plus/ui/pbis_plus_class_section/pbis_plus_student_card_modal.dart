@@ -271,10 +271,11 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   .teacherCustomBehaviorList.value,
                               loading: false);
                         });
-                  } else {
-                    // pbisPluCustomBehaviorBloc
-                    //     .add(PBISPlusGetDefaultSchoolBehavior());
-                  }
+                  } 
+                  // else {
+                  //   // pbisPluCustomBehaviorBloc
+                  //   //     .add(PBISPlusGetDefaultSchoolBehavior());
+                  // }
                 }
 
                 if (state is PBISPlusBehaviorLoading) {

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -74,6 +76,7 @@ class AppTheme {
   static const double kSubtitle2FontSize = 10.0;
   static const double kBodyText1FontSize = 14.0;
   static const double kTitleFontSize = 28.0;
+  static const double kTitleLargeFontSize = 50.0;
   static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
   static const double kSize = 8.0;
@@ -172,6 +175,12 @@ class AppTheme {
             fontSize: Globals.deviceType == "phone"
                 ? kTitleFontSize
                 : kTitleFontSize + kSize,
+            color: kAccentColor,
+            fontFamily: 'Roboto-SemiBold'),
+        headlineLarge: TextStyle(
+            fontSize: Globals.deviceType == "phone"
+                ? kTitleLargeFontSize
+                : kTitleLargeFontSize + kSize,
             color: kAccentColor,
             fontFamily: 'Roboto-SemiBold'),
         caption: TextStyle(

@@ -205,6 +205,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
+          List pbisTotalDefaultAndCustomBehaviourInteractionList = [];
 
           //Returning Google Classroom Course List from API response if local data is empty
           //This will used to show shimmer loading on PBIS Score circle // Class Screen
@@ -214,22 +215,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                 googleClassroomCourseList: coursesList);
           }
 
-          List pbisTotaldefaultAndCustomBehviour = [];
-
           //Get PBISTotal interaction only if Section is PBIS+
-
           if (event.isGradedPlus == false) {
-            pbisTotaldefaultAndCustomBehviour = await Future.wait([
+            pbisTotalDefaultAndCustomBehaviourInteractionList =
+                await Future.wait([
               pBISPlusGetStudentBehaviorBySection(
-                section: 'default',
-                teacherEmail: userProfileLocalData[0].userEmail!,
-                schoolId: Overrides.SCHOOL_ID,
-              ),
+                  section: 'default',
+                  teacherEmail: userProfileLocalData[0].userEmail!,
+                  schoolId: Overrides.SCHOOL_ID),
               pBISPlusGetStudentBehaviorBySection(
-                section: 'custom',
-                teacherEmail: userProfileLocalData[0].userEmail!,
-                schoolId: Overrides.SCHOOL_ID,
-              ),
+                  section: 'custom',
+                  teacherEmail: userProfileLocalData[0].userEmail!,
+                  schoolId: Overrides.SCHOOL_ID)
             ]);
           }
 
@@ -237,8 +234,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           List<ClassroomCourse> classroomStudentProfile =
               await assignStudentTotalInteraction(
                   classroomCourseList: coursesList,
-                  pbisTotaldefaultAndCustomBehviour:
-                      pbisTotaldefaultAndCustomBehviour);
+                  pbisTotalDefaultAndCustomBehaviourInteractionList:
+                      pbisTotalDefaultAndCustomBehaviourInteractionList);
 
           await _localDb.clear();
           classroomStudentProfile.forEach((ClassroomCourse e) {
@@ -258,9 +255,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: classroomStudentProfile);
         } else {
-          yield PBISErrorState(
-            error: 'ReAuthentication is required',
-          );
+          yield PBISErrorState(error: 'ReAuthentication is required');
         }
       } catch (e) {
         print(e);
@@ -1327,14 +1322,16 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   //   return classroomStudentProfile;
   // }
 
+//-----------------------------------------------------------------------------------------------
+//Updating student interaction to Roster list
   List<ClassroomCourse> assignStudentTotalInteraction({
-    required List? pbisTotaldefaultAndCustomBehviour,
+    required List? pbisTotalDefaultAndCustomBehaviourInteractionList,
     required List<ClassroomCourse> classroomCourseList,
   }) {
     List<ClassroomCourse> classroomStudentProfile = [];
 
-    if (pbisTotaldefaultAndCustomBehviour == null ||
-        pbisTotaldefaultAndCustomBehviour.isEmpty) {
+    if (pbisTotalDefaultAndCustomBehaviourInteractionList == null ||
+        pbisTotalDefaultAndCustomBehaviourInteractionList.isEmpty) {
       // Add 0 interaction counts to all the students in the classroomCourseList
       classroomStudentProfile.addAll(classroomCourseList);
     } else {
@@ -1344,9 +1341,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         for (int j = 0; j < classroomCourse.students!.length; j++) {
           // Define defaultBehviour and customBehviour lists directly inside the loop
           List<PBISPlusTotalBehaviorModal> defaultBehviour =
-              pbisTotaldefaultAndCustomBehviour[0];
+              pbisTotalDefaultAndCustomBehaviourInteractionList[0];
           List<PBISPlusTotalBehaviorModal> customBehviour =
-              pbisTotaldefaultAndCustomBehviour[1];
+              pbisTotalDefaultAndCustomBehaviourInteractionList[1];
 
           for (int d = 0; d < defaultBehviour.length; d++) {
             if (classroomCourse.id == defaultBehviour[d].classroomCourseId &&
@@ -2122,11 +2119,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        print("pBISPlusGetStudentBehaviorBySection $section api is recived");
-        return response.data['body']
+        List<PBISPlusTotalBehaviorModal> interactionList = response.data['body']
             .map<PBISPlusTotalBehaviorModal>(
                 (i) => PBISPlusTotalBehaviorModal.fromJson(i))
             .toList();
+
+        return interactionList;
       } else if (retry > 0) {
         return pBISPlusGetStudentBehaviorBySection(
             teacherEmail: teacherEmail,

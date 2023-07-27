@@ -31,6 +31,11 @@ class FetchGoogleSheet {
               studentAssessmentInfo.studentGrade =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
+            case 'Points Possible':
+              studentAssessmentInfo.pointPossible =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+            //For old spreadsheet manage
             case 'Point Possible':
               studentAssessmentInfo.pointPossible =
                   fields[j][i].toString().replaceFirst(" ", "");
