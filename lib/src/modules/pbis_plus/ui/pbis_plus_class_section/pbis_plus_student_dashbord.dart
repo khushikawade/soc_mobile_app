@@ -90,6 +90,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   final ValueNotifier<bool> isListScrollUp = ValueNotifier<bool>(false);
   PBISPlusBloc pBISPlusBloc = PBISPlusBloc();
   ScrollController _innerScrollController = ScrollController();
+  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
 
   final ValueNotifier<List<PBISPlusStudentDashboardTotalBehaviourModal>>
       pbisStudentInteractionListNotifier =
@@ -145,6 +146,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   void _handleScroll() {
     isScrolledUp.value = _scrollController!.offset >= 400;
+    if (_scrollController!.position.atEdge &&
+        _scrollController!.position.pixels != 0) {
+      _loadMoreLogsData();
+    }
+
     if (_scrollController?.position.pixels ==
         _scrollController?.position.maxScrollExtent) {
       isListScrollUp.value = true;
@@ -204,11 +210,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   /*--------------------------------------------------------------------------------------------------------*/
   /*--------------------------------------------------------body--------------------------------------------*/
   /*--------------------------------------------------------------------------------------------------------*/
-  Widget studentPlusBody(BuildContext context) {
-    return widget.isFromStudentPlus == true
-        ? ListView(children: bodyFrameWidget())
-        : ListView(children: bodyFrameWidget());
-  }
+  // Widget studentPlusBody(BuildContext context) {
+  //   return widget.isFromStudentPlus == true
+  //       ? ListView(children: bodyFrameWidget())
+  //       : ListView(children: bodyFrameWidget());
+  // }
 
   Widget pbisPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
@@ -217,20 +223,22 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             children: [
               sectionHeader(),
               Flexible(
-                child: buildNestedScrollView(),
-              ),
-            ],
+                child: buildNestedScrollView()
+              )
+            ]
           );
   }
 
-  NestedScrollView buildNestedScrollView() {
-    return NestedScrollView(
-      controller: _scrollController,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[buildSliverAppBar()];
-      },
-      body: buildTableSection(),
-    );
+  buildNestedScrollView() {
+    return NotificationListener<ScrollNotification>(
+        onNotification: onNotification,
+        child: NestedScrollView(
+          controller: _scrollController,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[buildSliverAppBar()];
+          },
+          body: buildTableSection(),
+        ));
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -267,6 +275,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             : widget.studentValueNotifier.value.profile!.id ?? '',
         isStudentPlus: widget.isFromStudentPlus,
         classroomCourseId: widget.classroomCourseId ?? ''));
+  }
+
+  bool onNotification(ScrollNotification t) {
+    if (t.metrics.pixels < 150) {
+      if (isScrolling.value == false) isScrolling.value = true;
+    } else {
+      if (isScrolling.value == true) isScrolling.value = false;
+    }
+    return true;
   }
 
   /*--------------------------------------------------------------------------------------------------------*/
@@ -535,9 +552,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         },
       );
 
-  List<Widget> bodyFrameWidget() {
-    return [buildBehaviourSection(), buildTableSection()];
-  }
+  // List<Widget> bodyFrameWidget() {
+  //   return [buildBehaviourSection(), buildTableSection()];
+  // }
 
 // add date and total on table
   List<PBISPlusCommonBehaviorModal> getTableHeadersList(
@@ -583,11 +600,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                   pbisStudentInteractionListNotifier,
                               builder: (context, value, child) {
                                 return ListView(
-                                    controller: _innerScrollController,
+                                    // controller: _innerScrollController,
                                     padding: EdgeInsets.only(bottom: 120),
-                                    physics: isListScrollUp.value
-                                        ? BouncingScrollPhysics()
-                                        : NeverScrollableScrollPhysics(),
+                                    // physics: isListScrollUp.value
+                                    //     ? BouncingScrollPhysics()
+                                    //     : NeverScrollableScrollPhysics(),
                                     children: [
                                       FittedBox(
                                           fit: BoxFit.contain,
@@ -715,13 +732,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   buildTableSection() {
     return Container(
-        alignment: Alignment.topCenter,
+        // alignment: Alignment.topCenter,
         height: (widget.constraint <= 115)
             ? MediaQuery.of(context).size.height * 0.30
             : MediaQuery.of(context).size.height * 0.32,
         // height: MediaQuery.of(context).size.height * 0.50,
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(left: 16, right: 16, top: 10),
+        margin: EdgeInsets.only(left: 16, right: 16, top: 0),
         // padding: EdgeInsets.only(bottom: 40),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
@@ -754,6 +771,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         automaticallyImplyLeading: false,
         expandedHeight: widget.isFromStudentPlus == true
             ? MediaQuery.of(context).size.height / 2.0
+            // : MediaQuery.of(context).size.height / 2.1,//IF PADDING BETWEEN THE CARD AND TABLE DECREASE THEN CUT IN SMALL DEVICES
             : MediaQuery.of(context).size.height / 1.9,
         flexibleSpace: FlexibleSpaceBar(
             background: SingleChildScrollView(
