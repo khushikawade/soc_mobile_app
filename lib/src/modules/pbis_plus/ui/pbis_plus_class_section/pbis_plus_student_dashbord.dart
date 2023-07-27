@@ -223,9 +223,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             children: [
               sectionHeader(),
               Flexible(
-                child: buildNestedScrollView(),
-              ),
-            ],
+                child: buildNestedScrollView()
+              )
+            ]
           );
   }
 
