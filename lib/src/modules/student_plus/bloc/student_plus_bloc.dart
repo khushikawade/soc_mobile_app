@@ -184,7 +184,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
               obj: _localDataGradeList,
               chipList: getChipsList(list: _localDataGradeList),
               courseList:
-                  event.studentEmail == null ? [] : _localCourseDataList);
+                  _localCourseDataList);
         }
 
         //Creating list includes both grades from database and current grades from google classroom
@@ -224,7 +224,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusGradeSuccess(
             obj: studentPlusGradeList,
             chipList: getChipsList(list: studentPlusGradeList),
-            courseList: event.studentEmail == null ? [] : studentCourseList);
+            courseList: studentCourseList);
       } catch (e) {
         LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
             LocalDatabase(
@@ -891,7 +891,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             'Content-Type': 'application/json',
             'g_authtoken': '$accessToken'
           });
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<StudentPlusCourseModel> list = response.data["body"]
             .map<StudentPlusCourseModel>(
                 (i) => StudentPlusCourseModel.fromJson(i))
