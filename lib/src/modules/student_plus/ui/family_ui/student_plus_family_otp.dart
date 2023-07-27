@@ -293,8 +293,10 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
       child: Container(),
       listener: (context, state) {
         if (state is FamilyLoginOtpVerifySuccess) {
-          Utility.showSnackBar(
-              _scaffoldKey, "OTP Verified Successfully", context, null);
+          Utility.currentScreenSnackBar(
+            "OTP Verified Successfully",
+            context,
+          );
           Navigator.pop(context);
           Navigator.push(
             context,
