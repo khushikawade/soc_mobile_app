@@ -10,8 +10,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 class StudentPlusSearchBarAndDropdown extends StatefulWidget {
   final String sectionType;
   final StudentPlusDetailsModel studentDetails;
+  final int index;
   const StudentPlusSearchBarAndDropdown(
-      {Key? key, required this.sectionType, required this.studentDetails})
+      {Key? key, required this.sectionType, required this.studentDetails,required this.index})
       : super(key: key);
 
   @override
@@ -41,7 +42,7 @@ class _StudentPlusSearchBarAndDropdownState
                 builder: (BuildContext context, BoxConstraints constraints) {
               return StudentPlusFamilyStudentList(
                 height: MediaQuery.of(context).size.height * 0.4, //0.45,
-                currentIndex: 0,
+                currentIndex: widget.index,
               );
             }),
           );
@@ -49,7 +50,7 @@ class _StudentPlusSearchBarAndDropdownState
           var result = await pushNewScreen(context,
               screen: StudentPlusSearchScreen(
                   fromStudentPlusDetailPage: true,
-                  index: 0,
+                  index: widget.index,
                   studentDetails: widget.studentDetails),
               withNavBar: false,
               pageTransitionAnimation: PageTransitionAnimation.fade);
