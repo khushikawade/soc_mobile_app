@@ -172,8 +172,6 @@ class _PlusSplashScreenState extends State<PlusSplashScreen> {
             padding: const EdgeInsets.all(16),
             child: Image.asset(
               getSplashScreenUrl(),
-              //  fit: BoxFit.cover,
-              //    height: 50,
             )),
       ],
     ));
