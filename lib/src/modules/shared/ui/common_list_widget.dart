@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
@@ -316,17 +317,13 @@ class _CommonListWidgetState extends State<CommonListWidget> {
             _profileData[0].familyToken == "")) {
       pushNewScreen(
         context,
-        screen: StudentPlusFamilyLogIn(),
+        screen: PlusSplashScreen(
+          actionName: 'STUDENT+',
+          sectionType: 'Family',
+        ),
         withNavBar: false,
       );
-      // } else {
-      //   if (_profileData[0].familyToken == null ||
-      //       _profileData[0].familyToken == "") {
-      //     pushNewScreen(
-      //       context,
-      //       screen: StudentPlusFamilyLogIn(),
-      //       withNavBar: false,
-      //     );
+      
     } else {
       _studentPlusBloc.add(GetStudentListFamilyLogin());
     }
@@ -354,16 +351,26 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           Navigator.pop(context);
           pushNewScreen(
             context,
-            screen: StudentPlusHome(
-              sectionType: "Family",
-              studentPlusStudentInfo: StudentPlusDetailsModel(
+            screen: PlusSplashScreen(
+              actionName: 'STUDENT+',
+              sectionType: 'Family',
+              studentDetail: StudentPlusDetailsModel(
                   studentIdC: state.obj[0].studentIDC,
                   firstNameC: state.obj[0].firstNameC,
                   lastNameC: state.obj[0].lastNameC,
                   classC: state.obj[0].classC),
-              index: 0,
-              //   index: widget.index,
             ),
+
+            // StudentPlusHome(
+            //   sectionType: "Family",
+            //   studentPlusStudentInfo: StudentPlusDetailsModel(
+            //       studentIdC: state.obj[0].studentIDC,
+            //       firstNameC: state.obj[0].firstNameC,
+            //       lastNameC: state.obj[0].lastNameC,
+            //       classC: state.obj[0].classC),
+            //   index: 0,
+            //   //   index: widget.index,
+            // ),
             withNavBar: false,
           );
         }
