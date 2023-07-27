@@ -283,13 +283,13 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                       )
                     : Expanded(
                         child: NoDataFoundErrorWidget(
-                          isSearchpage: true,
-                          isResultNotFoundMsg: false,
-                          marginTop: MediaQuery.of(context).size.height * 0.15,
-                          isNews: false,
-                          isEvents: false,
-                        ),
-                      );
+                            errorMessage: 'No Recent Search',
+                            isSearchpage: true,
+                            isResultNotFoundMsg: false,
+                            marginTop:
+                                MediaQuery.of(context).size.height * 0.15,
+                            isNews: false,
+                            isEvents: false));
               });
         });
   }
@@ -716,6 +716,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                         }))
                 : Expanded(
                     child: NoDataFoundErrorWidget(
+                      errorMessage: 'No Data Found',
                       isSearchpage: true,
                       isResultNotFoundMsg: false,
                       marginTop: MediaQuery.of(context).size.height * 0.15,

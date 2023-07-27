@@ -430,7 +430,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                     : "ID", //"Id",
                 studentName: "Name",
                 studentGrade: "Points Earned",
-                pointPossible: "Point Possible",
+                pointPossible: "Points Possible",
                 questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
                     ? "Assessment Image"
                     : "Assignment Image", // "Assessment Question Img",

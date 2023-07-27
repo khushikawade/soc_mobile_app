@@ -193,7 +193,7 @@ class _GradedPlusAssessmentSummaryState
                 horizontal: MediaQuery.of(context).size.width / 50),
             child: PlusAppSearchBar(
               sectionName: 'GRADED+',
-              hintText: "Search",
+              hintText:  "Search",
               onTap: () async {
                 var result = Navigator.push(
                   context,

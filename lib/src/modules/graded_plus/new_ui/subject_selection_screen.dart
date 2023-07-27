@@ -254,46 +254,42 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
-      child: Container(
-        child: Stack(
-          children: [
-            CommonBackgroundImgWidget(),
-            Scaffold(
-                key: _scaffoldKey,
-                bottomNavigationBar: progressIndicatorBar(),
-                floatingActionButton: saveToDriveButton(),
-                backgroundColor: Colors.transparent,
-                resizeToAvoidBottomInset: false,
-                appBar: CustomOcrAppBarWidget(
-                  refresh: (v) {
-                    setState(() {});
-                  },
-                  iconData: widget.titleIconData,
-                  plusAppName: 'GRADED+',
-                  fromGradedPlus: true,
-                  hideStateSelection: true,
-                  onTap: () {
-                    Utility.scrollToTop(scrollController: _scrollController);
-                  },
-                  isSuccessState: ValueNotifier<bool>(true),
-                  isBackOnSuccess: isBackFromCamera,
-                  isBackButton: true,
-                  key: null,
-                  isHomeButtonPopup: true,
-                  customBackButton: backButtonWidget(),
-                ),
-                body: mainBodyWidget()),
-            googleBlocListener(),
-            excelBlocListener(),
-            slideBlocListener(),
-            classRoomBlocListener(),
-            ocrAssessmentBlocListener(),
-            subjectBlocListener()
-          ],
-        ),
-      ),
-    );
+        onWillPop: () async => false,
+        child: Container(
+            child: Stack(children: [
+          CommonBackgroundImgWidget(),
+          Scaffold(
+              key: _scaffoldKey,
+              bottomNavigationBar: progressIndicatorBar(),
+              floatingActionButton: saveToDriveButton(),
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              appBar: CustomOcrAppBarWidget(
+                refresh: (v) {
+                  setState(() {});
+                },
+                iconData: widget.titleIconData,
+                plusAppName: 'GRADED+',
+                fromGradedPlus: true,
+                hideStateSelection: true,
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
+                isSuccessState: ValueNotifier<bool>(true),
+                isBackOnSuccess: isBackFromCamera,
+                isBackButton: true,
+                key: null,
+                isHomeButtonPopup: true,
+                customBackButton: backButtonWidget(),
+              ),
+              body: mainBodyWidget()),
+          googleBlocListener(),
+          excelBlocListener(),
+          slideBlocListener(),
+          classRoomBlocListener(),
+          ocrAssessmentBlocListener(),
+          subjectBlocListener()
+        ])));
   }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -417,7 +413,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             titleWidget(),
             SpacerWidget(_KVerticalSpace / 3.5),
             searchWidget(),
-            SpacerWidget(_KVerticalSpace / 4),
+            // SpacerWidget(_KVerticalSpace / 3.5),
             ValueListenableBuilder(
                 valueListenable: pageIndex,
                 builder: (BuildContext context, dynamic value, Widget? child) {

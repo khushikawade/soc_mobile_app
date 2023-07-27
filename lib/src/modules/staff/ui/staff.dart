@@ -479,85 +479,83 @@ class _StaffPageState extends State<StaffPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: StaffIconsList.staffIconsList
                     .map<Widget>((element) => GestureDetector(
-                          onTap: () async {
-                            selectedIndex.value =
-                                StaffIconsList.staffIconsList.indexOf(element);
-                            actionName = element.iconName;
-                            staffActionIconsOnTap(actionName: element.iconName);
-                          },
-                          child: Bouncing(
-                              child: AnimatedContainer(
-                            padding: EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color: selectedIndex.value ==
-                                      StaffIconsList.staffIconsList
-                                          .indexOf(element)
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                            ),
-                            duration: Duration(microseconds: 100),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                                border: Border.all(
+                        onTap: () async {
+                          selectedIndex.value =
+                              StaffIconsList.staffIconsList.indexOf(element);
+                          actionName = element.iconName;
+                          staffActionIconsOnTap(actionName: element.iconName);
+                        },
+                        child: Bouncing(
+                            child: AnimatedContainer(
+                                padding: EdgeInsets.only(bottom: 5),
+                                decoration: BoxDecoration(
                                   color: selectedIndex.value ==
                                           StaffIconsList.staffIconsList
                                               .indexOf(element)
                                       ? AppTheme.kSelectedColor
                                       : Colors.grey,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
-                              child: Container(
-                                height: height / 1.7,
-                                width: height / 1.7,
-                                decoration: BoxDecoration(
-                                    //color: AppTheme.kButtonColor,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: element.iconUrl.contains('pbis')
-                                          ? height / 4.3
-                                          : height / 3,
-                                      margin: EdgeInsets.all(6),
-                                      child: Image(
-                                        image:
-                                            Image.asset(element.iconUrl).image,
+                                duration: Duration(microseconds: 100),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff000000) !=
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xffF7F8F9)
+                                          : Color(0xff111C20),
+                                      border: Border.all(
+                                        color: selectedIndex.value ==
+                                                StaffIconsList.staffIconsList
+                                                    .indexOf(element)
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
                                     ),
-                                    element.iconUrl
-                                            .contains('landingPage_image')
-                                        ? Container()
-                                        : SpacerWidget(4),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: FittedBox(
-                                        child: Utility.textWidget(
-                                            text: element.iconName,
-                                            textTheme: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1,
-                                            context: context),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )),
-                        ))
+                                    child: Container(
+                                        height: height / 1.7,
+                                        width: height / 1.7,
+                                        decoration: BoxDecoration(
+                                            //color: AppTheme.kButtonColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  width: element.iconUrl
+                                                          .contains('pbis')
+                                                      ? height / 4.3
+                                                      : height / 3,
+                                                  margin: EdgeInsets.all(6),
+                                                  child: Image(
+                                                    image: Image.asset(
+                                                            element.iconUrl)
+                                                        .image,
+                                                  )),
+                                              element.iconUrl.contains(
+                                                      'landingPage_image')
+                                                  ? Container()
+                                                  : SpacerWidget(4),
+                                              Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: FittedBox(
+                                                      child: Text(
+                                                    element.iconName,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1,
+                                                  )))
+                                            ])))))))
                     .toList(),
               ));
         });
