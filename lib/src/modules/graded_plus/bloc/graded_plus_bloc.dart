@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -162,7 +161,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List<SubjectDetailList>? _localData = await _localDb.getData();
           // fetch
 
-          //Check is usign to differentiate the list at search screen
+          //Check is using to differentiate the list at search screen
           if (event.type == 'nyc') {
             List<SubjectDetailList> updatedList = await sortSubjectDetails(
                 gradeNo: event.grade!,

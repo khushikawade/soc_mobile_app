@@ -184,7 +184,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
               obj: _localDataGradeList,
               chipList: getChipsList(list: _localDataGradeList),
               courseList:
-                  event.studentEmail == null ? [] : _localCourseDataList);
+                  _localCourseDataList);
         }
 
         //Creating list includes both grades from database and current grades from google classroom
@@ -224,7 +224,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusGradeSuccess(
             obj: studentPlusGradeList,
             chipList: getChipsList(list: studentPlusGradeList),
-            courseList: event.studentEmail == null ? [] : studentCourseList);
+            courseList: studentCourseList);
       } catch (e) {
         LocalDatabase<StudentPlusGradeModel> _localDbStudentGradeDb =
             LocalDatabase(
@@ -414,6 +414,8 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         // API Call //save student google presentation details to database
         var isStudentGooglePresentationWorkSaved =
             await saveStudentGooglePresentationWorkDetails(
+          studentGooglePresentationRecordId:
+              event.studentGooglePresentationRecordId,
           title: studentGooglePresentationFileName,
           studentDetails: event.studentDetails,
         );
@@ -423,14 +425,16 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           //     .updateStudentLocalDBWithGooglePresentationUrl(
           //   studentDetails: event.studentDetails,
           // );
-
+          yield StudentPlusLoading();
           yield SaveStudentGooglePresentationWorkEventSuccess(
               studentDetails: event.studentDetails);
         } else {
+          yield StudentPlusLoading();
           yield StudentPlusErrorReceived(
               err: isStudentGooglePresentationWorkSaved);
         }
       } catch (e) {
+        yield StudentPlusLoading();
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
@@ -601,8 +605,6 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         yield StudentPlusErrorReceived(err: e.toString());
       }
     }
-
-    
   }
 
   /* -------------------------------------------------------------------------- */
@@ -815,8 +817,10 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   /* ------------- Function to save Student Google Presentation Work on database ------------- */
   Future saveStudentGooglePresentationWorkDetails(
       {required StudentPlusDetailsModel studentDetails,
-      required String title}) async {
+      required String title,
+      required int? studentGooglePresentationRecordId}) async {
     try {
+      print("save id ${studentDetails.studentGooglePresentationId}");
       final body = {
         "Student__c": studentDetails.studentIdC,
         "Student_Record_Id": studentDetails.id,
@@ -830,11 +834,16 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             studentDetails.studentGooglePresentationUrl ?? ''
       };
 
+      //   only add when need to update the google presentation id and url
+      if (studentGooglePresentationRecordId != null) {
+        body.addAll({"Id": studentGooglePresentationRecordId});
+      }
+
       final headers = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
       };
-
+      print("saveStudentGooglePresentationWorkDetails api called");
       final url =
           'https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/student-plus/add-presentation';
 
@@ -891,7 +900,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
             'Content-Type': 'application/json',
             'g_authtoken': '$accessToken'
           });
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         List<StudentPlusCourseModel> list = response.data["body"]
             .map<StudentPlusCourseModel>(
                 (i) => StudentPlusCourseModel.fromJson(i))
