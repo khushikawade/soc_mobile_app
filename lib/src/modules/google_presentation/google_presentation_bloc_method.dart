@@ -214,13 +214,16 @@ class GooglePresentationBlocMethods {
       allRecords
           .asMap()
           .forEach((int index, StudentPlusWorkModel element) async {
+        // id for every page obj
         String pageObjectuniqueId = "pageObjectId" +
             DateTime.now().microsecondsSinceEpoch.toString() +
             "$index";
-
+//id for every table obj
         String tableObjectuniqueId = "tableObjectId" +
             DateTime.now().microsecondsSinceEpoch.toString() +
             "$index";
+
+        //id for every image obj
         String imageObjectuniqueId = "imageObjectuniqueId" +
             DateTime.now().microsecondsSinceEpoch.toString() +
             "$index";
