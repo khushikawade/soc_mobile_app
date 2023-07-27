@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'student_google_presentation_detail_modal.g.dart';
 
-@HiveType(typeId: 44)
+@HiveType(typeId: 57)
 class StudentGooglePresentationDetailModal {
   @HiveField(0)
   int? id;

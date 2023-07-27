@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 part 'student_plus_regents_model.g.dart';
 
-@HiveType(typeId: 55)
+@HiveType(typeId: 58)
 class StudentRegentsModel {
   @HiveField(0)
   final String? id;

@@ -64,8 +64,8 @@ class StudentPlusInfoSuccess extends StudentPlusState {
 
 /* ----------------------- state use to return grade ---------------------- */
 class StudentPlusGradeSuccess extends StudentPlusState {
-  final List<StudentPlusGradeModel> obj;
-  final List<StudentPlusCourseModel> courseList;
+  final List<StudentPlusGradeModel>? obj;
+  final List<StudentPlusCourseModel>? courseList;
   final List<String> chipList;
   StudentPlusGradeSuccess(
       {required this.obj, required this.chipList, required this.courseList});
