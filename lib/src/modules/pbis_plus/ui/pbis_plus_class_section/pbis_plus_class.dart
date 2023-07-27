@@ -619,8 +619,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         builder: (BuildContext context, BoxConstraints constraints) {
       Container BuildStudentCountIndicator = Container(
         padding: EdgeInsets.all(2),
-        width: 22,
-        height: 22,
+        width: 24,
+        height: 24,
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,
           shape: BoxShape.circle,
