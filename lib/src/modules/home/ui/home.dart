@@ -392,12 +392,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             topRight: Radius.circular(25),
             topLeft: Radius.circular(25),
           ),
-          // circular(25.0),
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-              // Colors.grey,
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
               blurRadius: 10.0,
             ),
           ]),
