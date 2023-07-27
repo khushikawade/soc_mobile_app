@@ -231,71 +231,84 @@ class individual extends State<StudentPlusGradesPage> {
   /* ---------------- Widget to show individual chips of grades ---------------- */
   Widget gradesChip({required String chipValue}) {
     return GestureDetector(
-      onTap: () {
-        selectedValue.value = chipValue;
-      },
-      child: Bouncing(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.16,
-          //padding: EdgeInsets.symmetric(horizontal: 20),
-          margin: EdgeInsets.only(left: 5),
-          decoration: BoxDecoration(
-            boxShadow: [],
-            color: //Colors.transparent,
-                Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
-            border: Border.all(
-                color: selectedValue.value == chipValue
-                    ? AppTheme.kSelectedColor
-                    : Colors.grey),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Center(
-              child: chipValue == 'Current'
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 10,
-                            width: 10,
-                            child: SvgPicture.asset(
-                              'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
-                              // color: AppTheme.kButtonColor,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Utility.textWidget(
-                              text: chipValue,
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline3!
-                                  .copyWith(fontSize: 10))
-                        ],
-                      ),
-                    )
-                  : Utility.textWidget(
-                      text: chipValue == '1'
-                          ? '1st'
-                          : chipValue == '2'
-                              ? '2nd'
-                              : chipValue == '3'
-                                  ? '3rd'
-                                  : chipValue == '4'
-                                      ? '4th'
-                                      : chipValue,
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline4!
-                          .copyWith(fontSize: 10))),
-        ),
-      ),
-    );
+        onTap: () {
+          selectedValue.value = chipValue;
+        },
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          if (chipValue == 'Current')
+            Bouncing(
+                child: Container(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    //padding: EdgeInsets.symmetric(horizontal: 20),
+                    margin: EdgeInsets.only(left: 5),
+                    decoration: BoxDecoration(
+                        boxShadow: [],
+                        color: //Colors.transparent,
+                            Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffF7F8F9)
+                                : Color(0xff111C20),
+                        border: Border.all(
+                            color: selectedValue.value == chipValue
+                                ? AppTheme.kSelectedColor
+                                : Colors.grey),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Center(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      alignment: Alignment.center,
+                                      height: 20,
+                                      width: 20,
+                                      child: SvgPicture.asset(
+                                          'assets/ocr_result_section_bottom_button_icons/Classroom.svg')),
+                                  SizedBox(width: 10),
+                                  Utility.textWidget(
+                                      text: chipValue,
+                                      context: context,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .headline3!
+                                          .copyWith(fontSize: 14))
+                                ]))))),
+          if (chipValue != 'Current')
+            Bouncing(
+                child: Container(
+                    width: MediaQuery.of(context).size.width * 0.13,
+                    //padding: EdgeInsets.symmetric(horizontal: 20),
+                    margin: EdgeInsets.only(left: 5),
+                    decoration: BoxDecoration(
+                      boxShadow: [],
+                      color: //Colors.transparent,
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      border: Border.all(
+                          color: selectedValue.value == chipValue
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                        child: Utility.textWidget(
+                            text: chipValue == '1'
+                                ? '1st'
+                                : chipValue == '2'
+                                    ? '2nd'
+                                    : chipValue == '3'
+                                        ? '3rd'
+                                        : chipValue == '4'
+                                            ? '4th'
+                                            : chipValue,
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(fontSize: 14)))))
+        ]));
   }
 
   /* ---------- Widget to show vertical list of class and grade list ---------- */

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unnecessary_null_comparison
 
 import 'dart:io';
 import 'dart:math';
@@ -25,6 +25,7 @@ import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -277,8 +278,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           required List<PBISPlusCommonBehaviorModal>
               pBISPlusCommonBehaviorList}) =>
       DataTable(
-          headingRowHeight: Globals.deviceType == 'phone' ? 70 : 40,
-          dataRowHeight: Globals.deviceType == 'phone' ? 80 : 40,
+          headingRowHeight: Globals.deviceType == 'phone' ? 150 : 40,
+          dataRowHeight: Globals.deviceType == 'phone' ? 100 : 40,
           dataTextStyle: Theme.of(context).textTheme.headline2,
           showBottomBorder: false,
           headingTextStyle: Theme.of(context)
@@ -328,17 +329,26 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                     textTheme: Globals.deviceType == 'phone'
                                         ? Theme.of(context)
                                             .textTheme
-                                            .headline5!
+                                            .headlineLarge!
                                             .copyWith(
+                                                fontSize: 50,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color(0xff000000))
+                                                color: Color(0xff000000) !=
+                                                        Theme.of(context)
+                                                            .backgroundColor
+                                                    ? Color(0xffF7F8F9)
+                                                    : Color(0xff111C20))
                                         : Theme.of(context)
                                             .textTheme
-                                            .headline1!
+                                            .headlineLarge!
                                             .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xff000000),
-                                                fontSize: 16))
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff000000) !=
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffF7F8F9)
+                                                  : Color(0xff111C20),
+                                            ))
                                 : item.pBISBehaviorIconURLC!.isNotEmpty
                                     ? CachedNetworkImage(
                                         // height: Globals.deviceType == 'phone' ? 35 : 25,
@@ -408,14 +418,19 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             context: context,
             textAlign: TextAlign.center,
             textTheme: Globals.deviceType == 'phone'
-                ? Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold)
-                : Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontWeight: FontWeight.bold, fontSize: 16))));
+                ? Theme.of(context).textTheme.headlineLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9))
+                : Theme.of(context).textTheme.headlineLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9)))));
   }
 
   totalDataCell(String? text) {
@@ -426,8 +441,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         margin: EdgeInsets.only(left: 2),
         decoration: BoxDecoration(
             boxShadow: [],
-            color: Color.fromRGBO(148, 148, 148, 1),
-            borderRadius: BorderRadius.circular(20)),
+            color: Colors.grey
+                .withOpacity(0.5), //Color.fromRGBO(148, 148, 148, 1),
+            borderRadius: BorderRadius.circular(30)),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -437,14 +453,19 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   text: text ?? "0",
                   textAlign: TextAlign.center,
                   textTheme: Globals.deviceType == 'phone'
-                      ? Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.bold)
-                      : Theme.of(context)
-                          .textTheme
-                          .headline1!
-                          .copyWith(fontWeight: FontWeight.bold, fontSize: 16))
+                      ? Theme.of(context).textTheme.headlineLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9))
+                      : Theme.of(context).textTheme.headlineLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xff111C20)
+                              : Color(0xffF7F8F9)))
             ])));
   }
 
@@ -985,51 +1006,53 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   Widget seeNotesOption() {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PBISPlusNotesDetailPage(
-                    titleIconData: IconData(0xe895,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    item: PBISPlusNotesUniqueStudentList(
-                      studentId:
-                          widget.studentValueNotifier.value.profile!.id ?? '',
-                      names: StudentName(
-                          fullName: widget.studentValueNotifier.value.profile
-                                  ?.name?.fullName ??
+    return FittedBox(
+        child: CustomCircularButton(
+            padding: EdgeInsets.all(10),
+            iconSize: Globals.deviceType == "phone" ? 20 : 28,
+            iconData: IconData(
+              0xe895,
+              fontFamily: Overrides.kFontFam,
+              fontPackage: Overrides.kFontPkg,
+            ),
+            size: Size(MediaQuery.of(context).size.width * 0.26,
+                MediaQuery.of(context).size.width / 10),
+            borderColor: AppTheme.kButtonColor,
+            textColor: Color(0xff000000) == Theme.of(context).backgroundColor
+                ? Color(0xff111C20)
+                : Color(0xffF7F8F9),
+            text: "Notes",
+            onClick: () async {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PBISPlusNotesDetailPage(
+                        titleIconData: IconData(0xe895,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        item: PBISPlusNotesUniqueStudentList(
+                          studentId:
+                              widget.studentValueNotifier.value.profile!.id ??
+                                  '',
+                          names: StudentName(
+                              fullName: widget.studentValueNotifier.value
+                                      .profile?.name?.fullName ??
+                                  "",
+                              familyName: widget.studentValueNotifier.value
+                                      .profile?.name?.familyName ??
+                                  "",
+                              givenName: widget.studentValueNotifier.value
+                                      .profile?.name?.givenName ??
+                                  ""),
+                          email: widget
+                              .studentValueNotifier.value.profile!.emailAddress,
+                          iconUrlC: widget.studentValueNotifier.value.profile
+                                  ?.photoUrl ??
                               "",
-                          familyName: widget.studentValueNotifier.value.profile
-                                  ?.name?.familyName ??
-                              "",
-                          givenName: widget.studentValueNotifier.value.profile
-                                  ?.name?.givenName ??
-                              ""),
-                      email: widget
-                          .studentValueNotifier.value.profile!.emailAddress,
-                      iconUrlC:
-                          widget.studentValueNotifier.value.profile?.photoUrl ??
-                              "",
-                      notes: null,
-                    ),
-                  )));
-        },
-        child: Row(children: [
-          Icon(
-              IconData(0xe895,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kButtonColor),
-          Padding(
-              padding: const EdgeInsets.only(left: 4, right: 20),
-              child: Text("Notes",
-                  textAlign: TextAlign.end,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      fontSize: 12,
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xff111C20)
-                              : Color(0xffF7F8F9))))
-        ]));
+                          notes: null,
+                        ),
+                      )));
+            },
+            backgroundColor: AppTheme.kButtonColor,
+            isBusy: false,
+            buttonRadius: 64));
   }
 }

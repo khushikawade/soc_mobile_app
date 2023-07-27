@@ -153,7 +153,6 @@ flutter:
     - assets/pbis_sound/sound5.wav
     - assets/pbis_sound/sound6.wav
 
-
     # - assets/pbis_plus_asset/
   # An image asset can refer to one or more resolution-specific "finaliants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

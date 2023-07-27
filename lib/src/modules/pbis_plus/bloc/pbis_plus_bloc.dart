@@ -1780,7 +1780,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
   //============-----------------------------------------GET STUDENT ALL NOTES -----------------//
   Future<List<PBISStudentNotes>> getPBIStudentNotesData(
-      {String? teacher_id, String? student_id}) async {
+      {String? student_id}) async {
     try {
       final teacherId = await await OcrUtility.getTeacherId();
 
