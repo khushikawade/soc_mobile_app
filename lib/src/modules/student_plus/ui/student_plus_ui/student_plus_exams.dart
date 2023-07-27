@@ -92,6 +92,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               widget.sectionType == "Student"
                   ? Container()
                   : StudentPlusSearchBarAndDropdown(
+                    index: 1,
                       sectionType: widget.sectionType,
                       studentDetails: widget.studentDetails),
               //tabWidget(),

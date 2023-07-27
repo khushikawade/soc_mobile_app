@@ -101,6 +101,7 @@ class individual extends State<StudentPlusGradesPage> {
                 widget.sectionType == "Student"
                     ? Container()
                     : StudentPlusSearchBarAndDropdown(
+                      index: 3,
                         sectionType: widget.sectionType,
                         studentDetails: widget.studentDetails),
 
