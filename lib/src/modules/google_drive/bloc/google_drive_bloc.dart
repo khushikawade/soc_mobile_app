@@ -3399,16 +3399,37 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //   headingRowName.insert(1, 'Course');
       // }
 
+      // ...students.map((student) => [
+      //             student.profile!.name!.fullName,
+      //
+      //             student.profile!.engaged,
+      //             student.profile!.niceWork,
+      //             student.profile!.helpful,
+      //             student.profile!.engaged! +
+      //                 student.profile!.niceWork! +
+      //                 student.profile!.helpful!,
+      //           ]),
+
       return [
         // always first row for the Headings
         headingRowName,
 
         //stduent information
-        ...students.map((student) => [
-              student.profile!.name!.fullName,
-              if (course == true) student.profile!.courseName,
-              (0)
-            ]),
+        ...students.map((student) {
+          List rows = [
+            student.profile!.name!.fullName,
+            if (course == true) student.profile!.courseName,
+          ];
+
+          pbisPlusTeacherDefaultBehaviorLocalData.forEach((i) {
+            student.profile!.behaviorList!.forEach((k) {
+              if (i.id == k.id) {
+                rows.add(k.behaviorCount);
+              }
+            });
+          });
+          return rows;
+        }),
       ];
     } catch (e) {
       return [];
