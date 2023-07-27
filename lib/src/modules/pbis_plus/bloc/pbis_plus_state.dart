@@ -262,3 +262,10 @@ class PBISPlusAddNotesSucess extends PBISPlusState {
 //   @override
 //   List<Object> get props => [error];
 // }
+class PBISPlusGetStudentBehaviorByCourseSuccess extends PBISPlusState {
+  ClassroomCourse classroomCourse;
+  PBISPlusGetStudentBehaviorByCourseSuccess({required this.classroomCourse});
+
+  @override
+  List<Object> get props => [];
+}

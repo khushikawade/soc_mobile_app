@@ -1,5 +1,6 @@
 import 'dart:math';
 // import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_course_modal.g.dart';
 
@@ -145,6 +146,8 @@ class ClassroomProfile {
   String? courseName;
   @HiveField(9)
   String? courseId;
+  @HiveField(10)
+  List<BehaviorList>? behaviorList;
   ClassroomProfile(
       {this.id,
       this.name,
@@ -161,7 +164,8 @@ class ClassroomProfile {
       // this.behavior5,
       // this.behavior6,
       this.courseName,
-      this.courseId});
+      this.courseId,
+      this.behaviorList});
 
   ClassroomProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -203,6 +207,7 @@ class ClassroomProfile {
     helpful = 0;
     courseName = '';
     courseId = '';
+    behaviorList = [];
   }
 
   Map<String, dynamic> toJson() {
@@ -275,5 +280,80 @@ class ClassroomPermissions {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['permission'] = this.permission;
     return data;
+  }
+}
+
+// @HiveType(typeId: 44)
+// class BehaviorList {
+//   String? id;
+//   String? name;
+//   int? score;
+
+//   BehaviorList({this.id, this.name, this.score});
+
+//   BehaviorList.fromJson(Map<String, dynamic> json) {
+//     id = json['Id'];
+//     name = json['Name'];
+//     score = json['Score'] ?? 0;
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['Id'] = this.id;
+//     data['Name'] = this.name;
+//     data['Score'] = this.score;
+//     return data;
+//   }
+// }
+
+@HiveType(typeId: 44)
+class BehaviorList {
+  @HiveField(0)
+  String? id;
+  @HiveField(1)
+  String? name;
+  @HiveField(2)
+  String? iconURL;
+  @HiveField(3)
+  bool? defaultBehavior;
+  @HiveField(4)
+  int? behaviorCount;
+
+  BehaviorList(
+      {this.id,
+      this.name,
+      this.iconURL,
+      this.defaultBehavior,
+      this.behaviorCount});
+
+  BehaviorList.fromJson(Map<String, dynamic> json) {
+    id = _parseId(json['Id']);
+    name = json['Name'] ?? '';
+    iconURL = json['Icon_URL'] ?? '';
+    defaultBehavior = json['Default'] == "true";
+    behaviorCount = json['Behavior_Count'] ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    data['Icon_URL'] = this.iconURL;
+    data['Default'] = this.defaultBehavior;
+    data['Behavior_Count'] = this.behaviorCount;
+    return data;
+  }
+
+  String _parseId(dynamic id) {
+    try {
+      if (id is int) {
+        return id.toString();
+      } else {
+        return id ?? '';
+      }
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 }

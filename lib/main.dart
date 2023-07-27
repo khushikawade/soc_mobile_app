@@ -51,6 +51,7 @@ import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
 import 'src/modules/graded_plus/new_ui/camera_screen.dart';
 import 'src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'src/modules/student_plus/model/student_google_presentation_detail_modal.dart';
@@ -134,6 +135,8 @@ void main() async {
           ..registerAdapter(StudentNameAdapter())
           ..registerAdapter(PBISStudentNotesAdapter())
           ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())
+          ..registerAdapter(BehaviorListAdapter())
+          ..registerAdapter(PBISPlusTotalBehaviorModalAdapter())
           ..registerAdapter(StudentGooglePresentationDetailModalAdapter())
           ..registerAdapter(
               PBISPlusStudentDashboardTotalBehaviourModalAdapter())
