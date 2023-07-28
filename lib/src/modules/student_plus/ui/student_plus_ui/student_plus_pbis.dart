@@ -133,6 +133,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
   /* --------------------- widget to show pbis Dashboard --------------------- */
   Widget pbisDashboardWidget(constraint) {
     return PBISPlusStudentDashBoard(
+      
       sectionType: widget.sectionType,
       pBISPlusBloc: PBISPlusBloc(),
       studentProfile: widget.studentDetails.studentPhoto,
