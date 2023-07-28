@@ -677,7 +677,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
 
         List<PBISPlusCommonBehaviorModal> list =
-            await GetDefaultSchoolBehavior();
+            await getDefaultSchoolBehavior();
 
         await _localDb.clear();
 
@@ -1827,7 +1827,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 /*---------------------------------Function GetDefaultSchoolBehavior----------------------------*/
 /*----------------------------------------------------------------------------------------------*/
 
-  Future<List<PBISPlusCommonBehaviorModal>> GetDefaultSchoolBehavior() async {
+  Future<List<PBISPlusCommonBehaviorModal>> getDefaultSchoolBehavior() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/PBIS_School_Behavior__c/"Mobile_App__c" = \'${Overrides.SCHOOL_ID}\'',
