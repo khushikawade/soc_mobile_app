@@ -1,28 +1,29 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/google_authentication.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -30,7 +31,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
-import '../../google_drive/model/user_profile.dart';
+import '../../../services/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
@@ -76,6 +77,7 @@ class _StaffPageState extends State<StaffPage> {
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(99);
   final StudentPlusDetailsModel studentDetails = new StudentPlusDetailsModel();
+  String? actionName;
 
   @override
   void initState() {
@@ -104,21 +106,21 @@ class _StaffPageState extends State<StaffPage> {
     return true;
   }
 
-  Future<void> saveUserProfile(String profileData) async {
-    List<String> profile = profileData.split('+');
-    UserInformation _userInformation = UserInformation(
-        userName: profile[0].toString().split('=')[1],
-        userEmail: profile[1].toString().split('=')[1],
-        profilePicture: profile[2].toString().split('=')[1],
-        authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+  // Future<void> saveUserProfile(String profileData) async {
+  //   List<String> profile = profileData.split('+');
+  //   UserInformation _userInformation = UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
-    //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
-  }
+  //   //Save user profile to local
+  //   ////UPDATE CURRENT GOOGLE USER PROFILEly
+
+  //   UserGoogleProfile.updateUserProfile(_userInformation);
+  // }
 
   Widget _body(String key) => Stack(children: [
         OfflineBuilder(
@@ -208,6 +210,32 @@ class _StaffPageState extends State<StaffPage> {
               },
               child: EmptyContainer()),
         ),
+        //Authorizing user email address with database
+        BlocListener<OcrBloc, OcrState>(
+          child: Container(),
+          bloc: _ocrBloc,
+          listener: (context, state) {
+            if (state is AuthorizedUserSuccess) {
+              Navigator.pop(context, false);
+              navigatorToScreen(actionName: actionName ?? '');
+            }
+            if (state is AuthorizedUserLoading) {
+              Utility.showLoadingDialog(
+                  context: context, isOCR: true, msg: "Please Wait");
+            }
+
+            if (state is AuthorizedUserError) {
+              Navigator.pop(context, false);
+              if (Globals.appSetting.enableGoogleSSO == "true") {
+                Authentication.signOut(context: context);
+                UserGoogleProfile.clearUserProfile();
+              }
+              Utility.currentScreenSnackBar(
+                  'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                  null);
+            }
+          },
+        )
         // Globals.appSetting.enableGraded == 'false'
         //     ? Container()
         //     : ocrSectionButton(),
@@ -263,6 +291,7 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
+//--------------------------------------------------------------------------------------------------------
   staffActionIconsOnTap({required String actionName}) async {
     await Utility.clearStudentInfo(tableName: 'student_info');
     await Utility.clearStudentInfo(tableName: 'history_student_info');
@@ -276,11 +305,12 @@ class _StaffPageState extends State<StaffPage> {
     /* ---- Clear login local data base once because we added classroom scope --- */
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
-    final clearCacheResult =
-        await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
-      await clearGoogleLoginLocalDb.setBool('delete_local_login_details12', true);
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details28JUNE', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -288,101 +318,85 @@ class _StaffPageState extends State<StaffPage> {
         await UserGoogleProfile.getUserProfile();
 
     if (_profileData.isEmpty) {
-      // await _launchURL('Google Authentication');
-      var value = await GoogleLogin.launchURL(
-          'Google Authentication', context, _scaffoldKey, '', '');
-      if (value == true) {
-        navigatorToScreen(actionName: actionName);
+      //   // await _launchURL('Google Authentication');
+      //   //Google Manual Sign in
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', actionName,
+            userType: "Teacher");
+        if (value == true) {
+          navigatorToScreen(actionName: actionName);
+        }
+      }
+      //Google Single Sign On
+      else {
+        User? user = await Authentication.signInWithGoogle(userType: "Teacher");
+
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            _ocrBloc.add(AuthorizedUserWithDatabase(
+                email: user.email, isAuthorizedUser: true));
+            //navigatorToScreen(actionName: actionName);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        }
       }
     } else {
-      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+      if (_profileData[0].userType != "Teacher") {
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
 
-      Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
+        staffActionIconsOnTap(actionName: actionName);
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
+        return;
+      }
+      // Utility.showLoadingDialog(
+      //     context: context, msg: "Please Wait", isOCR: false);
+      // await Authentication.refreshAuthenticationToken(
+      //     refreshToken: _profileData[0].refreshToken);
+      // await GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
-      //    await _getLocalDb();
+      // //Creating fresh sessionID
+      // Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      // if (Navigator.of(context).canPop()) {
+      //   Navigator.pop(context, true);
+      // }
+
       navigatorToScreen(actionName: actionName);
     }
   }
 
-  navigatorToScreen({required String actionName}) {
+//--------------------------------------------------------------------------------------------------------
+  navigatorToScreen({required String actionName}) async {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => GradedLandingPage()));
     } else {
-      if (actionName == 'GRADED+') {
-        //Graded+ login activity
-        _ocrBlocLogs.add(LogUserActivityEvent(
-            activityType: 'GRADED+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
-            activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-            dateTime: currentDateTime.toString(),
-            description: 'Graded+ Accessed(Login)',
-            operationResult: 'Success'));
-
-        pushNewScreen(
-          context,
-          screen: StartupPage(
-            isOcrSection: true, //since always opens OCR
-            isMultipleChoice: false,
-          ),
-          withNavBar: false,
-        );
-      } else if (actionName == 'PBIS+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
-            activityType: 'PBIS+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
-            activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-            dateTime: currentDateTime.toString(),
-            description: 'PBIS+ Accessed(Login)',
-            operationResult: 'Success'));
-
-        pushNewScreen(
-          context,
-          screen: PBISPlusHome(),
-          withNavBar: false,
-        );
-      } else if (actionName == 'STUDENT+') {
-        _ocrBlocLogs.add(LogUserActivityEvent(
-            activityType: 'STUDENT+',
-            sessionId: Globals.sessionId,
-            teacherId: Globals.teacherId,
-            activityId: '2',
-            accountId: Globals.appSetting.schoolNameC,
-            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-            dateTime: currentDateTime.toString(),
-            description: 'STUDENT+ Accessed(Login)',
-            operationResult: 'Success'));
-
-        pushNewScreen(
-          context,
-          screen: StudentPlusSearchScreen(
-              fromStudentPlusDetailPage: false,
-              index: 0,
-              studentDetails: studentDetails),
-          withNavBar: false,
-        );
-      }
+      pushNewScreen(
+        context,
+        screen: PlusSplashScreen(
+          sectionType: 'Staff',
+          actionName: actionName,
+        ),
+        withNavBar: false,
+      );
     }
-  }
-
-  Widget textwidget({required String text, required dynamic textTheme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        style: textTheme,
-      ),
-    );
   }
 
   Widget topActionButtonWidget({required double height}) {
@@ -399,86 +413,118 @@ class _StaffPageState extends State<StaffPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: StaffIconsList.staffIconsList
                     .map<Widget>((element) => GestureDetector(
-                          onTap: () async {
-                            selectedIndex.value =
-                                StaffIconsList.staffIconsList.indexOf(element);
-                            staffActionIconsOnTap(actionName: element.iconName);
-                          },
-                          child: Bouncing(
-                              child: AnimatedContainer(
-                            padding: EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color: selectedIndex.value ==
-                                      StaffIconsList.staffIconsList
-                                          .indexOf(element)
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                            ),
-                            duration: Duration(microseconds: 100),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                                border: Border.all(
+                        onTap: () async {
+                          selectedIndex.value =
+                              StaffIconsList.staffIconsList.indexOf(element);
+                          actionName = element.iconName;
+                          staffActionIconsOnTap(actionName: element.iconName);
+                        },
+                        child: Bouncing(
+                            child: AnimatedContainer(
+                                padding: EdgeInsets.only(bottom: 5),
+                                decoration: BoxDecoration(
                                   color: selectedIndex.value ==
                                           StaffIconsList.staffIconsList
                                               .indexOf(element)
                                       ? AppTheme.kSelectedColor
                                       : Colors.grey,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
-                              child: Container(
-                                height: height / 1.7,
-                                width: height / 1.7,
-                                decoration: BoxDecoration(
-                                    //color: AppTheme.kButtonColor,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: element.iconUrl.contains('pbis')
-                                          ? height / 4.3
-                                          : height / 3,
-                                      margin: EdgeInsets.all(6),
-                                      child: Image(
-                                        image:
-                                            Image.asset(element.iconUrl).image,
+                                duration: Duration(microseconds: 100),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff000000) !=
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xffF7F8F9)
+                                          : Color(0xff111C20),
+                                      border: Border.all(
+                                        color: selectedIndex.value ==
+                                                StaffIconsList.staffIconsList
+                                                    .indexOf(element)
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
                                     ),
-                                    element.iconUrl
-                                            .contains('landingPage_image')
-                                        ? Container()
-                                        : SpacerWidget(4),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: FittedBox(
-                                        child: Utility.textWidget(
-                                            text: element.iconName,
-                                            textTheme: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1,
-                                            context: context),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )),
-                        ))
+                                    child: Container(
+                                        height: height / 1.7,
+                                        width: height / 1.7,
+                                        decoration: BoxDecoration(
+                                            //color: AppTheme.kButtonColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  width: element.iconUrl
+                                                          .contains('pbis')
+                                                      ? height / 4.3
+                                                      : height / 3,
+                                                  margin: EdgeInsets.all(6),
+                                                  child: Image(
+                                                    image: Image.asset(
+                                                            element.iconUrl)
+                                                        .image,
+                                                  )),
+                                              element.iconUrl.contains(
+                                                      'landingPage_image')
+                                                  ? Container()
+                                                  : SpacerWidget(4),
+                                              Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: FittedBox(
+                                                      child: Text(
+                                                    element.iconName,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1,
+                                                  )))
+                                            ])))))))
                     .toList(),
               ));
         });
+  }
+
+  // popUp in case of user login in another section
+  popupModal({required String message}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                  isLogout: true,
+                  orientation: orientation,
+                  context: context,
+                  message: message,
+                  title: "Action Required",
+                  confirmationOnPress: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "logout");
+                    await UserGoogleProfile.clearUserProfile();
+                    await GoogleClassroom.clearClassroomCourses();
+                    await Authentication.signOut(context: context);
+                    Utility.clearStudentInfo(tableName: 'student_info');
+                    Utility.clearStudentInfo(tableName: 'history_student_info');
+                    // Globals.googleDriveFolderId = null;
+                    PlusUtility.updateLogs(
+                        activityType: 'GRADED+',
+                        userType: 'Teacher',
+                        activityId: '3',
+                        description: 'User profile logout',
+                        operationResult: 'Success');
+                    Navigator.pop(context);
+                    staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
+                  });
+            }));
   }
 }

@@ -39,7 +39,7 @@ class Strings {
   static final String scheduleObjectDetails = 'schedule_object_details';
   static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 
-  static final String rubricPdfObjectName = 'rubic_pdf_object_name';
+  static final String rubricPdfObjectName = 'rubric_pdf_object_name';
 //Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'selected_state_subject_details';
@@ -58,4 +58,8 @@ class Strings {
       "last_news_id"; // to maintain news id for showing red indicator
   static final String studentInfoDbName = "student_info";
   static final String historyStudentInfoDbName = "history_student_info";
+  
+  static final String gradedApprovedDomains = 'graded_approved_domains';
+//---------------------------PBIS PLUS-------------------------------//
+  static final String isCustomBehavior = "isCustomBehavior";
 }

@@ -23,6 +23,8 @@ class Overrides {
   static const kFontPkg = null;
   static String? API_BASE_URL =
       'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/';
+  static String? API_BASE_URL2 =
+      'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/';
 
   static String? rubric_Score_PDF_URL =
       'https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf';
@@ -32,7 +34,7 @@ class Overrides {
 
 //true in case of graded+ stand-alone app
   static bool STANDALONE_GRADED_APP = false;
-  static String SCHOOL_ID = 'a1f4W000007DR8nQAG'; //'a1f7h000001EjnnAAC'
+  static String SCHOOL_ID = 'a1f4W000007DQaNQAW'; //'a1f7h000001EjnnAAC'
 
   //151 : 'a1f4W000007DQaNQAW' /////////////////// DBN: 07X151
   //Bronx Bears : 'a1f4W000007DR8nQAG'/////////////// DBN:BB0456

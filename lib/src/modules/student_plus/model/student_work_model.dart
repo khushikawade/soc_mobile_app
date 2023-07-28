@@ -31,6 +31,7 @@ class StudentPlusWorkModel {
     this.lastName,
     this.subjectC,
     this.assessmentType,
+    this.standardAndDescriptionC,
   });
   @HiveField(0)
   final String? assessmentId;
@@ -62,6 +63,8 @@ class StudentPlusWorkModel {
   final String? subjectC;
   @HiveField(14)
   final String? assessmentType;
+  @HiveField(15)
+  final String? standardAndDescriptionC;
 
   factory StudentPlusWorkModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusWorkModel(
@@ -79,7 +82,8 @@ class StudentPlusWorkModel {
           firstName: json["FirstName"],
           lastName: json["LastName"],
           subjectC: json["Subject__c"],
-          assessmentType: json["Assessment_Type"]);
+          assessmentType: json["Assessment_Type"],
+          standardAndDescriptionC: json['Standard_and_Description__c']);
 
   Map<String, dynamic> toJson() => {
         "Assessment_Id": assessmentId,
@@ -95,7 +99,8 @@ class StudentPlusWorkModel {
         "Assessment_Que_Image__c": assessmentQueImageC,
         "FirstName": firstName,
         "LastName": lastName,
-        "Subject__c":subjectC,
-        "Assessment_Type":assessmentType
+        "Subject__c": subjectC,
+        "Assessment_Type": assessmentType,
+        'Standard_and_Description__c': standardAndDescriptionC
       };
 }

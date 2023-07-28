@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,12 +21,17 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final bool? isGradedPlus;
+  final ValueChanged? refresh;
+
   PBISPlusAppBar(
       {Key? key,
       this.titleIconData,
       this.backButton,
       required this.title,
-      required this.scaffoldKey})
+      required this.scaffoldKey,
+      this.isGradedPlus = false,
+      required this.refresh})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
@@ -38,10 +43,11 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading = Container(
+    Widget leading = //widget.leadingWidget ??
+        Container(
       child: Row(
         children: [
-          _translateButton(setState, context),
+          _translateButton(context),
           _openAccessibility(context),
         ],
       ),
@@ -53,19 +59,37 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
           builder: (context, AsyncSnapshot<UserInformation> snapshot) {
             if (snapshot.hasData) {
               return Container(
-                padding: EdgeInsets.only(right: 5.0),
+                // padding: EdgeInsets.only(right: 5.0),
                 child: IconButton(
                   icon: ClipRRect(
                     borderRadius: BorderRadius.all(
                       Radius.circular(50),
                     ),
-                    child: CachedNetworkImage(
-                      height: 28,
-                      width: 28,
-                      imageUrl: snapshot.data!.profilePicture!,
-                      placeholder: (context, url) => CupertinoActivityIndicator(
-                          animating: true, radius: 10),
-                    ),
+                    child: snapshot.data!.profilePicture != null
+                        ? CachedNetworkImage(
+                            height: 28,
+                            width: 28,
+                            imageUrl: snapshot.data!.profilePicture ?? '',
+                            placeholder: (context, url) =>
+                                CupertinoActivityIndicator(
+                                    animating: true, radius: 10),
+                          )
+                        : CircleAvatar(
+                            // alignment: Alignment.center,
+                            // height:
+                            //     Globals.deviceType == "phone" ? 28 : 32,
+                            // width:
+                            //     Globals.deviceType == "phone" ? 28 : 32,
+                            // color: Color.fromARGB(255, 29, 146, 242),
+                            child: Text(
+                              snapshot.data!.userName!.substring(0, 1),
+                              style: TextStyle(
+                                  color: Color(0xff000000) ==
+                                          Theme.of(context).backgroundColor
+                                      ? Colors.black
+                                      : Colors.white),
+                            ),
+                          ),
                   ),
                   onPressed: () async {
                     /*-------------------------User Activity Track START----------------------------*/
@@ -77,14 +101,13 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
+                                sectionType: "Staff",
+                                plusAppName: 'PBIS+',
                                 fromGradedPlus: false,
                                 hideStateSelection: true,
                                 profile: snapshot.data!,
                               )),
                     );
-
-                    // _showPopUp(snapshot.data!);
-                    //print("profile url");
                   },
                 ),
               );
@@ -98,7 +121,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: titleBuilder(context, widget.titleIconData),
+      title:
+          // widget.isGradedPlus == true
+          //     ? gradedLogoBuilder(context)
+          //     :
+          titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
@@ -106,14 +133,14 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation =
+        await UserGoogleProfile.getUserProfile();
+    Globals.userEmailId = _userInformation[0].userEmail!;
     return _userInformation[0];
   }
 
-  Widget _translateButton(StateSetter setState, BuildContext context) {
+  Widget _translateButton(BuildContext context) {
     return IconButton(
         // key: _bshowcase,
         onPressed: () async {
@@ -124,15 +151,16 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
-          Utility.updateLogs(
+          PlusUtility.updateLogs(
               activityType: 'PBIS+',
+              userType: 'Teacher',
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
@@ -159,6 +187,16 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
+        PlusUtility.updateLogs(
+            activityType: 'PBIS+',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);
@@ -184,12 +222,23 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     );
   }
 }
+
 Widget titleBuilder(BuildContext context, IconData? iconData) {
-  final bool isDarkMode =
-      Theme.of(context).colorScheme.background == Color(0xff000000);
-  return Icon(
-    iconData,
-    color: AppTheme.kButtonColor
-   
+  return Icon(iconData, color: AppTheme.kButtonColor);
+}
+
+Widget gradedLogoBuilder(
+  BuildContext context,
+) {
+  return Image.asset(
+    Color(0xff000000) == Theme.of(context).backgroundColor
+        ? "assets/images/graded+_light.png"
+        : "assets/images/graded+_dark.png",
+    height: Globals.deviceType == "phone"
+        ? AppTheme.kIconSize * 2
+        : AppTheme.kTabIconSize * 2,
+    width: Globals.deviceType == "phone"
+        ? AppTheme.kIconSize * 2
+        : AppTheme.kTabIconSize * 2,
   );
 }

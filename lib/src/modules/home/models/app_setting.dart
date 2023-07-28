@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'attributes.dart';
 import 'package:hive/hive.dart';
 part 'app_setting.g.dart';
@@ -116,7 +114,6 @@ class AppSetting {
   String? enableGraded;
   @HiveField(54)
   String? darkmodeIconColor;
-
   @HiveField(55)
   String? parentCoordinatorEmailc;
   @HiveField(56)
@@ -125,6 +122,10 @@ class AppSetting {
   String? calendarBannerImage;
   @HiveField(58)
   String? calendarBannerColor;
+  @HiveField(59)
+  String? dashboardUrlC;
+  @HiveField(60)
+  String? enableGoogleSSO;
 
   AppSetting(
       {this.attributes,
@@ -185,7 +186,10 @@ class AppSetting {
       this.parentCoordinatorEmailc,
       this.calendarId,
       this.calendarBannerImage,
-      this.calendarBannerColor});
+      // this.calendarBannerColor,this.dashboardUrlC//Dashboard_URL__c
+      this.calendarBannerColor,
+      this.dashboardUrlC,
+      this.enableGoogleSSO});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
       attributes: json['attributes'] == null
@@ -265,7 +269,9 @@ class AppSetting {
       parentCoordinatorEmailc: json['Parent_Coordinator_Email__c'] as String?,
       calendarId: json['Calendar_Id__c'],
       calendarBannerImage: json['Calendar_Banner_Image__c'],
-      calendarBannerColor: json['Calendar_Banner_Color__c']);
+      calendarBannerColor: json['Calendar_Banner_Color__c'],
+      dashboardUrlC: json['Dashboard_URL__c'],
+      enableGoogleSSO: json['Enable_Google_SSO__c'] as String?);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -326,7 +332,9 @@ class AppSetting {
         'Parent_Coordinator_Email__c': parentCoordinatorEmailc,
         'Calendar_Id__c': calendarId,
         'Calendar_Banner_Image__c': calendarBannerImage,
-        'Calendar_Banner_Color__c': calendarBannerColor
+        'Calendar_Banner_Color__c': calendarBannerColor,
+        'Dashboard_URL__c': dashboardUrlC,
+        'Enable_Google_SSO__c': enableGoogleSSO
       };
 
   AppSetting copyWith(
@@ -389,7 +397,9 @@ class AppSetting {
       String? parentCoordinatorEmailc,
       String? calendarId,
       String? calendarBannerImage,
-      String? calendarBannerColor}) {
+      String? calendarBannerColor,
+      String? dashboardUrlC,
+      String? enableGoogleSSO}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -453,6 +463,8 @@ class AppSetting {
             parentCoordinatorEmailc ?? this.parentCoordinatorEmailc,
         calendarId: calendarId ?? this.calendarId,
         calendarBannerImage: calendarBannerImage ?? this.aboutBannerImageC,
-        calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC);
+        calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC,
+        dashboardUrlC: dashboardUrlC ?? this.dashboardUrlC,
+        enableGoogleSSO: enableGoogleSSO ?? this.enableGoogleSSO);
   }
 }

@@ -4,7 +4,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -62,7 +63,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets / 1.5,
+      padding: MediaQuery.of(context).viewInsets,
       controller: ModalScrollController.of(context),
       child: Container(
         height: widget.sheetHeight != null
@@ -150,6 +151,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           horizontal: 20,
                         ),
                         child: TextFieldWidget(
+                            context: context,
                             msg: "Field is required",
                             controller: studentNameController,
                             onSaved: (String value) {}),
@@ -180,6 +182,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 20),
                                     child: TextFieldWidget(
+                                        context: context,
                                         msg: "Field is required",
                                         controller: textFieldController2,
                                         onSaved: (String value) {}),
@@ -262,13 +265,17 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                // margin: WidgetsBinding.instance.window.viewInsets.bottom > 0.0
+                //     ? EdgeInsets.only(bottom: 100)
+                //     : null,
                 child: FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         if (widget.isSubjectScreen!) {
                           widget.valueChanged!(studentNameController);
-                          Utility.updateLogs(
+                          PlusUtility.updateLogs(
+                              userType: 'Teacher',
                               activityType: 'GRADED+',
                               activityId: '21',
                               description: 'Teacher added custom subject ',
@@ -299,8 +306,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 getImageUrl: false));
                           } else {
                             //print("save score and name on local db");
-                            Utility.updateLogs(
+                            PlusUtility.updateLogs(
                                 activityType: 'GRADED+',
+                                userType: 'Teacher',
                                 activityId: '21',
                                 description: 'Teacher added custom rubric ',
                                 operationResult: 'Success');
@@ -379,7 +387,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     File? photo = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (context) => GradedPlusCameraScreen(
                 isMcqSheet: false,
                 selectedAnswer: '',
                 isFromHistoryAssessmentScanMore: false,
@@ -389,6 +397,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 isFlashOn: ValueNotifier<bool>(false),
               )),
     );
+
     if (photo != null) {
       setState(() {
         imageFile = File(photo.path);

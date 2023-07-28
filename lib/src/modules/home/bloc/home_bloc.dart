@@ -305,7 +305,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
 
-      if (response.statusCode == 200) { 
+      if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
 
@@ -595,7 +595,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           Uri.encodeFull(
               'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Account/$accountId'),
           isCompleteUrl: true);
-      // print("response is recived --------->>>");
       if (response.statusCode == 200) {
         var data = response.data['body'];
         // var isGradedPreminumC = jsonDecode(data["GRADED_Premium__c"]);
@@ -605,8 +604,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         AccountObjectModal accountObejct = AccountObjectModal.fromJson(data);
         Globals.schoolDbnC = accountObejct.dBNC ?? '';
 
-        Globals.isPremiumUser =
-            accountObejct.gRADEDPremiumC == 'true' ? true : false;
+        // Globals.isPremiumUser =
+        //     accountObejct.gRADEDPremiumC == 'true' ? true : false;
       } else {
         _verifyUserWithDatabase(accountId: accountId);
       }

@@ -1,18 +1,17 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +23,13 @@ import 'package:open_apps_settings/settings_enum.dart';
 class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
-  //final ValueChanged? refresh;
+  final ValueChanged? refresh;
+  final String sectionType;
   StudentPlusAppBar({
     Key? key,
     this.titleIconCode,
-    // required this.refresh,
+    required this.refresh,
+    required this.sectionType,
     this.isWorkPage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -60,7 +61,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
         child: Row(
           children: [
             _translateButton(setState, context),
-            _openSettingsButton(context),
+            _openUserAccessibility(context),
           ],
         ),
       ),
@@ -78,14 +79,31 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                       borderRadius: BorderRadius.all(
                         Radius.circular(50),
                       ),
-                      child: CachedNetworkImage(
-                        height: 28,
-                        width: 28,
-                        imageUrl: snapshot.data!.profilePicture!,
-                        placeholder: (context, url) =>
-                            CupertinoActivityIndicator(
-                                animating: true, radius: 10),
-                      ),
+                      child: snapshot.data!.profilePicture != null
+                          ? CachedNetworkImage(
+                              height: 28,
+                              width: 28,
+                              imageUrl: snapshot.data!.profilePicture ?? '',
+                              placeholder: (context, url) =>
+                                  CupertinoActivityIndicator(
+                                      animating: true, radius: 10),
+                            )
+                          : CircleAvatar(
+                              // alignment: Alignment.center,
+                              // height:
+                              //     Globals.deviceType == "phone" ? 28 : 32,
+                              // width:
+                              //     Globals.deviceType == "phone" ? 28 : 32,
+                              // color: Color.fromARGB(255, 29, 146, 242),
+                              child: Text(
+                                snapshot.data!.userName!.substring(0, 1),
+                                style: TextStyle(
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Colors.black
+                                        : Colors.white),
+                              ),
+                            ),
                     ),
                     onPressed: () async {
                       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -94,6 +112,8 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
+                                  sectionType: widget.sectionType,
+                                  plusAppName: 'STUDENT+',
                                   fromGradedPlus: false,
                                   hideStateSelection: true,
                                   profile: snapshot.data!,
@@ -112,11 +132,11 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
       // leading: leading,
       leadingWidth: 110,
 
-      title: widget.isWorkPage == true
-          ? wordScreenIconWidget()
-          : widget.titleIconCode != null
-              ? allScreenIconWidget()
-              : Container(),
+      title:
+          // widget.isWorkPage == true
+          //     ? wordScreenIconWidget()
+          //     :
+          widget.titleIconCode != null ? allScreenIconWidget() : Container(),
 
       // Utility.textWidget(
       //   text: title,
@@ -137,8 +157,15 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
     return IconButton(
         // key: _bshowcase,
         onPressed: () async {
-          await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              "language_translate");
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'Google Translation STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+
+          PlusUtility.updateLogs(
+              activityType: 'STUDENT+',
+              userType: 'Teacher',
+              activityId: '43',
+              description: 'Google Translation',
+              operationResult: 'Success');
 
           setState(() {});
           LanguageSelector(context, (language) {
@@ -147,7 +174,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // widget.refresh!(true);
+              widget.refresh!(true);
             }
           });
         },
@@ -166,41 +193,22 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
             image: AssetImage("assets/images/gtranslate.png"),
           ),
         ));
-
-    //  Container(
-    //   padding: EdgeInsets.only(left: 10),
-    //   child: GestureDetector(
-    //     key: _bshowcase,
-    //     child: Image(
-    //       width: Globals.deviceType == "phone" ? 26 : 32,
-    //       height: Globals.deviceType == "phone" ? 26 : 32,
-    //       image: AssetImage("assets/images/gtranslate.png"),
-    //     ),
-    //     onTap: () async {
-    //       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-    //           "language_translate");
-
-    //       setState(() {});
-    //       LanguageSelector(context, (language) {
-    //         if (language != null) {
-    //           setState(() {
-    //             Globals.selectedLanguage = language;
-    //             Globals.languageChanged.value = language;
-    //           });
-    //           refresh!(true);
-    //         }
-    //       });
-    //     },
-    //   ),
-    // );
   }
 
-  Widget _openSettingsButton(BuildContext context) {
+  Widget _openUserAccessibility(BuildContext context) {
     return IconButton(
       iconSize: 28,
       onPressed: () async {
-        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            "settings_drawer");
+        PlusUtility.updateLogs(
+            activityType: 'STUDENT+',
+            userType: 'Teacher',
+            activityId: '61',
+            description: 'Accessibility',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'Accessibility STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+
         if (Platform.isAndroid) {
           OpenAppsSettings.openAppsSettings(
               settingsCode: SettingsCode.ACCESSIBILITY);
@@ -240,7 +248,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
 
   Widget allScreenIconWidget() {
     return Container(
-      padding: EdgeInsets.only(right: 7),
+      padding: EdgeInsets.only(right: widget.titleIconCode == 0xe881 ? 0 : 7),
       child: Icon(
         IconData(
           widget.titleIconCode!,
@@ -253,10 +261,11 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
   }
 
   Future<UserInformation> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
+    //GET CURRENT GOOGLE USER PROFILE
+    List<UserInformation> _userInformation = widget.sectionType == "Family"
+        ? await FamilyUserDetails.getFamilyUserProfile()
+        : await UserGoogleProfile.getUserProfile();
+    Globals.userEmailId = _userInformation[0].userEmail!;
     return _userInformation[0];
   }
 }

@@ -80,7 +80,10 @@ class StudentPlusDetailsModel {
       this.age,
       this.grade19_20,
       this.grade20_21,
-      this.grade21_22});
+      this.grade21_22,
+      this.studentPhoto,
+      this.studentGooglePresentationUrl,
+      this.studentGooglePresentationId});
 
   /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
@@ -203,6 +206,13 @@ class StudentPlusDetailsModel {
   final String? grade20_21;
   @HiveField(53)
   final String? grade21_22;
+  @HiveField(54)
+  final String? studentPhoto;
+
+  @HiveField(55)
+  String? studentGooglePresentationUrl;
+  @HiveField(56)
+  String? studentGooglePresentationId;
 
   factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusDetailsModel(
@@ -281,7 +291,10 @@ class StudentPlusDetailsModel {
               json["ELA_IReady_Overall_Relative_Place_MOY__c"],
           ELACurrentEOYOverallRelativePlace:
               json["IReady_ELA_EOY_Overall_Relative_Place__c"],
-          currentAttendance: json["Current_Attendance__c"]);
+          currentAttendance: json["Current_Attendance__c"],
+          studentPhoto: json['Student_photo__c'],
+          studentGooglePresentationId: json['Google_Presentation_Id'] ?? '',
+          studentGooglePresentationUrl: json['Google_Presentation_URL'] ?? '');
 
   get nysElaPrScore2021C => null;
 
@@ -363,6 +376,9 @@ class StudentPlusDetailsModel {
         "Grade_19_20__c": grade19_20,
         "Grade_20_21__c": grade20_21,
         "Grade_21_22__c": grade21_22,
+        "Student_photo__c": studentPhoto,
+        "Google_Presentation_Id": studentGooglePresentationId,
+        "Google_Presentation_URL": studentGooglePresentationId
       };
 }
 
@@ -379,7 +395,6 @@ class StudentPlusInfoModel {
 // D (FEE8D0)
 // E (EBD2FF)
 // F (B5E0FF) Optional
-
 }
 
 class MyData {
@@ -406,4 +421,3 @@ class MyData {
 //     required this.teacher,
 //   });
 // }
-

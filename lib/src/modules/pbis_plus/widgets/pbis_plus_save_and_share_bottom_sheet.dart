@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -107,7 +109,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1 //classroomMaxPointQue
-              ? widget.height! * 1.2
+              ? widget.height! * 1.1
               : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
@@ -115,7 +117,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       ? widget.fromClassScreen!
                           ? (widget.height! * 0.6)
                           : (widget.height! * 1.3)
-                      : widget.height, //saveAndShareOptions
+                      : widget.height! * 0.8, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -181,8 +183,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Classroom',
                   onTap: () async {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '35',
                         description: 'G-Classroom Action Button',
                         operationResult: 'Success');
@@ -199,8 +202,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Spreadsheet',
                   onTap: () {
-                    Utility.updateLogs(
+                    PlusUtility.updateLogs(
                         activityType: 'PBIS+',
+                        userType: 'Teacher',
                         activityId: '32',
                         description: 'G-Excel Action Button',
                         operationResult: 'Success');
@@ -208,13 +212,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     classroomLoader = false;
                     _pageController.jumpToPage(2);
                   }),
-              Container(
-                padding: EdgeInsets.only(right: 16),
-                child: Divider(
-                  thickness: 1.0,
-                  color: Colors.grey,
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.only(right: 16),
+              //   child: Divider(
+              //     thickness: 1.0,
+              //     color: Colors.grey,
+              //   ),
+              // ),
             ],
             _listTileMenu(
                 leading: Icon(
@@ -224,12 +228,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 title: 'Share',
                 onTap: (() async {
                   await shareScreenDetails();
-                  Utility.updateLogs(
+                  PlusUtility.updateLogs(
                       activityType: 'PBIS+',
+                      userType: 'Teacher',
                       activityId: '13',
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
                 })),
+            Platform.isIOS ? SpacerWidget(48) : SpacerWidget(16)
           ]),
     );
   }
@@ -243,9 +249,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-      final headerUint8List = widget.headerScreenshotController == null
-          ? null
-          : await widget.headerScreenshotController!.capture();
+      var headerUint8List = null;
+      try {
+        headerUint8List = widget.headerScreenshotController == null
+            ? null
+            : await widget.headerScreenshotController!.capture();
+      } catch (e) {
+        headerUint8List = null;
+      }
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
@@ -254,9 +265,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       final pdf = pdfWidget.Document();
 
       // to get image size
-      Size headerSize = widget.fromClassScreen == true
-          ? Size(0, 0)
-          : await getImageSize(headerUint8List!);
+      Size headerSize =
+          widget.fromClassScreen == true || headerUint8List == null
+              ? Size(0, 0)
+              : await getImageSize(headerUint8List!);
       Size size = uint8List != null
           ? await getImageSize(uint8List)
           : Size(headerSize.width, 0);
@@ -435,6 +447,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   horizontal: 20,
                 ),
                 child: TextFieldWidget(
+                    context: context,
                     hintText: 'Points Possible',
                     msg: "Field is required",
                     keyboardType: TextInputType.number,
@@ -560,22 +573,25 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     classroomBloc.add(CreatePBISClassroomCoursework(
                       pointPossible: pointPossibleController.text,
                       courseAndStudentList: selectedCoursesList.length == 0
-                          ? widget.googleClassroomCourseworkList
+                          ? List<ClassroomCourse>.from(
+                              widget.googleClassroomCourseworkList)
                           : selectedCoursesList,
                       // studentAssessmentInfoDb: studentAssessmentInfoDb
                     ));
                   }
                   //Create Google Spreadsheet for Selected Courses if classroomLoader = false
                   else {
-                    if (PBISPlusOverrides
-                            .pbisPlusGoogleDriveFolderId.isNotEmpty ==
-                        true) {
-                      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-                      _createSpreadSheet();
-                    } else {
-                      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-                      _checkDriveFolderExistsOrNot();
-                    }
+                    // if (PBISPlusOverrides
+                    //         .pbisPlusGoogleDriveFolderId.isNotEmpty ==
+                    //     true) {
+                    //   //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+                    //   _createSpreadSheet();
+                    // } else {
+                    //   //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+                    //   _checkDriveFolderExistsOrNot();
+                    // }
+
+                    _createSpreadSheet();
                   }
                 },
                 label: Row(
@@ -707,8 +723,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           bloc: classroomBloc,
           listener: (context, state) async {
             if (state is CreateClassroomCourseWorkSuccess) {
-              Utility.updateLogs(
+              PlusUtility.updateLogs(
                   activityType: 'PBIS+',
+                  userType: 'Teacher',
                   activityId: '34',
                   description: 'G-Classroom Created',
                   operationResult: 'Success');
@@ -720,16 +737,21 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
             if (state is GoogleClassroomErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
-                await Utility.refreshAuthenticationToken(
-                    isNavigator: true,
-                    errorMsg: state.errorMsg!,
+                // await Utility.refreshAuthenticationToken(
+                //     isNavigator: true,
+                //     errorMsg: state.errorMsg!,
+                //     context: context,
+                //     scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
                     context: context,
+                    errorMessage: state.errorMsg!,
                     scaffoldKey: widget.scaffoldKey);
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
                   courseAndStudentList: selectedCoursesList.length == 0
-                      ? widget.googleClassroomCourseworkList
+                      ? List<ClassroomCourse>.from(
+                          widget.googleClassroomCourseworkList)
                       : selectedCoursesList,
                   // studentAssessmentInfoDb: studentAssessmentInfoDb
                 ));
@@ -754,7 +776,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       child: BlocListener<GoogleDriveBloc, GoogleDriveState>(
           bloc: googleDriveBloc,
           listener: (context, state) async {
-            if (state is GoogleSuccess) {
+            if (state is GoogleFolderCreated) {
               //In case of Folder Id received
               _createSpreadSheet();
             }
@@ -762,7 +784,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
               googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
                   spreadSheetFileObj: state.googleSpreadSheetFileObj,
                   classroomCourseworkList: selectedCoursesList?.isEmpty ?? true
-                      ? widget.googleClassroomCourseworkList
+                      ? List<ClassroomCourse>.from(
+                          widget.googleClassroomCourseworkList)
                       : selectedCoursesList));
             }
             if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
@@ -772,12 +795,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             }
             if (state is ErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
-                await Utility.refreshAuthenticationToken(
-                    isNavigator: true,
-                    errorMsg: state.errorMsg!,
+                // await Utility.refreshAuthenticationToken(
+                //     isNavigator: true,
+                //     errorMsg: state.errorMsg!,
+                //     context: context,
+                //     scaffoldKey: widget.scaffoldKey);
+                await Authentication.reAuthenticationRequired(
                     context: context,
+                    errorMessage: state.errorMsg!,
                     scaffoldKey: widget.scaffoldKey);
-
                 // Navigator.of(context).pop();
                 Utility.currentScreenSnackBar('Please try again', null);
               } else {
@@ -808,11 +834,21 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
         refreshToken: userProfile.refreshToken));
   }
 
-  void _createSpreadSheet() {
-    //CREATE SPREADSHEET ON DRIVE
-    googleDriveBloc.add(CreateExcelSheetToDrive(
-        name:
-            "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
-        folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
+  void _createSpreadSheet() async {
+    List<UserInformation> userProfileInfoData =
+        await UserGoogleProfile.getUserProfile();
+
+    if (userProfileInfoData[0].pbisPlusGoogleDriveFolderId != null &&
+        userProfileInfoData[0].pbisPlusGoogleDriveFolderId != "") {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+      //CREATE SPREADSHEET ON DRIVE
+      googleDriveBloc.add(CreateExcelSheetToDrive(
+          name:
+              "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
+          folderId: userProfileInfoData[0].pbisPlusGoogleDriveFolderId ?? ''));
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
   }
 }

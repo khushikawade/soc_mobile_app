@@ -253,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         isHomePage: false,
                         url: obj.pdfURL,
-                        tittle: obj.titleC,
+                        title: obj.titleC,
                         isBottomSheet: true,
                         language: Globals.selectedLanguage,
                         isOCRFeature: false,
@@ -713,7 +713,7 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorizontalSpacerWidget(_kLabelSpacing / 2),
         TranslationWidget(
-          message: "Recent Search",
+          message: "Recent Searches",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(

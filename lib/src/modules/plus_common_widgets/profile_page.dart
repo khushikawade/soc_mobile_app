@@ -1,10 +1,15 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -16,12 +21,16 @@ class ProfilePage extends StatefulWidget {
   final bool? hideStateSelection;
   final UserInformation profile;
   final bool? fromGradedPlus;
+  final String? plusAppName;
+  final String sectionType;
 
   const ProfilePage(
       {Key? key,
       required this.profile,
       this.hideStateSelection,
-      required this.fromGradedPlus})
+      required this.fromGradedPlus,
+      required this.plusAppName,
+      required this.sectionType})
       : super(key: key);
 
   @override
@@ -30,7 +39,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int counter = 0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   @override
@@ -51,6 +60,12 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+            sectionType: widget.sectionType,
+            iconData: null,
+            plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),
             isBackOnSuccess: isBackFromCamera,
@@ -61,8 +76,15 @@ class _ProfilePageState extends State<ProfilePage> {
           body: ListView(
             physics: NeverScrollableScrollPhysics(),
             children: [
+              SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+              PlusScreenTitleWidget(
+                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                text: 'Profile',
+                backButton: true,
+              ),
+              SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
               Container(
-                height: MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.3,
               ),
               Container(
                   width: MediaQuery.of(context).size.width,
@@ -128,6 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         listTile(
                             icon: Icons.settings,
                             onTap: () async {
+                              //-----------------------------------------------------
                               String settingsSectionLogMsg =
                                   "Navigate From Graded+ Profile to Settings";
                               FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -135,6 +158,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .toLowerCase()
                                           .replaceAll(" ", "_") ??
                                       '');
+                              PlusUtility.updateLogs(
+                                  activityType: widget.plusAppName,
+                                  userType: 'Teacher',
+                                  activityId: '47',
+                                  sessionId: Globals.sessionId,
+                                  description: settingsSectionLogMsg,
+                                  operationResult: 'Success');
+                              //-----------------------------------------------------
+
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -173,6 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StateSelectionPage(
+                                                gradedPlusQueImage: null,
                                                 isFromCreateAssessmentScreen:
                                                     false,
                                                 // questionImageUrl: '',
@@ -200,7 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         Positioned(
-            top: MediaQuery.of(context).size.height * 0.045,
+            top: MediaQuery.of(context).size.height * 0.12,
             left: 20.0,
             right: 20.0,
             child: Container(
@@ -209,11 +242,47 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.08,
                 ),
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: NetworkImage(widget.profile.profilePicture!),
-                  backgroundColor: Colors.white,
-                ),
+                widget.profile.profilePicture != null
+                    ? CircleAvatar(
+                        radius: 50.0,
+                        backgroundImage:
+                            NetworkImage(widget.profile.profilePicture!),
+                        backgroundColor: Colors.white,
+                      )
+                    : CircleAvatar(
+                        radius: 50.0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            widget.profile.userName != null &&
+                                    widget.profile.userName != ''
+                                ? widget.profile.userName!.split(' ').length > 1
+                                    ? widget.profile.userName!
+                                            .split(' ')[0]
+                                            .substring(0, 1) +
+                                        widget.profile.userName!
+                                            .split(' ')[1]
+                                            .substring(0, 1)
+                                    : widget.profile.userName!
+                                                .split(' ')
+                                                .length >
+                                            0
+                                        ? widget.profile.userName!
+                                            .substring(0, 1)
+                                        : 'Unknown'
+                                : 'Unknown',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Colors.black
+                                        : Colors.white),
+                          ),
+                        ),
+                      ),
                 SizedBox(
                   height: 10.0,
                 ),

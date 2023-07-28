@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -63,7 +64,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               : Color(0xff111C20),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-      height: widget.height,
+      height: pageValue == 0 ? widget.height : widget.height * 1.5,
       // MediaQuery.of(context).orientation == Orientation.landscape
       //     ? MediaQuery.of(context).size.height * 0.82
       //     : Globals.deviceType == "phone"
@@ -119,7 +120,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               ),
             ),
           ),
-          StudentPlusScreenTitleWidget(
+          PlusScreenTitleWidget(
             kLabelSpacing: 20,
             text: 'Select Filter',
           ),
@@ -180,7 +181,8 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 0),
                   // minLeadingWidth: 70,
-                  title: StudentPlusScreenTitleWidget(
+                  title: PlusScreenTitleWidget(
+                      isTrailingIcon: true,
                       kLabelSpacing: 20,
                       text: selectedTypeFilterIndex == 1
                           ? "Select Subject"
@@ -372,7 +374,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                           widget.filterNotifier.value == text
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(text,
+                          child: Text(text == "NA" ? "None" : text,
                               // context: context,
                               style: Theme.of(context)
                                   .textTheme
@@ -387,7 +389,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                           )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(text,
+                          child: Text(text == "NA" ? "None" : text,
                               // context: context,
                               style: Theme.of(context).textTheme.headline4),
                         ),

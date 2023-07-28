@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       return Globals.customSetting!.map<PersistentBottomNavBarItem>(
         (item) {
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(
+            icon: _ResultSummaryIcons(
                 item.sectionTitleC, item.sectionIconC, item.systemReferenceC),
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
@@ -253,7 +253,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           /*---------------Check for red dot indicator---------------*/
 
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+            icon:
+                _ResultSummaryIcons(item.split("_")[0], item.split("_")[1], ''),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
@@ -262,7 +263,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Widget _bottomIcon(title, iconData, section) {
+  Widget _ResultSummaryIcons(title, iconData, section) {
     //  //print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,6 +305,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       IconData(int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
+                      size: 22.0,
                     ),
                   ],
                 ),
@@ -390,12 +392,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             topRight: Radius.circular(25),
             topLeft: Radius.circular(25),
           ),
-          // circular(25.0),
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-              // Colors.grey,
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
               blurRadius: 10.0,
             ),
           ]),
@@ -416,7 +416,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // duration: Duration(milliseconds: 200),
       ),
       navBarStyle: NavBarStyle.style6,
-      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      navBarHeight: Globals.deviceType == "phone" ? 55 : 65,
     );
   }
 

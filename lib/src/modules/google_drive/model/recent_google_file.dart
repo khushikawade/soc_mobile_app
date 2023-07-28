@@ -31,7 +31,8 @@ class RecentGoogleFileSearch {
   String? classroomCourseId;
   @HiveField(13)
   String? classroomCourseWorkId;
-
+  @HiveField(14)
+  String? classroomCourseWorkUrl;
   RecentGoogleFileSearch(
       {this.title,
       this.description,
@@ -46,5 +47,6 @@ class RecentGoogleFileSearch {
       this.assessmentType,
       this.assessmentId,
       this.classroomCourseId,
-      this.classroomCourseWorkId});
+      this.classroomCourseWorkId,
+      this.classroomCourseWorkUrl});
 }

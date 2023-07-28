@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
@@ -24,7 +26,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:string_similarity/string_similarity.dart';
-
 import '../../google_drive/model/assessment_detail_modal.dart';
 part 'graded_plus_event.dart';
 part 'graded_plus_state.dart';
@@ -160,7 +161,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List<SubjectDetailList>? _localData = await _localDb.getData();
           // fetch
 
-          //Check is usign to differentiate the list at search screen
+          //Check is using to differentiate the list at search screen
           if (event.type == 'nyc') {
             List<SubjectDetailList> updatedList = await sortSubjectDetails(
                 gradeNo: event.grade!,
@@ -257,14 +258,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is VerifyUserWithDatabase) {
+    if (event is AuthorizedUserWithDatabase) {
       try {
         //  var data =
-        bool result =
-            await verifyUserWithDatabase(email: event.email.toString());
-        if (!result) {
-          await verifyUserWithDatabase(email: event.email.toString());
+        yield AuthorizedUserLoading();
+        bool result = event.isAuthorizedUser == true
+            ? await authorizedUserWithDatabase(email: event.email)
+            : await verifyUserWithDatabase(email: event.email.toString());
+        if (result == true) {
+          yield AuthorizedUserSuccess();
+        } else {
+          yield AuthorizedUserError();
         }
+        // if (!result) {
+        //   await verifyUserWithDatabase(email: event.email.toString());
+        // }
       } on SocketException catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'VerifyUserWithDatabase SocketException');
@@ -272,6 +280,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
@@ -280,6 +289,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield AuthorizedUserError();
         throw (e);
       }
     }
@@ -348,13 +358,19 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             List<SubjectDetailList> recentAddedList =
                 await addRecentDateTimeDetails(list: _list);
 
-            yield NycDataSuccess(
-              obj: recentAddedList,
-            );
-            return;
+            // it would change after pushing the app
+            if (_list.isEmpty || _list == null || _list.length == 0) {
+              yield OcrLoading();
+            } else {
+              yield NycDataSuccess(
+                obj: recentAddedList,
+              );
+              return;
+            }
           }
 
           // calling function for getting particular subject related data
+
           List<SubjectDetailList> _list =
               await saveSubjectListDetails(id: event.subjectId!);
           // calling function for getting particular subject related data
@@ -363,7 +379,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               keyword: event.selectedKeyword!,
               list: _list,
               type: event.type!);
-
           // Syncing the Local database with remote data
           await _localDb.clear();
           _list.forEach((SubjectDetailList e) {
@@ -398,130 +413,36 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is SaveAssessmentToDashboard) {
+    if (event is GradedPlusSaveResultToDashboard) {
       try {
-        yield OcrLoading();
-        // List<UserInformation> _profileData =
-        //     await UserGoogleProfile.getUserProfile();
-        List list = await Utility.getStudentInfoList(tableName: 'student_info');
-        if (event.previouslyAddedListLength != null &&
-            event.previouslyAddedListLength! < list.length) {
-          List<StudentAssessmentInfo> _list =
-              await Utility.getStudentInfoList(tableName: 'student_info');
+        List<UserInformation> userInformation =
+            await UserGoogleProfile.getUserProfile();
 
-          //Removing the previous scanned records to save only latest scanned sheets to the dashboard
-          _list.removeRange(0,
-              event.previouslyAddedListLength!); //+1 - To remove title as well
+        List isResultSaved = await saveResultToDashboard(
+            assessmentId: event.assessmentId,
+            studentInfoDb: event.studentInfoDb,
+            schoolId: event.schoolId,
+            assessmentSheetPublicURL: event.assessmentSheetPublicURL,
+            userInformation: userInformation[0]);
 
-          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            bool result = await saveResultToDashboard(
-                assessmentId: event.assessmentId!,
-                studentDetails: _list,
-                previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection,
-                schoolId: event.schoolId,
-                assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-
-            if (!result) {
-              saveResultToDashboard(
-                  assessmentId: event.assessmentId!,
-                  studentDetails: _list,
-                  previousListLength: event.previouslyAddedListLength ?? 0,
-                  isHistoryDetailPage: event.isHistoryAssessmentSection,
-                  schoolId: event.schoolId,
-                  assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-            } else {
-              // await _sendEmailToAdmin(
-              //   assessmentId: event.assessmentId!,
-              //   name: _profileData[0]
-              //       .userName!
-              //       .replaceAll("%20", " ")
-              //       .replaceAll("20", ""),
-              //   studentResultDetails: _list,
-              //   schoolId: event.schoolId,
-              //   email: _profileData[0].userEmail!,
-              //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-              // );
-              ////print("result Record is saved on DB");
-
-              yield AssessmentSavedSuccessfully();
-            }
-          } else {
-            Utility.showSnackBar(
-                event.scaffoldKey,
-                'Unable to save the result. Please try again.',
-                event.context,
-                null);
-
-            yield OcrErrorReceived();
-            throw ('something went wrong');
-          }
+        if (isResultSaved[0] == true) {
+          yield GradedPlusSaveResultToDashboardSuccess();
         } else {
-          //Using for history assessment details page
-          String subjectId;
-          String standardId;
-          var standardObject;
-          if (event.isHistoryAssessmentSection == true) {
-            standardObject = await _getStandardIdAndsubjectId(
-                grade: event.resultList.first.grade ?? '',
-                subLearningCode:
-                    event.resultList.first.subLearningStandard ?? '',
-                subjectName: event.resultList.first.subject ?? '');
-
-            standardId = standardObject != null && standardObject != ''
-                ? standardObject['Id']
-                : '';
-            subjectId = standardObject != null && standardObject != ''
-                ? standardObject['Subject__c']
-                : '';
-          }
-
-          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            bool result = await saveResultToDashboard(
-              assessmentId: event.assessmentId!,
-              studentDetails: event.resultList,
-              previousListLength: event.previouslyAddedListLength ?? 0,
-              isHistoryDetailPage: event.isHistoryAssessmentSection,
-              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-              schoolId: event.schoolId,
-            );
-
-            if (!result) {
-              saveResultToDashboard(
-                assessmentId: event.assessmentId!,
-                studentDetails: event.resultList,
-                previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection,
-                assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-                schoolId: event.schoolId,
-              );
-            } else {
-              yield AssessmentSavedSuccessfully();
-            }
-          } else {
-            Utility.showSnackBar(
-                event.scaffoldKey,
-                'Unable to save the result. Please try again.',
-                event.context,
-                null);
-            throw ('something went wrong');
-          }
+          yield OcrErrorReceived(err: isResultSaved[1]?.toString() ?? '');
         }
-      } on SocketException catch (e, s) {
-        e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
-        rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'SaveAssessmentToDashboard Event');
 
-        e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
+        // if (e == 'NO_CONNECTION') {
+        //   Utility.currentScreenSnackBar("No Internet Connection", null);
+
+        // }
+        yield OcrErrorReceived(err: e.toString());
         throw (e);
       }
     }
+
     if (event is SaveAssessmentToDashboardAndGetId) {
       yield OcrLoading();
       String dashboardId = await saveAssessmentToDatabase(
@@ -540,11 +461,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           teacherContactId: event.teacherContactId,
           teacherEmail: event.teacherEmail,
           classroomCourseId: event.classroomCourseId,
-          classroomCourseWorkId: event.classroomCourseWorkId);
+          classroomCourseWorkId: event.classroomCourseWorkId,
+          classroomCourseWorkUrl: event.classroomCourseWorkUrl);
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
-        yield AssessmentIdSuccess(obj: dashboardId);
+        yield AssessmentIdSuccess(dashboardAssignmentsId: dashboardId);
       }
     }
     // Event call to  update assessment to DB --------
@@ -561,16 +483,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         var body = {
           "Activity_Type": event.activityType,
-          "Session_Id": "${event.sessionId ?? ''}",
-          "Teacher_Id": "${event.teacherId ?? ''}",
-          "Activity_Id": "${event.activityId ?? ''}",
-          "Account_Id": "${event.accountId ?? ''}",
-          "Account_Type": "${event.accountType ?? ''}",
-          "Date_Time": "${event.dateTime ?? ''}",
-          "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}",
+          "Session_Id": event.sessionId ?? '',
+          "Teacher_Id": event.teacherId ?? '',
+          "Activity_Id": event.activityId ?? '',
+          "Account_Id": event.accountId ?? '',
+          "Account_Type": event.accountType ?? '',
+          "Date_Time": event.dateTime ?? '',
+          "Description": event.description ?? '',
+          "Operation_Result": event.operationResult ?? '',
           "App_Type__c":
-              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard",
+          "User_Type": event.userType ?? '',
+          "Email": event.email
         };
         await activityLog(body: body);
       } catch (e, s) {
@@ -581,28 +505,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // if (event is GetDashBoardStatus) {
-    //   try {
-    //     yield OcrLoading2();
-
-    //     AssessmentDetails object =
-    //         await _getAssessmentIdByGoogleFileId(fileId: event.fileId!);
-    //     // await Future.delayed(Duration(seconds: 10));
-    //     if (object[1].assessmentId!.isNotEmpty) {
-    //       yield AssessmentDashboardStatus(
-    //           resultRecordCount: object[0], assessmentObj: object[1]);
-    //     }
-    //     yield AssessmentDashboardStatus(
-    //         resultRecordCount: null, assessmentObj: null);
-    //   } catch (e, s) {
-    //     FirebaseAnalyticsService.firebaseCrashlytics(
-    //         e, s, 'GetDashBoardStatus Event');
-
-    //     yield AssessmentDashboardStatus(
-    //         resultRecordCount: null, assessmentObj: null);
-    //   }
-    // }
-    if (event is GetDashBoardStatus) {
+    //Used in Standalone // This will be removed later on
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandaloneApp) {
       try {
         yield OcrLoading2();
 
@@ -610,24 +514,58 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           AssessmentDetails obj =
               await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
 
+          //Updating details to assessment object
           event.assessmentObj!.assessmentCId = obj.assessmentId;
           event.assessmentObj!.courseId = obj.classroomCourseId;
           event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: Overrides.STANDALONE_GRADED_APP
                 ? 0
                 //to get save student list from result object
-                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                : await _getSavedStudentListFromDashboardByAssessmentId(
                     assessmentId: event.assessmentObj!.assessmentCId),
             assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
-        yield AssessmentDashboardStatus(
+        yield AssessmentDashboardStatusForStandaloneApp(
             resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
+      }
+    }
+
+    //Used in Standard App
+    if (event is GetAssessmentAndSavedStudentResultSummaryForStandardApp) {
+      try {
+        yield OcrLoading2();
+
+        //Fetch Assessment Id by Google File Id
+        if (event.assessmentObj?.assessmentCId?.isEmpty ?? true) {
+          AssessmentDetails obj =
+              await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
+
+          //Updating details to assessment object
+          event.assessmentObj!.assessmentCId = obj.assessmentId;
+          event.assessmentObj!.id = obj.classroomCourseId;
+          event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
+          event.assessmentObj!.courseWorkURL = obj.classroomCourseWorUrl;
+        }
+        //Fetch Saved Student List from Database/Dashboard
+        yield AssessmentDashboardStatusForStandardApp(
+            resultRecordCount: Overrides.STANDALONE_GRADED_APP
+                ? 0
+                //to get save student list from result object
+                : await _getSavedStudentListFromDashboardByAssessmentId(
+                    assessmentId: event.assessmentObj!.assessmentCId),
+            assessmentObj: event.assessmentObj);
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'GetDashBoardStatus Event');
+
+        yield AssessmentDashboardStatusForStandardApp(
+            resultRecordCount: 0, assessmentObj: ClassroomCourse());
       }
     }
 
@@ -670,71 +608,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // ---------- Event to Save Selected State Subject List to Local DB ----------
-    // if (event is SaveSubjectListDetailsToLocalDb) {
-    //   try {
-    //     yield OcrLoading();
-    //     List<SubjectDetailList> list = [];
-    //     // Condition to check selected Subject is Common core or other
-    //     if (event.selectedState == 'Common Core') {
-    //       list = await saveSubjectListDetails(isCommonCore: true);
-    //     } else {
-    //       // To get local data related to stateObjectList
-    //       LocalDatabase<StateListObject> _localDb =
-    //           LocalDatabase(Strings.stateObjectName);
-    //       List<StateListObject> _localData = await _localDb.getData();
-    //       // List of id related to selected state
-    //       List<String> _id = [];
-    //       // for loop to extract id releated selected subject
-    //       for (int i = 0; i < _localData.length; i++) {
-    //         if (_localData[i].stateC == event.selectedState &&
-    //             _localData[i].id != null) {
-    //           _id.add(_localData[i].id!);
-    //         }
-    //       }
-    //       list = await saveSubjectListDetails(isCommonCore: false, idList: _id);
-    //     }
-
-    //     // Syncing the Local database with remote data
-    //     LocalDatabase<SubjectDetailList> _localDb =
-    //         LocalDatabase(Strings.ocrSubjectObjectName);
-    //     await _localDb.clear();
-    //     list.forEach((SubjectDetailList e) {
-    //       //To decode the special characters
-    //       utf8.decode(utf8.encode(_localDb.addData(e).toString()));
-    //     });
-
-    //     yield SubjectDetailsListSaveSuccessfully();
-    //   } on SocketException catch (e,s) {
-    //     e.message == 'Connection failed'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection")
-    //         : print(e);
-    //     yield OcrErrorReceived();
-    //     rethrow;
-    //   } catch (e,s) {
-    //     e == 'NO_CONNECTION'
-    //         ? Utility.currentScreenSnackBar("No Internet Connection")
-    //         : print(e);
-    //     yield OcrErrorReceived();
-    //     throw (e);
-    //   }
-
-    //   // try {
-    //   //   bool result = await saveSubjectListDetails();
-    //   // } on SocketException catch (e,s) {
-    //   //   e.message == 'Connection failed'
-    //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
-    //   //       : print(e);
-    //   //   rethrow;
-    //   // } catch (e,s) {
-    //   //   e == 'NO_CONNECTION'
-    //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
-    //   //       : print(e);
-    //   //   throw (e);
-    //   // }
-
-    // }
-
     // ---------- Event to Fetch State List for Api ----------
     if (event is FetchStateListEvent) {
       try {
@@ -746,13 +619,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearNewsCache.getBool('delete_local_all_state_and_subject_cache');
+            clearNewsCache.getBool('delete_local_all_state_and_subject_cache1');
 
         if (clearCacheResult != true) {
           print('Inside clear state');
           await _localDb.clear();
           await clearNewsCache.setBool(
-              'delete_local_all_state_and_subject_cache', true);
+              'delete_local_all_state_and_subject_cache1', true);
         }
 
         List<StateListObject>? _localData = await _localDb.getData();
@@ -839,6 +712,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<String> stateList = extractStateName(stateObjectList: _localData);
         // stateList.add("Common Core");
         yield StateListFetchSuccessfully(stateList: stateList);
+      }
+    }
+
+    if (event is UpdateGradedPlusStudentResult) {
+      try {
+        var result = await updateResultToDashboard(
+            assessmentId: event.assessmentId,
+            oldStudentId: event.oldStudentId,
+            studentId: event.mewStudentId,
+            result: event.result,
+            studentName: event.studentName);
+
+        if (result == true) {
+          yield UpdateResultToDashboardSuccess();
+        } else {
+          yield OcrErrorReceived(err: result.toString());
+        }
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'updateAssessmentToDashboard Event');
+        yield OcrErrorReceived(err: e.toString());
+        // if (e == 'NO_CONNECTION') {
+        //   Utility.currentScreenSnackBar("No Internet Connection", null);
+
+        // }
+        yield OcrErrorReceived(err: e.toString());
+        throw (e);
       }
     }
   }
@@ -1002,20 +902,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> saveSubjectListDetails(
       {required String id}) async {
     try {
-      // for loop to create api filter url according to id list
-      // String filterString = '';
-      // if (isCommonCore == false) {
-      //   for (int i = 0; i < idList!.length; i++) {
-      //     if (i == 0) {
-      //       filterString = filterString +
-      //           'filterRecords/"State_and_Standards__c" = \'${idList[i]}\'';
-      //     } else {
-      //       filterString =
-      //           filterString + 'OR "State_and_Standards__c" = \'${idList[i]}\'';
-      //     }
-      //   }
-      // }
-
       // Api Calling According to subject selection
       final ResponseModel response = await _dbServices.getApiNew(
           Uri.encodeFull(
@@ -1064,38 +950,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // Future<bool> saveSubjectListDetails() async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getApiNew(Uri.encodeFull(
-  //             //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
-  //             // ),
-  //             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-  //         isCompleteUrl: true,
-  //         headers: {"Content-type": "application/json; charset=utf-8"});
-
-  //     if (response.statusCode == 200) {
-  //       List<SubjectDetailList> _list =
-  //           jsonDecode(jsonEncode(response.data['body']))
-  //               .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
-  //               .toList();
-  //       ////print(_list);
-  //       LocalDatabase<SubjectDetailList> _localDb =
-  //           LocalDatabase(Strings.ocrSubjectObjectName);
-  //       await _localDb.clear();
-
-  //       _list.forEach((SubjectDetailList e) {
-  //         //To decode the special characters
-  //         utf8.decode(utf8.encode(_localDb.addData(e).toString()));
-  //       });
-  //       // _list.removeWhere((SubjectList element) => element.status == 'Hide');
-  //       return true;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e,s) {
-  //     throw (e);
-  //   }
-  // }
   // ---------  To Fetch local subject added by user -----------
   Future<List<StateListObject>> fetchLocalSubject(String classNo,
       {required String stateName}) async {
@@ -1173,106 +1027,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return subjectDetailList;
       }
 
-      ////////////////////-----------------old -------------------------------/////////////////////////
-      // // String grade = '';
-      // // String selectedSubject = '';
-      // //Local list managing
-      // LocalDatabase<SubjectDetailList> _localDb =
-      //     LocalDatabase(Strings.ocrSubjectObjectName);
-      // List<SubjectDetailList>? _localData = await _localDb.getData();
-
-      // //Common detail list to save all details of subject for specific grade. Include : Subject, Learning standard and sub learning standard
-      // List<SubjectDetailList> subjectDetailList = [];
-
-      // //Return subject details
-      // if (type == 'subject') {
-      //   grade = keyword;
-      //   //Using a separate list to check only 'Subject' whether already exist or not.
-      //   List subjectList = [];
-
-      //   for (int i = 0; i < _localData.length; i++) {
-      //     if (_localData[i].gradeC == keyword) {
-      //       if (subjectDetailList.isNotEmpty &&
-      //           !subjectList.contains(_localData[i].subjectNameC)) {
-      //         subjectDetailList.add(_localData[i]);
-      //         subjectList.add(_localData[i].subjectNameC);
-      //       } else if (subjectDetailList.isEmpty) {
-      //         subjectDetailList.add(_localData[i]);
-      //         subjectList.add(_localData[i].subjectNameC);
-      //       }
-      //     }
-      //   }
-      //   return subjectDetailList;
-      // }
-      // //Return Learning standard details
-      // else if (type == 'nyc') {
-      //   //Using a seperate list to check only 'Learning Standard' whether already exist or not.
-
-      //   List learningStdList = [];
-
-      //   selectedSubject = keyword;
-      //   for (int i = 0; i < _localData.length; i++) {
-      //     if (_localData[i].subjectNameC == keyword &&
-      //         _localData[i].gradeC ==
-      //             (isSearchPage == true ? gradeNo : grade)) {
-      //       if (subjectDetailList.isNotEmpty &&
-      //           !learningStdList.contains(_localData[i].domainNameC)) {
-      //         subjectDetailList.add(_localData[i]);
-      //         learningStdList.add(_localData[i].domainNameC);
-      //       } else if (subjectDetailList.isEmpty) {
-      //         subjectDetailList.add(_localData[i]);
-      //         learningStdList.add(_localData[i].domainNameC);
-      //       }
-      //     }
-      //   }
-      //   return subjectDetailList;
-      // } //Return Sub Learning standard details
-      // else if (type == 'nycSub') {
-      //   //Using a separate list to check only 'Sub Learning Standard' whether already exist or not.
-      //   if (isSearchPage == true) {
-      //     List<SubjectDetailList> list = [];
-      //     List subLearningStdList = [];
-      //     for (int i = 0; i < _localData.length; i++) {
-      //       if (
-      //           //_localData[i].subjectNameC == selectedSubject &&
-      //           _localData[i].gradeC == gradeNo &&
-      //               _localData[i].subjectNameC == keyword) {
-      //         if (list.isNotEmpty &&
-      //             !subLearningStdList
-      //                 .contains(_localData[i].standardAndDescriptionC)) {
-      //           list.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         } else if (list.isEmpty) {
-      //           list.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         }
-      //       }
-      //     }
-      //     return list;
-      //   } else {
-      //     List subLearningStdList = [];
-
-      //     for (int i = 0; i < _localData.length; i++) {
-      //       if (_localData[i].subjectNameC ==
-      //               (selectedSubject == ''
-      //                   ? subjectSelected
-      //                   : selectedSubject) &&
-      //           (_localData[i].gradeC == (grade == '' ? gradeNo : grade)) &&
-      //           _localData[i].domainNameC == keyword) {
-      //         if (subjectDetailList.isNotEmpty &&
-      //             !subLearningStdList
-      //                 .contains(_localData[i].standardAndDescriptionC)) {
-      //           subjectDetailList.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         } else if (subjectDetailList.isEmpty) {
-      //           subjectDetailList.add(_localData[i]);
-      //           subLearningStdList.add(_localData[i].standardAndDescriptionC);
-      //         }
-      //       }
-      //     }
-      //     return subjectDetailList;
-      //   }
-      // }
       // return subjectDetailList;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
@@ -1324,12 +1078,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // Url for Production
         Uri.encodeFull(
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processMcqSheet'),
-        // Url For testing and development
-        // Uri.encodeFull(
-        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
-        // Url For testing and development
-        // Uri.encodeFull(
-        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
 
         body: {
           'data': '$base64',
@@ -1481,6 +1229,47 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
+  Future<bool> authorizedUserWithDatabase({required String? email}) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "email": email.toString(),
+        "DBN": Globals.schoolDbnC,
+        "Schoolid": Overrides.SCHOOL_ID,
+        "teacherid": await OcrUtility.getTeacherId()
+      };
+      final ResponseModel response = await _dbServices.postApi(
+          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200) {
+        await verifyUserWithDatabase(
+            email: email); //to update teacher id in shared preference
+        var res = response.data;
+        var data = res["body"];
+        // await OcrUtility.setTeacherId(techerId);
+        if (data == true) {
+          return true;
+        } else {
+          return false;
+        }
+
+        // return data;
+      } else {
+        return false;
+      }
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'verifyUserWithDatabase Method');
+      throw (e);
+    }
+  }
+
   Future<bool> verifyUserWithDatabase({required String? email}) async {
     try {
       Map<String, String> headers = {
@@ -1505,60 +1294,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             await createContactToSalesforce(email: email.toString());
           }
         } else {
-          Globals.teacherId = data['Id'];
-
-          // if (data['Assessment_App_User__c'] != 'true') {
-          //   var userType = data["GRADED_Premium__c"];
-          //   if (userType == "true") {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-
-          //   Globals.teacherId = data['Id'];
-          //   bool result = await updateContactToSalesforce(recordId: data['Id']);
-          //   if (!result) {
-          //     await updateContactToSalesforce(recordId: data['Id']);
-          //   }
-          // } else {
-          //   if (Overrides.STANDALONE_GRADED_APP == true) {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-          // }
+          // Globals.teacherId = data['Id'];
+          OcrUtility.setTeacherId(data['Id']);
           if (data['Assessment_App_User__c'] != 'true') {
-            Globals.teacherId = data['Id'];
             bool result = await updateContactToSalesforce(recordId: data['Id']);
             if (!result) {
               await updateContactToSalesforce(recordId: data['Id']);
             }
           }
-          // else {
-          //   // var premiumUserType = data["GRADED_Premium__c"];
-          //   if (premiumUserType == "true") {
-          //     Globals.isPremiumUser = true;
-          //   } else {
-          //     if (Overrides.STANDALONE_GRADED_APP == true) {
-          //       Globals.isPremiumUser = true;
-          //     } else {
-          //       Globals.isPremiumUser = false;
-          //     }
-          //   }
-          // }
         }
 
         return true;
-
-        // return data;
       } else {
         return false;
       }
@@ -1586,6 +1332,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Assessment_App_User__c": "true",
         "LastName": email, //.split("@")[0],
         "Email": email,
+        "DBN_for_account_lookup__c": Overrides.STANDALONE_GRADED_APP == true
+            ? "STANDALONE"
+            : "GRADEDSCHOOLS"
         //UNCOMMENT
         // "GRADED_user_type__c":
         //     "Free" //Currently free but will be dynamic later on
@@ -1597,9 +1346,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        // print(response.data["body"]);
-        Globals.teacherId = response.data["body"]["id"];
-        // print(response.data["body"]["id"]);
+        OcrUtility.setTeacherId(response.data["body"]["id"]);
         return true;
       } else {
         return false;
@@ -1654,7 +1401,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required String assessmentQueImage,
       required bool isMcqSheet,
       required String? classroomCourseId,
-      required String? classroomCourseWorkId}) async {
+      required String? classroomCourseWorkId,
+      required String? classroomCourseWorkUrl}) async {
     try {
       String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -1678,12 +1426,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.isPremiumUser.toString(),
+        "Created_As_Premium": true,
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response',
         "Classroom_Course_Id": classroomCourseId,
-        "Classroom_Course_Work_Id": classroomCourseWorkId
+        "Classroom_Course_Work_Id": classroomCourseWorkId,
+        "Classroom_Coursework_URL": classroomCourseWorkUrl
       };
 
       final ResponseModel response = await _dbServices.postApi(
@@ -1722,74 +1471,110 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> saveResultToDashboard(
-      {required String assessmentId,
-      required List<StudentAssessmentInfo> studentDetails,
-      required previousListLength,
-      required isHistoryDetailPage,
-      required schoolId,
-      required assessmentSheetPublicURL}) async {
+  Future<List> saveResultToDashboard({
+    required String assessmentId,
+    required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
+    required schoolId,
+    required String assessmentSheetPublicURL,
+    required UserInformation userInformation,
+    int retry = 3,
+  }) async {
     try {
+      //Get all students for localDb
+      List<StudentAssessmentInfo> assessmentData =
+          await studentInfoDb.getData();
+
+//get only non saved students on dashboard
+      List<StudentAssessmentInfo> studentDetails =
+          await _getOnlyNonSavedStudents(studentList: assessmentData);
+
       List<Map> bodyContent = [];
 
-      // studentDetails.removeAt(0);
-      // int initIndex = isHistoryDetailPage == true
-      //     ? previousListLength
-      //     : previousListLength; // + 1;
       for (int i = 0; i < studentDetails.length; i++) {
-        //To bypass the titles saving in the dashboard
-        if (studentDetails[i].studentId != 'Id') {
-          bodyContent.add(recordToJson(
-              assessmentId,
-              Utility.getCurrentDate(DateTime.now()),
-              studentDetails[i].studentGrade ?? '',
-              studentDetails[i].studentId ?? '',
-              studentDetails[i].assessmentImage ?? '',
-              studentDetails[i].studentName ?? ''));
-        }
+        //convert dart objects to json
+        bodyContent.add(recordToJson(
+            assessmentId,
+            Utility.getCurrentDate(DateTime.now()),
+            studentDetails[i].studentGrade ?? '',
+            studentDetails[i].studentId ?? '',
+            studentDetails[i].assessmentImage ?? '',
+            studentDetails[i].studentName ?? ''));
       }
+
       final ResponseModel response = await _dbServices.postApi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
         isGoogleApi: true,
         body: bodyContent,
       );
       if (response.statusCode == 200) {
-        // String id = response.data['body']['id'];
+        List<StudentAssessmentInfo> assessmentData =
+            await studentInfoDb.getData();
+        // update the local-db only after assignment are updated on dashboard to manage the next scan more sheets to not repeat in the list
+        assessmentData.asMap().forEach((index, element) async {
+          element.isStudentResultAssignmentSavedOnDashboard = true;
+          //updating local database
+          await studentInfoDb.putAt(index, element);
+        });
 
-        List<UserInformation> _profileData =
-            await UserGoogleProfile.getUserProfile();
-        bool result = await _sendEmailToAdmin(
-          assessmentId: assessmentId,
-          name: _profileData[0]
-              .userName!
+        _sendEmailToAdmin(
+          name: userInformation.userName!
               .replaceAll("%20", " ")
               .replaceAll("20", ""),
-          studentResultDetails: studentDetails,
           schoolId: schoolId,
-          email: _profileData[0].userEmail!,
+          email: userInformation.userEmail!,
           assessmentSheetPublicURL: assessmentSheetPublicURL!,
+          bodyContent: bodyContent,
         );
-        if (!result) {
-          await _sendEmailToAdmin(
-            assessmentId: assessmentId,
-            name: _profileData[0]
-                .userName!
-                .replaceAll("%20", " ")
-                .replaceAll("20", ""),
-            studentResultDetails: studentDetails,
-            schoolId: schoolId,
-            email: _profileData[0].userEmail!,
-            assessmentSheetPublicURL: assessmentSheetPublicURL!,
-          );
-        }
 
+        return [true, response.statusCode];
+      } else if (retry > 0) {
+        return saveResultToDashboard(
+            assessmentId: assessmentId,
+            assessmentSheetPublicURL: assessmentSheetPublicURL,
+            schoolId: schoolId,
+            studentInfoDb: studentInfoDb,
+            userInformation: userInformation,
+            retry: retry - 1);
+      }
+      return [false, response.statusCode];
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'saveResultToDashboard Method');
+      throw (e);
+    }
+  }
+
+  Future updateResultToDashboard({
+    required String assessmentId,
+    required String oldStudentId,
+    required String studentId,
+    required String studentName,
+    required String result,
+  }) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+        "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/updateGradedPlusStudentResult",
+        isGoogleApi: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+        },
+        body: {
+          "Assessment_Id": assessmentId,
+          "Student__c_old": oldStudentId,
+          "Student__c": studentId,
+          "Student_Name__c": studentName,
+          "Result__c": result
+        },
+      );
+      if (response.statusCode == 200) {
         return true;
       } else {
         return false;
       }
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
-          e, s, 'saveResultToDashboard Method');
+          e, s, 'updateResultToDashboard Method');
       throw (e);
     }
   }
@@ -1812,34 +1597,20 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _sendEmailToAdmin(
-      {required String schoolId,
-      required String name,
-      required String email,
-      required String assessmentId,
-      required String assessmentSheetPublicURL,
-      required List<StudentAssessmentInfo> studentResultDetails}) async {
+  _sendEmailToAdmin({
+    required String schoolId,
+    required String name,
+    required String email,
+    required String assessmentSheetPublicURL,
+    required List<Map> bodyContent,
+    int retry = 3,
+  }) async {
     try {
-      List<Map> bodyContent = [];
-
-      // studentDetails.removeAt(0);
-      for (int i = 0; i < studentResultDetails.length; i++) {
-        if (studentResultDetails[i].studentId == "Id") {
-          studentResultDetails.remove(i);
-        }
-        bodyContent.add(recordToJson(
-            assessmentId,
-            Utility.getCurrentDate(DateTime.now()),
-            studentResultDetails[i].studentGrade ?? '',
-            studentResultDetails[i].studentId ?? '',
-            studentResultDetails[i].assessmentImage ?? '',
-            studentResultDetails[i].studentName ?? ''));
-      }
       final body = {
         "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-        "to": "techadmin@solvedconsulting.com", //, appdevelopersdp7@gmail.com",
+        "to": "techadmin@solvedconsulting.com",
+        // "appdevelopersdp7@gmail.com",
         "subject": "Data Saved To The Dashboard",
-        // "html":
         "text":
             '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
       };
@@ -1849,11 +1620,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         isGoogleApi: true,
         body: body,
       );
+
       if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
+      } else if (retry > 0) {
+        return _sendEmailToAdmin(
+            schoolId: schoolId,
+            assessmentSheetPublicURL: assessmentSheetPublicURL,
+            bodyContent: bodyContent,
+            email: email,
+            name: name,
+            retry: retry - 1);
       }
+      ;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, '_sendEmailToAdmin Method');
@@ -1880,23 +1658,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // Future authenticateEmail(body) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices
-  //         .postApi("authorizeEmail?objectName=Contact", body: body);
-
-  //     if (response.statusCode == 200) {
-  //       var res = response.data;
-  //       var data = res["body"];
-  //       return data;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e,s) {
-  //     throw (e);
-  //   }
-  // }
-
   Future fetchStudentDetails(ossId) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
@@ -1911,15 +1672,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         //Resposne from global API
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
-
-        //Response from filter API ---
-        // List<StudentDetails> _list = response.data['body']
-        //     .map<StudentDetails>((i) => StudentDetails.fromJson(i))
-        //     .toList();
-        // StudentDetails? res;
-        // if (_list.length > 0) {
-        //   res = _list[0];
-        // }
 
         return res;
       } else {
@@ -1954,11 +1706,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           e, s, '_getTheDashBoardStatus Method');
       return data;
       // throw ('something_went_wrong');
-
     }
   }
 
-  Future<int> _getSavedStudentListSavedInDashboardByAssessmentId(
+  Future<int> _getSavedStudentListFromDashboardByAssessmentId(
       {required String? assessmentId, int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
@@ -1969,7 +1720,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             ? response?.data["body"].length
             : 0;
       } else if (retry > 0) {
-        return _getSavedStudentListSavedInDashboardByAssessmentId(
+        return _getSavedStudentListFromDashboardByAssessmentId(
             assessmentId: assessmentId, retry: retry - 1);
       }
       return 0;
@@ -2077,13 +1828,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               .add(_localData[i].studentList![j]['profile']['emailAddress']);
         }
       }
-      // List<String> studentList = [
-      //   "test@gmail.com",
-      //   "appdevelopersdp7@gmail.com",
-      //   "rupeshparmar@gmail.com",
-      //   "techadmin@solvedconsulting.com"
-      // ];
-      // List<String> resonanceTextList = responseText.split(' ');
+
       String pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex = new RegExp(pattern);
@@ -2123,26 +1868,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
 
       return [newResult, studentName];
-
-      // if (result.isNotEmpty) {
-      //   return result[0];
-      // } else {
-      //   for (int j = 0; j < respoanceTextList.length; j++) {
-      //     if (regex.hasMatch(respoanceTextList[j]) &&
-      //         studentList.contains(respoanceTextList[j])) {
-      //       return respoanceTextList[j];
-      //     } else {
-      //       for (var i = 0; i < studentList.length; i++) {
-      //         if (studentList[i].contains(respoanceTextList[j])) {
-      //           return studentList[i];
-      //         }
-      //       }
-      //     }
-
-      //     //}
-
-      //   }
-      // }
 
       // return ['', ''];
     } catch (e, s) {
@@ -2184,14 +1909,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             emails.add(respoanceTextList[i]);
           }
         }
-
-        // final test = RegExp('@',
-        //   caseSensitive: false, multiLine: true);
-        //   final data = test.allMatches(string);
-        // for (final Match match in data) {
-        //   emails.add(string.substring(match.start, match.end));
-
-        // }
       }
 
       return emails;
@@ -2338,6 +2055,25 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+//Used to update the student result to dashboard // Checking only non-saved records
+  Future<List<StudentAssessmentInfo>> _getOnlyNonSavedStudents(
+      {required final List<StudentAssessmentInfo> studentList}) async {
+    try {
+      List<StudentAssessmentInfo> nonSavedStudentsOnDashboard = [];
+
+      studentList.forEach((student) {
+        if (student.isStudentResultAssignmentSavedOnDashboard == false &&
+            student.studentId != 'Id') {
+          nonSavedStudentsOnDashboard.add(student);
+        }
+      });
+
+      return nonSavedStudentsOnDashboard;
+    } catch (e) {
+      return [];
     }
   }
 }

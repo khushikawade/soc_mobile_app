@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_intro_tutorial_section.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/shared_preference.dart';
@@ -212,6 +215,7 @@ class _StartupPageState extends State<StartupPage> {
                       listener: (BuildContext contxt, HomeState state) {
                         if (state is HomeErrorReceived) {
                           setState(() {
+                            //Used to showcase the first guide
                             flag = false;
                           });
                         }
@@ -235,28 +239,30 @@ class _StartupPageState extends State<StartupPage> {
                           await Future.delayed(Duration(milliseconds: 200));
                           if (state.obj != null) {
                             if (widget.isOcrSection == true) {
-                              // Navigator.of(context).pushReplacement(
-                              //     _gotoOCRLandingPage(state.obj));
                               HiveDbServices _hiveDbServices = HiveDbServices();
 
                               var isOldUser = await _hiveDbServices
-                                  .getSingleData('new_user', 'new_user');
-                              if (Overrides.STANDALONE_GRADED_APP == true) {
-                                Globals.isPremiumUser = true;
-                              }
+                                  .getSingleData('is_new_user', 'new_user');
+
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true
                                     ? Overrides.STANDALONE_GRADED_APP == true
                                         ? GradedLandingPage(
-                                            isMultiplechoice:
+                                            isMultipleChoice:
                                                 widget.isMultipleChoice)
-                                        : SelectAssessmentType() // OpticalCharacterRecognition()
-                                    : CustomIntroWidget(
+                                        //  : SelectAssessmentType() // OpticalCharacterRecognition()
+                                        : GradedPlusNavBarHome()
+                                    : CommonIntroSection(
+                                        isSkipAndStartButton: true,
+                                        onBoardingInfoList:
+                                            GradedIntroContentModal
+                                                .onBoardingMainPagesInfoList,
                                         isMcqSheet: widget.isMultipleChoice),
                               ));
-                              //         );
-                            } else {
+                            }
+                            //-------------------------------------------------------------
+                            else {
                               if (Globals.appSetting.schoolNameC != null &&
                                   Globals.appSetting.schoolNameC!.isNotEmpty) {
                                 _bloc.add(VerifyUserWithDatabase(
@@ -266,7 +272,9 @@ class _StartupPageState extends State<StartupPage> {
                               Navigator.of(context)
                                   .pushReplacement(_createRoute(state.obj));
                             }
-                          } else {
+                          }
+                          //-------------------------------------------------------------
+                          else {
                             NoDataFoundErrorWidget(
                               isResultNotFoundMsg: false,
                               isNews: false,
@@ -280,52 +288,52 @@ class _StartupPageState extends State<StartupPage> {
                       child: Container(),
                     ),
                   ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<NewsBloc, NewsState>(
-                      bloc: _newsBloc,
-                      listener: (context, state) async {
-                        if (state is NewsCountLengthSuccess) {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences.getInstance();
-                          // SharedPreferences intPrefs =
-                          //     await SharedPreferences.getInstance();
-                          // String? _objectName = "${Strings.newsObjectName}";
-                          // LocalDatabase<NotificationList> _localDb =
-                          //     LocalDatabase(_objectName);
-                          // List<NotificationList> _localData =
-                          //     await _localDb.getData();
+                  // Container(
+                  //   height: 0,
+                  //   width: 0,
+                  //   child: BlocListener<NewsBloc, NewsState>(
+                  //     bloc: _newsBloc,
+                  //     listener: (context, state) async {
+                  //       if (state is NewsCountLengthSuccess) {
+                  //         // SharedPreferences prefs =
+                  //         //     await SharedPreferences.getInstance();
+                  //         // SharedPreferences intPrefs =
+                  //         //     await SharedPreferences.getInstance();
+                  //         // String? _objectName = "${Strings.newsObjectName}";
+                  //         // LocalDatabase<NotificationList> _localDb =
+                  //         //     LocalDatabase(_objectName);
+                  //         // List<NotificationList> _localData =
+                  //         //     await _localDb.getData();
 
-                          // if (_localData.length < state.obj!.length &&
-                          //     _localData.isNotEmpty) {
-                          //   // intPrefs.setInt("totalCount", Globals.notiCount!);
-                          //   // prefs.setBool("enableIndicator", true);
-                          //   Globals.indicator.value = true;
-                          // }
-                        }
-                      },
-                      child: Container(),
-                    ),
-                  ),
+                  //         // if (_localData.length < state.obj!.length &&
+                  //         //     _localData.isNotEmpty) {
+                  //         //   // intPrefs.setInt("totalCount", Globals.notiCount!);
+                  //         //   // prefs.setBool("enableIndicator", true);
+                  //         //   Globals.indicator.value = true;
+                  //         // }
+                  //       }
+                  //     },
+                  //     child: Container(),
+                  //   ),
+                  // ),
                 ],
               ));
   }
 
-  _navigateToOcrSection() async {
-    HiveDbServices _hiveDbServices = HiveDbServices();
+  // _navigateToOcrSection() async {
+  //   HiveDbServices _hiveDbServices = HiveDbServices();
 
-    var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
+  //   var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
 
-    Timer(Duration(seconds: 1), () async {
-      Navigator.pushReplacement<void, void>(
-        context,
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => isOldUser == true
-              ? SelectAssessmentType() //OpticalCharacterRecognition()
-              : CustomIntroWidget(),
-        ),
-      );
-    });
-  }
+  //   Timer(Duration(seconds: 1), () async {
+  //     Navigator.pushReplacement<void, void>(
+  //       context,
+  //       MaterialPageRoute<void>(
+  //         builder: (BuildContext context) => isOldUser == true
+  //             ? SelectAssessmentType() //OpticalCharacterRecognition()
+  //             : CustomIntroWidget(),
+  //       ),
+  //     );
+  //   });
+  // }
 }

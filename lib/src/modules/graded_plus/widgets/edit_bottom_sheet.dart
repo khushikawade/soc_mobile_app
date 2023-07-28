@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -57,7 +58,7 @@ class EditBottomSheet extends StatefulWidget {
       {required TextEditingController name,
       required TextEditingController id,
       required TextEditingController score,
-      String? studentResonance}) update;
+      String? studentResponse}) update;
   @override
   State<EditBottomSheet> createState() => _BottomSheetWidgetState();
 }
@@ -364,7 +365,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                                                 ? (widget.studentEmailIdController.text.length != 9
                                                                     ? 'Student Id should be 9 digit'
                                                                     : (widget.studentEmailIdController.text[0] != '2' && widget.studentEmailIdController.text[0] != '1'
-                                                                        ? 'Student Id should be start for 1 or 2'
+                                                                        ? 'Student Id Should Start With Either 1 or 2'
                                                                         : ''))
                                                                 : (!regex.hasMatch(widget
                                                                         .studentEmailIdController
@@ -542,7 +543,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                   name: widget.studentNameController,
                                   id: widget.studentEmailIdController,
                                   score: widget.studentGradeController,
-                                  studentResonance: widget.isMcqSheet == true
+                                  studentResponse: widget.isMcqSheet == true
                                       ? indexColor.value.toString()
                                       : 'NA');
                             }
@@ -639,8 +640,9 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 .toLowerCase()
                                 .replaceAll(" ", "_") ??
                             '');
-                    Utility.updateLogs(
-                       activityType: 'GRADED+',
+                    PlusUtility.updateLogs(
+                        activityType: 'GRADED+',
+                        userType: 'Teacher',
                         activityId: widget.isMcqSheet == true ? "30 " : '8',
                         description: editScoreOrAnserKeyLogMsg,
                         operationResult: 'Success');
@@ -924,8 +926,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                 return TextFormField(
                     onTap: () => readOnly == true
                         ? Utility.currentScreenSnackBar(
-                            'Read only $hintText' ?? "",
-                            null)
+                            'Read only $hintText' ?? "", null)
                         : print(''),
                     readOnly: readOnly ?? false,
                     maxLength: maxNineDigit == true &&

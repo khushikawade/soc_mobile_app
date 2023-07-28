@@ -24,7 +24,14 @@ class _PBISPlusStaffState extends State<PBISPlusStaff> {
         extendBody: true,
         backgroundColor: Colors.transparent,
         appBar: PBISPlusUtility.pbisAppBar(
-            context, widget.titleIconData, 'Class', _scaffoldKey),
+          refresh: (v) {
+            setState(() {});
+          },
+          context: context,
+          titleIconData: widget.titleIconData,
+          title: 'Class',
+          scaffoldKey: _scaffoldKey,
+        ),
       )
     ]);
   }

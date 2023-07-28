@@ -16,6 +16,12 @@ class SearchLoading extends OcrState {}
 
 class SaveSubjectListDetailsSuccess extends OcrState {}
 
+class AuthorizedUserLoading extends OcrState {}
+
+class AuthorizedUserSuccess extends OcrState {}
+
+class AuthorizedUserError extends OcrState {}
+
 class FetchTextFromImageSuccess extends OcrState {
   final String? studentId;
   final String? grade;
@@ -181,24 +187,42 @@ class SuccessStudentDetails extends OcrState {
 }
 
 class AssessmentIdSuccess extends OcrState {
-  String? obj;
-  AssessmentIdSuccess({this.obj});
-  AssessmentIdSuccess copyWith({final obj}) {
-    return AssessmentIdSuccess(obj: obj ?? this.obj);
+  final String? dashboardAssignmentsId;
+  AssessmentIdSuccess({this.dashboardAssignmentsId});
+  AssessmentIdSuccess copyWith({final dashboardAssignmentsId}) {
+    return AssessmentIdSuccess(
+        dashboardAssignmentsId:
+            dashboardAssignmentsId ?? this.dashboardAssignmentsId);
   }
 
   @override
-  List<Object> get props => [obj!];
+  List<Object> get props => [dashboardAssignmentsId!];
 }
 
-class AssessmentDashboardStatus extends OcrState {
+class AssessmentDashboardStatusForStandaloneApp extends OcrState {
   int? resultRecordCount;
   GoogleClassroomCourses? assessmentObj;
-  AssessmentDashboardStatus(
+  AssessmentDashboardStatusForStandaloneApp(
       {this.resultRecordCount, required this.assessmentObj});
-  AssessmentDashboardStatus copyWith(
+  AssessmentDashboardStatusForStandaloneApp copyWith(
       {final obj, final recordCount, final assessmentId}) {
-    return AssessmentDashboardStatus(
+    return AssessmentDashboardStatusForStandaloneApp(
+        resultRecordCount: recordCount ?? this.resultRecordCount,
+        assessmentObj: assessmentId ?? this.assessmentObj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class AssessmentDashboardStatusForStandardApp extends OcrState {
+  int? resultRecordCount;
+  ClassroomCourse? assessmentObj;
+  AssessmentDashboardStatusForStandardApp(
+      {this.resultRecordCount, required this.assessmentObj});
+  AssessmentDashboardStatusForStandardApp copyWith(
+      {final obj, final recordCount, final assessmentId}) {
+    return AssessmentDashboardStatusForStandardApp(
         resultRecordCount: recordCount ?? this.resultRecordCount,
         assessmentObj: assessmentId ?? this.assessmentObj);
   }
@@ -250,3 +274,25 @@ class LocalStateSearchResult extends OcrState {
 
 //LocalStateSearchEvent
 class NoRubricAvailable extends OcrState {}
+
+class GradedPlusSaveResultToDashboardSuccess extends OcrState {
+  GradedPlusSaveResultToDashboardSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GradedApprovedDomainsSuccess extends OcrState {
+  GradedApprovedDomainsSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+
+class UpdateResultToDashboardSuccess extends OcrState {
+  UpdateResultToDashboardSuccess();
+
+  @override
+  List<Object> get props => [];
+}

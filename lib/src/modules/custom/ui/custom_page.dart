@@ -200,7 +200,7 @@ class _CustomPagesState extends State<CustomPages> {
           ? Expanded(
               child: CommonPdfViewerPage(
                 isOCRFeature: false,
-                tittle: '',
+                title: '',
                 isHomePage: true,
                 url: obj.pdfURL,
                 isBottomSheet: true,

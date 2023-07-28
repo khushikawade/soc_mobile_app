@@ -2,8 +2,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/student_plus_family_login.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -15,6 +22,8 @@ import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
@@ -42,6 +51,7 @@ class CommonListWidget extends StatefulWidget {
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
+  final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   _launchURL(SharedList obj, String queryParameter) async {
     // UNCOMMENT
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
@@ -148,7 +158,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
-                        tittle: obj.titleC,
+                        title: obj.titleC,
                         isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
@@ -203,6 +213,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       //                         MaterialPageRoute(
       //                             builder: (BuildContext context) =>
       //                                 OpticalCharacterRecognition()));}
+    } else if (obj.typeC == "STUDENT+") {
+      familyLogin();
     } else {
       Utility.showSnackBar(
           widget.scaffoldKey, "No data available", context, null);
@@ -274,23 +286,96 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.data.length > 0
-        ? ListView.builder(
-            controller: widget.scrollController,
-            //  controller: widget.scrollController,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(
-                bottom: widget.bottomPadding ?? AppTheme.klistPadding),
-            scrollDirection: Axis.vertical,
-            itemCount: widget.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _buildList(widget.data[index], index);
-            },
-          )
+        ? Column(children: [
+            blocListener(),
+            ListView.builder(
+                controller: widget.scrollController,
+                //  controller: widget.scrollController,
+                shrinkWrap: true,
+                padding: EdgeInsets.only(
+                    bottom: widget.bottomPadding ?? AppTheme.klistPadding),
+                scrollDirection: Axis.vertical,
+                itemCount: widget.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildList(widget.data[index], index);
+                })
+          ])
         : NoDataFoundErrorWidget(
             isCalendarPageOrientationLandscape: false,
             isResultNotFoundMsg: false,
             isNews: false,
             isEvents: false,
             connected: true);
+  }
+
+  familyLogin() async {
+    List<UserInformation> _profileData =
+        await FamilyUserDetails.getFamilyUserProfile();
+
+    if (_profileData.isEmpty ||
+        (_profileData[0].familyToken == null ||
+            _profileData[0].familyToken == "")) {
+      pushNewScreen(
+        context,
+        screen: PlusSplashScreen(
+          actionName: 'STUDENT+',
+          sectionType: 'Family',
+        ),
+        withNavBar: false,
+      );
+      
+    } else {
+      _studentPlusBloc.add(GetStudentListFamilyLogin());
+    }
+    // }
+  }
+
+  /* ------------- widget to fetch student Detail and show loader ------------ */
+
+  Widget blocListener() {
+    return BlocListener<StudentPlusBloc, StudentPlusState>(
+      bloc: _studentPlusBloc,
+      listener: (context, state) async {
+        if (state is FamilyLoginLoading) {
+          Utility.showLoadingDialog(
+            context: context,
+            isOCR: true,
+          );
+        } else if (state is StudentPlusSearchSuccess) {
+          // PlusUtility.updateLogs(
+          //     activityType: 'STUDENT+',
+          //     userType: 'Teacher',
+          //     activityId: '48',
+          //     description: 'Student Search Success',
+          //     operationResult: 'Success');
+          Navigator.pop(context);
+          pushNewScreen(
+            context,
+            screen: PlusSplashScreen(
+              actionName: 'STUDENT+',
+              sectionType: 'Family',
+              studentDetail: StudentPlusDetailsModel(
+                  studentIdC: state.obj[0].studentIDC,
+                  firstNameC: state.obj[0].firstNameC,
+                  lastNameC: state.obj[0].lastNameC,
+                  classC: state.obj[0].classC),
+            ),
+
+            // StudentPlusHome(
+            //   sectionType: "Family",
+            //   studentPlusStudentInfo: StudentPlusDetailsModel(
+            //       studentIdC: state.obj[0].studentIDC,
+            //       firstNameC: state.obj[0].firstNameC,
+            //       lastNameC: state.obj[0].lastNameC,
+            //       classC: state.obj[0].classC),
+            //   index: 0,
+            //   //   index: widget.index,
+            // ),
+            withNavBar: false,
+          );
+        }
+      },
+      child: Container(),
+    );
   }
 }

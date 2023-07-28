@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +13,20 @@ import '../../startup.dart';
 import '../../widgets/google_auth_webview.dart';
 import '../google_classroom/modal/google_classroom_courses.dart';
 import '../google_drive/bloc/google_drive_bloc.dart';
-import '../google_drive/model/user_profile.dart';
+import '../../services/user_profile.dart';
 import '../graded_plus/bloc/graded_plus_bloc.dart';
 
 class GoogleLogin {
   //To authenticate the user via google
   static launchURL(String? title, context, _scaffoldKey, String? buttonPressed,
-      String? activityType) async {
+      String? activityType,
+      {required String userType}) async {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'google_login', screenClass: 'GoogleLogin');
 
-    final OcrBloc _ocrBlocLogs = new OcrBloc();
-    int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
+    // final OcrBloc _ocrBlocLogs = new OcrBloc();
+    // int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
         ? Color(0xff000000)
         : Color(0xffFFFFFF);
@@ -54,114 +56,79 @@ class GoogleLogin {
     );
 
     if (value.toString().contains('authenticationfailure')) {
-      // Navigator.pop(context, false);
-      // Globals.teacherEmailId = ;
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
-      _ocrBlocLogs.add(LogUserActivityEvent(
-          activityType: activityType,
-          sessionId: '',
-          teacherId: Globals.teacherId,
+      
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+
+      PlusUtility.updateLogs(
+          activityType: 'GRADED+',
+          userType: 'Teacher',
           activityId: '2',
-          accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-          dateTime: currentDateTime.toString(),
           description: 'Authentication Failure',
-          operationResult: 'Failure'));
+          operationResult: 'Failure');
+
       Utility.currentScreenSnackBar(
-          'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+          'You are not authorized to access the feature. Please use the authorized account.',
           null);
-      // Utility.showSnackBar(
-      //     _scaffoldKey,
-      //     'You are not authorized to access the feature. Please use the authorized account.',
-      //     context,
-      //     50.0);
+
       return false;
     } else if (value.toString().contains('success')) {
       value = value.split('?')[1] ?? '';
       //Save user profile
-      await saveUserProfile(value);
+      await saveUserProfile(value, userType);
       List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      verifyUserAndGetDriveFolder(_userProfileLocalData);
+      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData);
 
-      Globals.teacherEmailId =
-          _userProfileLocalData[0].userEmail!.split('@')[0];
+      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+
+      PlusUtility.updateLogs(
+          activityType: 'GRADED+',
+          userType: 'Teacher',
+          activityId: '2',
+          description: 'Google Authentication Success/Login Id:',
+          operationResult: 'Success');
 
       // Log Firebase Event
-      FirebaseAnalyticsService.setUserId(id: Globals.teacherEmailId);
+      FirebaseAnalyticsService.setUserId(id: Globals.userEmailId);
       FirebaseAnalyticsService.logLogin(method: 'Google');
       FirebaseAnalyticsService.setUserProperty(
-          key: 'email', value: Globals.teacherEmailId);
+          key: 'email', value: Globals.userEmailId);
       // Log End
 
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
-      _ocrBlocLogs.add(LogUserActivityEvent(
-          activityType: activityType,
-          sessionId: Globals.sessionId,
-          teacherId: Globals.teacherId,
-          activityId: '2',
-          accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-          dateTime: currentDateTime.toString(),
-          description: 'Google Authentication Success',
-          operationResult: 'Success'));
       // Push to the grading system
       if (Overrides.STANDALONE_GRADED_APP == true) {
-        print('local data base clear on login');
         // clean imported roster on fresh login
         LocalDatabase<GoogleClassroomCourses> _localDb =
             LocalDatabase(Strings.googleClassroomCoursesList);
-        List<GoogleClassroomCourses>? _localData = await _localDb.getData();
+
         _localDb.clear();
         _localDb.close();
 
         return true;
-        // pushNewScreen(context, screen: GradedLandingPage());
       } else {
         return true;
-        // if (actionName == 'STUDENT+') {
-        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //     builder: (context) => StudentPlusSearchPage(fromStudentPlus: false),
-        //   ));
-        //   // pushNewScreen(
-        //   //   context,
-        //   //   screen: StudentPlusSearchPage(
-        //   //     fromStudentPlus: false,
-        //       isOcrSection: Overrides.STANDALONE_GRADED_APP,
-        //       skipAppSettingsFetch: true,
-        //     ),
-        //     withNavBar: false,
-        //   );
-        // }
-        // pushNewScreen(
-        //     context,
-        //     screen: SelectAssessmentType(),
-        //     withNavBar: false,
-        //   );
-
       }
     } else {
       return false;
     }
   }
 
-  static Future<void> saveUserProfile(String profileData) async {
+  static Future<void> saveUserProfile(
+      String profileData, String userType) async {
     List<String> profile = profileData.split('+');
     UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],
         userEmail: profile[1].toString().split('=')[1],
         profilePicture: profile[2].toString().split('=')[1],
+        userType: userType,
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', ''),
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
     //Save user profile to locally
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.addData(_userInformation);
-    await _localDb.close();
+    //UPDATE CURRENT GOOGLE USER PROFILE
+    await UserGoogleProfile.updateUserProfile(_userInformation);
   }
 
   static verifyUserAndGetDriveFolder(
@@ -169,11 +136,11 @@ class GoogleLogin {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
-    _ocrBloc
-        .add(VerifyUserWithDatabase(email: _userProfileLocalData[0].userEmail));
+    _ocrBloc.add(AuthorizedUserWithDatabase(
+        email: _userProfileLocalData[0].userEmail, isAuthorizedUser: false));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
-    Globals.googleDriveFolderId = '';
+
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isReturnState: false,
         //  filePath: file,

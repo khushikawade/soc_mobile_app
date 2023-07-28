@@ -3,9 +3,13 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentPlusUtility {
   /* -------------------------------------------------------------------------- */
@@ -15,6 +19,18 @@ class StudentPlusUtility {
   static Future<List<dynamic>> getRecentStudentSearchData() async {
     LocalDatabase<StudentPlusSearchModel> _localDb =
         LocalDatabase(StudentPlusOverrides.studentInfoRecentList);
+
+    //Clear student_ Recent plus_details local data
+    SharedPreferences clearNewsCache = await SharedPreferences.getInstance();
+    final clearCacheResult = await clearNewsCache
+        .getBool('delete_local_recent_student_plus_details_cache');
+
+    if (clearCacheResult != true) {
+      await _localDb.clear();
+      await clearNewsCache.setBool(
+          'delete_local_recent_student_plus_details_cache', true);
+    }
+
     List<StudentPlusSearchModel>? _localData = await _localDb.getData();
     return _localData;
   }
@@ -153,7 +169,9 @@ class StudentPlusUtility {
       {required List<StudentPlusWorkModel> list}) {
     List<String> subjectList = [];
     for (var i = 0; i < list.length; i++) {
-      if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
+      if (!subjectList.contains(list[i].subjectC) &&
+          list[i].subjectC != null &&
+          list[i].subjectC != "") {
         subjectList.add(list[i].subjectC ?? '');
       }
     }
@@ -169,10 +187,149 @@ class StudentPlusUtility {
               "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
           list[i].subjectC != null &&
           (list[i].firstName != " " && list[i].lastName != " ") &&
-          (list[i].firstName != null && list[i].lastName != null)) {
+          (list[i].firstName != null || list[i].lastName != null)) {
         teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
       }
     }
     return teacherList;
+  }
+
+  /* ----------------------------- Widget to show all CaughtUp message ---------------------------- */
+  static Widget allCaughtUp({required BuildContext context}) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          Row(children: [
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+            Container(
+              width: 50,
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return RadialGradient(
+                        center: Alignment.topLeft,
+                        radius: 0.5,
+                        colors: <Color>[
+                          AppTheme.kButtonColor,
+                          AppTheme.kSelectedColor,
+                        ],
+                        tileMode: TileMode.repeated,
+                      ).createShader(bounds);
+                    },
+                    child: Icon(Icons.done, color: AppTheme.kButtonColor),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Theme.of(context).primaryColor,
+                  AppTheme.kSelectedColor,
+                ]),
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+          ]),
+          Container(
+            padding: EdgeInsets.only(top: 15),
+            // height: 80,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Utility.textWidget(
+                    context: context,
+                    text:
+                        'You\'re All Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).colorScheme.background ==
+                                Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black, //AppTheme.kButtonColor,
+                        fontWeight: FontWeight.bold)),
+                SpacerWidget(10),
+                Utility.textWidget(
+                    context: context,
+                    text: 'You\'ve seen all Classroom Assignment.',
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.grey, //AppTheme.kButtonColor,
+                        )),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  static String convertToSentenceCase(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+
+    // Convert the string to lowercase and split it into words
+    List<String> words = input.toLowerCase().split(' ');
+
+    // Capitalize the first letter of each word
+    for (int i = 0; i < words.length; i++) {
+      String word = words[i];
+      if (word.isNotEmpty) {
+        words[i] = word[0].toUpperCase() + word.substring(1);
+      }
+    }
+
+    // Join the words back into a sentence
+    return words.join(' ');
+  }
+
+  /* --------------------------- function to get color in Regents screen -------------------------- */
+
+  static Color getRegentsColors(String value) {
+    try {
+      if (value.toLowerCase() == "waiver" || value.toLowerCase() == "w") {
+        return Colors.blue;
+      } else {
+        int result = int.parse(value);
+        if (result >= 65) {
+          return Colors.green;
+        } else {
+          return Colors.grey;
+        }
+      }
+    } catch (e) {
+      return Colors.blue;
+    }
   }
 }
