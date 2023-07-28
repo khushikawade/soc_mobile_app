@@ -1075,11 +1075,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 // Getting local saved PBISP Plus Default School Behavior
         List<PBISPlusCommonBehaviorModal>?
             pbisPlusTeacherDefaultBehaviorLocalData =
-            await pbisPlusTeacherDefaultBehaviorList(pbisPluBloc: pbisPluBloc);
+            await googleDriveBlocMethods.pbisPlusTeacherDefaultBehaviorList(
+                pbisPluBloc: pbisPluBloc);
         //-Getting local saved PBISP Plus Custom School Behavior
         List<PBISPlusCommonBehaviorModal>?
             pbisPlusTeacherCustomBehaviorLocalData =
-            await pbisPlusTeacherCustomBehaviorList(pbisPluBloc: pbisPluBloc);
+            await googleDriveBlocMethods.pbisPlusTeacherCustomBehaviorList(
+                pbisPluBloc: pbisPluBloc);
 
         // print(pbisPlusTeacherDefaultBehaviorLocalData);
         // print(pbisPlusTeacherCustomBehaviorLocalData);
@@ -3560,53 +3562,5 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     headingRowName.add('Total');
 
     return headingRowName;
-  }
-
-//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
-
-  Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherCustomBehaviorList(
-      {required PBISPlusBloc pbisPluBloc}) async {
-    try {
-      LocalDatabase<PBISPlusCommonBehaviorModal>
-          pbisPlusTeacherCustomBehaviorLocalDb = LocalDatabase(
-              PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
-
-      List<PBISPlusCommonBehaviorModal>?
-          pbisPlusTeacherCustomBehaviorLocalData =
-          await pbisPlusTeacherCustomBehaviorLocalDb.getData();
-
-      if (pbisPlusTeacherCustomBehaviorLocalData.isNotEmpty) {
-        return pbisPlusTeacherCustomBehaviorLocalData;
-      } else {
-        return await pbisPluBloc.getTeacherCustomBehavior(
-            teacherId: await OcrUtility.getTeacherId() ?? '');
-      }
-    } catch (e) {
-      print(e);
-      return [];
-    }
-  }
-
-//----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
-  Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherDefaultBehaviorList(
-      {required PBISPlusBloc pbisPluBloc}) async {
-    try {
-      LocalDatabase<PBISPlusCommonBehaviorModal>
-          pbisPlusTeacherDefaultBehaviorLocalDb =
-          LocalDatabase(PBISPlusOverrides.PbisPlusDefaultBehaviorLocalDbTable);
-
-      List<PBISPlusCommonBehaviorModal>?
-          pbisPlusTeacherDefaultBehaviorLocalData =
-          await pbisPlusTeacherDefaultBehaviorLocalDb.getData();
-
-      if (pbisPlusTeacherDefaultBehaviorLocalData.isNotEmpty) {
-        return pbisPlusTeacherDefaultBehaviorLocalData;
-      } else {
-        return await pbisPluBloc.getDefaultSchoolBehavior();
-      }
-    } catch (e) {
-      print(e);
-      return [];
-    }
   }
 }
