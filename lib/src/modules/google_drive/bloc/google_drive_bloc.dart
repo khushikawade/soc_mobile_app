@@ -3373,7 +3373,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   /*----------------------------------------------------------------------------------------------*/
-  /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
+  /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body // Updating Counts to the spreadsheet-------------------*/
   /*------------------------------------------PART C----------------------------------------------*/
 
   List<List<dynamic>> _buildRows({
@@ -3528,8 +3528,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //   }
   // }
 
-////--------------------------------------ADD FIRST ROW IN TABLE AND TAB----------------------//////
-
+////--------------------------------------ADD FIRST ROW IN TABLE AND TAB for PBIS Spreadsheet Export---------------------//////
   List<String> buildHeadingRowName({
     required List<PBISPlusCommonBehaviorModal>
         pbisPlusTeacherCustomBehaviorLocalData,
@@ -3562,7 +3561,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return headingRowName;
   }
 
-//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
+//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior //Used to compare active behavior-------------------------------------//
 
   Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherCustomBehaviorList(
       {required PBISPlusBloc pbisPluBloc}) async {
@@ -3578,6 +3577,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (pbisPlusTeacherCustomBehaviorLocalData.isNotEmpty) {
         return pbisPlusTeacherCustomBehaviorLocalData;
       } else {
+        //Fetch behavior list API
         return await pbisPluBloc.getTeacherCustomBehavior(
             teacherId: await OcrUtility.getTeacherId() ?? '');
       }
@@ -3587,7 +3587,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-//----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
+//----------------------------------// Getting local saved PBISP Plus Default School Behavior// //Used to compare active behavior--------------------------------///
   Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherDefaultBehaviorList(
       {required PBISPlusBloc pbisPluBloc}) async {
     try {
@@ -3602,6 +3602,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (pbisPlusTeacherDefaultBehaviorLocalData.isNotEmpty) {
         return pbisPlusTeacherDefaultBehaviorLocalData;
       } else {
+        //Fetch behavior list API
         return await pbisPluBloc.getDefaultSchoolBehavior();
       }
     } catch (e) {
