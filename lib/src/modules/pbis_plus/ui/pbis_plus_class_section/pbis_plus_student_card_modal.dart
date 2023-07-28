@@ -151,7 +151,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     controller: noteController,
                     onChanged: (value) {
                       isNotesTextfieldEnable.value = true;
-                     
                     },
                     cursorColor:
                         Color(0xff000000) != Theme.of(context).backgroundColor
@@ -534,7 +533,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                 isNotesTextfieldEnable.value
                                     ? Expanded(
                                         child: Container(
-      
                                             height: cardHeight.value / 1.3,
                                             width: MediaQuery.of(context)
                                                     .size
@@ -636,36 +634,35 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         ? (widget.isFromDashboardPage == true ||
                 widget.isFromStudentPlus == true
             ?
-               // ANDRODID student
+            // ANDRODID student
             widget.isFromStudentPlus == true
-                ?  (widget.constraint <= 600)
+                ? (widget.constraint <= 600)
                     // (deviceHeight<700)
                     ? MediaQuery.of(context).size.height * 0.43 - spacing
-                    : MediaQuery.of(context).size.height * 0.40 - spacing:
-                    //ANDROID  dashborad
-             (widget.constraint <= 500)
-                ? MediaQuery.of(context).size.height * 0.43 - spacing
-                : MediaQuery.of(context).size.height * 0.40 - spacing
-            : 
-                //ANDRODID  CARD MODAL
+                    : MediaQuery.of(context).size.height * 0.40 - spacing
+                :
+                //ANDROID  dashborad
+                (widget.constraint <= 500)
+                    ? MediaQuery.of(context).size.height * 0.43 - spacing
+                    : MediaQuery.of(context).size.height * 0.40 - spacing
+            :
+            //ANDRODID  CARD MODAL
             (widget.constraint <= 500)
                 ? MediaQuery.of(context).size.height * 0.50 - spacing
                 : MediaQuery.of(context).size.height * 0.49 - spacing)
         : widget.isFromDashboardPage == true || widget.isFromStudentPlus == true
             ? widget.isFromStudentPlus == true
-                ?
-                    (widget.constraint <= 600)
+                ? (widget.constraint <= 600)
                     //IOS  student
-                    ? MediaQuery.of(context).size.height * 0.43 - spacing
-                    : MediaQuery.of(context).size.height * 0.46 - spacing :
-            
-            (widget.constraint <= 500)
-                ? MediaQuery.of(context).size.height * 0.50 - spacing
-                : MediaQuery.of(context).size.height * 0.48 - spacing
+                    ? MediaQuery.of(context).size.height * 0.46 - spacing
+                    : MediaQuery.of(context).size.height * 0.44 - spacing
+                : (widget.constraint <= 500)
+                    ? MediaQuery.of(context).size.height * 0.50 - spacing
+                    : MediaQuery.of(context).size.height * 0.48 - spacing
             : (widget.constraint <= 500)
-                ? MediaQuery.of(context).size.height * 0.55 - spacing
+                ? MediaQuery.of(context).size.height * 0.56 - spacing
                 : MediaQuery.of(context).size.height * 0.55 - spacing;
-
+   
     WidgetsBinding.instance.addPostFrameCallback((_) {
       cardHeight.value = height;
     });
@@ -678,47 +675,56 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
       valueListenable: isNotesTextfieldEnable,
       builder: (context, value, _) => isNotesTextfieldEnable.value
           ? Expanded(
-            child: Align(
-               alignment: Alignment.bottomRight,
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 16,right: 16, bottom: 16),
-                  child: FittedBox(
-                      child: CustomCircularButton(
-                          iconSize: Globals.deviceType == "phone" ? 20 : 28,
-                          iconData: IconData(
-                            0xe896,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg,
-                          ),
-                          size: Size(MediaQuery.of(context).size.width * 0.36,
-                              MediaQuery.of(context).size.width / 10),
-                          borderColor: AppTheme.kButtonColor,
-                          textColor:
-                              Color(0xff000000) == Theme.of(context).backgroundColor
-                                  ? Color(0xff111C20)
-                                  : Color(0xffF7F8F9),
-                          text: "Add Note",
-                          onClick: () async {
-                            if (noteController.text.isNotEmpty) {
-                              widget.pBISPlusNotesBloc!.add(AddPBISPlusStudentNotes(
-                                  studentId: widget
-                                      .studentValueNotifier.value.profile?.id!,
-                                  studentName: widget.studentValueNotifier.value
-                                      .profile?.name?.fullName,
-                                  studentEmail: widget.studentValueNotifier.value
-                                      .profile?.emailAddress,
-                                  teacherId: await OcrUtility.getTeacherId(),
-                                  schoolId: Overrides.SCHOOL_ID,
-                                  schoolDbn: Globals.schoolDbnC,
-                                  notes: noteController.text));
-                              Navigator.pop(context, true);
-                            }
-                          },
-                          backgroundColor: AppTheme.kButtonColor,
-                          isBusy: isLoading,
-                          buttonRadius: 64))),
-            ),
-          )
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                    child: FittedBox(
+                        child: CustomCircularButton(
+                            iconSize: Globals.deviceType == "phone" ? 20 : 28,
+                            iconData: IconData(
+                              0xe896,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg,
+                            ),
+                            size: Size(MediaQuery.of(context).size.width * 0.36,
+                                MediaQuery.of(context).size.width / 10),
+                            borderColor: AppTheme.kButtonColor,
+                            textColor: Color(0xff000000) ==
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xff111C20)
+                                : Color(0xffF7F8F9),
+                            text: "Add Note",
+                            onClick: () async {
+                              if (noteController.text.isNotEmpty) {
+                                widget.pBISPlusNotesBloc!
+                                    .add(
+                                        AddPBISPlusStudentNotes(
+                                            studentId:
+                                                widget.studentValueNotifier
+                                                    .value.profile?.id!,
+                                            studentName: widget.studentValueNotifier
+                                                .value.profile?.name?.fullName,
+                                            studentEmail:
+                                                widget
+                                                    .studentValueNotifier
+                                                    .value
+                                                    .profile
+                                                    ?.emailAddress,
+                                            teacherId:
+                                                await OcrUtility.getTeacherId(),
+                                            schoolId: Overrides.SCHOOL_ID,
+                                            schoolDbn: Globals.schoolDbnC,
+                                            notes: noteController.text));
+                                Navigator.pop(context, true);
+                              }
+                            },
+                            backgroundColor: AppTheme.kButtonColor,
+                            isBusy: isLoading,
+                            buttonRadius: 64))),
+              ),
+            )
           : SizedBox.shrink(),
     );
   }
