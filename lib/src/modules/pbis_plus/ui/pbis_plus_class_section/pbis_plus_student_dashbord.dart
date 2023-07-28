@@ -779,7 +779,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
             bloc: widget.pBISPlusBloc,
             builder: (BuildContext contxt, PBISPlusState state) {
-              if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+              if (state is PBISPlusGetDefaultSchoolBehaviorSuccess &&
+                  state.defaultSchoolBehaviorList.isNotEmpty) {
                 return buildTable(
                     pBISPlusCommonBehaviorList:
                         state.defaultSchoolBehaviorList);
@@ -790,10 +791,12 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     pBISPlusCommonBehaviorList:
                         state.teacherCustomBehaviorList);
               }
-
-              return Center(
-                  child: CircularProgressIndicator.adaptive(
-                      backgroundColor: AppTheme.kButtonColor));
+              if (state is PBISPlusBehaviorLoading) {
+                return Center(
+                    child: CircularProgressIndicator.adaptive(
+                        backgroundColor: AppTheme.kButtonColor));
+              }
+              return Container();
             }));
   }
 
