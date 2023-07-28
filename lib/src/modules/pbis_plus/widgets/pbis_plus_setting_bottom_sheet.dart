@@ -1036,22 +1036,23 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 ClassroomStudents newStudent = ClassroomStudents(
                   //TODOPBIS:  excel sheet
                   profile: ClassroomProfile(
-                    courseName: course.name,
-                    emailAddress: studentInCourse.profile?.emailAddress,
-                    id: studentInCourse.profile?.id,
-                    name: studentInCourse.profile?.name,
-                    permissions: studentInCourse.profile?.permissions,
-                    photoUrl: studentInCourse.profile?.photoUrl,
-                    engaged: studentInCourse.profile?.engaged,
-                    helpful: studentInCourse.profile?.helpful,
-                    niceWork: studentInCourse.profile?.niceWork,
-                    // behavior1: studentInCourse.profile?.behavior1,
-                    // behavior2: studentInCourse.profile?.behavior2,
-                    // behavior3: studentInCourse.profile?.behavior3,
-                    // behavior4: studentInCourse.profile?.behavior4,
-                    // behavior5: studentInCourse.profile?.behavior5,
-                    // behavior6: studentInCourse.profile?.behavior6,
-                  ),
+                      courseName: course.name,
+                      emailAddress: studentInCourse.profile?.emailAddress,
+                      id: studentInCourse.profile?.id,
+                      name: studentInCourse.profile?.name,
+                      permissions: studentInCourse.profile?.permissions,
+                      photoUrl: studentInCourse.profile?.photoUrl,
+                      engaged: studentInCourse.profile?.engaged,
+                      helpful: studentInCourse.profile?.helpful,
+                      niceWork: studentInCourse.profile?.niceWork,
+                      // behavior1: studentInCourse.profile?.behavior1,
+                      // behavior2: studentInCourse.profile?.behavior2,
+                      // behavior3: studentInCourse.profile?.behavior3,
+                      // behavior4: studentInCourse.profile?.behavior4,
+                      // behavior5: studentInCourse.profile?.behavior5,
+                      // behavior6: studentInCourse.profile?.behavior6,
+                      behaviorList:
+                          studentInCourse.profile!.behaviorList ?? []),
                 );
 
                 newStudentList.add(newStudent);

@@ -1075,11 +1075,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 // Getting local saved PBISP Plus Default School Behavior
         List<PBISPlusCommonBehaviorModal>?
             pbisPlusTeacherDefaultBehaviorLocalData =
-            await pbisPlusTeacherDefaultBehaviorList(pbisPluBloc: pbisPluBloc);
+            await googleDriveBlocMethods.pbisPlusTeacherDefaultBehaviorList(
+                pbisPluBloc: pbisPluBloc);
         //-Getting local saved PBISP Plus Custom School Behavior
         List<PBISPlusCommonBehaviorModal>?
             pbisPlusTeacherCustomBehaviorLocalData =
-            await pbisPlusTeacherCustomBehaviorList(pbisPluBloc: pbisPluBloc);
+            await googleDriveBlocMethods.pbisPlusTeacherCustomBehaviorList(
+                pbisPluBloc: pbisPluBloc);
 
         // print(pbisPlusTeacherDefaultBehaviorLocalData);
         // print(pbisPlusTeacherCustomBehaviorLocalData);
@@ -3264,7 +3266,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           body: body,
           isGoogleApi: true);
-      print("updateAllTabsDataInsideSpreadSheet RECIVED");
+
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         //If SpreadSheet all tabs successfully created and updated with data,then add the record with url in the database
 
@@ -3395,6 +3397,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               pbisPlusTeacherDefaultBehaviorLocalData,
           course: course);
 
+      print(headingRowName);
 // // TODDO
 //       if (course == true) {
 //         headingRowName.insert(1, 'Course');
@@ -3453,7 +3456,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }),
       ];
     } catch (e) {
-      return [];
+      print(e);
+      throw (e);
     }
   }
 
