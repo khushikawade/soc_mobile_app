@@ -132,6 +132,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
               widget.sectionType == "Student"
                   ? Container()
                   : StudentPlusSearchBarAndDropdown(
+                    index: 2,
                       sectionType: widget.sectionType,
                       studentDetails: widget.studentDetails),
               SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
@@ -471,7 +472,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   }
 
   _shareBottomSheetMenu(
-      {required StudentPlusDetailsModel studentDetails}) async {
+      {required StudentPlusDetailsModel studentDetails,
+      int? studentGooglePresentationRecordId}) async {
     //to remove loading popup
     Navigator.of(context).pop();
     final result = await showModalBottomSheet(
@@ -488,6 +490,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
           return LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
             return StudentPlusOptionBottomSheet(
+                studentGooglePresentationRecordId:
+                    studentGooglePresentationRecordId,
                 filterName: filterNotifier.value ?? '',
                 studentDetails: studentDetails,
                 resultSummaryIconsModalList: resultSummaryIconsModalList,
@@ -561,19 +565,29 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         child: Container(),
         listener: (context, state) async {
           if (state is GetStudentPlusWorkGooglePresentationDetailsSuccess) {
+            // the student Google Presentation RecordId if need to udpate the record with new Presentation id and Presentation url
+            //if this is null or empty this will create new record
+            int? studentGooglePresentationRecordId;
+
             if (state.studentGooglePresentationDetail != false) {
               StudentGooglePresentationDetailModal obj =
                   state.studentGooglePresentationDetail;
+             // print(obj.googlePresentationId);
               widget.studentDetails.studentGooglePresentationId =
                   obj.googlePresentationId ?? "";
               widget.studentDetails.studentGooglePresentationUrl =
                   obj.googlePresentationURL ?? '';
+
+              studentGooglePresentationRecordId = obj.id;
             } else {
               widget.studentDetails.studentGooglePresentationId = '';
               widget.studentDetails.studentGooglePresentationUrl = '';
             }
 
-            _shareBottomSheetMenu(studentDetails: widget.studentDetails);
+            _shareBottomSheetMenu(
+                studentDetails: widget.studentDetails,
+                studentGooglePresentationRecordId:
+                    studentGooglePresentationRecordId);
           }
           if (state is StudentPlusErrorReceived) {
             Navigator.of(context).pop();

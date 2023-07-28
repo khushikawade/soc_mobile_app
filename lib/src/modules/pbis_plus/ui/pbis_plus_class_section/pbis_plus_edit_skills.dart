@@ -117,7 +117,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
                 horizontal: StudentPlusOverrides.kSymmetricPadding),
             child: PlusScreenTitleWidget(
                 kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                text: 'Edit Behavior'),
+                text: 'Edit Behaviors'),
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 5),
           buildTargetBehaviorWidget(),

@@ -133,7 +133,8 @@ class PBISPlusActionInteractionButtonState
                       );
                     },
                   ),
-                  Padding(
+                  Container(
+                    alignment: Alignment.center,
                     padding: EdgeInsets.only(
                       top: widget.isFromStudentPlus == true ? 15 : 15,
                       bottom: widget.isFromStudentPlus == true ? 0 : 5,
@@ -155,22 +156,19 @@ class PBISPlusActionInteractionButtonState
                                     : Colors.transparent,
                               ),
                               child: widget.isLoading == true
-                                  ? Utility.textWidget(
-                                      text: '0',
-                                      textAlign: TextAlign.center,
-                                      context: context,
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(
-                                              color: Colors.grey[600],
-                                              // Color(0xff000000) ==
-                                              //         Theme.of(context)
-                                              //             .backgroundColor
-                                              //     ? Colors.grey[600]
-                                              //     : Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18))
+                                  ? Center(
+                                      child: Utility.textWidget(
+                                          text: '0',
+                                          textAlign: TextAlign.center,
+                                          context: context,
+                                          textTheme: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  color: Colors.grey[600],
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18)),
+                                    )
                                   : buildCounts());
                         }),
                   )

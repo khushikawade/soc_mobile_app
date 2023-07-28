@@ -118,6 +118,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
           widget.sectionType == "Student"
               ? Container()
               : StudentPlusSearchBarAndDropdown(
+                  index: 4,
                   sectionType: widget.sectionType,
                   studentDetails: widget.studentDetails),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
