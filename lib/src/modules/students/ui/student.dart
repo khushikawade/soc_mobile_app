@@ -544,7 +544,7 @@ class _StudentPageState extends State<StudentPage> {
 
   void _scheduleEvent(UserInformation studentProfile) {
     if (isCalenderEventCalledAlready) {
-      Utility.currentScreenSnackBar('Please wait..... ', null);
+      Utility.currentScreenSnackBar('Please Wait..... ', null);
     } else {
       isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(

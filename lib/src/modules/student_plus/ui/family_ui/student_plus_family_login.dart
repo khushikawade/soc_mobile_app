@@ -106,7 +106,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Navigator.pop(context);
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
-              context: context, msg: 'Please wait', isOCR: false);
+              context: context, msg: 'Please Wait', isOCR: false);
         }
       },
     );
