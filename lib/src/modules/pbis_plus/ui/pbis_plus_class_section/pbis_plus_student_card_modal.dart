@@ -244,6 +244,16 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                         .add(PBISPlusGetDefaultSchoolBehavior());
                   }
                 }
+                else if(state is PBISPlusGetDefaultSchoolBehaviorSuccess){
+ WidgetsBinding.instance.addPostFrameCallback((_) {
+                      behvaiourIconListCount.value =
+                          state.defaultSchoolBehaviorList.length;
+                      PBISPlusOverrides.teacherCustomBehaviorList.value =
+                          state.defaultSchoolBehaviorList;
+                    });
+
+                }
+
               },
               builder: (contxt, state) {
                 if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
