@@ -551,8 +551,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     // final PBISPlusBloc? courseBlocInstance
   ) {
     return GridView.count(
-        padding: EdgeInsets.all(10.0),
-        childAspectRatio: 7.0 / 9.0,
+        padding: EdgeInsets.all(6.0),
+        childAspectRatio: (MediaQuery.of(context).size.width*0.01)/5.2,
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 4,
         shrinkWrap: true,
