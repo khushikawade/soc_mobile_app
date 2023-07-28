@@ -19,6 +19,7 @@ import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_mod
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -248,9 +249,16 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               },
               builder: (contxt, state) {
                 if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
-                  return buildBehaviorGridView(
-                      behaviorList: state.defaultSchoolBehaviorList,
-                      loading: false);
+                  return state.defaultSchoolBehaviorList.isNotEmpty
+                      ? buildBehaviorGridView(
+                          behaviorList: state.defaultSchoolBehaviorList,
+                          loading: false)
+                      : NoDataFoundErrorWidget(
+                          errorMessage: 'No Behaviors Found',
+                          marginTop: MediaQuery.of(context).size.height * 0.06,
+                          isResultNotFoundMsg: true,
+                          isNews: false,
+                          isEvents: false);
                 }
                 if (state is PBISPlusGetTeacherCustomBehaviorSuccess) {
                   if (state.teacherCustomBehaviorList.isNotEmpty) {
@@ -270,7 +278,14 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                   .teacherCustomBehaviorList.value,
                               loading: false);
                         });
+                  } else {
+                    return NoDataFoundErrorWidget(
+                        marginTop: MediaQuery.of(context).size.height * 0.06,
+                        isResultNotFoundMsg: true,
+                        isNews: false,
+                        isEvents: false);
                   }
+
                   // else {
                   //   // pbisPluCustomBehaviorBloc
                   //   //     .add(PBISPlusGetDefaultSchoolBehavior());
