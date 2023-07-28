@@ -91,20 +91,7 @@ class _StudentPageState extends State<StudentPage> {
     // Schedule Start
     // if (obj.titleC != null && obj.titleC!.toLowerCase().contains('schedule')) {
     if (obj.typeC != null && obj.typeC == 'Schedule') {
-      LocalDatabase<UserInformation> _localDb =
-          LocalDatabase('student_profile');
-
-      List<UserInformation> _userInformation = await _localDb.getData();
-
-      if (_userInformation.isEmpty) {
-        UserInformation result = await _launchLoginUrl('Student Login');
-
-        if (result.userEmail != null) {
-          _scheduleEvent(result);
-        }
-      } else {
-        _scheduleEvent(_userInformation[0]);
-      }
+      await schedulerLogin();
 
       return;
     }
@@ -655,5 +642,64 @@ class _StudentPageState extends State<StudentPage> {
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
       navigateToStudentPlus();
     }
+  }
+
+  /* ------------------------------ Function call at scheduler login ------------------------------ */
+  Future schedulerLogin() async {
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details28JUNE', true);
+    }
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    if (_profileData.isEmpty) {
+      // Condition to check SSO login enable or not
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+            userType: 'Student');
+        if (value == true) {
+          List<UserInformation> _userProfileData =
+              await UserGoogleProfile.getUserProfile();
+          _scheduleEvent(_userProfileData[0]);
+        }
+      } else {
+        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            List<UserInformation> _userProfileData =
+                await UserGoogleProfile.getUserProfile();
+            _scheduleEvent(_userProfileData[0]);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        }
+      }
+    } else {
+      _scheduleEvent(_profileData[0]);
+    }
+
+    // LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
+
+    // List<UserInformation> _userInformation = await _localDb.getData();
+
+    // if (_userInformation.isEmpty) {
+    //   UserInformation result = await _launchLoginUrl('Student Login');
+
+    //   if (result.userEmail != null) {
+    //     _scheduleEvent(result);
+    //   }
+    // } else {
+    //   _scheduleEvent(_userInformation[0]);
+    // }
   }
 }

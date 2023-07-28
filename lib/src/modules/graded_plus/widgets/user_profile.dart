@@ -1,5 +1,10 @@
 import 'dart:ui';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -172,7 +177,27 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                               borderRadius: new BorderRadius.circular(30.0),
                             ),
                             primary: AppTheme.kSelectedColor),
-                        onPressed: () {
+                        onPressed: () async {
+                          await FirebaseAnalyticsService
+                              .addCustomAnalyticsEvent("logout");
+                          await UserGoogleProfile.clearUserProfile();
+
+                          await Authentication.signOut(context: context);
+
+                          // Globals.googleDriveFolderId = null;
+                          PlusUtility.updateLogs(
+                              activityType: 'Schedule',
+                              userType: 'Student',
+                              activityId: '3',
+                              description: 'User profile logout',
+                              operationResult: 'Success');
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                        index: 2,
+                                        isFromOcrSection: true,
+                                      )),
+                              (_) => false);
                           // if (widget.onSignOut != null) {
                           //   widget.onSignOut!();
                           //   return;
