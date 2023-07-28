@@ -1081,6 +1081,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             pbisPlusTeacherCustomBehaviorLocalData =
             await pbisPlusTeacherCustomBehaviorList(pbisPluBloc: pbisPluBloc);
 
+        // print(pbisPlusTeacherDefaultBehaviorLocalData);
+        // print(pbisPlusTeacherCustomBehaviorLocalData);
+
 //----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
 //---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
 //-------------------------------------------------// End//----------------------------------------------------------------///
@@ -3575,7 +3578,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (pbisPlusTeacherCustomBehaviorLocalData.isNotEmpty) {
         return pbisPlusTeacherCustomBehaviorLocalData;
       } else {
-        return await pbisPluBloc.getDefaultSchoolBehavior();
+        return await pbisPluBloc.getTeacherCustomBehavior(
+            teacherId: await OcrUtility.getTeacherId() ?? '');
       }
     } catch (e) {
       print(e);
@@ -3598,8 +3602,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (pbisPlusTeacherDefaultBehaviorLocalData.isNotEmpty) {
         return pbisPlusTeacherDefaultBehaviorLocalData;
       } else {
-        return await pbisPluBloc.getTeacherCustomBehavior(
-            teacherId: await OcrUtility.getTeacherId() ?? '');
+        return await pbisPluBloc.getDefaultSchoolBehavior();
       }
     } catch (e) {
       print(e);
