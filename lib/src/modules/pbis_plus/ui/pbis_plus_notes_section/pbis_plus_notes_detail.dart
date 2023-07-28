@@ -112,7 +112,7 @@ class _PBISPlusHistoryState extends State<PBISPlusNotesDetailPage> {
             _buildBackIcon(),
             Expanded(
                 child: Row(children: [
-              Text(("${widget.item.names!.fullName!.split(" ").first}'s"),
+              Text(("${widget.item.names!.fullName!}'s"),
                   textAlign: TextAlign.left,
                   style: Theme.of(context)
                       .textTheme

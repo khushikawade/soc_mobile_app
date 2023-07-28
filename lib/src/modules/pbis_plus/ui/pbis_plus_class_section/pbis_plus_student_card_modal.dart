@@ -561,7 +561,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             top: MediaQuery.of(context).size.width * 0.2 / 1.30,
             child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context,true);
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 child: Icon(Icons.clear,
