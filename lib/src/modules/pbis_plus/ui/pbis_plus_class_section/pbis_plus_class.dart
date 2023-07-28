@@ -337,6 +337,23 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                 }),
           ),
+           BlocConsumer<PBISPlusBloc, PBISPlusState>(
+                  bloc: pBISPlusNotesBloc,
+                  builder: (context, state) {
+                    return SizedBox.shrink();
+                  },
+                  listener: (context, state) async {
+                  
+                    if (state is PBISPlusAddNotesSucess) {
+                      Utility.currentScreenSnackBar(
+                          "Note added successfully", null);
+                         
+                    } else if (state is PBISErrorState) {
+                      Utility.currentScreenSnackBar(
+                          state.error.toString(), null);
+                           
+                    }
+                  }),
         ],
       ),
     );
@@ -694,7 +711,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           return;
         }
 
-        await Navigator.of(context).push(
+       final res= await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
                 //--------------------------- START //OLD FLOW MAKE BY NIKHAR ------------------------
@@ -726,6 +743,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             )),
           ),
         );
+       
       },
       child: Hero(
           createRectTween: (begin, end) {
@@ -777,20 +795,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
-              BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                  bloc: pBISPlusNotesBloc,
-                  builder: (context, state) {
-                    return SizedBox.shrink();
-                  },
-                  listener: (context, state) async {
-                    if (state is PBISPlusAddNotesSucess) {
-                      Utility.currentScreenSnackBar(
-                          "Note added successfully", null);
-                    } else if (state is PBISErrorState) {
-                      Utility.currentScreenSnackBar(
-                          state.error.toString(), null);
-                    }
-                  }),
+             
               if (widget.isGradedPlus != true)
                 Positioned(
                     top: 0,
