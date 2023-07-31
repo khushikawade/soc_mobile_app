@@ -112,6 +112,10 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_dark.png"
+                        : "assets/images/graded+_light.png",
                 refresh: (v) {
                   setState(() {});
                 },
@@ -193,7 +197,7 @@ class _GradedPlusAssessmentSummaryState
                 horizontal: MediaQuery.of(context).size.width / 50),
             child: PlusAppSearchBar(
               sectionName: 'GRADED+',
-              hintText:  "Search",
+              hintText: "Search",
               onTap: () async {
                 var result = Navigator.push(
                   context,
