@@ -350,6 +350,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
+                      
                   await UserGoogleProfile.clearUserProfile();
                   await GoogleClassroom.clearClassroomCourses();
                   await Authentication.signOut(context: context);
@@ -357,11 +358,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   await Utility.clearStudentInfo(
                       tableName: 'history_student_info');
 
-                  LocalDatabase<PBISPlusNotesUniqueStudentList>
-                      _pbisPlusStudentListDB =
-                      LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-                  await _pbisPlusStudentListDB.clear();
-
+                  //  LocalDatabase<PBISPlusNotesUniqueStudentList>
+                  //             _pbisPlusStudentListDB =
+                  //             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+                  //         await _pbisPlusStudentListDB.clear();
                   // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
@@ -380,7 +380,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         (_) => false);
                   } else {
                     //PBIS +
-                  await  PBISPlusUtility.cleanPbisPlusDataOnLogOut();
+                    await PBISPlusUtility.cleanPbisPlusDataOnLogOut();
 
                     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
                     Navigator.of(context).popUntil((route) => route.isFirst);
