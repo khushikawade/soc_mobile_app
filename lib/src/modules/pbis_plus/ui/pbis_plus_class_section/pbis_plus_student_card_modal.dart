@@ -244,17 +244,14 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                     pbisPluCustomBehaviorBloc
                         .add(PBISPlusGetDefaultSchoolBehavior());
                   }
+                } else if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    behvaiourIconListCount.value =
+                        state.defaultSchoolBehaviorList.length;
+                    PBISPlusOverrides.teacherCustomBehaviorList.value =
+                        state.defaultSchoolBehaviorList;
+                  });
                 }
-                else if(state is PBISPlusGetDefaultSchoolBehaviorSuccess){
- WidgetsBinding.instance.addPostFrameCallback((_) {
-                      behvaiourIconListCount.value =
-                          state.defaultSchoolBehaviorList.length;
-                      PBISPlusOverrides.teacherCustomBehaviorList.value =
-                          state.defaultSchoolBehaviorList;
-                    });
-
-                }
-
               },
               builder: (contxt, state) {
                 if (state is PBISPlusGetDefaultSchoolBehaviorSuccess) {
@@ -576,7 +573,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             top: MediaQuery.of(context).size.width * 0.2 / 1.30,
             child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context,true);
+                  Navigator.pop(context, true);
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 child: Icon(Icons.clear,
@@ -670,7 +667,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 (widget.constraint <= 500)
                     ? MediaQuery.of(context).size.height * 0.43 - spacing
                     : MediaQuery.of(context).size.height * 0.40 - spacing
-            : 
+            :
             //ANDRODID  CARD MODAL
             (widget.constraint <= 500)
                 ? MediaQuery.of(context).size.height * 0.50 - spacing
