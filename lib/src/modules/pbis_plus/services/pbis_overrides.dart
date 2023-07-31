@@ -3,13 +3,13 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.
 import 'package:flutter/widgets.dart';
 
 class PBISPlusOverrides {
-  static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
+  static final String pbisPlusClassroomDB = 'PBISPlus_student_course_detail';
   static final String pbisPlusBehaviorGenricDB = 'PBISPlus_Behavior_Genric';
   // static final String pbisPlusAdditionalBehviourDB =
   //     'PBISPlusAdditionalBehviour';
   static final String pbisPlusDefaultBehviourDB = 'PBISPlusDefaultBehviour';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
-  static final String pbisPlusStudentListDB = 'PBISPlus_student_list';
+  static final String pbisPlusStudentListDB = 'PBISPlus_students_list';
   // static final String pbisPlusStudentNotesListtDB =
   //     'PBISPlus_student_notes_list';
   static final String PBISPlusTotalInteractionByTeacherDB =
