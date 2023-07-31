@@ -69,7 +69,11 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
           child: Container(),
           builder: (BuildContext context, dynamic value, Widget? child) {
             return PlusCustomNavBarWidget(
-              backgroundColor: Theme.of(context).colorScheme.background,
+              // backgroundColor:
+              //     Color(0xff000000) != Theme.of(context).backgroundColor
+              //         ? Color(0xffF7F8F9)
+              //         : Color(0xff111C20),
+              backgroundColor: Theme.of(context).backgroundColor,
               items: PbisPlusBottomNavBar.pbisPlusNavbarItems(context: context),
               onItemSelected: ((value) {
                 pBISPlusPersistentTabController!.index = value;
@@ -94,6 +98,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       confineInSafeArea: true,
       backgroundColor: Theme.of(context).backgroundColor,
       handleAndroidBackButtonPress: true,
+
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
       stateManagement: false, // Default is true.
