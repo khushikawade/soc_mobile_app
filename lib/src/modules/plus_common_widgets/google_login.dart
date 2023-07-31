@@ -78,7 +78,7 @@ class GoogleLogin {
       List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData);
+      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData,userType);
 
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
@@ -132,12 +132,12 @@ class GoogleLogin {
   }
 
   static verifyUserAndGetDriveFolder(
-      List<UserInformation> _userProfileLocalData) async {
+      List<UserInformation> _userProfileLocalData , String role) async {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc.add(AuthorizedUserWithDatabase(
-        email: _userProfileLocalData[0].userEmail, isAuthorizedUser: false));
+        email: _userProfileLocalData[0].userEmail, role: role));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
 

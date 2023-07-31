@@ -12,9 +12,9 @@ abstract class OcrEvent extends Equatable {
 
 class AuthorizedUserWithDatabase extends OcrEvent {
   final String? email;
-  final bool? isAuthorizedUser;
+  final String? role;
   AuthorizedUserWithDatabase(
-      {required this.email, required this.isAuthorizedUser});
+      {required this.email, required this.role});
 
   @override
   List<Object> get props => [email!];

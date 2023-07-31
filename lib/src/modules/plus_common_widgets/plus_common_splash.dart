@@ -73,7 +73,7 @@ class _PlusSplashScreenState extends State<PlusSplashScreen> {
           await UserGoogleProfile.getUserProfile();
       var result = await Authentication.refreshAuthenticationToken(
           refreshToken: _profileData[0].refreshToken);
-      await GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+      await GoogleLogin.verifyUserAndGetDriveFolder(_profileData,widget.sectionType == "Student"? 'Student' :'Teacher');
 
       //Creating fresh sessionID
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
