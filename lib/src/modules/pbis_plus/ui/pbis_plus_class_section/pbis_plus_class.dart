@@ -346,10 +346,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                 if (state is PBISPlusAddNotesSucess) {
                   Utility.currentScreenSnackBar(
                       "Note added successfully", null);
-                  pBISPlusNotesBloc.close();
                 } else if (state is PBISErrorState) {
                   Utility.currentScreenSnackBar(state.error.toString(), null);
-                  pBISPlusNotesBloc.close();
                 }
               }),
         ],
@@ -468,10 +466,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             key: refreshKey,
             onRefresh: refreshPage,
             child: Container(
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
+                height: Globals.deviceType == "phone"
+                    ? MediaQuery.of(context).orientation == Orientation.portrait
                         ? MediaQuery.of(context).size.height * 0.68 //7
-                        : MediaQuery.of(context).size.height * 0.45,
+                        : MediaQuery.of(context).size.height * 0.45
+                    : MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height - 50 //7
+                        : MediaQuery.of(context).size.width - 50,
                 child: screenShotNotifier.value == true
                     ? LayoutBuilder(builder:
                         (BuildContext context, BoxConstraints constraint) {

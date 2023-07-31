@@ -24,17 +24,19 @@ class CommonPdfViewerPage extends StatefulWidget {
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final IconData? titleIconData;
   bool isBottomSheet;
-  CommonPdfViewerPage(
-      {Key? key,
-      @required this.isOCRFeature,
-      @required this.url,
-      @required this.title,
-      required this.isBottomSheet,
-      required this.language,
-      this.isBackButton,
-      required this.isHomePage,
-      this.titleIconData})
-      : super(key: key);
+  String? commonLogoPath;
+  CommonPdfViewerPage({
+    Key? key,
+    @required this.isOCRFeature,
+    @required this.url,
+    @required this.title,
+    required this.isBottomSheet,
+    required this.language,
+    this.isBackButton,
+    required this.isHomePage,
+    this.titleIconData,
+    this.commonLogoPath,
+  }) : super(key: key);
   @override
   _CommonPdfViewerPageState createState() => _CommonPdfViewerPageState();
 }
@@ -47,9 +49,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
-        commonLogoPath: Color(0xff000000) == Theme.of(context).backgroundColor
-            ? "assets/images/graded+_dark.png"
-            : "assets/images/graded+_light.png",
+        commonLogoPath: widget.commonLogoPath,
         refresh: (v) {
           setState(() {});
         },
