@@ -47,6 +47,9 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
+        commonLogoPath: Color(0xff000000) == Theme.of(context).backgroundColor
+            ? "assets/images/graded+_dark.png"
+            : "assets/images/graded+_light.png",
         refresh: (v) {
           setState(() {});
         },

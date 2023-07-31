@@ -112,6 +112,10 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
+                                  commonLogoPath: Color(0xff000000) ==
+                                          Theme.of(context).backgroundColor
+                                      ? "assets/images/student_plus_dark.png"
+                                      : "assets/images/student_plus_light.png",
                                   sectionType: widget.sectionType,
                                   plusAppName: 'STUDENT+',
                                   fromGradedPlus: false,

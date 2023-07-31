@@ -337,23 +337,21 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                 }),
           ),
-           BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                  bloc: pBISPlusNotesBloc,
-                  builder: (context, state) {
-                    return SizedBox.shrink();
-                  },
-                  listener: (context, state) async {
-                  
-                    if (state is PBISPlusAddNotesSucess) {
-                      Utility.currentScreenSnackBar(
-                          "Note added successfully", null);
-                         
-                    } else if (state is PBISErrorState) {
-                      Utility.currentScreenSnackBar(
-                          state.error.toString(), null);
-                           
-                    }
-                  }),
+          BlocConsumer<PBISPlusBloc, PBISPlusState>(
+              bloc: pBISPlusNotesBloc,
+              builder: (context, state) {
+                return SizedBox.shrink();
+              },
+              listener: (context, state) async {
+                if (state is PBISPlusAddNotesSucess) {
+                  Utility.currentScreenSnackBar(
+                      "Note added successfully", null);
+                  pBISPlusNotesBloc.close();
+                } else if (state is PBISErrorState) {
+                  Utility.currentScreenSnackBar(state.error.toString(), null);
+                  pBISPlusNotesBloc.close();
+                }
+              }),
         ],
       ),
     );
@@ -475,8 +473,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                         ? MediaQuery.of(context).size.height * 0.68 //7
                         : MediaQuery.of(context).size.height * 0.45,
                 child: screenShotNotifier.value == true
-                    ?
-                   LayoutBuilder(builder:
+                    ? LayoutBuilder(builder:
                         (BuildContext context, BoxConstraints constraint) {
                         return SingleChildScrollView(
                           child: Screenshot(
@@ -508,7 +505,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   Widget scrollableBuilder(
       googleClassroomCourseList,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading, BoxConstraints constraint) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     return ScrollablePositionedList.builder(
         physics: isScreenShimmerLoading ? NeverScrollableScrollPhysics() : null,
         padding: EdgeInsets.only(bottom: Platform.isIOS ? 60 : 30),
@@ -517,7 +515,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         itemCount: googleClassroomCourseList.length,
         itemBuilder: (context, index) {
           return _buildCourseSeparationList(googleClassroomCourseList, index,
-              isStudentInteractionLoading, isScreenShimmerLoading,constraint);
+              isStudentInteractionLoading, isScreenShimmerLoading, constraint);
         });
   }
 
@@ -525,7 +523,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       List<ClassroomCourse> googleClassroomCourseList,
       index,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading, BoxConstraints constraint) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     return Column(children: [
       Container(
         key: ValueKey(googleClassroomCourseList[index]),
@@ -552,8 +551,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               googleClassroomCourseList[index].id!,
               isStudentInteractionLoading,
               isScreenShimmerLoading,
-              constraint
-            )
+              constraint)
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -576,12 +574,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     i,
     String classroomCourseId,
     final bool isStudentInteractionLoading,
-    final bool isScreenShimmerLoading, BoxConstraints constraint,
+    final bool isScreenShimmerLoading,
+    BoxConstraints constraint,
     // final PBISPlusBloc? courseBlocInstance
   ) {
     return GridView.count(
         padding: EdgeInsets.all(6.0),
-        childAspectRatio: (MediaQuery.of(context).size.width*0.01)/5.2,
+        childAspectRatio: (MediaQuery.of(context).size.width * 0.01) / 5.2,
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 4,
         shrinkWrap: true,
@@ -592,8 +591,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               classroomCourseId,
               isStudentInteractionLoading,
               isScreenShimmerLoading,
-              constraint
-              );
+              constraint);
         }));
 
     //  BlocConsumer(
@@ -643,7 +641,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       int index,
       String classroomCourseId,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading, BoxConstraints constraint) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     String heroTag = "HeroTag_${classroomCourseId}_${index}";
 
     return LayoutBuilder(
@@ -711,7 +710,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           return;
         }
 
-       final res= await Navigator.of(context).push(
+        final res = await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
                 //--------------------------- START //OLD FLOW MAKE BY NIKHAR ------------------------
@@ -743,7 +742,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             )),
           ),
         );
-       
       },
       child: Hero(
           createRectTween: (begin, end) {
@@ -795,7 +793,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
-             
               if (widget.isGradedPlus != true)
                 Positioned(
                     top: 0,
