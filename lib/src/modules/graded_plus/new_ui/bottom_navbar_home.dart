@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_custom_nav_bar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 
@@ -44,8 +45,10 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+       
         resizeToAvoidBottomInset: false,
         body: body(),
+
         // bottomNavigationBar:  body(),
       ),
     );
@@ -61,12 +64,17 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
             controller: gradedPlusPersistentTabController,
             screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
                 backOnTap: backOnTap),
+
             customWidget: ValueListenableBuilder(
                 valueListenable: indexNotifier,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return PlusCustomNavBarWidget(
-                    backgroundColor: Theme.of(context).colorScheme.background,
+                    // backgroundColor:
+                    //     Color(0xff000000) != Theme.of(context).backgroundColor
+                    //         ? Color(0xffF7F8F9)
+                    //         : Color(0xff111C20),
+                    backgroundColor: Theme.of(context).backgroundColor,
                     items: GradedPlusBottomNavBar.gradedPlusNavbarItems(
                         context: context),
                     onItemSelected: ((value) {

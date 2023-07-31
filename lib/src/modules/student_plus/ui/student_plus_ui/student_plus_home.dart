@@ -142,9 +142,9 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
                     color: Theme.of(context)
                         .colorScheme
                         .primaryVariant
-                        .withOpacity(0.3),
+                        .withOpacity(0.2),
                     // Colors.grey,
-                    blurRadius: 10.0,
+                    blurRadius: 5.0,
                   ),
                 ]),
             onWillPop: (context) async {
