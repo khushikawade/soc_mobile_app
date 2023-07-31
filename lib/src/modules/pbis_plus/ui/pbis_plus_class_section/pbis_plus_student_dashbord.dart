@@ -219,13 +219,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   Widget pbisPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
         ? buildNestedScrollView()
-        : 
-        Column(children: [
+        : Column(children: [
             sectionHeader(),
             Flexible(child: buildNestedScrollView())
-          ]
-          
-          );
+          ]);
   }
 
   buildNestedScrollView() {
@@ -681,25 +678,26 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               onRefresh: refreshPage,
               child: ListView(
                   physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 120), children: [
-                FittedBox(
-                    fit: BoxFit.contain,
-                    child: Screenshot(
-                        controller: screenshotController,
-                        child: Material(
-                            color: Color(0xff000000) !=
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                            elevation: 10,
-                            child: Container(
-                                child: _buildEmptyDataTable(
-                                    pBISPlusCommonBehaviorList:
-                                        pBISPlusCommonBehaviorList,
-                                    pbisStudentInteractionLogsList:
-                                        pbisStudentInteractionListNotifier
-                                            .value))))),
-              ]),
+                  padding: EdgeInsets.only(bottom: 120),
+                  children: [
+                    FittedBox(
+                        fit: BoxFit.contain,
+                        child: Screenshot(
+                            controller: screenshotController,
+                            child: Material(
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffF7F8F9)
+                                    : Color(0xff111C20),
+                                elevation: 10,
+                                child: Container(
+                                    child: _buildEmptyDataTable(
+                                        pBISPlusCommonBehaviorList:
+                                            pBISPlusCommonBehaviorList,
+                                        pbisStudentInteractionLogsList:
+                                            pbisStudentInteractionListNotifier
+                                                .value))))),
+                  ]),
             );
           }
         });
@@ -717,7 +715,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: widget.isFromStudentPlus == true ? true : false,
-                    isFromDashboardPage:widget.isFromStudentPlus == true?false: true,
+                    isFromDashboardPage:
+                        widget.isFromStudentPlus == true ? false : true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,
@@ -736,7 +735,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: false,
-                    isFromDashboardPage:widget.isFromStudentPlus == true?false: true,
+                    isFromDashboardPage:
+                        widget.isFromStudentPlus == true ? false : true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,
@@ -755,7 +755,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: false,
-                    isFromDashboardPage: widget.isFromStudentPlus == true?false:true,
+                    isFromDashboardPage:
+                        widget.isFromStudentPlus == true ? false : true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,
