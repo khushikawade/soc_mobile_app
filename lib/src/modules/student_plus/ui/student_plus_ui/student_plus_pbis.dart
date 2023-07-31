@@ -38,6 +38,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
       ValueNotifier<ClassroomStudents>(ClassroomStudents());
   ValueNotifier<bool> isValueChangeNotice = ValueNotifier<bool>(false);
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  PBISPlusBloc pbisBloc = PBISPlusBloc();
 
   @override
   void initState() {
@@ -133,9 +134,8 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
   /* --------------------- widget to show pbis Dashboard --------------------- */
   Widget pbisDashboardWidget(constraint) {
     return PBISPlusStudentDashBoard(
-      
       sectionType: widget.sectionType,
-      pBISPlusBloc: PBISPlusBloc(),
+      pBISPlusBloc: pbisBloc,
       studentProfile: widget.studentDetails.studentPhoto,
       constraint: constraint,
       isValueChangeNotice: isValueChangeNotice,
