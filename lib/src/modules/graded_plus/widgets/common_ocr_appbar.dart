@@ -60,6 +60,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   final String? sectionType;
   final scaffoldKey;
   final ValueChanged? refresh;
+  String? commonLogoPath;
 
   CustomOcrAppBarWidget(
       {required Key? key,
@@ -85,7 +86,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       required this.plusAppName,
       required this.iconData,
       this.sectionType,
-      required this.refresh})
+      required this.refresh,
+      this.commonLogoPath})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -126,7 +128,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         //       color: Colors.transparent,
         //     )),
         title: widget.iconData == null
-            ? commonGradedLogo()
+            ? commonGradedLogo(commonLogoPath: widget.commonLogoPath)
             : allScreenIconWidget(),
         actions: [
           widget.isProfilePage == true
@@ -306,6 +308,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        commonLogoPath: widget.commonLogoPath,
                                         sectionType: widget.sectionType ?? '',
                                         plusAppName: 'Graded+',
                                         fromGradedPlus: widget.fromGradedPlus,
@@ -380,7 +383,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         (_) => false);
                   } else {
                     //PBIS +
-                  await  PBISPlusUtility.cleanPbisPlusDataOnLogOut();
+                    await PBISPlusUtility.cleanPbisPlusDataOnLogOut();
 
                     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -407,11 +410,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         refreshToken: _profileData[0].refreshToken));
   }
 
-  Widget commonGradedLogo() {
+  Widget commonGradedLogo(
+      {String? commonLogoPath = "assets/images/pbis_plus_light.png"}) {
     return Image.asset(
-      Color(0xff000000) == Theme.of(context).backgroundColor
-          ? "assets/images/graded+_light.png"
-          : "assets/images/graded+_dark.png",
+      commonLogoPath!,
+      // Color(0xff000000) == Theme.of(context).backgroundColor
+      //     ? "assets/images/graded+_light.png"
+      //     : "assets/images/graded+_dark.png",
       height: Globals.deviceType == "phone"
           ? AppTheme.kIconSize * 2
           : AppTheme.kTabIconSize * 2,

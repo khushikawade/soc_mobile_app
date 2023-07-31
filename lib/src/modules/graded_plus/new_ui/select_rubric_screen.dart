@@ -116,6 +116,9 @@ class _GradedPlusConstructedResponseState
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+        commonLogoPath: Color(0xff000000) == Theme.of(context).backgroundColor
+            ? "assets/images/graded+_dark.png"
+            : "assets/images/graded+_light.png",
         refresh: (v) {
           setState(() {});
         },
@@ -703,6 +706,10 @@ class _GradedPlusConstructedResponseState
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => CommonPdfViewerPage(
+                    commonLogoPath:
+                        Color(0xff000000) == Theme.of(context).backgroundColor
+                            ? "assets/images/graded+_dark.png"
+                            : "assets/images/graded+_light.png",
                     titleIconData: widget.titleIconData,
                     isBackButton: true,
                     isOCRFeature: true,
