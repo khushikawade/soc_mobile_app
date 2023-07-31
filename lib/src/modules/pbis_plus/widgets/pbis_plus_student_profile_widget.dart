@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dar
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -194,18 +195,16 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                               builder: (BuildContext context,
                                                   ClassroomStudents value,
                                                   Widget? child) {
-                                                return
-                                                    // widget.isLoading == true
-                                                    //     ? ShimmerLoading(
-                                                    //         child: Container(
-                                                    //           height: 10,
-                                                    //           width: 10,
-                                                    //           color: Colors.black,
-                                                    //         ),
-                                                    //         isLoading: widget.isLoading)
-                                                    //     :
-                                                    //TODOPBIS:
-                                                    Text(
+                                                return widget.isLoading == true
+                                                    ? ShimmerLoading(
+                                                        child: Container(
+                                                          height: 10,
+                                                          width: 10,
+                                                          color: Colors.black,
+                                                        ),
+                                                        isLoading:
+                                                            widget.isLoading)
+                                                    : Text(
                                                         PBISPlusUtility.numberAbbreviationFormat(PBISPlusUtility.getStudentTotalCounts(
                                                             student: widget
                                                                 .studentValueNotifier!
@@ -225,8 +224,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                                                 color: Colors
                                                                     .grey[600],
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold));
+                                                                    FontWeight.bold));
                                               });
                                         });
                                   });

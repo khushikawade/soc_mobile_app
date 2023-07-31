@@ -328,56 +328,54 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
       DataColumn(
           label: Container(
               padding: EdgeInsets.all(5),
-              child: FittedBox(
-                  fit: BoxFit.contain, // Replace with the desired BoxFit value
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Center(
-                            child: item.behaviorTitleC == 'Date' ||
-                                    item.behaviorTitleC == 'Total'
-                                ? Utility.textWidget(
-                                    context: context,
-                                    text: item.behaviorTitleC ?? '',
-                                    textAlign: TextAlign.center,
-                                    textTheme: Globals.deviceType == 'phone'
-                                        ? Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge!
-                                            .copyWith(
-                                                fontSize: 50,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xff000000) !=
-                                                        Theme.of(context)
-                                                            .backgroundColor
-                                                    ? Color(0xffF7F8F9)
-                                                    : Color(0xff111C20))
-                                        : Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge!
-                                            .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xff000000) !=
-                                                      Theme.of(context)
-                                                          .backgroundColor
-                                                  ? Color(0xffF7F8F9)
-                                                  : Color(0xff111C20),
-                                            ))
-                                : item.pBISBehaviorIconURLC!.isNotEmpty
-                                    ? CachedNetworkImage(
-                                        // height: Globals.deviceType == 'phone' ? 35 : 25,
-                                        // width: Globals.deviceType == 'phone' ? 35 : 25,
-                                        imageUrl: item.pBISBehaviorIconURLC!,
-                                        placeholder: (context, url) =>
-                                            ShimmerLoading(
-                                                isLoading: true,
-                                                child: Container()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error))
-                                    : SizedBox.shrink()),
-                      ]))));
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                        child: item.behaviorTitleC == 'Date' ||
+                                item.behaviorTitleC == 'Total'
+                            ? Utility.textWidget(
+                                context: context,
+                                text: item.behaviorTitleC ?? '',
+                                textAlign: TextAlign.center,
+                                textTheme: Globals.deviceType == 'phone'
+                                    ? Theme.of(context)
+                                        .textTheme
+                                        .headlineLarge!
+                                        .copyWith(
+                                            fontSize: 50,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff000000) !=
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffF7F8F9)
+                                                : Color(0xff111C20))
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .headlineLarge!
+                                        .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffF7F8F9)
+                                              : Color(0xff111C20),
+                                        ))
+                            : item.pBISBehaviorIconURLC!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    // height: Globals.deviceType == 'phone' ? 35 : 25,
+                                    // width: Globals.deviceType == 'phone' ? 35 : 25,
+                                    imageUrl: item.pBISBehaviorIconURLC!,
+                                    placeholder: (context, url) =>
+                                        ShimmerLoading(
+                                            isLoading: true,
+                                            child: Container()),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error))
+                                : SizedBox.shrink()),
+                  ])));
 
   /*--------------------------------------------------------------------------------------------------------*/
   /*---------------------------------------------buildDataRow-----------------------------------------------*/

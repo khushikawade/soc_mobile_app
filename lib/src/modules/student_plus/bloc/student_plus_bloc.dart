@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
@@ -183,8 +184,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           yield StudentPlusGradeSuccess(
               obj: _localDataGradeList,
               chipList: getChipsList(list: _localDataGradeList),
-              courseList:
-                  _localCourseDataList);
+              courseList: _localCourseDataList);
         }
 
         //Creating list includes both grades from database and current grades from google classroom
@@ -599,6 +599,50 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         } else {
           yield StudentPlusLoading();
           yield StudentPlusErrorReceived(err: list[1]);
+        }
+      } catch (e) {
+        yield StudentPlusLoading();
+        yield StudentPlusErrorReceived(err: e.toString());
+      }
+    }
+
+//-----------------------------------------------Student Plus Get Student Behaviors Total Counts -------------------------------------------//
+    if (event is StudentPlusGetStudentBehaviorsTotalCounts) {
+      try {
+        //Fetch logged in user profile
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        String tableName =
+            '${userProfileLocalData[0]?.userEmail ?? ''}_${Overrides.SCHOOL_ID}_${event.studentId}';
+
+        LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
+            LocalDatabase(tableName);
+
+        List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield StudentPlusLoading();
+        } else {
+          yield StudentPlusGetStudentBehaviorsTotalCountsSuccess(
+              studetTotalBehaviors: _localData[0]);
+        }
+
+        List result = await studentPlusGetStudentBehaviorTotalCounts(
+            teacherEmail: userProfileLocalData[0].userEmail!,
+            schoolId: Overrides.SCHOOL_ID,
+            studentId: event.studentId);
+
+        if (result[0] == true) {
+          await _localDb.clear();
+          await _localDb.addData(result[1]);
+
+          yield StudentPlusLoading();
+          yield StudentPlusGetStudentBehaviorsTotalCountsSuccess(
+              studetTotalBehaviors: result[1]);
+        } else {
+          yield StudentPlusLoading();
+          yield StudentPlusErrorReceived(err: result[1]);
         }
       } catch (e) {
         yield StudentPlusLoading();
@@ -1056,6 +1100,46 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         return [];
       }
     } catch (e) {
+      throw (e);
+    }
+  }
+
+//-----------------------------------------------student Plus Get Student Behavior Total Counts-------------------------------------------//
+  Future<List> studentPlusGetStudentBehaviorTotalCounts(
+      {required String teacherEmail,
+      required String studentId,
+      required String schoolId,
+      int retry = 3}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/student/interaction-count?student_id=$studentId&teacher_email=$teacherEmail&school_id=$schoolId',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return [
+          true,
+          PBISPlusTotalBehaviorModal.fromJson(response.data['body'])
+        ];
+      } else if (retry > 0) {
+        return studentPlusGetStudentBehaviorTotalCounts(
+          teacherEmail: teacherEmail,
+          studentId: studentId,
+          schoolId: schoolId,
+          retry: retry - 1,
+        );
+      }
+      return [
+        false,
+        response.statusCode == 200
+            ? response.data['statusCode']
+            : response.statusCode
+      ];
+    } catch (e) {
+      print(e);
       throw (e);
     }
   }
