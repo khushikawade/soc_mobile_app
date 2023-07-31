@@ -219,10 +219,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   Widget pbisPlusBody(BuildContext context) {
     return widget.isFromStudentPlus == true
         ? buildNestedScrollView()
-        : Column(children: [
+        : 
+        Column(children: [
             sectionHeader(),
             Flexible(child: buildNestedScrollView())
-          ]);
+          ]
+          
+          );
   }
 
   buildNestedScrollView() {
@@ -596,7 +599,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                                 return ListView(
                                     // controller: _innerScrollController,
                                     padding: EdgeInsets.only(bottom: 120),
-                                    // physics: isListScrollUp.value
+                                    physics: NeverScrollableScrollPhysics(),
                                     //     ? BouncingScrollPhysics()
                                     //     : NeverScrollableScrollPhysics(),
                                     children: [
@@ -640,6 +643,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     key: refreshKey,
                     onRefresh: refreshPage,
                     child: ListView(
+                        physics: NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 120),
                         children: [
                           FittedBox(
@@ -673,7 +677,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               color: AppTheme.kButtonColor,
               key: refreshKey,
               onRefresh: refreshPage,
-              child: ListView(padding: EdgeInsets.only(bottom: 120), children: [
+              child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(bottom: 120), children: [
                 FittedBox(
                     fit: BoxFit.contain,
                     child: Screenshot(
@@ -709,7 +715,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: widget.isFromStudentPlus == true ? true : false,
-                    isFromDashboardPage: true,
+                    isFromDashboardPage:widget.isFromStudentPlus == true?false: true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,
@@ -728,7 +734,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: false,
-                    isFromDashboardPage: true,
+                    isFromDashboardPage:widget.isFromStudentPlus == true?false: true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,
@@ -747,7 +753,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     studentProfile: widget.studentProfile,
                     constraint: widget.constraint,
                     isLoading: false,
-                    isFromDashboardPage: true,
+                    isFromDashboardPage: widget.isFromStudentPlus == true?false:true,
                     heroTag: widget.heroTag,
                     onValueUpdate: widget.onValueUpdate,
                     scaffoldKey: widget.scaffoldKey,

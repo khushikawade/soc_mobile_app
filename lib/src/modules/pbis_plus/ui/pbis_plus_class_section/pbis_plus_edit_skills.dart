@@ -879,7 +879,7 @@ class _PBISPlusEditSkillsState extends State<PBISPlusEditSkills> {
       msg = 'something went wrong, Try again later';
     }
 
-    Utility.currentScreenSnackBar(msg ?? 'Please wait ...', null);
+    Utility.currentScreenSnackBar(msg ?? 'Please Wait ...', null);
   }
   //-------------------------------------------
 

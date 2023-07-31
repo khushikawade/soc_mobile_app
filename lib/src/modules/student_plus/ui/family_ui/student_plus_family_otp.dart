@@ -316,7 +316,7 @@ class _StudentPlusFamilyOtpState extends State<StudentPlusFamilyOtp>
           Navigator.pop(context);
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
-              context: context, msg: 'Please wait', isOCR: false);
+              context: context, msg: 'Please Wait', isOCR: false);
         } else if (state is FamilyLoginOtpSendSuccess) {
           Utility.showSnackBar(
               _scaffoldKey, "OTP Sent Successfully", context, null);
