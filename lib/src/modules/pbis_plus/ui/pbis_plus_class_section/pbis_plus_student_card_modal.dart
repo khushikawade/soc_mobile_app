@@ -10,7 +10,9 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/circular_custom_button.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
@@ -23,7 +25,6 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusStudentCardModal extends StatefulWidget {
@@ -77,6 +78,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   PBISPlusBloc pbisPluDefaultBehaviorBloc = PBISPlusBloc();
   PBISPlusBloc pbisPluCustomBehaviorBloc = PBISPlusBloc();
+  final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
 
   @override
   void initState() {
@@ -87,6 +89,14 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     pbisPluCustomBehaviorBloc.add(PBISPlusGetTeacherCustomBehavior());
     pbisPluDefaultBehaviorBloc.add(PBISPlusGetDefaultSchoolBehavior());
     _focusNode.addListener(_handleFocusChange);
+
+// Student + to get stundet total behaviors counts
+    if (widget.isFromStudentPlus == true &&(
+        widget.studentValueNotifier.value.profile?.emailAddress?.isNotEmpty??false)) {
+      _studentPlusBloc.add(StudentPlusGetStudentBehaviorsTotalCounts(
+          studentId:
+              widget.studentValueNotifier.value.profile?.emailAddress ?? ''));
+    }
   }
 
   @override
@@ -137,14 +147,40 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             },
             child: widget.isFromStudentPlus == true
                 ? BlocConsumer(
-                    bloc: pbisPluCustomBehaviorBloc,
-                    listener: (context, state) {},
+                    bloc: _studentPlusBloc,
+                    listener: (context, state) {
+                      if (state
+                          is StudentPlusGetStudentBehaviorsTotalCountsSuccess) {
+                        if (state.studetTotalBehaviors != null &&
+                            state.studetTotalBehaviors.behaviorList != null) {
+                          //update the current stundet profile notifier value with total counts
+                          widget.studentValueNotifier.value.profile!
+                                  .behaviorList =
+                              state.studetTotalBehaviors.behaviorList;
+                        }
+                      }
+                      if (state is StudentPlusErrorReceived) {
+                        Utility.currentScreenSnackBar(
+                            state.err == 'NO_CONNECTION' ||
+                                    state.err == 'Connection failed' ||
+                                    state.err ==
+                                        'Software caused connection abort'
+                                ? 'Make sure you have a proper Internet connection'
+                                : "Something Went Wrong.",
+                            null);
+                      }
+                    },
                     builder: (context, state) {
-                      return buildCard(
-                        isBehaviorLoading: true,
+                      if (state is StudentPlusLoading) {
+                        return buildStudentProfileCard(
+                          isBehaviorLoading: true,
+                        );
+                      }
+                      return buildStudentProfileCard(
+                        isBehaviorLoading: false,
                       );
                     })
-                : buildCard(
+                : buildStudentProfileCard(
                     isBehaviorLoading: false,
                   )));
   }
@@ -328,7 +364,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
         operationResult: 'Success');
   }
 
-  Widget buildCard({required bool isBehaviorLoading}) {
+  Widget buildStudentProfileCard({required bool isBehaviorLoading}) {
     return ValueListenableBuilder(
         valueListenable: cardHeight,
         builder: (context, value, _) =>

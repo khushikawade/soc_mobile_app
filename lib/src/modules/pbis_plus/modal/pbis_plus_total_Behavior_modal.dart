@@ -32,8 +32,8 @@ class PBISPlusTotalBehaviorModal {
     studentId = json['Student_Id'] ?? '';
     teacherEmail = json['Teacher_Email'] ?? '';
     studentEmail = json['Student_Email'] ?? '';
+    behaviorList = <BehaviorList>[];
     if (json['BehaviorList'] != null) {
-      behaviorList = <BehaviorList>[];
       json['BehaviorList'].forEach((v) {
         behaviorList!.add(new BehaviorList.fromJson(v));
       });

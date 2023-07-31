@@ -180,10 +180,10 @@ class GetStudentRegentsList extends StudentPlusEvent {
   String toString() => '';
 }
 
-/* ---------------- Event use to trigger get Regents list in Exam section --------------- */
-class StudentPlusGetStudentBehviorTotalCounts extends StudentPlusEvent {
+/* ---------------- Event use to trigger to get student total behaviors counts ---------------- */
+class StudentPlusGetStudentBehaviorsTotalCounts extends StudentPlusEvent {
   final String studentId;
-  StudentPlusGetStudentBehviorTotalCounts({required this.studentId});
+  StudentPlusGetStudentBehaviorsTotalCounts({required this.studentId});
   @override
   List<Object> get props => [];
   @override

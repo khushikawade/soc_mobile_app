@@ -606,21 +606,47 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
       }
     }
 
-    if (event is StudentPlusGetStudentBehviorTotalCounts) {
+//-----------------------------------------------Student Plus Get Student Behaviors Total Counts -------------------------------------------//
+    if (event is StudentPlusGetStudentBehaviorsTotalCounts) {
       try {
         //Fetch logged in user profile
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        List<PBISPlusTotalBehaviorModal>
-            pbisTotalDefaultAndCustomBehaviourInteractionList =
-            await studentPlusGetStudentBehviorTotalCounts(
-                teacherEmail: userProfileLocalData[0].userEmail!,
-                schoolId: Overrides.SCHOOL_ID,
-                studentId: event.studentId);
-                
+        String tableName =
+            '${userProfileLocalData[0]?.userEmail ?? ''}_${Overrides.SCHOOL_ID}_${event.studentId}';
+
+        LocalDatabase<PBISPlusTotalBehaviorModal> _localDb =
+            LocalDatabase(tableName);
+
+        List<PBISPlusTotalBehaviorModal>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield StudentPlusLoading();
+        } else {
+          yield StudentPlusGetStudentBehaviorsTotalCountsSuccess(
+              studetTotalBehaviors: _localData[0]);
+        }
+
+        List result = await studentPlusGetStudentBehaviorTotalCounts(
+            teacherEmail: userProfileLocalData[0].userEmail!,
+            schoolId: Overrides.SCHOOL_ID,
+            studentId: event.studentId);
+
+        if (result[0] == true) {
+          await _localDb.clear();
+          await _localDb.addData(result[1]);
+
+          yield StudentPlusLoading();
+          yield StudentPlusGetStudentBehaviorsTotalCountsSuccess(
+              studetTotalBehaviors: result[1]);
+        } else {
+          yield StudentPlusLoading();
+          yield StudentPlusErrorReceived(err: result[1]);
+        }
       } catch (e) {
-        print(e);
+        yield StudentPlusLoading();
+        yield StudentPlusErrorReceived(err: e.toString());
       }
     }
   }
@@ -1078,12 +1104,12 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     }
   }
 
-  Future<List<PBISPlusTotalBehaviorModal>>
-      studentPlusGetStudentBehviorTotalCounts(
-          {required String teacherEmail,
-          required String studentId,
-          required String schoolId,
-          int retry = 3}) async {
+//-----------------------------------------------student Plus Get Student Behavior Total Counts-------------------------------------------//
+  Future<List> studentPlusGetStudentBehaviorTotalCounts(
+      {required String teacherEmail,
+      required String studentId,
+      required String schoolId,
+      int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/v2/student/interaction-count?student_id=$studentId&teacher_email=$teacherEmail&school_id=$schoolId',
@@ -1094,22 +1120,26 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           isCompleteUrl: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        List<PBISPlusTotalBehaviorModal> interactionList = response.data['body']
-            .map<PBISPlusTotalBehaviorModal>(
-                (i) => PBISPlusTotalBehaviorModal.fromJson(i))
-            .toList();
-
-        return interactionList;
+        return [
+          true,
+          PBISPlusTotalBehaviorModal.fromJson(response.data['body'])
+        ];
       } else if (retry > 0) {
-        return studentPlusGetStudentBehviorTotalCounts(
+        return studentPlusGetStudentBehaviorTotalCounts(
           teacherEmail: teacherEmail,
           studentId: studentId,
           schoolId: schoolId,
           retry: retry - 1,
         );
       }
-      return [];
+      return [
+        false,
+        response.statusCode == 200
+            ? response.data['statusCode']
+            : response.statusCode
+      ];
     } catch (e) {
+      print(e);
       throw (e);
     }
   }
