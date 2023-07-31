@@ -91,8 +91,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
     _focusNode.addListener(_handleFocusChange);
 
 // Student + to get stundet total behaviors counts
-    if (widget.isFromStudentPlus == true &&(
-        widget.studentValueNotifier.value.profile?.emailAddress?.isNotEmpty??false)) {
+    if (widget.isFromStudentPlus == true &&
+        (widget.studentValueNotifier.value.profile?.emailAddress?.isNotEmpty ??
+            false)) {
       _studentPlusBloc.add(StudentPlusGetStudentBehaviorsTotalCounts(
           studentId:
               widget.studentValueNotifier.value.profile?.emailAddress ?? ''));
@@ -192,7 +193,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
             top: MediaQuery.of(context).size.width * 0.2 / 1.30,
             child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context,true);
+                  Navigator.pop(context, true);
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 child: Icon(Icons.clear,
@@ -288,7 +289,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 (widget.constraint <= 500)
                     ? MediaQuery.of(context).size.height * 0.43 - spacing
                     : MediaQuery.of(context).size.height * 0.40 - spacing
-            : 
+            :
             //ANDRODID  CARD MODAL
             (widget.constraint <= 500)
                 ? MediaQuery.of(context).size.height * 0.50 - spacing
@@ -489,8 +490,8 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
               closeNotesIcon(),
 
               //----------------------------------------------------Profile Image-----------------------------------------------------
-              closeNotesIcon(),
-              Positioned(
+              //   closeNotesIcon(),
+              Positioned.fill(
                   top: 00,
                   child: GestureDetector(
                       onTap: widget.isFromStudentPlus == true ||
@@ -548,6 +549,17 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                         Container(
                             alignment: Alignment.topCenter,
                             height: MediaQuery.of(context).size.width * 0.1,
+
+                            // widget.isFromDashboardPage ==
+                            //             true ||
+                            //         widget.isFromStudentPlus == true
+                            //     ? MediaQuery.of(context).size.width *
+                            //         0.2
+                            //     : MediaQuery.of(context).size.width *
+                            //         0.2 /
+                            //         1.1,
+
+                            ///1.1,
                             width: widget.isFromDashboardPage == true
                                 ? MediaQuery.of(context).size.width
                                 : MediaQuery.of(context).size.width * 0.8,
@@ -571,7 +583,15 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                                     .bodyText1!
                                     .copyWith(
                                         fontSize: 18,
-                                        fontWeight: FontWeight.bold)))
+                                        fontWeight: FontWeight.bold))),
+                        isNotesTextfieldEnable.value
+                            ? Expanded(
+                                child: Container(
+                                    height: cardHeight.value / 1.3,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child: addNotes()))
+                            : SizedBox.shrink(),
                       ])))
             ]));
   }
@@ -666,18 +686,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             isNotesTextfieldEnable.value == true
-                ? Expanded(
-                    child: ValueListenableBuilder(
-                        valueListenable: isNotesTextfieldEnable,
-                        builder: (context, value, _) => Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12))),
-                            alignment: Alignment.bottomRight,
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: addNotes())),
-                  )
+                ? SizedBox.shrink()
                 : Expanded(
                     child: ValueListenableBuilder(
                         valueListenable: isNotesTextfieldEnable,
@@ -696,8 +705,9 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
 
   Column addNotes() => Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+          // mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
             isNotesTextfieldEnable.value == true
                 ? SizedBox.shrink()
                 : Container(
@@ -711,7 +721,7 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                 valueListenable: isNotesTextfieldEnable,
                 builder: (context, value, _) => TextFormField(
                       minLines: isNotesTextfieldEnable.value == true ? null : 1,
-                      maxLines: 12,
+                      maxLines: 8,
                       focusNode: _focusNode,
                       autofocus: isNotesTextfieldEnable.value,
                       textAlign: isNotesTextfieldEnable.value
@@ -720,9 +730,6 @@ class _PBISPlusStudentCardNewState extends State<PBISPlusStudentCardModal> {
                       controller: noteController,
                       onChanged: (value) {
                         isNotesTextfieldEnable.value = true;
-                        // if (noteController.text.isEmpty) {
-                        //   isNotesTextfieldEnable.value = false;
-                        // }
                       },
                       cursorColor:
                           Color(0xff000000) != Theme.of(context).backgroundColor
