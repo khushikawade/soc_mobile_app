@@ -1,5 +1,7 @@
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -20,6 +22,13 @@ class PBISPlusUtility {
   static final LocalDatabase<PBISPlusCommonBehaviorModal> customUserBehaviorDB =
       LocalDatabase(
           PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+
+  static final LocalDatabase<PBISPlusHistoryModal> pbisPlusHistoryDB =
+      LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+
+  static final LocalDatabase<PBISPlusNotesUniqueStudentList>
+      _pbisPlusStudentListDB =
+      LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
 
 // //Used to round off any digit greater than 999
 //   static String numberAbbreviationFormat(value) {
@@ -134,11 +143,19 @@ class PBISPlusUtility {
     try {
       //clear custom user behavior data
       await classroomLocalDb.clear();
-//clear custom user behavior data
+      //clear custom user behavior data
       await customUserBehaviorDB.clear();
-//set toggle button off
+      //clear pbis Plus history data
+      await pbisPlusHistoryDB.clear();
+
+      // clear pbis plus student notes data
+      await _pbisPlusStudentListDB.clear();
+
+      //set toggle button off
       await setToggleValue(value: false);
     } catch (e) {
+      print(
+          "-------------------caught error while cleanig pbis plus data setToggleValue method = cleanPbisPlusDataOnLogOut ------------------------");
       print(e);
     }
   }
@@ -148,6 +165,9 @@ class PBISPlusUtility {
       SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setBool(Strings.isCustomBehavior,
           value ?? PBISPlusOverrides.isCustomBehavior.value);
-    } catch (e) {}
+    } catch (e) {
+      print(
+          "-------------------caught error while cleanig pbis plus data method = {setToggleValue} ------------------------");
+    }
   }
 }

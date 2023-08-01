@@ -353,6 +353,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
+                      
                   await UserGoogleProfile.clearUserProfile();
                   await GoogleClassroom.clearClassroomCourses();
                   await Authentication.signOut(context: context);
@@ -360,11 +361,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   await Utility.clearStudentInfo(
                       tableName: 'history_student_info');
 
-                  LocalDatabase<PBISPlusNotesUniqueStudentList>
-                      _pbisPlusStudentListDB =
-                      LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
-                  await _pbisPlusStudentListDB.clear();
-
+                  //  LocalDatabase<PBISPlusNotesUniqueStudentList>
+                  //             _pbisPlusStudentListDB =
+                  //             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+                  //         await _pbisPlusStudentListDB.clear();
                   // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
