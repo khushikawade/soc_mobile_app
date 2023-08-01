@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -9,7 +11,6 @@ import '../../globals.dart';
 import '../../services/Strings.dart';
 import '../../services/local_database/local_db.dart';
 import '../../services/utility.dart';
-import '../../startup.dart';
 import '../../widgets/google_auth_webview.dart';
 import '../google_classroom/modal/google_classroom_courses.dart';
 import '../google_drive/bloc/google_drive_bloc.dart';
@@ -56,7 +57,6 @@ class GoogleLogin {
     );
 
     if (value.toString().contains('authenticationfailure')) {
-      
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
       PlusUtility.updateLogs(
@@ -78,7 +78,7 @@ class GoogleLogin {
       List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData,userType);
+      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData, userType);
 
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
@@ -132,7 +132,7 @@ class GoogleLogin {
   }
 
   static verifyUserAndGetDriveFolder(
-      List<UserInformation> _userProfileLocalData , String role) async {
+      List<UserInformation> _userProfileLocalData, String role) async {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
@@ -140,7 +140,6 @@ class GoogleLogin {
         email: _userProfileLocalData[0].userEmail, role: role));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
-
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isReturnState: false,
         //  filePath: file,

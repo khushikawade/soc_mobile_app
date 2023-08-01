@@ -396,7 +396,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                       List<UserInformation> _userProfileLocalData =
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
-                          _userProfileLocalData,'');
+                          _userProfileLocalData, 'Teacher');
                       Globals.userEmailId =
                           _userProfileLocalData[0].userEmail!.split('@')[0];
 
