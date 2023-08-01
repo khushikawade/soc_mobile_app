@@ -172,3 +172,14 @@ class StudentPlusRegentsSuccess extends StudentPlusState {
   @override
   List<Object> get props => [];
 }
+
+/* -------------------- state use to return student total behviors counts --------------- */
+class StudentPlusGetStudentBehaviorsTotalCountsSuccess
+    extends StudentPlusState {
+  final PBISPlusTotalBehaviorModal studetTotalBehaviors;
+  StudentPlusGetStudentBehaviorsTotalCountsSuccess(
+      {required this.studetTotalBehaviors});
+
+  @override
+  List<Object> get props => [];
+}

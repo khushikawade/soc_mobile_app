@@ -101,6 +101,10 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
+                                commonLogoPath: Color(0xff000000) ==
+                                        Theme.of(context).backgroundColor
+                                    ? "assets/images/pbis_plus_dark.png"
+                                    : "assets/images/pbis_plus_light.png",
                                 sectionType: "Staff",
                                 plusAppName: 'PBIS+',
                                 fromGradedPlus: false,

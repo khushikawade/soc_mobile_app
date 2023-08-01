@@ -395,8 +395,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-              blurRadius: 10.0,
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.2),
+              // Colors.grey,
+              blurRadius: 5.0,
             ),
           ]),
       onWillPop: (context) async {
