@@ -1288,7 +1288,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       final body = {
         "email": email,
         "schoolId": Globals.appSetting.id,
-        "role": role,
+        "role": role.toLowerCase(),
         "google_token": authToken
       };
       final ResponseModel response = await _dbServices.postApi(
