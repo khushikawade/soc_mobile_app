@@ -335,7 +335,7 @@ class _StaffPageState extends State<StaffPage> {
         if (user != null) {
           if (user.email != null && user.email != '') {
             _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, isAuthorizedUser: true));
+                email: user.email, role: "Teacher"));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
