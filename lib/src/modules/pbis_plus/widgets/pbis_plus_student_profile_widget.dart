@@ -43,28 +43,28 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
     /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
     String firstName;
     //student profile at student notes tabs
-    if (widget.isFromStudentNotes != null &&
-        widget.isFromStudentNotes == true &&
-        widget.studentname!.fullName!.split(' ').length > 0) {
-      firstName = widget.studentname!.fullName!
-          .split(' ')[0]
-          .substring(0, 1)
-          .toUpperCase();
-    }
+    // if (widget.isFromStudentNotes != null &&
+    //     widget.isFromStudentNotes == true &&
+    //     widget.studentname!.fullName!.split(' ').length > 0) {
+    //   firstName = widget.studentname!.fullName!
+    //       .split(' ')[0]
+    //       .substring(0, 1)
+    //       .toUpperCase();
+    // }
     //Student profile at all other places
-    else {
-      firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
-                  .isNotEmpty &&
-              widget.studentValueNotifier!.value.profile!.name!.fullName!
-                      .split(' ')
-                      .length >
-                  0
-          ? widget.studentValueNotifier!.value.profile!.name!.fullName!
-              .split(' ')[0]
-              .substring(0, 1)
-              .toUpperCase()
-          : '';
-    }
+    // else {
+    //   firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //               .isNotEmpty &&
+    //           widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //                   .split(' ')
+    //                   .length >
+    //               0
+    //       ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //           .split(' ')[0]
+    //           .substring(0, 1)
+    //           .toUpperCase()
+    //       : '';
+    // }
     String lastName;
 
     firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
@@ -78,7 +78,12 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             .substring(0, 1)
             .toUpperCase()
         : '';
+    // print(widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //     .split(' ')
+    //     .length);
 
+    // print(widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //     .split(' ')[1]);
     lastName = widget.studentValueNotifier!.value.profile!.name!.fullName!
                 .isNotEmpty &&
             widget.studentValueNotifier!.value.profile!.name!.fullName!
@@ -86,9 +91,16 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                     .length >
                 1
         ? widget.studentValueNotifier!.value.profile!.name!.fullName!
-            .split(' ')[1]
-            .substring(0, 1)
-            .toUpperCase()
+                        .split(' ')[1] !=
+                    '' &&
+                widget.studentValueNotifier!.value.profile!.name!.fullName!
+                        .split(' ')[1] !=
+                    null
+            ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+                .split(' ')[1]
+                .substring(0, 1)
+                .toUpperCase()
+            : ''
         : '';
 
     /*-------------------------------------------------END--------------------------------------------------------*/
