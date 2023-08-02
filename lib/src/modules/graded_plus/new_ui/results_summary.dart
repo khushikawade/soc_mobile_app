@@ -61,7 +61,8 @@ class GradedPlusResultsSummary extends StatefulWidget {
       required this.assessmentName,
       this.historySecondTime,
       this.isMcqSheet,
-      this.selectedAnswer})
+      this.selectedAnswer,
+      this.titleIconData})
       : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
@@ -78,6 +79,7 @@ class GradedPlusResultsSummary extends StatefulWidget {
   final bool? createdAsPremium;
   bool? isMcqSheet;
   String? selectedAnswer;
+  final IconData? titleIconData;
   @override
   State<GradedPlusResultsSummary> createState() => studentRecordList();
 }
@@ -121,6 +123,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   final editingStudentIdController = TextEditingController();
   final studentScoreController = TextEditingController();
   String? pointPossible;
+  String oldStudentId = ''; // Used in case of update record to dashboard
 
   // ValueNotifier<List<StudentAssessmentInfo>> studentRecordList =
   //     ValueNotifier([]);
@@ -209,6 +212,14 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              commonLogoPath:
+                  Color(0xff000000) == Theme.of(context).backgroundColor
+                      ? "assets/images/graded+_dark.png"
+                      : "assets/images/graded+_light.png",
+              refresh: (v) {
+                setState(() {});
+              },
+              iconData: widget.titleIconData,
               plusAppName: 'GRADED+',
               fromGradedPlus: true,
               onTap: () {
@@ -233,10 +244,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           builder: (translatedMessage) {
                             return Text(translatedMessage,
                                 style: TextStyle(
-                                  color: AppTheme.kButtonColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ));
+                                    color: AppTheme.kButtonColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18));
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -1278,6 +1288,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       GradedPlusAssessmentSummary(
+                                        titleIconData: widget.titleIconData,
                                         selectedFilterValue:
                                             widget.isMcqSheet == true
                                                 ? 'Multiple Choice'
@@ -1395,6 +1406,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       required String pointPossible,
       required String answerKey,
       required String studentSelection}) {
+    oldStudentId = controllerTwo.text;
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
@@ -1419,13 +1431,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
-                  : 'Student Id/Student Email',
-              textFileTitleThree:
-                  //   widget.isMcqSheet == true
-                  // ? "Student Selection"
-                  // /// : "Student Grade",
-                  // :
-                  'Points Earned',
+                  : 'Student ID/Student Email',
+              textFileTitleThree: 'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
@@ -1468,6 +1475,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 disableSlidableAction.value = true;
 
                 Navigator.pop(context, false);
+
+                _ocrBloc.add(UpdateGradedPlusStudentResult(
+                    mewStudentId: id.text,
+                    oldStudentId: oldStudentId,
+                    result: score.text,
+                    studentName: name.text,
+                    assessmentId: Globals.currentAssessmentId));
 
                 //!UNCOMMENT Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
@@ -1906,6 +1920,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusCameraScreen(
+                titleIconData: widget.titleIconData,
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
                 isMcqSheet: isMcqSheet, // widget.isMcqSheet ?? false,

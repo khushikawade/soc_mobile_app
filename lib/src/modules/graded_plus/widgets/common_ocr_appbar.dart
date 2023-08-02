@@ -1,18 +1,23 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/help/intro_tutorial.dart'
     as customIntroLayout;
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
+import 'package:Soc/src/modules/student_plus/ui/family_ui/services/parent_profile_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -25,9 +30,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
-import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../../services/user_profile.dart';
+import './Common_popup.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
@@ -51,7 +56,11 @@ class CustomOcrAppBarWidget extends StatefulWidget
   final VoidCallback? onTap;
   bool? fromGradedPlus;
   String? plusAppName;
+  IconData? iconData;
+  final String? sectionType;
   final scaffoldKey;
+  final ValueChanged? refresh;
+  String? commonLogoPath;
 
   CustomOcrAppBarWidget(
       {required Key? key,
@@ -74,7 +83,11 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.navigateBack,
       this.isProfilePage,
       required this.fromGradedPlus,
-      required this.plusAppName})
+      required this.plusAppName,
+      required this.iconData,
+      this.sectionType,
+      required this.refresh,
+      this.commonLogoPath})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
@@ -114,7 +127,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         //       height: 40,
         //       color: Colors.transparent,
         //     )),
-        title: commonGradedLogo(),
+        title: widget.iconData == null
+            ? commonGradedLogo(commonLogoPath: widget.commonLogoPath)
+            : allScreenIconWidget(),
         actions: [
           widget.isProfilePage == true
               ? IconButton(
@@ -293,6 +308,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        commonLogoPath: widget.commonLogoPath,
+                                        sectionType: widget.sectionType ?? '',
                                         plusAppName: 'Graded+',
                                         fromGradedPlus: widget.fromGradedPlus,
                                         hideStateSelection:
@@ -321,13 +338,33 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 message: message,
                 title: title!,
                 confirmationOnPress: () async {
+                  if (widget.sectionType == 'Family') {
+                    await FamilyUserDetails.clearFamilyUserProfile();
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  index: 3,
+                                  isFromOcrSection: true,
+                                )),
+                        (_) => false);
+                    return;
+                  }
+
                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                       "logout");
+                      
                   await UserGoogleProfile.clearUserProfile();
                   await GoogleClassroom.clearClassroomCourses();
-                  Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
+                  await Authentication.signOut(context: context);
+                  await Utility.clearStudentInfo(tableName: 'student_info');
+                  await Utility.clearStudentInfo(
+                      tableName: 'history_student_info');
+
+                  //  LocalDatabase<PBISPlusNotesUniqueStudentList>
+                  //             _pbisPlusStudentListDB =
+                  //             LocalDatabase(PBISPlusOverrides.pbisPlusStudentListDB);
+                  //         await _pbisPlusStudentListDB.clear();
                   // Globals.googleDriveFolderId = null;
                   PlusUtility.updateLogs(
                       activityType: 'GRADED+',
@@ -335,6 +372,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       activityId: '3',
                       description: 'User profile logout',
                       operationResult: 'Success');
+
                   // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
                   if (Overrides.STANDALONE_GRADED_APP) {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -344,6 +382,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                 )),
                         (_) => false);
                   } else {
+                    //PBIS +
+                    await PBISPlusUtility.cleanPbisPlusDataOnLogOut();
+
                     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   }
@@ -369,11 +410,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         refreshToken: _profileData[0].refreshToken));
   }
 
-  Widget commonGradedLogo() {
+  Widget commonGradedLogo(
+      {String? commonLogoPath = "assets/images/pbis_plus_light.png"}) {
     return Image.asset(
-      Color(0xff000000) == Theme.of(context).backgroundColor
-          ? "assets/images/graded+_light.png"
-          : "assets/images/graded+_dark.png",
+      commonLogoPath!,
+      // Color(0xff000000) == Theme.of(context).backgroundColor
+      //     ? "assets/images/graded+_light.png"
+      //     : "assets/images/graded+_dark.png",
       height: Globals.deviceType == "phone"
           ? AppTheme.kIconSize * 2
           : AppTheme.kTabIconSize * 2,
@@ -519,7 +562,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/
@@ -592,6 +635,16 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 ? 25
                 : 32
             : null,
+      ),
+    );
+  }
+
+  Widget allScreenIconWidget() {
+    return Container(
+      padding: EdgeInsets.only(right: 7),
+      child: Icon(
+        widget.iconData,
+        color: AppTheme.kButtonColor,
       ),
     );
   }

@@ -1,6 +1,4 @@
-import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/auth_dummy/sign_in_screen.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
 import 'package:Soc/src/overrides.dart';
@@ -39,7 +37,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Globals.disableDarkMode != true) {
       Globals.themeType = 'Light';
     }
+
     var window = WidgetsBinding.instance.window;
+
     window.onPlatformBrightnessChanged = () {
       WidgetsBinding.instance.handlePlatformBrightnessChanged();
       // This callback is called every time the brightness changes.
@@ -52,12 +52,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Globals.themeType = 'Light';
       }
     };
+
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitDown
     ]);
     super.initState();
   }
@@ -98,31 +99,29 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   Widget build(BuildContext context) {
     return AdaptiveTheme(
-      light: AppTheme.lightTheme,
-      dark: AppTheme.darkTheme,
-      initial: Globals.disableDarkMode == true
-          ? AdaptiveThemeMode.light
-          : AdaptiveThemeMode.system,
-      builder: (theme, darkTheme) => CalendarControllerProvider<Event>(
-        controller: EventController<Event>()..addAll(staticEventList),
-        child: MaterialApp(
-          navigatorKey: Globals.navigatorKey,
-          debugShowCheckedModeBanner: false,
-          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-          title: 'Solved',
-          theme: theme,
-          darkTheme: darkTheme,
-          //home: SignInScreen(),
-          home: StartupPage(
-              isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
-              //false,  /For standard app
-              ),
-          //  home: SchoolIDLogin(),
-          navigatorObservers: [
-            FirebaseAnalyticsService().appAnalyticsObserver()
-          ],
-        ),
-      ),
-    );
+        light: AppTheme.lightTheme,
+        dark: AppTheme.darkTheme,
+        initial: Globals.disableDarkMode == true
+            ? AdaptiveThemeMode.light
+            : AdaptiveThemeMode.system,
+        builder: (theme, darkTheme) => CalendarControllerProvider<Event>(
+            controller: EventController<Event>()..addAll(staticEventList),
+            child: MaterialApp(
+                navigatorKey: Globals.navigatorKey,
+                debugShowCheckedModeBanner: false,
+                scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+                title: 'Solved',
+                theme: theme,
+                darkTheme: darkTheme,
+                //home: SignInScreen(),
+                home: StartupPage(
+                    isOcrSection:
+                        Overrides.STANDALONE_GRADED_APP //Standalone app
+                    //false,  /For standard app
+                    ),
+                //  home: SchoolIDLogin(),
+                navigatorObservers: [
+                  FirebaseAnalyticsService().appAnalyticsObserver()
+                ])));
   }
 }

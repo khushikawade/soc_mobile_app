@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
-import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -33,7 +32,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
   final double? marginLeft;
-  bool? initalscreen;
+  // bool? initalscreen;
   bool? hideAccessibilityButton;
   bool? showClosebutton;
   Widget? actionButton;
@@ -59,15 +58,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     final scaffoldKey = Scaffold.of(context);
     return Theme(
       data: Theme.of(context).copyWith(
-        cardColor:  Globals.themeType != 'Dark'
+        cardColor: Globals.themeType != 'Dark'
             ? Theme.of(context).backgroundColor
             : Theme.of(context).colorScheme.secondary,
-      
       ),
       child: PopupMenuButton<IconMenu>(
-        // color: Globals.themeType != 'Dark'
-        //     ? Theme.of(context).backgroundColor
-        //     : Theme.of(context).colorScheme.secondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2),
         ),
@@ -275,36 +270,32 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _openUserAccessibility(BuildContext context) {
     return IconButton(
-      iconSize: Globals.deviceType == "phone" ? 28 : 32,
-      onPressed: () async {
-        PlusUtility.updateLogs(
-            activityType: 'Standard',
-            userType: 'Teacher',
-            activityId: '61',
-            description: 'Accessibility',
-            operationResult: 'Success');
+        iconSize: Globals.deviceType == "phone" ? 28 : 32,
+        onPressed: () async {
+          PlusUtility.updateLogs(
+              activityType: 'Standard',
+              userType: 'Teacher',
+              activityId: '61',
+              description: 'Accessibility',
+              operationResult: 'Success');
 
-        FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            'Accessibility Standard'.toLowerCase().replaceAll(" ", "_"));
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'Accessibility Standard'.toLowerCase().replaceAll(" ", "_"));
 
-        if (Platform.isAndroid) {
-          OpenAppsSettings.openAppsSettings(
-              settingsCode: SettingsCode.ACCESSIBILITY);
-        } else {
-          // AppSettings.openAccessibilitySettings(asAnotherTask: true);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      IosAccessibilityGuidePage()));
-        }
-      },
-      icon: Icon(
-        FontAwesomeIcons.universalAccess,
-        color: Colors.blue,
-        key: _openSettingShowCaseKey,
-      ),
-    );
+          if (Platform.isAndroid) {
+            OpenAppsSettings.openAppsSettings(
+                settingsCode: SettingsCode.ACCESSIBILITY);
+          } else {
+            // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        IosAccessibilityGuidePage()));
+          }
+        },
+        icon: Icon(FontAwesomeIcons.universalAccess,
+            color: Colors.blue, key: _openSettingShowCaseKey));
   }
 
   BubbleSlide _bubbleSlideWidget(
@@ -314,37 +305,32 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           int leftDx = 0}) =>
       RelativeBubbleSlide(
           widgetKey: widgetKey,
-          shape: const Circle(
-            spreadRadius: 8,
-          ),
+          shape: const Circle(spreadRadius: 8),
           passThroughMode: PassthroughMode.NONE,
           child: AbsoluteBubbleSlideChild(
-            widget: Padding(
-              padding: const EdgeInsets.only(top: 0.5),
-              child: SpeechBubble(
-                borderRadius: 8,
-                nipLocation: NipLocation.TOP_LEFT,
-                // nipHeight: 30,
-                color:
-                    Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
-                child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                  Text(
-                    msg,
-                    //  "Translate/Traducción/翻译/ترجمة/Traduction",
-                    style: TextStyle(
+              widget: Padding(
+                  padding: const EdgeInsets.only(top: 0.5),
+                  child: SpeechBubble(
+                      borderRadius: 8,
+                      nipLocation: NipLocation.TOP_LEFT,
+                      // nipHeight: 30,
                       color: Globals.themeType == 'Dark'
-                          ? Colors.black87
-                          : Colors.white,
-                      fontSize: 18.0,
-                    ),
-                  )
-                ]),
-              ),
-            ),
-            positionCalculator: (size) => Position(
-                top: _calculateWidgetOffset(widgetKey).dy + 45,
-                left: _calculateWidgetOffset(widgetKey).dx + leftDx),
-          ));
+                          ? Colors.white
+                          : Colors.black87,
+                      child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(msg,
+                                //  "Translate/Traducción/翻译/ترجمة/Traduction",
+                                style: TextStyle(
+                                    color: Globals.themeType == 'Dark'
+                                        ? Colors.black87
+                                        : Colors.white,
+                                    fontSize: 18.0))
+                          ]))),
+              positionCalculator: (size) => Position(
+                  top: _calculateWidgetOffset(widgetKey).dy + 45,
+                  left: _calculateWidgetOffset(widgetKey).dx + leftDx)));
 
   Offset _calculateWidgetOffset(GlobalKey key) {
     RenderBox box = key.currentContext?.findRenderObject() as RenderBox;

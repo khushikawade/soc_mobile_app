@@ -305,6 +305,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       IconData(int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
+                      size: 22.0,
                     ),
                   ],
                 ),
@@ -391,13 +392,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             topRight: Radius.circular(25),
             topLeft: Radius.circular(25),
           ),
-          // circular(25.0),
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.2),
               // Colors.grey,
-              blurRadius: 10.0,
+              blurRadius: 5.0,
             ),
           ]),
       onWillPop: (context) async {
@@ -417,7 +417,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // duration: Duration(milliseconds: 200),
       ),
       navBarStyle: NavBarStyle.style6,
-      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      navBarHeight: Globals.deviceType == "phone" ? 55 : 65,
     );
   }
 

@@ -27,13 +27,16 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       courseWorkId: fields[7] as String?,
       assessmentCId: fields[8] as String?,
       courseWorkURL: fields[9] as String?,
+      room: fields[11] as String?,
+      section: fields[10] as String?,
+      updateTime: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassroomCourse obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +56,13 @@ class ClassroomCourseAdapter extends TypeAdapter<ClassroomCourse> {
       ..writeByte(8)
       ..write(obj.assessmentCId)
       ..writeByte(9)
-      ..write(obj.courseWorkURL);
+      ..write(obj.courseWorkURL)
+      ..writeByte(10)
+      ..write(obj.section)
+      ..writeByte(11)
+      ..write(obj.room)
+      ..writeByte(12)
+      ..write(obj.updateTime);
   }
 
   @override
@@ -122,13 +131,14 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       helpful: fields[7] as int?,
       courseName: fields[8] as String?,
       courseId: fields[9] as String?,
+      behaviorList: (fields[10] as List?)?.cast<BehaviorList>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassroomProfile obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -148,7 +158,9 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       ..writeByte(8)
       ..write(obj.courseName)
       ..writeByte(9)
-      ..write(obj.courseId);
+      ..write(obj.courseId)
+      ..writeByte(10)
+      ..write(obj.behaviorList);
   }
 
   @override
@@ -232,6 +244,52 @@ class ClassroomPermissionsAdapter extends TypeAdapter<ClassroomPermissions> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ClassroomPermissionsAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class BehaviorListAdapter extends TypeAdapter<BehaviorList> {
+  @override
+  final int typeId = 44;
+
+  @override
+  BehaviorList read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return BehaviorList(
+      id: fields[0] as String?,
+      name: fields[1] as String?,
+      iconURL: fields[2] as String?,
+      defaultBehavior: fields[3] as bool?,
+      behaviorCount: fields[4] as int?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, BehaviorList obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.iconURL)
+      ..writeByte(3)
+      ..write(obj.defaultBehavior)
+      ..writeByte(4)
+      ..write(obj.behaviorCount);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BehaviorListAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

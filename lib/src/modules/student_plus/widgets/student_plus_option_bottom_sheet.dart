@@ -25,14 +25,17 @@ class StudentPlusOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
   StudentPlusDetailsModel studentDetails;
+  final String? filterName;
   final List<ResultSummaryIcons> resultSummaryIconsModalList;
-
+  int? studentGooglePresentationRecordId;
   StudentPlusOptionBottomSheet(
       {Key? key,
       this.title,
       this.height = 200,
       required this.resultSummaryIconsModalList,
-      required this.studentDetails});
+      required this.studentDetails,
+      required this.filterName,
+      required this.studentGooglePresentationRecordId});
 
   @override
   State<StudentPlusOptionBottomSheet> createState() =>
@@ -50,7 +53,7 @@ class _GradedPlusResultOptionBottomSheetState
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   StudentPlusBloc studentPlusBloc = StudentPlusBloc();
-
+  final ValueNotifier<bool> isStateRecived = ValueNotifier<bool>(false);
   @override
   void initState() {
     initMethod();
@@ -73,6 +76,8 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   @override
   void dispose() {
+    _pageController.dispose();
+
     // TODO: implement dispose
     super.dispose();
   }
@@ -124,26 +129,33 @@ class _GradedPlusResultOptionBottomSheetState
 /*-----------------------------------------------------------_listTileMenu-------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------------------------*/
   Widget _listTileMenu({required ResultSummaryIcons element}) {
-    return ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        horizontalTitleGap: 20,
-        leading: element.title == "Sync Presentation"
-            ? Icon(Icons.sync,
-                size: 30,
-                color: Color(0xff000000) == Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20))
-            : SvgPicture.asset(element.svgPath!, height: 30, width: 30),
-        title: Utility.textWidget(
-            text: element.title!,
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline3!),
-        onTap: () {
-          bottomIconsOnTap(
-              title: element.title ?? '',
-              url: widget.studentDetails.studentGooglePresentationUrl ?? '');
-        });
+    return Opacity(
+      opacity: (widget.studentDetails.studentGooglePresentationUrl == null ||
+                  widget.studentDetails.studentGooglePresentationUrl == '') &&
+              element.title == "Open Presentation"
+          ? 0.5
+          : 1,
+      child: ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          horizontalTitleGap: 20,
+          leading: element.title == "Sync Presentation"
+              ? Icon(Icons.sync,
+                  size: 30,
+                  color: Color(0xff000000) == Theme.of(context).backgroundColor
+                      ? Color(0xffF7F8F9)
+                      : Color(0xff111C20))
+              : SvgPicture.asset(element.svgPath!, height: 30, width: 30),
+          title: Utility.textWidget(
+              text: element.title!,
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline3!),
+          onTap: () {
+            bottomIconsOnTap(
+                title: element.title ?? '',
+                url: widget.studentDetails.studentGooglePresentationUrl ?? '');
+          }),
+    );
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
@@ -151,15 +163,14 @@ class _GradedPlusResultOptionBottomSheetState
 /*-------------------------------------------------------------------------------------------------------------------------*/
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
-      case 'Go to Presentation':
+      case 'Open Presentation':
         if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           Utility.launchUrlOnExternalBrowser(url);
         }
         break;
 
       case 'Sync Presentation':
-        _pageController.animateToPage(1,
-            duration: const Duration(milliseconds: 100), curve: Curves.ease);
+        navigateToPage(pageIndex: 1);
 
         if (widget.studentDetails.studentGooglePresentationId == null ||
             widget.studentDetails.studentGooglePresentationId == '') {
@@ -192,7 +203,7 @@ class _GradedPlusResultOptionBottomSheetState
             child: IconButton(
               padding: EdgeInsets.all(0),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop(widget.studentDetails);
               },
               icon: Icon(
                 Icons.clear,
@@ -212,8 +223,14 @@ class _GradedPlusResultOptionBottomSheetState
                   ],
                 )
               : Container(),
-          ...widget.resultSummaryIconsModalList.map(
-              (ResultSummaryIcons element) => _listTileMenu(element: element)),
+          ...widget.resultSummaryIconsModalList
+              .map((ResultSummaryIcons element) => Builder(builder: (context) {
+                    return ValueListenableBuilder(
+                        valueListenable: isStateRecived,
+                        builder: (context, value, child) {
+                          return _listTileMenu(element: element);
+                        });
+                  })),
         ],
       ),
     );
@@ -266,12 +283,12 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: googleSlidesPresentationBloc,
         child: Container(),
         listener: (context, state) async {
-          print("STATE $state");
+          print("state recived $state");
           if (state is GoogleSlidesPresentationErrorState) {
-            print(state.errorMsg);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
-            Navigator.of(context).pop();
+            isStateRecived.value = !isStateRecived.value;
+            navigateToPage(pageIndex: 0);
 
             if (state.errorMsg == 'ReAuthentication is required') {
               await Authentication.reAuthenticationRequired(
@@ -280,8 +297,10 @@ class _GradedPlusResultOptionBottomSheetState
                   scaffoldKey: scaffoldKey);
             } else {
               Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
+                  state.errorMsg == 'NO_CONNECTION' ||
+                          state.errorMsg == 'Connection failed' ||
+                          state.errorMsg == 'Software caused connection abort'
+                      ? 'Make sure you have a proper Internet connection'
                       : state.errorMsg == "404"
                           ? "Ahh! Looks like the Google Presentation moved to trash. Try again to create a new Google Presentation."
                           : "Something Went Wrong. Please Try Again.",
@@ -299,14 +318,19 @@ class _GradedPlusResultOptionBottomSheetState
           }
           if (state is StudentPlusUpdateStudentWorkGooglePresentationSuccess) {
             if (state.isSaveStudentGooglePresentationWorkOnDataBase == false) {
-              Navigator.of(context).pop();
+              isStateRecived.value = !isStateRecived.value;
+
+              navigateToPage(pageIndex: 0);
               Utility.currentScreenSnackBar(
                   "Student presentation synced to google drive successfully.",
                   null);
             } else {
+              // //now update the save the student google Presentation work on database
               widget.studentDetails = state.studentDetails;
               //now update the save the student google Presentation work on database
               studentPlusBloc.add(SaveStudentGooglePresentationWorkEvent(
+                studentGooglePresentationRecordId: widget.studentGooglePresentationRecordId,
+                  filterName: widget.filterName ?? '',
                   studentDetails: state.studentDetails));
             }
           }
@@ -320,12 +344,12 @@ class _GradedPlusResultOptionBottomSheetState
     List<UserInformation> userProfileInfoData =
         await UserGoogleProfile.getUserProfile();
 
-    googleSlidesPresentationBloc
-        .add(StudentPlusCreateGooglePresentationForStudent(
-      studentPlusDriveFolderId:
-          userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
-      studentDetails: widget.studentDetails,
-    ));
+    googleSlidesPresentationBloc.add(
+        StudentPlusCreateGooglePresentationForStudent(
+            filterName: widget.filterName ?? '',
+            studentPlusDriveFolderId:
+                userProfileInfoData[0].studentPlusGoogleDriveFolderId ?? '',
+            studentDetails: widget.studentDetails));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
@@ -337,10 +361,21 @@ class _GradedPlusResultOptionBottomSheetState
 
     List<StudentPlusWorkModel>? _localData = await _localDb.getData();
     _localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+    List<StudentPlusWorkModel> studentWorkUpdatedList = [];
+    //Filtered Records
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i].subjectC == widget.filterName ||
+          widget.filterName == '' ||
+          widget.filterName ==
+              "${_localData[i].firstName ?? ''} ${_localData[i].lastName ?? ''}") {
+        studentWorkUpdatedList.add(_localData[i]);
+      }
+    }
 
     googleSlidesPresentationBloc.add(
         StudentPlusUpdateGooglePresentationForStudent(
-            studentDetails: widget.studentDetails, allRecords: _localData));
+            studentDetails: widget.studentDetails,
+            allRecords: studentWorkUpdatedList));
   }
 
 /*-------------------------------------------------------------------------------------------------------------------------*/
@@ -351,21 +386,34 @@ class _GradedPlusResultOptionBottomSheetState
         bloc: studentPlusBloc,
         child: Container(),
         listener: (context, state) async {
-          print("STATE $state");
+          print("state recived $state");
           if (state is SaveStudentGooglePresentationWorkEventSuccess) {
-            Navigator.of(context).pop(widget.studentDetails);
+            // Navigator.of(context).pop(widget.studentDetails);
             Utility.currentScreenSnackBar(
                 "Student presentation synced to google drive successfully.",
                 null);
+            isStateRecived.value = !isStateRecived.value;
+            navigateToPage(pageIndex: 0);
           }
           if (state is StudentPlusErrorReceived) {
-            print(state.err);
             widget.studentDetails.studentGooglePresentationId = '';
             widget.studentDetails.studentGooglePresentationUrl = '';
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
-                "Something went wrong. Please try Again.", null);
+                state.err == 'NO_CONNECTION' ||
+                        state.err == 'Connection failed' ||
+                        state.err == 'Software caused connection abort'
+                    ? 'Make sure you have a proper Internet connection'
+                    : "Something Went Wrong. Please Try Again.",
+                null);
+            isStateRecived.value = !isStateRecived.value;
+            navigateToPage(pageIndex: 0);
           }
         });
+  }
+
+  void navigateToPage({required int pageIndex}) {
+    _pageController.animateToPage(pageIndex,
+        duration: const Duration(milliseconds: 100), curve: Curves.ease);
   }
 }

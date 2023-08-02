@@ -9,7 +9,7 @@ part of 'student_plus_course_work_model.dart';
 class StudentPlusCourseWorkModelAdapter
     extends TypeAdapter<StudentPlusCourseWorkModel> {
   @override
-  final int typeId = 44;
+  final int typeId = 51;
 
   @override
   StudentPlusCourseWorkModel read(BinaryReader reader) {
@@ -33,13 +33,14 @@ class StudentPlusCourseWorkModelAdapter
       creatorUserId: fields[12] as String?,
       studentWorkSubmission:
           (fields[13] as List?)?.cast<StudentWorkSubmission>(),
+      studentCourseUserId: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusCourseWorkModel obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.courseId)
       ..writeByte(1)
@@ -67,7 +68,9 @@ class StudentPlusCourseWorkModelAdapter
       ..writeByte(12)
       ..write(obj.creatorUserId)
       ..writeByte(13)
-      ..write(obj.studentWorkSubmission);
+      ..write(obj.studentWorkSubmission)
+      ..writeByte(14)
+      ..write(obj.studentCourseUserId);
   }
 
   @override
@@ -83,7 +86,7 @@ class StudentPlusCourseWorkModelAdapter
 
 class StudentWorkSubmissionAdapter extends TypeAdapter<StudentWorkSubmission> {
   @override
-  final int typeId = 45;
+  final int typeId = 53;
 
   @override
   StudentWorkSubmission read(BinaryReader reader) {
@@ -218,7 +221,7 @@ class AttachmentAdapter extends TypeAdapter<Attachment> {
 
 class LinkAdapter extends TypeAdapter<Link> {
   @override
-  final int typeId = 48;
+  final int typeId = 52;
 
   @override
   Link read(BinaryReader reader) {

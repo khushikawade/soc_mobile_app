@@ -22,6 +22,7 @@ class UserGoogleProfile {
 
   static Future<void> clearUserProfile() async {
     try {
+      LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
       await _localDb.clear();
       print("user profile is successfully clean");
     } catch (e) {

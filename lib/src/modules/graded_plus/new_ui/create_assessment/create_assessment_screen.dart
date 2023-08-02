@@ -8,12 +8,9 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment/create_assessment_method.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/camera_screen.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
-import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -37,18 +34,21 @@ import '../../widgets/student_popup.dart';
 import '../../widgets/suggestion_chip.dart';
 
 class GradedPlusCreateAssessment extends StatefulWidget {
-  GradedPlusCreateAssessment({
-    Key? key,
-    required this.classSuggestions,
-    required this.customGrades,
-    this.isMcqSheet,
-    required this.selectedAnswer,
-    // required this.classroomSuggestions
-  }) : super(key: key);
+  GradedPlusCreateAssessment(
+      {Key? key,
+      required this.classSuggestions,
+      required this.customGrades,
+      this.isMcqSheet,
+      required this.selectedAnswer,
+      this.titleIconData
+      // required this.classroomSuggestions
+      })
+      : super(key: key);
   final List<String> classSuggestions;
   final List<String> customGrades;
   final bool? isMcqSheet;
   final String? selectedAnswer;
+  final IconData? titleIconData;
   // final List<String> classroomSuggestions;
   @override
   State<GradedPlusCreateAssessment> createState() => _CreateAssessmentState();
@@ -150,6 +150,14 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               //   FloatingActionButtonLocation.centerFloat,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                refresh: (v) {
+                  setState(() {});
+                },
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_dark.png"
+                        : "assets/images/graded+_light.png",
+                iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 isSuccessState: ValueNotifier<bool>(true),
@@ -866,6 +874,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           pointPossible: Globals.pointPossible ?? "0"));
     } else {
       CreateAssessmentScreenMethod.navigateToSubjectSection(
+          titleIconData: widget.titleIconData,
           context: context,
           classSuggestions: widget.classSuggestions,
           classController: classController,

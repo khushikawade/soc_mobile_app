@@ -1,6 +1,11 @@
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/user_profile.dart';
 
 class GoogleDriveBlocMethods {
@@ -71,8 +76,8 @@ class GoogleDriveBlocMethods {
               folderName: folderName);
 
           if (isFolderCreated[0] == true) {
-            bool result = await updateDriveFolderDetails(
-                isFolderCreated[0], userProfileLocalInfo, folderName);
+            bool result = await updateDriveFolderDetails(isFolderCreated[1],
+                userProfileLocalInfo, folderName); //isFolderCreated[0]
             return result;
           } else {
             return false;
@@ -108,5 +113,53 @@ class GoogleDriveBlocMethods {
     // Update Details in localDb
     await UserGoogleProfile.updateUserProfile(userProfileLocalInfo);
     return true;
+  }
+
+//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
+
+  Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherCustomBehaviorList(
+      {required PBISPlusBloc pbisPluBloc}) async {
+    try {
+      LocalDatabase<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherCustomBehaviorLocalDb = LocalDatabase(
+              PBISPlusOverrides.PbisPlusTeacherCustomBehaviorLocalDbTable);
+
+      List<PBISPlusCommonBehaviorModal>?
+          pbisPlusTeacherCustomBehaviorLocalData =
+          await pbisPlusTeacherCustomBehaviorLocalDb.getData();
+
+      if (pbisPlusTeacherCustomBehaviorLocalData.isNotEmpty) {
+        return pbisPlusTeacherCustomBehaviorLocalData;
+      } else {
+        return await pbisPluBloc.getTeacherCustomBehavior(
+            teacherId: await OcrUtility.getTeacherId() ?? '');
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+//----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
+  Future<List<PBISPlusCommonBehaviorModal>> pbisPlusTeacherDefaultBehaviorList(
+      {required PBISPlusBloc pbisPluBloc}) async {
+    try {
+      LocalDatabase<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherDefaultBehaviorLocalDb =
+          LocalDatabase(PBISPlusOverrides.PbisPlusDefaultBehaviorLocalDbTable);
+
+      List<PBISPlusCommonBehaviorModal>?
+          pbisPlusTeacherDefaultBehaviorLocalData =
+          await pbisPlusTeacherDefaultBehaviorLocalDb.getData();
+
+      if (pbisPlusTeacherDefaultBehaviorLocalData.isNotEmpty) {
+        return pbisPlusTeacherDefaultBehaviorLocalData;
+      } else {
+        return await pbisPluBloc.getDefaultSchoolBehavior();
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 }

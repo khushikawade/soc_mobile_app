@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:uuid/uuid.dart';
 
 class PlusUtility {
@@ -21,13 +22,13 @@ class PlusUtility {
 /*------------------------------------------------------------------------------------------------*/
 /*------------------------------------------updateLogs--------------------------------------------*/
 /*------------------------------------------------------------------------------------------------*/
-  static bool updateLogs(
+  static Future<bool> updateLogs(
       {required String activityId,
       required String description,
       required String operationResult,
       String? sessionId,
       required String? activityType,
-      required String? userType}) {
+      required String? userType}) async {
     DateTime currentDateTime = DateTime.now(); //DateTime
 
     // instance for maintaining logs
@@ -40,7 +41,7 @@ class PlusUtility {
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,
-        teacherId: Globals.teacherId, //contact Id
+        teacherId: await OcrUtility.getTeacherId() ?? '', //contact Id
         activityId: activityId,
         accountId: Globals.appSetting.schoolNameC,
         accountType: 'Free',
@@ -50,8 +51,4 @@ class PlusUtility {
 
     return true;
   }
-
-/*------------------------------------------------------------------------------------------------*/
-/*------------------------------------sdhfirgoirhgoreghreighr-------------------------------------*/
-/*------------------------------------------------------------------------------------------------*/
 }

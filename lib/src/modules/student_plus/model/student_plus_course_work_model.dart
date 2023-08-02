@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 part 'student_plus_course_work_model.g.dart';
 
-@HiveType(typeId: 44)
+@HiveType(typeId: 51)
 class StudentPlusCourseWorkModel {
   @HiveField(0)
   final String? courseId;
@@ -36,23 +36,25 @@ class StudentPlusCourseWorkModel {
   final String? creatorUserId;
   @HiveField(13)
   final List<StudentWorkSubmission>? studentWorkSubmission;
+  @HiveField(14)
+  final String? studentCourseUserId;
 
-  StudentPlusCourseWorkModel({
-    this.courseId,
-    this.id,
-    this.title,
-    this.description,
-    this.state,
-    this.alternateLink,
-    this.creationTime,
-    this.updateTime,
-    this.maxPoints,
-    this.workType,
-    this.submissionModificationMode,
-    this.associatedWithDeveloper,
-    this.creatorUserId,
-    this.studentWorkSubmission,
-  });
+  StudentPlusCourseWorkModel(
+      {this.courseId,
+      this.id,
+      this.title,
+      this.description,
+      this.state,
+      this.alternateLink,
+      this.creationTime,
+      this.updateTime,
+      this.maxPoints,
+      this.workType,
+      this.submissionModificationMode,
+      this.associatedWithDeveloper,
+      this.creatorUserId,
+      this.studentWorkSubmission,
+      this.studentCourseUserId});
 
   factory StudentPlusCourseWorkModel.fromRawJson(String str) =>
       StudentPlusCourseWorkModel.fromJson(json.decode(str));
@@ -61,28 +63,28 @@ class StudentPlusCourseWorkModel {
 
   factory StudentPlusCourseWorkModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusCourseWorkModel(
-        courseId: json["courseId"],
-        id: json["id"],
-        title: json["title"],
-        description: json["description"],
-        state: json["state"],
-        alternateLink: json["alternateLink"],
-        creationTime: json["creationTime"] == null
-            ? null
-            : DateTime.parse(json["creationTime"]),
-        updateTime: json["updateTime"] == null
-            ? null
-            : DateTime.parse(json["updateTime"]),
-        maxPoints: json["maxPoints"],
-        workType: json["workType"],
-        submissionModificationMode: json["submissionModificationMode"],
-        associatedWithDeveloper: json["associatedWithDeveloper"],
-        creatorUserId: json["creatorUserId"],
-        studentWorkSubmission: json["studentWorkSubmission"] == null
-            ? []
-            : List<StudentWorkSubmission>.from(json["studentWorkSubmission"]!
-                .map((x) => StudentWorkSubmission.fromJson(x))),
-      );
+          courseId: json["courseId"],
+          id: json["id"],
+          title: json["title"],
+          description: json["description"],
+          state: json["state"],
+          alternateLink: json["alternateLink"],
+          creationTime: json["creationTime"] == null
+              ? null
+              : DateTime.parse(json["creationTime"]),
+          updateTime: json["updateTime"] == null
+              ? null
+              : DateTime.parse(json["updateTime"]),
+          maxPoints: json["maxPoints"],
+          workType: json["workType"],
+          submissionModificationMode: json["submissionModificationMode"],
+          associatedWithDeveloper: json["associatedWithDeveloper"],
+          creatorUserId: json["creatorUserId"],
+          studentWorkSubmission: json["studentWorkSubmission"] == null
+              ? []
+              : List<StudentWorkSubmission>.from(json["studentWorkSubmission"]!
+                  .map((x) => StudentWorkSubmission.fromJson(x))),
+          studentCourseUserId: null);
 
   Map<String, dynamic> toJson() => {
         "courseId": courseId,
@@ -104,7 +106,7 @@ class StudentPlusCourseWorkModel {
       };
 }
 
-@HiveType(typeId: 45)
+@HiveType(typeId: 53)
 class StudentWorkSubmission {
   @HiveField(0)
   final String? courseId;
@@ -241,7 +243,7 @@ class Attachment {
       };
 }
 
-@HiveType(typeId: 48)
+@HiveType(typeId: 52)
 class Link {
   @HiveField(0)
   final String? url;

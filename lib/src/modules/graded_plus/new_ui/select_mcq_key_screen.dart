@@ -25,7 +25,9 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/common_ocr_appbar.dart';
 
 class GradedPlusMultipleChoice extends StatefulWidget {
-  const GradedPlusMultipleChoice({Key? key}) : super(key: key);
+  final IconData? titleIconData;
+  const GradedPlusMultipleChoice({Key? key, this.titleIconData})
+      : super(key: key);
 
   @override
   State<GradedPlusMultipleChoice> createState() =>
@@ -127,6 +129,13 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
 
   PreferredSizeWidget appBar() {
     return CustomOcrAppBarWidget(
+      commonLogoPath: Color(0xff000000) == Theme.of(context).backgroundColor
+          ? "assets/images/graded+_dark.png"
+          : "assets/images/graded+_light.png",
+      refresh: (v) {
+        setState(() {});
+      },
+      iconData: widget.titleIconData,
       plusAppName: 'GRADED+',
       fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
@@ -144,7 +153,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         PlusScreenTitleWidget(
           kLabelSpacing: 0,
-          text: 'Answer Key',
+          text: 'Select Answer Key',
           backButton: true,
         ),
         SpacerWidget(StudentPlusOverrides.kSymmetricPadding),

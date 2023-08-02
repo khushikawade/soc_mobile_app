@@ -3,33 +3,55 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
-class PlusScreenTitleWidget extends StatelessWidget {
+// class PlusScreenTitleWidget extends StatelessWidget {
+//   final double kLabelSpacing;
+//   final String text;
+//   final bool? backButton;
+//   final bool? isTrailingIcon;
+//   final Function()? backButtonOnTap;
+
+//   const PlusScreenTitleWidget(
+//       {Key? key,
+//       required this.kLabelSpacing,
+//       required this.text,
+//       this.isTrailingIcon,
+//       this.backButton = false,
+//       this.backButtonOnTap})
+//       : super(key: key);
+class PlusScreenTitleWidget extends StatefulWidget {
   final double kLabelSpacing;
   final String text;
   final bool? backButton;
   final bool? isTrailingIcon;
   final Function()? backButtonOnTap;
 
-  const PlusScreenTitleWidget(
-      {Key? key,
-      required this.kLabelSpacing,
-      required this.text,
-      this.isTrailingIcon,
-      this.backButton = false,
-      this.backButtonOnTap})
-      : super(key: key);
+  const PlusScreenTitleWidget({
+    Key? key,
+    required this.kLabelSpacing,
+    required this.text,
+    this.isTrailingIcon,
+    this.backButton = false,
+    this.backButtonOnTap,
+  }) : super(key: key);
 
+  @override
+  _PlusScreenTitleWidgetState createState() => _PlusScreenTitleWidgetState();
+}
+
+class _PlusScreenTitleWidgetState extends State<PlusScreenTitleWidget> {
+  @override
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: kLabelSpacing / 2),
+      padding: EdgeInsets.symmetric(
+          vertical: 0, horizontal: widget.kLabelSpacing / 2),
       child: Row(
-        children: [
-          if (backButton == true)
+        children: <Widget>[
+          if (widget.backButton == true)
             IconButton(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.zero,
-              onPressed: backButtonOnTap ??
+              onPressed: widget.backButtonOnTap ??
                   () {
                     Navigator.of(context).pop();
                   },
@@ -41,14 +63,14 @@ class PlusScreenTitleWidget extends StatelessWidget {
               ),
             ),
           Container(
-            width: isTrailingIcon == true
+            width: widget.isTrailingIcon == true
                 ? MediaQuery.of(context).size.width * 0.6
                 : MediaQuery.of(context).size.width * 0.75,
             child: FittedBox(
               alignment: Alignment.centerLeft,
               fit: BoxFit.scaleDown,
               child: Utility.textWidget(
-                  text: text,
+                  text: widget.text,
                   context: context,
                   textAlign: TextAlign.left,
                   textTheme: Theme.of(context)

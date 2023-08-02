@@ -50,6 +50,7 @@ class GradedPlusCameraScreen extends StatefulWidget {
   final HistoryAssessment? obj;
   final String? assessmentName;
   final int? lastAssessmentLength;
+  final IconData? titleIconData;
   // bool flash;
   ValueNotifier<bool>? isFlashOn = ValueNotifier<bool>(false);
   GradedPlusCameraScreen(
@@ -67,7 +68,8 @@ class GradedPlusCameraScreen extends StatefulWidget {
       this.selectedAnswer,
       this.createdAsPremium,
       this.obj,
-      required this.isFlashOn})
+      required this.isFlashOn,
+      this.titleIconData})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -167,7 +169,6 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
     SystemChrome.setEnabledSystemUIOverlays([]);
-
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
@@ -324,7 +325,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       //     errorMsg: state.errorMsg!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                       await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.errorMsg!,
+                          scaffoldKey: _scaffoldKey);
                       _driveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
                           // questionImage: widget.questionImageLink ?? 'NA',
@@ -455,7 +459,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                       //     errorMsg: state.errorMsg!,
                       //     context: context,
                       //     scaffoldKey: _scaffoldKey);
-                        await Authentication.reAuthenticationRequired(context: context,errorMessage: state.errorMsg!,scaffoldKey: _scaffoldKey);
+                      await Authentication.reAuthenticationRequired(
+                          context: context,
+                          errorMessage: state.errorMsg!,
+                          scaffoldKey: _scaffoldKey);
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -616,6 +623,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           context,
                           null);
                     }
+                    SystemChrome.setEnabledSystemUIOverlays(
+                        SystemUiOverlay.values);
                   },
                 )),
         FutureBuilder(
@@ -719,6 +728,8 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 GradedPlusScanResult(
+                                                  titleIconData:
+                                                      widget.titleIconData,
                                                   assessmentName:
                                                       widget.assessmentName,
                                                   lastAssessmentLength: widget
@@ -1090,6 +1101,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+                  titleIconData: widget.titleIconData,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   obj: widget.obj,
@@ -1119,6 +1131,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         context,
         MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+                  titleIconData: widget.titleIconData,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   createdAsPremium: widget.createdAsPremium,
@@ -1143,6 +1156,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusCreateAssessment(
+                titleIconData: widget.titleIconData,
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 customGrades: classList,

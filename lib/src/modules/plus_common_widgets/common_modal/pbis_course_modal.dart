@@ -1,4 +1,6 @@
 import 'dart:math';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
 import 'package:hive/hive.dart';
 part 'pbis_course_modal.g.dart';
 
@@ -24,6 +26,12 @@ class ClassroomCourse {
   String? assessmentCId; //used in GRADED+
   @HiveField(9)
   String? courseWorkURL; //used in GRADED+
+  @HiveField(10)
+  String? section; //used in GRADED+
+  @HiveField(11)
+  String? room;
+  @HiveField(12)
+  String? updateTime;
 
   ClassroomCourse(
       {this.id,
@@ -35,7 +43,10 @@ class ClassroomCourse {
       this.students,
       this.courseWorkId,
       this.assessmentCId,
-      this.courseWorkURL});
+      this.courseWorkURL,
+      this.room,
+      this.section,
+      this.updateTime});
 
   ClassroomCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -44,6 +55,10 @@ class ClassroomCourse {
     ownerId = json['ownerId'] ?? '';
     enrollmentCode = json['enrollmentCode'] ?? '';
     courseState = json['courseState'] ?? '';
+    room = json['room'] ?? '';
+    section = json['section'] ?? '';
+
+    updateTime = json["updateTime"] ?? '';
     if (json['students'] != null) {
       students = <ClassroomStudents>[];
       json['students'].forEach((v) {
@@ -62,6 +77,9 @@ class ClassroomCourse {
     data['ownerId'] = this.ownerId;
     data['enrollmentCode'] = this.enrollmentCode;
     data['courseState'] = this.courseState;
+    data['room'] = this.room;
+    data['section'] = this.section;
+    data['updateTime'] = this.updateTime;
     if (this.students != null) {
       data['students'] = this.students!.map((v) => v.toJson()).toList();
     } else {
@@ -111,10 +129,25 @@ class ClassroomProfile {
   int? niceWork;
   @HiveField(7)
   int? helpful;
+  // @HiveField(5)
+  // PBISPlusGenericBehaviorModal? behavior1;
+  // @HiveField(6)
+  // PBISPlusGenericBehaviorModal? behavior2;
+  // @HiveField(7)
+  // PBISPlusGenericBehaviorModal? behavior3;
+  // @HiveField(8)
+  // PBISPlusGenericBehaviorModal? behavior4;
+  // @HiveField(9)
+  // PBISPlusGenericBehaviorModal? behavior5;
+  // @HiveField(10)
+  // PBISPlusGenericBehaviorModal? behavior6;
+
   @HiveField(8)
   String? courseName;
   @HiveField(9)
   String? courseId;
+  @HiveField(10)
+  List<BehaviorList>? behaviorList;
   ClassroomProfile(
       {this.id,
       this.name,
@@ -124,8 +157,15 @@ class ClassroomProfile {
       this.engaged,
       this.niceWork,
       this.helpful,
+      // this.behavior1,
+      // this.behavior2,
+      // this.behavior3,
+      // this.behavior4,
+      // this.behavior5,
+      // this.behavior6,
       this.courseName,
-      this.courseId});
+      this.courseId,
+      this.behaviorList});
 
   ClassroomProfile.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
@@ -144,11 +184,30 @@ class ClassroomProfile {
         permissions!.add(new ClassroomPermissions.fromJson(v));
       });
     }
+    // behavior1 = json['behavior1'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior2 = json['behavior2'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior3 = json['behaviou3'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior4 = json['behavior4'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior5 = json['behavior5'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
+    // behavior6 = json['behavior6'] != null
+    //     ? PBISPlusGenericBehaviorModal.fromJson(json['name'])
+    //     : null;
     engaged = 0;
     niceWork = 0;
     helpful = 0;
     courseName = '';
     courseId = '';
+    behaviorList = [];
   }
 
   Map<String, dynamic> toJson() {
@@ -221,5 +280,80 @@ class ClassroomPermissions {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['permission'] = this.permission;
     return data;
+  }
+}
+
+// @HiveType(typeId: 44)
+// class BehaviorList {
+//   String? id;
+//   String? name;
+//   int? score;
+
+//   BehaviorList({this.id, this.name, this.score});
+
+//   BehaviorList.fromJson(Map<String, dynamic> json) {
+//     id = json['Id'];
+//     name = json['Name'];
+//     score = json['Score'] ?? 0;
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['Id'] = this.id;
+//     data['Name'] = this.name;
+//     data['Score'] = this.score;
+//     return data;
+//   }
+// }
+
+@HiveType(typeId: 44)
+class BehaviorList {
+  @HiveField(0)
+  String? id;
+  @HiveField(1)
+  String? name;
+  @HiveField(2)
+  String? iconURL;
+  @HiveField(3)
+  bool? defaultBehavior;
+  @HiveField(4)
+  int? behaviorCount;
+
+  BehaviorList(
+      {this.id,
+      this.name,
+      this.iconURL,
+      this.defaultBehavior,
+      this.behaviorCount});
+
+  BehaviorList.fromJson(Map<String, dynamic> json) {
+    id = _parseId(json['Id']);
+    name = json['Name'] ?? '';
+    iconURL = json['Icon_URL'] ?? '';
+    defaultBehavior = json['Default'] == "true";
+    behaviorCount = json['Behavior_Count'] ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    data['Icon_URL'] = this.iconURL;
+    data['Default'] = this.defaultBehavior;
+    data['Behavior_Count'] = this.behaviorCount;
+    return data;
+  }
+
+  String _parseId(dynamic id) {
+    try {
+      if (id is int) {
+        return id.toString();
+      } else {
+        return id ?? '';
+      }
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 }

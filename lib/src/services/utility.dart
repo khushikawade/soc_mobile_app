@@ -7,9 +7,12 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/graded_globals.dart';
 import 'package:dio/dio.dart';
@@ -21,6 +24,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:mailto/mailto.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -28,8 +32,10 @@ import 'user_profile.dart';
 import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Utility {
+  final player = AudioCache();
   static bool? isOldUser = false;
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
@@ -83,6 +89,14 @@ class Utility {
     }
   }
 
+  static doVibration() async {
+    try {
+      await HapticFeedback.vibrate();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static String convertTimestampToDateFormat(
       DateTime timestamp, String format) {
     try {
@@ -94,22 +108,6 @@ class Utility {
       return '';
     }
   }
-
-  // static DateTime changeDateTimeFormat(DateTime timestamp, String format) {
-  //   try {
-  //     // final String date = DateFormat(format).format(timestamp);
-  //     final DateFormat formatter = DateFormat(format);
-  //     final String date = formatter.format(timestamp);
-  //     final DateTime newDate = DateTime.parse(date);
-  //     // print(newDate);
-  //     return newDate;
-  //   } catch (e) {
-  //     final DateFormat formatter = DateFormat(format);
-  //     final String date = formatter.format(DateTime.now());
-  //     final DateTime newDate = DateTime.parse(date);
-  //     return newDate;
-  //   }
-  // }
 
   static bool compareArrays(List array1, List array2) {
     if (array1.length == array2.length) {
@@ -472,14 +470,18 @@ class Utility {
     }
   }
 
-  static bool? currentScreenSnackBar(String msg, height,
-      {double? marginFromBottom}) {
+  static Future<bool>? currentScreenSnackBar(
+    String msg,
+    height, {
+    double? marginFromBottom,
+  }) async {
     Fluttertoast.cancel();
+    final translatedMsg = await translateString(msg);
     Fluttertoast.showToast(
-        msg: msg,
+        msg: translatedMsg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 5,
         backgroundColor:
             Globals.themeType == 'Dark' ? Colors.white : Colors.black,
         textColor: Globals.themeType != 'Dark' ? Colors.white : Colors.black,
@@ -500,35 +502,6 @@ class Utility {
       return false;
     }
   }
-
-  // static void loadingDialog(BuildContext context) async {
-  //   // show the loading dialog
-  //   showDialog(
-  //       // The user CANNOT close this dialog  by pressing outsite it
-  //       barrierDismissible: false,
-  //       context: context,
-  //       builder: (_) {
-  //         return Dialog(
-  //           // The background color
-  //           backgroundColor: Colors.white,
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 20),
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: const [
-  //                 // The loading indicator
-  //                 CircularProgressIndicator(),
-  //                 SizedBox(
-  //                   height: 15,
-  //                 ),
-  //                 // Some text
-  //                 Text('Loading...')
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       });
-  // }
 
   static void showLoadingDialog(
       {BuildContext? context,
@@ -605,23 +578,6 @@ class Utility {
           });
         });
   }
-
-  // static Future<void> saveUserProfile(String profileData) async {
-  //   UserGoogleProfile.clearUserProfile();
-  //   List<String> profile = profileData.split('+');
-  //   UserInformation _userInformation = UserInformation(
-  //       userName: profile[0].toString().split('=')[1],
-  //       userEmail: profile[1].toString().split('=')[1],
-  //       profilePicture: profile[2].toString().split('=')[1],
-  //       authorizationToken:
-  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
-  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
-
-  //   //Save user profile to locally
-  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-  //   await _localDb.addData(_userInformation);
-  //   await _localDb.close();
-  // }
 
   static Future<bool> checkUser(
       {required BuildContext context,
@@ -814,23 +770,10 @@ class Utility {
                                       ));
                             }),
                         onPressed: () async {
-                          //Globals.isCameraPopup = false;
-                          // LocalDatabase<UserInformation> _localDb =
-                          //     LocalDatabase('user_profile');
-
-                          // await _localDb.clear();
-                          // await _localDb.addData(newUserInfo);
-                          // await _localDb.close();
                           //UPDATE NEW CURRENT GOOGLE USER PROFILE
                           await UserGoogleProfile.updateUserProfile(
                               newUserInfo);
 
-                          // Navigator.of(context).pushAndRemoveUntil(
-                          //     MaterialPageRoute(
-                          //         builder: (context) => HomePage(
-                          //               isFromOcrSection: true,
-                          //             )),
-                          //     (_) => false);
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                         },
@@ -1005,5 +948,91 @@ class Utility {
       body: body,
     );
     await Utility.launchUrlOnExternalBrowser('$mailtoLink');
+  }
+
+  static Color getContrastColor(BuildContext context) {
+    return Color(0xff000000) != Theme.of(context).backgroundColor
+        ? Color(0xffF7F8F9)
+        : Color(0xff111C20);
+  }
+
+  static getTimefromUtc(String utcdatetimeString, String cas) {
+    try {
+      if (utcdatetimeString != null && utcdatetimeString.isNotEmpty) {
+        DateTime datetime = DateTime.parse(utcdatetimeString).toLocal();
+        switch (cas) {
+          case 'D':
+            return DateFormat('dd/MM/yyyy').format(datetime); //Date: 28/06/2023
+          case 'T':
+            return DateFormat.jm().format(datetime); //Time: 9:27 AM
+          case 'WD':
+            return DateFormat.EEEE().format(datetime); // e.g., Wednesday
+        }
+      }
+    } catch (e) {
+      return utcdatetimeString;
+    }
+  }
+
+  static Future clearStudentList({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
+  }
+
+  static translateString(String msg) async {
+    try {
+      final toLanguageCode =
+          Translations.supportedLanguagesCodes(Globals.selectedLanguage!);
+      if (toLanguageCode == 'en' || toLanguageCode == '') {
+        return msg;
+      } else {
+        var res = await TranslationAPI.translate(msg, toLanguageCode, false);
+        return res;
+      }
+    } catch (e) {
+      return msg;
+    }
+  }
+
+//Added to manage translation in richtext widget
+  static Widget textSpanWidget(
+      {required String text1,
+      TextStyle? textTheme1,
+      String? text2,
+      TextStyle? textTheme2,
+      required context,
+      TextAlign? textAlign,
+      maxLines}) {
+    return TranslationWidget(
+        message: text1,
+        toLanguage: Globals.selectedLanguage,
+        fromLanguage: "en",
+        builder: (translatedText1) {
+          return TranslationWidget(
+              message: text2,
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedText2) {
+                return RichText(
+                    maxLines: maxLines,
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: translatedText1.toString(),
+                          style: textTheme1 != null
+                              ? textTheme1
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold)),
+                      TextSpan(text: ' '),
+                      TextSpan(
+                          text: translatedText2.toString(),
+                          style: textTheme2 != null
+                              ? textTheme2
+                              : Theme.of(context).textTheme.bodyText1)
+                    ]));
+              });
+        });
   }
 }

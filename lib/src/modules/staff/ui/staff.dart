@@ -6,22 +6,17 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
@@ -340,7 +335,7 @@ class _StaffPageState extends State<StaffPage> {
         if (user != null) {
           if (user.email != null && user.email != '') {
             _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, isAuthorizedUser: true));
+                email: user.email, role: "Teacher"));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
@@ -351,86 +346,57 @@ class _StaffPageState extends State<StaffPage> {
       }
     } else {
       if (_profileData[0].userType != "Teacher") {
-        popupModal(
-            message:
-                "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
+
+        staffActionIconsOnTap(actionName: actionName);
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
-      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+      // Utility.showLoadingDialog(
+      //     context: context, msg: "Please Wait", isOCR: false);
+      // await Authentication.refreshAuthenticationToken(
+      //     refreshToken: _profileData[0].refreshToken);
+      // await GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
-      //Creating fresh sessionID
-      Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      // //Creating fresh sessionID
+      // Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
+      // if (Navigator.of(context).canPop()) {
+      //   Navigator.pop(context, true);
+      // }
 
       navigatorToScreen(actionName: actionName);
     }
   }
 
 //--------------------------------------------------------------------------------------------------------
-  navigatorToScreen({required String actionName}) {
+  navigatorToScreen({required String actionName}) async {
     if (Overrides.STANDALONE_GRADED_APP == true) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => GradedLandingPage()));
     } else {
-      if (actionName == 'GRADED+') {
-        //Graded+ login activity
-        PlusUtility.updateLogs(
-            activityType: 'GRADED+',
-            userType: 'Teacher',
-            activityId: '2',
-            description: 'Graded+ Accessed(Login)/Login Id:',
-            operationResult: 'Success');
-
-        pushNewScreen(
-          context,
-          screen: StartupPage(
-            isOcrSection: true, //since always opens OCR
-            isMultipleChoice: false,
-          ),
-          withNavBar: false,
-        );
-      } else if (actionName == 'PBIS+') {
-        PlusUtility.updateLogs(
-            activityType: 'PBIS+',
-            userType: 'Teacher',
-            activityId: '2',
-            description: 'PBIS+ Accessed(Login)/Login Id: ',
-            operationResult: 'Success');
-
-        pushNewScreen(
-          context,
-          screen: PBISPlusHome(),
-          withNavBar: false,
-        );
-      } else if (actionName == 'STUDENT+') {
-        PlusUtility.updateLogs(
-            activityType: 'STUDENT+',
-            userType: 'Teacher',
-            activityId: '2',
-            description: 'STUDENT+ Accessed(Login)/Login Id: ',
-            operationResult: 'Success');
-
-        pushNewScreen(
-          context,
-          screen: StudentPlusSearchScreen(
-              fromStudentPlusDetailPage: false,
-              index: 0,
-              studentDetails: studentDetails),
-          withNavBar: false,
-        );
-      }
+      pushNewScreen(
+        context,
+        screen: PlusSplashScreen(
+          sectionType: 'Staff',
+          actionName: actionName,
+        ),
+        withNavBar: false,
+      );
     }
-  }
-
-  Widget textwidget({required String text, required dynamic textTheme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        style: textTheme,
-      ),
-    );
   }
 
   Widget topActionButtonWidget({required double height}) {
@@ -447,122 +413,118 @@ class _StaffPageState extends State<StaffPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: StaffIconsList.staffIconsList
                     .map<Widget>((element) => GestureDetector(
-                          onTap: () async {
-                            selectedIndex.value =
-                                StaffIconsList.staffIconsList.indexOf(element);
-                            actionName = element.iconName;
-                            staffActionIconsOnTap(actionName: element.iconName);
-                          },
-                          child: Bouncing(
-                              child: AnimatedContainer(
-                            padding: EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color: selectedIndex.value ==
-                                      StaffIconsList.staffIconsList
-                                          .indexOf(element)
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                            ),
-                            duration: Duration(microseconds: 100),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                                border: Border.all(
+                        onTap: () async {
+                          selectedIndex.value =
+                              StaffIconsList.staffIconsList.indexOf(element);
+                          actionName = element.iconName;
+                          staffActionIconsOnTap(actionName: element.iconName);
+                        },
+                        child: Bouncing(
+                            child: AnimatedContainer(
+                                padding: EdgeInsets.only(bottom: 5),
+                                decoration: BoxDecoration(
                                   color: selectedIndex.value ==
                                           StaffIconsList.staffIconsList
                                               .indexOf(element)
                                       ? AppTheme.kSelectedColor
                                       : Colors.grey,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
-                              child: Container(
-                                height: height / 1.7,
-                                width: height / 1.7,
-                                decoration: BoxDecoration(
-                                    //color: AppTheme.kButtonColor,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: element.iconUrl.contains('pbis')
-                                          ? height / 4.3
-                                          : height / 3,
-                                      margin: EdgeInsets.all(6),
-                                      child: Image(
-                                        image:
-                                            Image.asset(element.iconUrl).image,
+                                duration: Duration(microseconds: 100),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff000000) !=
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xffF7F8F9)
+                                          : Color(0xff111C20),
+                                      border: Border.all(
+                                        color: selectedIndex.value ==
+                                                StaffIconsList.staffIconsList
+                                                    .indexOf(element)
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
                                     ),
-                                    element.iconUrl
-                                            .contains('landingPage_image')
-                                        ? Container()
-                                        : SpacerWidget(4),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: FittedBox(
-                                        child: Utility.textWidget(
-                                            text: element.iconName,
-                                            textTheme: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1,
-                                            context: context),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )),
-                        ))
+                                    child: Container(
+                                        height: height / 1.7,
+                                        width: height / 1.7,
+                                        decoration: BoxDecoration(
+                                            //color: AppTheme.kButtonColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  width: element.iconUrl
+                                                          .contains('pbis')
+                                                      ? height / 4.3
+                                                      : height / 3,
+                                                  margin: EdgeInsets.all(6),
+                                                  child: Image(
+                                                    image: Image.asset(
+                                                            element.iconUrl)
+                                                        .image,
+                                                  )),
+                                              element.iconUrl.contains(
+                                                      'landingPage_image')
+                                                  ? Container()
+                                                  : SpacerWidget(4),
+                                              Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: FittedBox(
+                                                      child: Text(
+                                                    element.iconName,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1,
+                                                  )))
+                                            ])))))))
                     .toList(),
               ));
         });
   }
 
   // popUp in case of user login in another section
-
   popupModal({required String message}) {
     return showDialog(
         context: context,
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return CommonPopupWidget(
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message: message,
-                title: "Action Required",
-                confirmationOnPress: () async {
-                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      "logout");
-                  await UserGoogleProfile.clearUserProfile();
-                  await GoogleClassroom.clearClassroomCourses();
-                  await Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
-                  // Globals.googleDriveFolderId = null;
-                  PlusUtility.updateLogs(
-                      activityType: 'GRADED+',
-                      userType: 'Teacher',
-                      activityId: '3',
-                      description: 'User profile logout',
-                      operationResult: 'Success');
-                  Navigator.pop(context);
-                  staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
-                },
-              );
+                  isLogout: true,
+                  orientation: orientation,
+                  context: context,
+                  message: message,
+                  title: "Action Required",
+                  confirmationOnPress: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "logout");
+                    await UserGoogleProfile.clearUserProfile();
+                    await GoogleClassroom.clearClassroomCourses();
+                    await Authentication.signOut(context: context);
+                    Utility.clearStudentInfo(tableName: 'student_info');
+                    Utility.clearStudentInfo(tableName: 'history_student_info');
+                    // Globals.googleDriveFolderId = null;
+                    PlusUtility.updateLogs(
+                        activityType: 'GRADED+',
+                        userType: 'Teacher',
+                        activityId: '3',
+                        description: 'User profile logout',
+                        operationResult: 'Success');
+                    Navigator.pop(context);
+                    staffActionIconsOnTap(actionName: actionName ?? 'GRADED+');
+                  });
             }));
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -9,7 +11,6 @@ import '../../globals.dart';
 import '../../services/Strings.dart';
 import '../../services/local_database/local_db.dart';
 import '../../services/utility.dart';
-import '../../startup.dart';
 import '../../widgets/google_auth_webview.dart';
 import '../google_classroom/modal/google_classroom_courses.dart';
 import '../google_drive/bloc/google_drive_bloc.dart';
@@ -19,7 +20,8 @@ import '../graded_plus/bloc/graded_plus_bloc.dart';
 class GoogleLogin {
   //To authenticate the user via google
   static launchURL(String? title, context, _scaffoldKey, String? buttonPressed,
-      String? activityType , {required String userType}) async {
+      String? activityType,
+      {required String userType}) async {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'google_login', screenClass: 'GoogleLogin');
@@ -72,11 +74,11 @@ class GoogleLogin {
     } else if (value.toString().contains('success')) {
       value = value.split('?')[1] ?? '';
       //Save user profile
-      await saveUserProfile(value,userType);
+      await saveUserProfile(value, userType);
       List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData);
+      GoogleLogin.verifyUserAndGetDriveFolder(_userProfileLocalData, userType);
 
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
 
@@ -112,7 +114,8 @@ class GoogleLogin {
     }
   }
 
-  static Future<void> saveUserProfile(String profileData,String userType) async {
+  static Future<void> saveUserProfile(
+      String profileData, String userType) async {
     List<String> profile = profileData.split('+');
     UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],
@@ -129,15 +132,14 @@ class GoogleLogin {
   }
 
   static verifyUserAndGetDriveFolder(
-      List<UserInformation> _userProfileLocalData) async {
+      List<UserInformation> _userProfileLocalData, String role) async {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc.add(AuthorizedUserWithDatabase(
-        email: _userProfileLocalData[0].userEmail, isAuthorizedUser: false));
+        email: _userProfileLocalData[0].userEmail, role: role));
 
     // Creating a assessment folder in users google drive to maintain all the assessments together at one place
-
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isReturnState: false,
         //  filePath: file,

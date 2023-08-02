@@ -12,9 +12,9 @@ abstract class OcrEvent extends Equatable {
 
 class AuthorizedUserWithDatabase extends OcrEvent {
   final String? email;
-  final bool? isAuthorizedUser;
+  final String? role;
   AuthorizedUserWithDatabase(
-      {required this.email, required this.isAuthorizedUser});
+      {required this.email, required this.role});
 
   @override
   List<Object> get props => [email!];
@@ -330,6 +330,22 @@ class FetchGradedApprovedDomains extends OcrEvent {
 class AuthenticateEmail extends OcrEvent {
   String email;
   AuthenticateEmail({required this.email});
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateGradedPlusStudentResult extends OcrEvent {
+  final String oldStudentId;
+  final String mewStudentId;
+  final String studentName;
+  final String result;
+  final String assessmentId;
+  UpdateGradedPlusStudentResult(
+      {required this.oldStudentId,
+      required this.mewStudentId,
+      required this.result,
+      required this.studentName,
+      required this.assessmentId});
   @override
   List<Object> get props => [];
 }

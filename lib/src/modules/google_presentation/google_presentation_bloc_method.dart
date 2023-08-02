@@ -38,7 +38,9 @@ class GooglePresentationBlocMethods {
       {required final StudentPlusDetailsModel studentDetails,
       required int index}) {
     Map map = {
-      0: (studentDetails.firstNameC ?? '') + (studentDetails.lastNameC ?? ''),
+      0: (studentDetails.firstNameC ?? '') +
+          " " +
+          (studentDetails.lastNameC ?? ''),
       1: studentDetails.id ?? '',
       2: studentDetails.parentPhoneC ?? '',
       3: studentDetails.emailC ?? '',
@@ -60,9 +62,8 @@ class GooglePresentationBlocMethods {
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------Method updateStudentLocalDBWithGooglePresentationUrl------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-  static updateStudentLocalDBWithGooglePresentationUrl({
-    required StudentPlusDetailsModel studentDetails,
-  }) async {
+  static updateStudentLocalDBWithGooglePresentationUrl(
+      {required StudentPlusDetailsModel studentDetails}) async {
     try {
       //this will get the all students saved in local db
       LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
@@ -104,7 +105,7 @@ class GooglePresentationBlocMethods {
         'Attend %',
         'Gender',
         'Age',
-        'DOB',
+        'DOB'
       ];
 
       List<String> listOfFieldsForEveryStudentSlide = [
@@ -147,9 +148,9 @@ class GooglePresentationBlocMethods {
                 "scaleY": 1,
                 "translateX": 2005000,
                 "translateY": 850000,
-                "unit": "EMU",
+                "unit": "EMU"
               }
-            },
+            }
           }
         };
 
@@ -213,18 +214,26 @@ class GooglePresentationBlocMethods {
       allRecords
           .asMap()
           .forEach((int index, StudentPlusWorkModel element) async {
-        String pageObjectUniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+        // id for every page obj
+        String pageObjectuniqueId = "pageObjectId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
+        //id for every table obj
+        String tableObjectuniqueId = "tableObjectId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
 
-        String tableObjectUniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+        //id for every image obj
+        String imageObjectuniqueId = "imageObjectuniqueId" +
+            DateTime.now().microsecondsSinceEpoch.toString() +
+            "$index";
 
         //--------------------------------------------------------------------------------------
         // Preparing all other blank slide (based on student detail length) type to add assessment images
         Map slideObject = {
           "createSlide": {
             "insertionIndex": index + 1, //Location to add new slides
-            "objectId": pageObjectUniqueId,
+            "objectId": pageObjectuniqueId,
             "slideLayoutReference": {"predefinedLayout": "BLANK"}
           }
         };
@@ -238,9 +247,9 @@ class GooglePresentationBlocMethods {
             "createImage": {
               "url": element.assessmentImageC,
               "elementProperties": {
-                "pageObjectId": pageObjectUniqueId,
+                "pageObjectId": pageObjectuniqueId,
               },
-              "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+              "objectId": imageObjectuniqueId
             }
           };
           slideRequiredObjectsList.add(obj);
@@ -252,9 +261,9 @@ class GooglePresentationBlocMethods {
           "createTable": {
             "rows": listOfFieldsForEveryStudentSlide.length, //pass no. of names
             "columns": 2, //key:value
-            "objectId": tableObjectUniqueId,
+            "objectId": tableObjectuniqueId,
             "elementProperties": {
-              "pageObjectId": pageObjectUniqueId,
+              "pageObjectId": pageObjectuniqueId,
               "size": {
                 "width": {"magnitude": 6000000, "unit": "EMU"},
                 "height": {"magnitude": 3000000, "unit": "EMU"}
@@ -278,7 +287,7 @@ class GooglePresentationBlocMethods {
             slideRequiredObjectsList.add(
               {
                 "insertText": {
-                  "objectId": tableObjectUniqueId,
+                  "objectId": tableObjectuniqueId,
                   "cellLocation": {
                     "rowIndex": rowIndex,
                     "columnIndex": columnIndex
@@ -294,7 +303,7 @@ class GooglePresentationBlocMethods {
             //update the textstyle and fontsize of table cells
             slideRequiredObjectsList.add({
               "updateTextStyle": {
-                "objectId": tableObjectUniqueId,
+                "objectId": tableObjectuniqueId,
                 "style": {
                   "fontSize": {"magnitude": 10, "unit": "PT"},
                   "bold": columnIndex == 0
@@ -318,22 +327,34 @@ class GooglePresentationBlocMethods {
   }
 
   static String createStudentGooglePresentationFileName(
-      StudentPlusDetailsModel studentDetails) {
+      {required StudentPlusDetailsModel studentDetails,
+      required final String filterWorkName,
+      bool? studentGooglePresentationFileName = false}) {
     try {
-      //create file name for student Presentation
+      // Create file name for student Presentation
       String fileName = '';
 
-      if (studentDetails.lastNameC != null && studentDetails.lastNameC != '') {
-        fileName += studentDetails.lastNameC! + "_";
+      // Add last name if available
+      if (studentDetails.lastNameC?.isNotEmpty == true) {
+        fileName += studentDetails.lastNameC!;
       }
 
-      if (studentDetails.firstNameC != null &&
-          studentDetails.firstNameC != '') {
-        fileName += studentDetails.firstNameC! + "_";
+      // Add first name if available
+      if (studentDetails.firstNameC?.isNotEmpty == true) {
+        fileName += ' ' + studentDetails.firstNameC!;
       }
 
-      fileName += DateFormat('MM/dd/yy').format(DateTime.now());
-      return fileName ?? '';
+      // Adding date to google presentation only since date in the database may differ while fetching by name which contain current date in the search key
+      if (studentGooglePresentationFileName == true) {
+        fileName += "_${DateFormat('MM/dd/yy').format(DateTime.now())}";
+      }
+
+      // Add underscore for filtered work name if available
+      if (filterWorkName.trim().isNotEmpty) {
+        fileName += "_${filterWorkName.trimLeft()}";
+      }
+
+      return fileName;
     } catch (e) {
       throw (e);
     }

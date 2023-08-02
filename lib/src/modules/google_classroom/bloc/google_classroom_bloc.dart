@@ -3,11 +3,13 @@ import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_modal.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_methods.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -35,6 +37,7 @@ class GoogleClassroomBloc
   int _totalRetry = 0;
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final OcrBloc _bloc = new OcrBloc();
+  GoogleDriveBlocMethods googleDriveBlocMethods = GoogleDriveBlocMethods();
 
   @override
   Stream<GoogleClassroomState> mapEventToState(
@@ -316,6 +319,9 @@ class GoogleClassroomBloc
     /*----------------------------------------------------------------*/
     if (event is CreatePBISClassroomCoursework) {
       try {
+        //To pbis plus instance to get the teacher default and custom behaviors list
+
+        final PBISPlusBloc pbisPluBloc = PBISPlusBloc();
         // //Just to save the event data to the local list to make sure data is not getting empty on continue hitting the classrroom
         //copy the list in local to perform operation
         List<ClassroomCourse> localCourseAndStudentList = [];
@@ -326,14 +332,40 @@ class GoogleClassroomBloc
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
+//-------------------------------------------------// Start//----------------------------------------------------------------///
+//----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
+//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
+
+// Getting local saved PBISP Plus Default School Behavior
+        List<PBISPlusCommonBehaviorModal>?
+            pbisPlusTeacherDefaultBehaviorLocalData =
+            await googleDriveBlocMethods.pbisPlusTeacherDefaultBehaviorList(
+                pbisPluBloc: pbisPluBloc);
+        //-Getting local saved PBISP Plus Custom School Behavior
+        List<PBISPlusCommonBehaviorModal>?
+            pbisPlusTeacherCustomBehaviorLocalData =
+            await googleDriveBlocMethods.pbisPlusTeacherCustomBehaviorList(
+                pbisPluBloc: pbisPluBloc);
+
+        // print(pbisPlusTeacherDefaultBehaviorLocalData);
+        // print(pbisPlusTeacherCustomBehaviorLocalData);
+
+//----------------------------------// Getting local saved PBISP Plus Default School Behavior//--------------------------------///
+//---------------------------------//-Getting local saved PBISP Plus Custom School Behavior-------------------------------------//
+//-------------------------------------------------// End//----------------------------------------------------------------///
+
         var result = await _createPBISCoursework(
-            authorizationToken:
-                userProfileLocalData[0].authorizationToken ?? '',
-            refreshToken: userProfileLocalData[0].refreshToken ?? '',
-            teacherEmail: userProfileLocalData[0].userEmail ?? '',
-            maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
-            // studentProfileDetails: [],
-            courseAndStudentList: localCourseAndStudentList);
+          authorizationToken: userProfileLocalData[0].authorizationToken ?? '',
+          refreshToken: userProfileLocalData[0].refreshToken ?? '',
+          teacherEmail: userProfileLocalData[0].userEmail ?? '',
+          maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
+          // studentProfileDetails: [],
+          courseAndStudentList: localCourseAndStudentList,
+          pbisPlusTeacherCustomBehaviorLocalData:
+              pbisPlusTeacherCustomBehaviorLocalData,
+          pbisPlusTeacherDefaultBehaviorLocalData:
+              pbisPlusTeacherDefaultBehaviorLocalData,
+        );
 
         if (result[1] == '') {
           yield CreateClassroomCourseWorkSuccess();
@@ -846,6 +878,10 @@ class GoogleClassroomBloc
     required String teacherEmail,
     required int maxPoints,
     required List<ClassroomCourse> courseAndStudentList,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherCustomBehaviorLocalData,
+    required final List<PBISPlusCommonBehaviorModal>
+        pbisPlusTeacherDefaultBehaviorLocalData,
     int retry = 3,
   }) async {
     final pbisBloc = PBISPlusBloc();
@@ -863,15 +899,19 @@ class GoogleClassroomBloc
         // print('index i : $i');
 
         // To add only course related student for single course
+        //TODOPBIS: //Only need to send total point
         if (courseAndStudentList[i].students!.length > 0) {
           final studentProfileDetails = courseAndStudentList[i]
               .students!
-              .map((student) => ClassRoomStudentProfile(
+              .map((ClassroomStudents student) => ClassRoomStudentProfile(
                     studentId: student.profile!.id,
                     studentAssessmentImage: '',
-                    earnedPoint: student.profile!.engaged! +
-                        student.profile!.niceWork! +
-                        student.profile!.helpful!,
+                    earnedPoint: getEarnedPoint(
+                        pbisPlusTeacherCustomBehaviorLocalData:
+                            pbisPlusTeacherCustomBehaviorLocalData,
+                        pbisPlusTeacherDefaultBehaviorLocalData:
+                            pbisPlusTeacherDefaultBehaviorLocalData,
+                        behaviorList: student.profile!.behaviorList ?? []),
                   ))
               .toList();
 
@@ -924,6 +964,10 @@ class GoogleClassroomBloc
                 maxPoints: maxPoints,
                 refreshToken: userProfileLocalData[0].refreshToken!,
                 courseAndStudentList: courseAndStudentList,
+                pbisPlusTeacherCustomBehaviorLocalData:
+                    pbisPlusTeacherCustomBehaviorLocalData,
+                pbisPlusTeacherDefaultBehaviorLocalData:
+                    pbisPlusTeacherDefaultBehaviorLocalData,
               );
             }
           }
@@ -1046,6 +1090,39 @@ class GoogleClassroomBloc
       return [];
     } catch (e) {
       return [false, e.toString()];
+    }
+  }
+
+//-------------------------------------------GET ALL BEHVIOUR COUNTS TO UPDATE ON CLASSROOM--------------///////
+  int getEarnedPoint(
+      {required List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherCustomBehaviorLocalData,
+      required List<PBISPlusCommonBehaviorModal>
+          pbisPlusTeacherDefaultBehaviorLocalData,
+      required List<BehaviorList> behaviorList}) {
+    try {
+      int total = 0;
+
+      pbisPlusTeacherDefaultBehaviorLocalData.forEach((i) {
+        behaviorList.forEach((k) {
+          if (i.id == k.id) {
+            total += k.behaviorCount!;
+          }
+        });
+      });
+
+      pbisPlusTeacherCustomBehaviorLocalData.forEach((i) {
+        behaviorList.forEach((k) {
+          if (i.id == k.id) {
+            total += k.behaviorCount!;
+          }
+        });
+      });
+
+      return total ?? 0;
+    } catch (e) {
+      print(e);
+      return 0;
     }
   }
 }

@@ -1,23 +1,17 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/google_presentation/google_presentation_bloc_method.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/google_authentication.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 part 'google_presentation_event.dart';
 part 'google_presentation_state.dart';
 
@@ -202,7 +196,10 @@ class GoogleSlidesPresentationBloc
 
         //GET STUDENT PRESENTATION FILE NAME
         String studentGooglePresentationFileName = GooglePresentationBlocMethods
-            .createStudentGooglePresentationFileName(event.studentDetails);
+            .createStudentGooglePresentationFileName(
+                filterWorkName: event.filterName,
+                studentDetails: event.studentDetails,
+                studentGooglePresentationFileName: true);
 
         //CREATE STUDENT PRESENTATION TO DRIVE
         List GooglePresentationCreateResponse =
@@ -360,6 +357,7 @@ class GoogleSlidesPresentationBloc
             (countGooglePresentationSlideAndTrashStatus[1][0] == true &&
                 countGooglePresentationSlideAndTrashStatus[1][1] == true)) {
           //if the api response return (404) the resource you are trying to access doesn't e
+          yield GooglePresentationLoading();
           yield GoogleSlidesPresentationErrorState(errorMsg: "404");
         }
 
@@ -370,6 +368,7 @@ class GoogleSlidesPresentationBloc
           if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
               countGooglePresentationSlideAndTrashStatus[0][1] <=
                   event.allRecords.length) {
+            print("update the  new slides google presentation");
             List updatedPresentationResponse =
                 await updateNewSlidesToGooglePresentation(
                     presentationId:
@@ -384,13 +383,15 @@ class GoogleSlidesPresentationBloc
               //update the Presentation link on studentDetails
               event.studentDetails.studentGooglePresentationUrl =
                   countGooglePresentationSlideAndTrashStatus[1][1];
-
+              print("StudentPlusUpdateStudentWorkGooglePresentationSuccess");
+              yield GooglePresentationLoading();
               yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                   studentDetails: event.studentDetails,
                   //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
                   isSaveStudentGooglePresentationWorkOnDataBase:
                       countGooglePresentationSlideAndTrashStatus[0][1] == 0);
             } else {
+              yield GooglePresentationLoading();
               yield GoogleSlidesPresentationErrorState(
                   errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
                       .toString());
@@ -401,6 +402,8 @@ class GoogleSlidesPresentationBloc
           else if (countGooglePresentationSlideAndTrashStatus[0][0] == true &&
               countGooglePresentationSlideAndTrashStatus[0][1] >
                   event.allRecords.length) {
+            print("no need to update the sldies");
+            yield GooglePresentationLoading();
             yield StudentPlusUpdateStudentWorkGooglePresentationSuccess(
                 studentDetails: event.studentDetails,
                 //isSaveStudentGooglePresentationWorkOnDataBase//Checking if need to save presentation url to database or not //save in case of true
@@ -409,6 +412,7 @@ class GoogleSlidesPresentationBloc
           }
           //---------------------------
           else {
+            yield GooglePresentationLoading();
             yield GoogleSlidesPresentationErrorState(
                 errorMsg: countGooglePresentationSlideAndTrashStatus[0][1]
                     .toString());
@@ -416,6 +420,7 @@ class GoogleSlidesPresentationBloc
         }
       } catch (e) {
         print(e);
+        yield GooglePresentationLoading();
         yield GoogleSlidesPresentationErrorState(errorMsg: e.toString());
       }
     }
@@ -505,7 +510,8 @@ class GoogleSlidesPresentationBloc
         'Content-Type': 'application/json',
         'authorization': 'Bearer ${userProfile!.authorizationToken}'
       };
-
+      print("check this $presentationFileId");
+      print("getSlidesCountFromGooglePresentation API CALLED");
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationFileId";
 
@@ -513,7 +519,7 @@ class GoogleSlidesPresentationBloc
           headers: headers, isCompleteUrl: true);
 
       print(
-          "getSlidesCountFromGooglePresentation API $response.data['statusCode']");
+          "getSlidesCountFromGooglePresentation API ${response.data['statusCode']}");
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['slides'];
@@ -582,12 +588,12 @@ class GoogleSlidesPresentationBloc
       };
       //---------------------------------------------------------------------------------
       final ResponseModel response = await _dbServices.postApi(
-          'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+          '${GoogleOverrides.Google_BRIDGE_API_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
           body: body,
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return [true, true];
       } else if (retry > 0) {
         // var result = googleDriveBloc
@@ -629,10 +635,11 @@ class GoogleSlidesPresentationBloc
 
       String api =
           "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$presentationFileId?fields=trashed,webViewLink";
-
+      print("checkGooglePresentationInTrashed API CALEED}");
       final ResponseModel response = await _dbServices.getApiNew(api,
           headers: headers, isCompleteUrl: true);
-
+      print(
+          "checkGooglePresentationInTrashed API ${response.data['statusCode']}");
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body'];
         bool? isTrashed = data['trashed'];

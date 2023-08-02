@@ -113,15 +113,14 @@ class _GradedPlusResultOptionBottomSheetState
             padding: EdgeInsets.only(left: element.title != "Slides" ? 4 : 0),
             child: SvgPicture.asset(
               element.svgPath!,
-              color: element.title == "Dashboard"
-                  ? Color(0xff000000) == Theme.of(context).backgroundColor
-                      ? Color(0xffF7F8F9)
-                      : Color(0xff111C20)
-                  : null,
+              color:
+                  element.title == "Dashboard" ? AppTheme.kButtonColor : null,
             ),
           ),
           title: Utility.textWidget(
-              text: element.title!,
+              text: element.title == "Dashboard"
+                  ? "${Globals.schoolDbnC} ${element.title}"
+                  : "${element.title}",
               context: context,
               textTheme: Theme.of(context).textTheme.headline3!),
           onTap: () {

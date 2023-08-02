@@ -53,6 +53,7 @@ class GradedPluSubjectSelection extends StatefulWidget {
   // final String? questionImageUrl;
   final bool? isCommonCore;
   final File? gradedPlusQueImage;
+  final IconData? titleIconData;
   GradedPluSubjectSelection(
       {Key? key,
       this.stateName,
@@ -66,7 +67,8 @@ class GradedPluSubjectSelection extends StatefulWidget {
       this.isCommonCore,
       this.isMcqSheet,
       this.selectedAnswer,
-      required this.gradedPlusQueImage})
+      required this.gradedPlusQueImage,
+      this.titleIconData})
       : super(key: key);
 
   @override
@@ -130,7 +132,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       //     &&
       // Overrides.STANDALONE_GRADED_APP != true)
       ? [
-          'Google Sheet',
+          'Google Sheets',
           'Google Slides',
           'Google Classroom',
           '${Globals.schoolDbnC} Dashboard'
@@ -252,42 +254,46 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
-      child: Container(
-        child: Stack(
-          children: [
-            CommonBackgroundImgWidget(),
-            Scaffold(
-                key: _scaffoldKey,
-                bottomNavigationBar: progressIndicatorBar(),
-                floatingActionButton: saveToDriveButton(),
-                backgroundColor: Colors.transparent,
-                resizeToAvoidBottomInset: false,
-                appBar: CustomOcrAppBarWidget(
-                  plusAppName: 'GRADED+',
-                  fromGradedPlus: true,
-                  hideStateSelection: true,
-                  onTap: () {
-                    Utility.scrollToTop(scrollController: _scrollController);
-                  },
-                  isSuccessState: ValueNotifier<bool>(true),
-                  isBackOnSuccess: isBackFromCamera,
-                  isBackButton: true,
-                  key: null,
-                  isHomeButtonPopup: true,
-                  customBackButton: backButtonWidget(),
-                ),
-                body: mainBodyWidget()),
-            googleBlocListener(),
-            excelBlocListener(),
-            slideBlocListener(),
-            classRoomBlocListener(),
-            ocrAssessmentBlocListener(),
-            subjectBlocListener()
-          ],
-        ),
-      ),
-    );
+        onWillPop: () async => false,
+        child: Container(
+            child: Stack(children: [
+          CommonBackgroundImgWidget(),
+          Scaffold(
+              key: _scaffoldKey,
+              bottomNavigationBar: progressIndicatorBar(),
+              floatingActionButton: saveToDriveButton(),
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              appBar: CustomOcrAppBarWidget(
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_dark.png"
+                        : "assets/images/graded+_light.png",
+                refresh: (v) {
+                  setState(() {});
+                },
+                iconData: widget.titleIconData,
+                plusAppName: 'GRADED+',
+                fromGradedPlus: true,
+                hideStateSelection: true,
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
+                isSuccessState: ValueNotifier<bool>(true),
+                isBackOnSuccess: isBackFromCamera,
+                isBackButton: true,
+                key: null,
+                isHomeButtonPopup: true,
+                customBackButton: backButtonWidget(),
+              ),
+              body: mainBodyWidget()),
+          googleBlocListener(),
+          excelBlocListener(),
+          slideBlocListener(),
+          classRoomBlocListener(),
+          ocrAssessmentBlocListener(),
+          subjectBlocListener()
+        ])));
   }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -311,6 +317,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPlusSearchScreenPage(
+                                  titleIconData: widget.titleIconData,
                                   gradedPlusQueImage: widget.gradedPlusQueImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
@@ -374,6 +381,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPlusSearchScreenPage(
+                                  titleIconData: widget.titleIconData,
                                   gradedPlusQueImage: widget.gradedPlusQueImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
@@ -409,7 +417,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             titleWidget(),
             SpacerWidget(_KVerticalSpace / 3.5),
             searchWidget(),
-            SpacerWidget(_KVerticalSpace / 4),
+            // SpacerWidget(_KVerticalSpace / 3.5),
             ValueListenableBuilder(
                 valueListenable: pageIndex,
                 builder: (BuildContext context, dynamic value, Widget? child) {
@@ -1005,6 +1013,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         GradedPlusResultsSummary(
+                                          titleIconData: widget.titleIconData,
                                           isMcqSheet: widget.isMcqSheet,
                                           selectedAnswer: widget.selectedAnswer,
                                           subjectId: subjectId ?? '',
@@ -1448,6 +1457,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       context,
       MaterialPageRoute(
           builder: (context) => GradedPlusResultsSummary(
+                titleIconData: widget.titleIconData,
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 fileId: Globals.googleExcelSheetId,
@@ -1872,6 +1882,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           context,
           MaterialPageRoute(
             builder: (context) => GradedPlusResultsSummary(
+              titleIconData: widget.titleIconData,
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               fileId: Globals.googleExcelSheetId,
@@ -2011,7 +2022,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         context: context,
         fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
         sessionId: Globals.sessionId,
-        teacherContactId: Globals.teacherId,
+        teacherContactId: await OcrUtility.getTeacherId(),
         teacherEmail: Globals.userEmailId,
         classroomCourseId: Overrides.STANDALONE_GRADED_APP
             ? GoogleClassroomOverrides

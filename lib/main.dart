@@ -18,6 +18,8 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+// import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_genric_behavior_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
@@ -29,6 +31,7 @@ import 'package:Soc/src/modules/student_plus/model/student_plus_course_model.dar
 import 'package:Soc/src/modules/student_plus/model/student_plus_course_work_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_regents_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -47,7 +50,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
 import 'src/modules/graded_plus/new_ui/camera_screen.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_common_behavior_modal.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_total_Behavior_modal.dart';
+import 'src/modules/pbis_plus/modal/pbis_plus_total_behaviour_modal.dart';
 import 'src/modules/schedule/modal/blackOutDate_modal.dart';
+import 'src/modules/student_plus/model/student_google_presentation_detail_modal.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
@@ -123,6 +130,18 @@ void main() async {
           ..registerAdapter(AssignmentSubmissionAdapter())
           ..registerAdapter(AttachmentAdapter())
           ..registerAdapter(LinkAdapter())
+          // ..registerAdapter(PBISPlusGenericBehaviorModalAdapter())
+          ..registerAdapter(PBISPlusNotesUniqueStudentListAdapter())
+          ..registerAdapter(StudentNameAdapter())
+          ..registerAdapter(PBISStudentNotesAdapter())
+          ..registerAdapter(PBISPlusCommonBehaviorModalAdapter())
+          ..registerAdapter(BehaviorListAdapter())
+          ..registerAdapter(PBISPlusTotalBehaviorModalAdapter())
+          ..registerAdapter(StudentGooglePresentationDetailModalAdapter())
+          ..registerAdapter(
+              PBISPlusStudentDashboardTotalBehaviourModalAdapter())
+          ..registerAdapter(InteractionCountsAdapter())
+          ..registerAdapter(StudentRegentsModelAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

@@ -1,13 +1,16 @@
 import 'package:Soc/src/modules/graded_plus/ui/google_file_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 
 class GoogleSearchWidget extends StatefulWidget {
-  const GoogleSearchWidget({Key? key, required this.selectedFilterValue})
+  const GoogleSearchWidget(
+      {Key? key, required this.selectedFilterValue, this.titleIconData})
       : super(key: key);
   final String selectedFilterValue;
+  final IconData? titleIconData;
   @override
   State<GoogleSearchWidget> createState() => _GoogleSearchState();
 }
@@ -25,6 +28,14 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_dark.png"
+                        : "assets/images/graded+_light.png",
+                refresh: (v) {
+                  setState(() {});
+                },
+                iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {

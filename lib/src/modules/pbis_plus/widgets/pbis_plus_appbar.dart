@@ -6,9 +6,7 @@ import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/user_profile.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -24,13 +22,16 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool? isGradedPlus;
+  final ValueChanged? refresh;
+
   PBISPlusAppBar(
       {Key? key,
       this.titleIconData,
       this.backButton,
       required this.title,
       required this.scaffoldKey,
-      this.isGradedPlus = false})
+      this.isGradedPlus = false,
+      required this.refresh})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
@@ -42,10 +43,11 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading = Container(
+    Widget leading = //widget.leadingWidget ??
+        Container(
       child: Row(
         children: [
-          _translateButton(setState, context),
+          _translateButton(context),
           _openAccessibility(context),
         ],
       ),
@@ -99,15 +101,17 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
+                                commonLogoPath: Color(0xff000000) ==
+                                        Theme.of(context).backgroundColor
+                                    ? "assets/images/pbis_plus_dark.png"
+                                    : "assets/images/pbis_plus_light.png",
+                                sectionType: "Staff",
                                 plusAppName: 'PBIS+',
                                 fromGradedPlus: false,
                                 hideStateSelection: true,
                                 profile: snapshot.data!,
                               )),
                     );
-
-                    // _showPopUp(snapshot.data!);
-                    //print("profile url");
                   },
                 ),
               );
@@ -121,9 +125,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: widget.isGradedPlus == true
-          ? gradedLogoBuilder(context)
-          : titleBuilder(context, widget.titleIconData),
+      title:
+          // widget.isGradedPlus == true
+          //     ? gradedLogoBuilder(context)
+          //     :
+          titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
@@ -135,11 +141,10 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     List<UserInformation> _userInformation =
         await UserGoogleProfile.getUserProfile();
     Globals.userEmailId = _userInformation[0].userEmail!;
-    //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 
-  Widget _translateButton(StateSetter setState, BuildContext context) {
+  Widget _translateButton(BuildContext context) {
     return IconButton(
         // key: _bshowcase,
         onPressed: () async {
@@ -150,7 +155,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              // refresh!(true);
+              widget.refresh!(true);
             }
           });
           /*-------------------------User Activity Track START----------------------------*/

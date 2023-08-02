@@ -32,7 +32,9 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 
 class GradedPlusConstructedResponse extends StatefulWidget {
-  const GradedPlusConstructedResponse({Key? key}) : super(key: key);
+  final IconData? titleIconData;
+  const GradedPlusConstructedResponse({Key? key, this.titleIconData})
+      : super(key: key);
 
   @override
   State<GradedPlusConstructedResponse> createState() =>
@@ -114,6 +116,13 @@ class _GradedPlusConstructedResponseState
 
   PreferredSizeWidget? appBar() {
     return CustomOcrAppBarWidget(
+        commonLogoPath: Color(0xff000000) == Theme.of(context).backgroundColor
+            ? "assets/images/graded+_dark.png"
+            : "assets/images/graded+_light.png",
+        refresh: (v) {
+          setState(() {});
+        },
+        iconData: widget.titleIconData,
         plusAppName: 'GRADED+',
         fromGradedPlus: true,
         //Show home button in standard app and hide in standalone
@@ -697,6 +706,11 @@ class _GradedPlusConstructedResponseState
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => CommonPdfViewerPage(
+                    commonLogoPath:
+                        Color(0xff000000) == Theme.of(context).backgroundColor
+                            ? "assets/images/graded+_dark.png"
+                            : "assets/images/graded+_light.png",
+                    titleIconData: widget.titleIconData,
                     isBackButton: true,
                     isOCRFeature: true,
                     isHomePage: false,
@@ -759,6 +773,7 @@ class _GradedPlusConstructedResponseState
       context,
       MaterialPageRoute(
         builder: (context) => GradedPlusCameraScreen(
+          titleIconData: widget.titleIconData,
           isMcqSheet: false,
           selectedAnswer: '',
           isFromHistoryAssessmentScanMore: false,

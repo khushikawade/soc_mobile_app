@@ -22,14 +22,18 @@ class ProfilePage extends StatefulWidget {
   final UserInformation profile;
   final bool? fromGradedPlus;
   final String? plusAppName;
+  final String sectionType;
+  final String? commonLogoPath;
 
-  const ProfilePage(
-      {Key? key,
-      required this.profile,
-      this.hideStateSelection,
-      required this.fromGradedPlus,
-      required this.plusAppName})
-      : super(key: key);
+  const ProfilePage({
+    Key? key,
+    required this.profile,
+    this.hideStateSelection,
+    required this.fromGradedPlus,
+    required this.plusAppName,
+    required this.sectionType,
+    required this.commonLogoPath,
+  }) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -58,6 +62,12 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            commonLogoPath: widget.commonLogoPath,
+            refresh: (v) {
+              setState(() {});
+            },
+            sectionType: widget.sectionType,
+            iconData: null,
             plusAppName: widget.plusAppName,
             fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -20,7 +22,7 @@ class AppTheme {
   static const Color klistTileSecoandryDark = Color(0xff111C20);
   static const Color klistTilePrimaryLight = Color(0xffF7F8F9);
   static const Color klistTileSecoandryLight = Color(0xffE9ECEE);
-
+  static const Color ksaveAndShareButton = Color(0xFFE49725);
   //Colors
 
   static Color kPrimaryColor = Colors.greenAccent;
@@ -63,6 +65,7 @@ class AppTheme {
   static const Color kactiveTrackColor = Color(0xffCDECE1);
   static const Color kinactiveTrackColor = Color(0xffd4d4d4);
   static const Color ListColor2 = Color(0xFFF7F7F7);
+  static const Color GreenColor = Color(0xff01ff83);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;
@@ -73,6 +76,7 @@ class AppTheme {
   static const double kSubtitle2FontSize = 10.0;
   static const double kBodyText1FontSize = 14.0;
   static const double kTitleFontSize = 28.0;
+  static const double kTitleLargeFontSize = 50.0;
   static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
   static const double kSize = 8.0;
@@ -173,6 +177,12 @@ class AppTheme {
                 : kTitleFontSize + kSize,
             color: kAccentColor,
             fontFamily: 'Roboto-SemiBold'),
+        headlineLarge: TextStyle(
+            fontSize: Globals.deviceType == "phone"
+                ? kTitleLargeFontSize
+                : kTitleLargeFontSize + kSize,
+            color: kAccentColor,
+            fontFamily: 'Roboto-SemiBold'),
         caption: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kCaptionFontSize
@@ -263,6 +273,7 @@ class AppTheme {
       ));
 
   static final ThemeData darkTheme = ThemeData(
+
       // fontFamily: 'Roboto',
       primaryColor: Colors.black,
       // primarySwatch: Colors.grey,
@@ -806,8 +817,6 @@ class AppTheme {
               //     side: BorderSide(
               //         width: 1.5, color: Theme.of(context).primaryColor),
               //     splashRadius: 0),
-
-              //Text theme ends
             ));
   }
 

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -51,7 +52,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   // final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool isErrorState = false;
   final GoogleDriveBloc googleBloc = new GoogleDriveBloc();
-  FocusNode myFocusNode = new FocusNode();
+  FocusNode searchFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 38.0;
@@ -91,6 +92,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     _setLocked();
     Globals.callSnackbar = true;
     getListLength();
+
     selectedValue.value = widget.selectedFilterValue;
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_file_search_page");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -131,77 +133,113 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   }
 
   Widget _buildSearchBar() {
-    return SizedBox(
-      height: 65,
-      child: Container(
-        width: MediaQuery.of(context).size.width * 1,
-        padding: EdgeInsets.symmetric(
-            vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-        child: TranslationWidget(
-            message: 'Google File Search',
-            fromLanguage: "en",
-            toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) {
-              return TextFormField(
-                enabled: true,
-                autofocus: true,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primaryVariant),
-                focusNode: myFocusNode,
-                controller: _controller,
-                cursorColor: Theme.of(context).colorScheme.primaryVariant,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    borderSide:
-                        BorderSide(color: AppTheme.kSelectedColor, width: 2),
-                  ),
-                  border: InputBorder.none,
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide: const BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  hintText: translatedMessage.toString(),
-                  // hintStyle: TextStyle(color: Color(0xffAAAAAA), fontSize: 15),
-                  fillColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color.fromRGBO(0, 0, 0, 0.1)
-                          : Color.fromRGBO(255, 255, 255, 0.16),
-                  prefixIcon: Icon(
-                    const IconData(0xe805,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Theme.of(context).colorScheme.primaryVariant,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
-                  suffixIcon: _controller.text.isEmpty
-                      ? null
-                      : InkWell(
-                          onTap: () {
-                            // setState(() {
-                            //   _controller.clear();
-                            //   issuggestionList = false;
-                            //   FocusScope.of(context).requestFocus(FocusNode());
-                            // });
-                            _controller.clear();
-                            issuggestionList = false;
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            updateTheUi.value = !updateTheUi.value;
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                            size: Globals.deviceType == "phone" ? 20 : 28,
-                          ),
-                        ),
-                ),
-                onChanged: onItemChanged,
-              );
-            }),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 50),
+      child: PlusAppSearchBar(
+        sectionName: 'GRADED+',
+        hintText: "Google File Search",
+        onTap: () async {
+          // _controller.clear();
+          // issuggestionList = false;
+          // FocusScope.of(context).requestFocus(FocusNode());
+          // updateTheUi.value = !updateTheUi.value;
+        },
+        iconOnTap: () async {
+          _controller.clear();
+          issuggestionList = false;
+          FocusScope.of(context).requestFocus(FocusNode());
+          updateTheUi.value = !updateTheUi.value;
+        },
+        isMainPage: true,
+        autoFocus: true,
+        controller: _controller,
+        kLabelSpacing: 1,
+        focusNode: searchFocusNode,
+        onItemChanged: onItemChanged,
       ),
     );
+
+    //  SizedBox(
+    //   height: 80,
+    //   child: Container(
+    //     width: MediaQuery.of(context).size.width * 1,
+    //     padding: EdgeInsets.symmetric(
+    //         vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+    //     child: Card(
+    //       elevation: 10,
+    //       shape: RoundedRectangleBorder(
+    //         //side: BorderSide(color: Colors.white70, width: 1),
+    //         borderRadius: BorderRadius.circular(15),
+    //       ),
+    //       color: Colors.transparent,
+    //       child: TranslationWidget(
+    //           message: 'Google File Search',
+    //           fromLanguage: "en",
+    //           toLanguage: Globals.selectedLanguage,
+    //           builder: (translatedMessage) {
+    //             return TextFormField(
+    //               enabled: true,
+    //               autofocus: true,
+    //               style: TextStyle(
+    //                   color: Theme.of(context).colorScheme.primaryVariant),
+    //               focusNode: searchFocusNode,
+    //               controller: _controller,
+    //               cursorColor: Theme.of(context).colorScheme.primaryVariant,
+    //               decoration: InputDecoration(
+    //                 contentPadding: EdgeInsets.symmetric(vertical: 16),
+    //                 focusedBorder: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
+    //                   borderSide:
+    //                       BorderSide(color: AppTheme.kButtonColor, width: 2),
+    //                 ),
+    //                 enabledBorder: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
+    //                   borderSide: BorderSide(
+    //                       color: Theme.of(context).colorScheme.secondary,
+    //                       width: 2),
+    //                 ),
+    //                 hintText: translatedMessage.toString(),
+    //                 // hintStyle: TextStyle(color: Color(0xffAAAAAA), fontSize: 15),
+    //                 fillColor:
+    //                     Color(0xff000000) != Theme.of(context).backgroundColor
+    //                         ? Theme.of(context).colorScheme.secondary
+    //                         : Color.fromARGB(255, 12, 20, 23),
+    //                 prefixIcon: Icon(
+    //                   const IconData(0xe805,
+    //                       fontFamily: Overrides.kFontFam,
+    //                       fontPackage: Overrides.kFontPkg),
+    //                   color: Theme.of(context).colorScheme.primaryVariant,
+    //                   size: Globals.deviceType == "phone" ? 20 : 28,
+    //                 ),
+    //                 suffixIcon: _controller.text.isEmpty
+    //                     ? null
+    //                     : InkWell(
+    //                         onTap: () {
+    //                           // setState(() {
+    //                           //   _controller.clear();
+    //                           //   issuggestionList = false;
+    //                           //   FocusScope.of(context).requestFocus(FocusNode());
+    //                           // });
+    //                           _controller.clear();
+    //                           issuggestionList = false;
+    //                           FocusScope.of(context).requestFocus(FocusNode());
+    //                           updateTheUi.value = !updateTheUi.value;
+    //                         },
+    //                         child: Icon(
+    //                           Icons.clear,
+    //                           color:
+    //                               Theme.of(context).colorScheme.primaryVariant,
+    //                           size: Globals.deviceType == "phone" ? 20 : 28,
+    //                         ),
+    //                       ),
+    //               ),
+    //               onChanged: onItemChanged,
+    //             );
+    //           }),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _buildRecentItemList() {
@@ -245,13 +283,13 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                       )
                     : Expanded(
                         child: NoDataFoundErrorWidget(
-                          isSearchpage: true,
-                          isResultNotFoundMsg: false,
-                          marginTop: MediaQuery.of(context).size.height * 0.15,
-                          isNews: false,
-                          isEvents: false,
-                        ),
-                      );
+                            errorMessage: 'No Recent Search',
+                            isSearchpage: true,
+                            isResultNotFoundMsg: false,
+                            marginTop:
+                                MediaQuery.of(context).size.height * 0.15,
+                            isNews: false,
+                            isEvents: false));
               });
         });
   }
@@ -678,6 +716,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                         }))
                 : Expanded(
                     child: NoDataFoundErrorWidget(
+                      errorMessage: 'No Data Found',
                       isSearchpage: true,
                       isResultNotFoundMsg: false,
                       marginTop: MediaQuery.of(context).size.height * 0.15,
@@ -825,6 +864,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                           kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
                           text: 'Google File Search',
                           backButton: true,
+                          isTrailingIcon: true,
                         ),
                         Stack(
                           alignment: Alignment.topRight,
@@ -873,17 +913,21 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                     SpacerWidget(_kLabelSpacing / 2),
                     issuggestionList == false
                         ? _buildHeading(
-                            "Recent Search",
+                            "Recent Searches",
                             Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .copyWith(
-                                    fontSize: 18,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                    fontWeight: FontWeight.w500),
-                          ) //_buildHeading2()
+                                .textTheme
+                                .headline1!
+                                .copyWith(fontWeight: FontWeight.w100)
+                            // Theme.of(context)
+                            //     .appBarTheme
+                            //     .titleTextStyle!
+                            //     .copyWith(
+                            //         fontSize: 18,
+                            //         color: Theme.of(context)
+                            //             .colorScheme
+                            //             .primaryVariant,
+                            //         fontWeight: FontWeight.w500),
+                            ) //_buildHeading2()
                         : SizedBox(height: 0),
                     issuggestionList == false
                         ? _buildRecentItemList()

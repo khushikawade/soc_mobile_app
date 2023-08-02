@@ -3,18 +3,18 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_common_splash.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
@@ -91,20 +91,7 @@ class _StudentPageState extends State<StudentPage> {
     // Schedule Start
     // if (obj.titleC != null && obj.titleC!.toLowerCase().contains('schedule')) {
     if (obj.typeC != null && obj.typeC == 'Schedule') {
-      LocalDatabase<UserInformation> _localDb =
-          LocalDatabase('student_profile');
-
-      List<UserInformation> _userInformation = await _localDb.getData();
-
-      if (_userInformation.isEmpty) {
-        UserInformation result = await _launchLoginUrl('Student Login');
-
-        if (result.userEmail != null) {
-          _scheduleEvent(result);
-        }
-      } else {
-        _scheduleEvent(_userInformation[0]);
-      }
+      await schedulerLogin();
 
       return;
     }
@@ -443,14 +430,13 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
-          onTap: () {
-            Utility.scrollToTop(scrollController: _scrollController);
-          },
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
+            onTap: () {
+              Utility.scrollToTop(scrollController: _scrollController);
+            },
+            marginLeft: 30,
+            refresh: (v) {
+              setState(() {});
+            }),
         body: //widget.isCustomSection == false &&
             Globals.appSetting.studentBannerImageC != null &&
                     Globals.appSetting.studentBannerImageC != ""
@@ -558,7 +544,7 @@ class _StudentPageState extends State<StudentPage> {
 
   void _scheduleEvent(UserInformation studentProfile) {
     if (isCalenderEventCalledAlready) {
-      Utility.currentScreenSnackBar('Please wait..... ', null);
+      Utility.currentScreenSnackBar('Please Wait..... ', null);
     } else {
       isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(
@@ -569,55 +555,18 @@ class _StudentPageState extends State<StudentPage> {
   }
 
   navigateToStudentPlus() async {
-    PlusUtility.updateLogs(
-        activityType: 'GRADED+',
-        userType: 'Student',
-        activityId: '2',
-        description: 'Student+ Accessed(Login)/Login Id:',
-        operationResult: 'Success');
+    // PlusUtility.updateLogs(
+    //     activityType: 'GRADED+',
+    //     userType: 'Student',
+    //     activityId: '2',
+    //     description: 'Student+ Accessed(Login)/Login Id:',
+    //     operationResult: 'Success');
 
     pushNewScreen(
       context,
-      screen: StudentPlusHome(
-        sectionType: "Student",
-        studentPlusStudentInfo: StudentPlusDetailsModel(),
-        index: 0,
-      ),
+      screen: PlusSplashScreen(actionName: 'STUDENT+', sectionType: 'Student'),
       withNavBar: false,
     );
-  }
-
-  popupModal({required String message}) {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message: message,
-                title: "Action Required",
-                confirmationOnPress: () async {
-                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      "logout");
-                  await UserGoogleProfile.clearUserProfile();
-                  await GoogleClassroom.clearClassroomCourses();
-                  await Authentication.signOut(context: context);
-                  Utility.clearStudentInfo(tableName: 'student_info');
-                  Utility.clearStudentInfo(tableName: 'history_student_info');
-                  // Globals.googleDriveFolderId = null;
-                  PlusUtility.updateLogs(
-                      activityType: 'GRADED+',
-                      userType: 'Teacher',
-                      activityId: '3',
-                      description: 'User profile logout',
-                      operationResult: 'Success');
-                  Navigator.pop(context);
-                  studentPlusLogin();
-                },
-              );
-            }));
   }
 
   /* ---------------------------- Function call in case of student Plus --------------------------- */
@@ -653,7 +602,7 @@ class _StudentPageState extends State<StudentPage> {
         if (user != null) {
           if (user.email != null && user.email != '') {
             _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, isAuthorizedUser: true));
+                email: user.email, role: 'Student'));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
@@ -667,9 +616,24 @@ class _StudentPageState extends State<StudentPage> {
       //Creating fresh sessionID
       // Check user is login in other section or not
       if (_profileData[0].userType != "Student") {
-        popupModal(
-            message:
-                "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent("logout");
+        await UserGoogleProfile.clearUserProfile();
+        await GoogleClassroom.clearClassroomCourses();
+        await Authentication.signOut(context: context);
+        Utility.clearStudentInfo(tableName: 'student_info');
+        Utility.clearStudentInfo(tableName: 'history_student_info');
+        // Globals.googleDriveFolderId = null;
+        PlusUtility.updateLogs(
+            activityType: 'GRADED+',
+            userType: 'Teacher',
+            activityId: '3',
+            description: 'User profile logout',
+            operationResult: 'Success');
+
+        studentPlusLogin();
+        // popupModal(
+        //     message:
+        //         "You are already logged in as '${_profileData[0].userType}'. To access the STUDENT+ here, you will be logged out from the existing staff section. Do you still wants to continue?");
         return;
       }
 
@@ -678,5 +642,64 @@ class _StudentPageState extends State<StudentPage> {
       Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
       navigateToStudentPlus();
     }
+  }
+
+  /* ------------------------------ Function call at scheduler login ------------------------------ */
+  Future schedulerLogin() async {
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult = await clearGoogleLoginLocalDb
+        .getBool('delete_local_login_details28JUNE');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details28JUNE', true);
+    }
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    if (_profileData.isEmpty) {
+      // Condition to check SSO login enable or not
+      if (Globals.appSetting.enableGoogleSSO != "true") {
+        var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+            userType: 'Student');
+        if (value == true) {
+          List<UserInformation> _userProfileData =
+              await UserGoogleProfile.getUserProfile();
+          _scheduleEvent(_userProfileData[0]);
+        }
+      } else {
+        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        if (user != null) {
+          if (user.email != null && user.email != '') {
+            List<UserInformation> _userProfileData =
+                await UserGoogleProfile.getUserProfile();
+            _scheduleEvent(_userProfileData[0]);
+          } else {
+            Utility.currentScreenSnackBar(
+                'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
+                null);
+          }
+        }
+      }
+    } else {
+      _scheduleEvent(_profileData[0]);
+    }
+
+    // LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
+
+    // List<UserInformation> _userInformation = await _localDb.getData();
+
+    // if (_userInformation.isEmpty) {
+    //   UserInformation result = await _launchLoginUrl('Student Login');
+
+    //   if (result.userEmail != null) {
+    //     _scheduleEvent(result);
+    //   }
+    // } else {
+    //   _scheduleEvent(_userInformation[0]);
+    // }
   }
 }

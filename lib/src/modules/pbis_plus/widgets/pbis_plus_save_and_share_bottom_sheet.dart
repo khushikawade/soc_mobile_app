@@ -109,7 +109,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1 //classroomMaxPointQue
-              ? widget.height! * 1.2
+              ? widget.height! * 1.1
               : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
@@ -117,7 +117,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       ? widget.fromClassScreen!
                           ? (widget.height! * 0.6)
                           : (widget.height! * 1.3)
-                      : widget.height, //saveAndShareOptions
+                      : widget.height! * 0.8, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -212,13 +212,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     classroomLoader = false;
                     _pageController.jumpToPage(2);
                   }),
-              Container(
-                padding: EdgeInsets.only(right: 16),
-                child: Divider(
-                  thickness: 1.0,
-                  color: Colors.grey,
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.only(right: 16),
+              //   child: Divider(
+              //     thickness: 1.0,
+              //     color: Colors.grey,
+              //   ),
+              // ),
             ],
             _listTileMenu(
                 leading: Icon(
@@ -235,6 +235,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       description: 'Share copy of screen as PDF',
                       operationResult: 'Success');
                 })),
+            Platform.isIOS ? SpacerWidget(48) : SpacerWidget(16)
           ]),
     );
   }
@@ -248,9 +249,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-      final headerUint8List = widget.headerScreenshotController == null
-          ? null
-          : await widget.headerScreenshotController!.capture();
+      var headerUint8List = null;
+      try {
+        headerUint8List = widget.headerScreenshotController == null
+            ? null
+            : await widget.headerScreenshotController!.capture();
+      } catch (e) {
+        headerUint8List = null;
+      }
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
@@ -259,9 +265,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       final pdf = pdfWidget.Document();
 
       // to get image size
-      Size headerSize = widget.fromClassScreen == true
-          ? Size(0, 0)
-          : await getImageSize(headerUint8List!);
+      Size headerSize =
+          widget.fromClassScreen == true || headerUint8List == null
+              ? Size(0, 0)
+              : await getImageSize(headerUint8List!);
       Size size = uint8List != null
           ? await getImageSize(uint8List)
           : Size(headerSize.width, 0);
@@ -440,6 +447,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   horizontal: 20,
                 ),
                 child: TextFieldWidget(
+                    context: context,
                     hintText: 'Points Possible',
                     msg: "Field is required",
                     keyboardType: TextInputType.number,

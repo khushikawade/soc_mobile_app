@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_summary_action_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_app_search_bar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
@@ -32,10 +33,12 @@ import '../widgets/searchbar_widget.dart';
 class GradedPlusAssessmentSummary extends StatefulWidget {
   final bool isFromHomeSection;
   final String selectedFilterValue;
+  final IconData? titleIconData;
   GradedPlusAssessmentSummary(
       {Key? key,
       required this.isFromHomeSection,
-      required this.selectedFilterValue})
+      required this.selectedFilterValue,
+      this.titleIconData})
       : super(key: key);
   @override
   State<GradedPlusAssessmentSummary> createState() =>
@@ -66,6 +69,7 @@ class _GradedPlusAssessmentSummaryState
   //     LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
+  FocusNode myFocusNode = new FocusNode();
 //  late ScrollController _controller;
   @override
   void initState() {
@@ -108,6 +112,14 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_dark.png"
+                        : "assets/images/graded+_light.png",
+                refresh: (v) {
+                  setState(() {});
+                },
+                iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,
                 onTap: () {
@@ -182,26 +194,50 @@ class _GradedPlusAssessmentSummaryState
           SpacerWidget(_KVertcalSpace / 3),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width / 30),
-            child: SearchBar(
-              stateName: '',
-              isSearchPage: false,
-              isSubLearningPage: false,
-              readOnly: true,
-              controller: searchAssessmentController,
-              onSaved: (String value) {},
-              onTap: () {
-                Navigator.push(
+                horizontal: MediaQuery.of(context).size.width / 50),
+            child: PlusAppSearchBar(
+              sectionName: 'GRADED+',
+              hintText: "Search",
+              onTap: () async {
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => GoogleSearchWidget(
+                            titleIconData: widget.titleIconData,
                             selectedFilterValue: selectedValue.value,
                           )),
                 );
+                if (result == true) {
+                  Utility.closeKeyboard(context);
+                }
               },
+              isMainPage: false,
+              autoFocus: false,
+              controller: searchAssessmentController,
+              kLabelSpacing: 1,
+              focusNode: myFocusNode,
+              onItemChanged: null,
             ),
+
+            //  SearchBar(
+            //   stateName: '',
+            //   isSearchPage: false,
+            //   isSubLearningPage: false,
+            //   readOnly: true,
+            //   controller: searchAssessmentController,
+            //   onSaved: (String value) {},
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => GoogleSearchWidget(
+            //                 selectedFilterValue: selectedValue.value,
+            //               )),
+            //     );
+            //   },
+            // ),
           ),
-          SpacerWidget(_KVertcalSpace / 5),
+          // SpacerWidget(_KVertcalSpace / 8),
           Expanded(
             child: RefreshIndicator(
               color: AppTheme.kButtonColor,
@@ -450,9 +486,8 @@ class _GradedPlusAssessmentSummaryState
   }
 
   Widget _buildList(List<HistoryAssessment> list, int index) {
-    return Column(
-      children: [
-        InkWell(
+    return Column(children: [
+      InkWell(
           onTap: () async {
             bool createdAsPremium = false;
             if (list[index].isCreatedAsPremium == "true") {
@@ -486,6 +521,7 @@ class _GradedPlusAssessmentSummaryState
               context,
               MaterialPageRoute(
                   builder: (context) => GradedPlusResultsSummary(
+                        titleIconData: widget.titleIconData,
                         createdAsPremium: createdAsPremium,
                         obj: list[index],
                         assessmentName: list[index].title!,
@@ -496,71 +532,67 @@ class _GradedPlusAssessmentSummaryState
             );
           },
           child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0.0),
-                color: (index % 2 == 0)
-                    ? Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff162429)
-                        : Color(
-                            0xffF7F8F9) //Theme.of(context).colorScheme.background
-                    : Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff111C20)
-                        : Color(0xffE9ECEE)),
-            child: ListTile(
-              leading: Container(
-                padding: EdgeInsets.only(top: 8),
-                //color: Colors.amber,
-                child: Icon(
-                    IconData(
-                        list[index].assessmentType == 'Multiple Choice'
-                            ? 0xe833
-                            : 0xe87c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: Globals.deviceType == 'phone'
-                        ? (list[index].assessmentType == 'Multiple Choice'
-                            ? 30
-                            : 28)
-                        : 38,
-                    color: AppTheme.kButtonColor),
-              ),
-              minLeadingWidth: 0,
-              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-              subtitle: Utility.textWidget(
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: Colors.grey.shade500),
-                  text: list[index].modifiedDate != null &&
-                          list[index].modifiedDate != ''
-                      ? Utility.convertTimestampToDateFormat(
-                          DateTime.parse(list[index].modifiedDate!), "MM/dd/yy")
-                      : ""),
-              title: Utility.textWidget(
-                  text: list[index].title == null
-                      ? 'Assignment Name not found'
-                      : list[index].title!,
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline2),
-              // subtitle:
-              trailing: IconButton(
-                icon: Icon(
-                    IconData(0xe868,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor),
-                onPressed: () {
-                  _saveAndShareBottomSheetMenu(assessment: list[index]);
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(0.0),
+                  color: (index % 2 == 0)
+                      ? Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff162429)
+                          : Color(
+                              0xffF7F8F9) //Theme.of(context).colorScheme.background
+                      : Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff111C20)
+                          : Color(0xffE9ECEE)),
+              child: ListTile(
+                  leading: Container(
+                    padding: EdgeInsets.only(top: 8),
+                    //color: Colors.amber,
+                    child: Icon(
+                        IconData(
+                            list[index].assessmentType == 'Multiple Choice'
+                                ? 0xe833
+                                : 0xe87c,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: Globals.deviceType == 'phone'
+                            ? (list[index].assessmentType == 'Multiple Choice'
+                                ? 30
+                                : 28)
+                            : 38,
+                        color: AppTheme.kButtonColor),
+                  ),
+                  minLeadingWidth: 0,
+                  visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                  subtitle: Utility.textWidget(
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Colors.grey.shade500),
+                      text: list[index].modifiedDate != null &&
+                              list[index].modifiedDate != ''
+                          ? Utility.convertTimestampToDateFormat(
+                              DateTime.parse(list[index].modifiedDate!),
+                              "MM/dd/yy")
+                          : ""),
+                  title: Utility.textWidget(
+                      text: list[index].title == null
+                          ? 'Assignment Name not found'
+                          : list[index].title!,
+                      context: context,
+                      textTheme: Theme.of(context).textTheme.headline2),
+                  // subtitle:
+                  trailing: IconButton(
+                      icon: Icon(
+                          IconData(0xe868,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor),
+                      onPressed: () {
+                        _saveAndShareBottomSheetMenu(assessment: list[index]);
+                      }))))
+    ]);
   }
 
   Future refreshPage(
@@ -621,25 +653,24 @@ class _GradedPlusAssessmentSummaryState
         elevation: 10,
         context: context,
         builder: (context) => FilterBottomSheet(
-              title: 'Filter Assignment',
-              selectedValue: selectedValue.value,
-              update: ({String? filterValue}) async {
-                if (selectedValue.value != filterValue!) {
-                  if (filterValue == 'Multiple Choice') {
-                    _driveMcqBloc.add(GetHistoryAssessmentFromDrive(
-                        filterType: filterValue, isSearchPage: false));
-                  } else if (filterValue == 'Constructed Response') {
-                    _driveConstructiveBloc.add(GetHistoryAssessmentFromDrive(
-                        filterType: filterValue, isSearchPage: false));
-                  } else {
-                    _driveBloc.add(GetHistoryAssessmentFromDrive(
-                        filterType: filterValue, isSearchPage: false));
-                  }
+            title: 'Filter Assignment',
+            selectedValue: selectedValue.value,
+            update: ({String? filterValue}) async {
+              if (selectedValue.value != filterValue!) {
+                if (filterValue == 'Multiple Choice') {
+                  _driveMcqBloc.add(GetHistoryAssessmentFromDrive(
+                      filterType: filterValue, isSearchPage: false));
+                } else if (filterValue == 'Constructed Response') {
+                  _driveConstructiveBloc.add(GetHistoryAssessmentFromDrive(
+                      filterType: filterValue, isSearchPage: false));
+                } else {
+                  _driveBloc.add(GetHistoryAssessmentFromDrive(
+                      filterType: filterValue, isSearchPage: false));
                 }
-                selectedValue.value = filterValue;
-                Globals.selectedFilterValue = selectedValue.value;
-              },
-            ));
+              }
+              selectedValue.value = filterValue;
+              Globals.selectedFilterValue = selectedValue.value;
+            }));
   }
 
   _saveAndShareBottomSheetMenu({required HistoryAssessment assessment}) {
@@ -656,8 +687,8 @@ class _GradedPlusAssessmentSummaryState
         context: context,
         builder: (BuildContext context) {
           return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return GradedPlusResultOptionBottomSheet(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return GradedPlusResultOptionBottomSheet(
                 assessmentDetailPage: false,
                 height: MediaQuery.of(context).size.height * 0.45,
                 //   getURlForResultSummaryIcons: getURlForBottomIcons,
@@ -674,11 +705,9 @@ class _GradedPlusAssessmentSummaryState
                   'Dashboard': 'Dashboard',
                   'Slides': assessment.presentationLink ?? '',
                   'Sheets': assessment.webContentLink ?? '',
-                  'Class': assessment.classroomCourseWorkUrl ?? '',
-                },
-              );
-            },
-          );
+                  'Class': assessment.classroomCourseWorkUrl ?? ''
+                });
+          });
         });
   }
 }

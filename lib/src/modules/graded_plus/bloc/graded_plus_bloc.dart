@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
@@ -161,7 +161,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List<SubjectDetailList>? _localData = await _localDb.getData();
           // fetch
 
-          //Check is usign to differentiate the list at search screen
+          //Check is using to differentiate the list at search screen
           if (event.type == 'nyc') {
             List<SubjectDetailList> updatedList = await sortSubjectDetails(
                 gradeNo: event.grade!,
@@ -262,9 +262,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //  var data =
         yield AuthorizedUserLoading();
-        bool result = event.isAuthorizedUser == true
-            ? await authorizedUserWithDatabase(email: event.email)
-            : await verifyUserWithDatabase(email: event.email.toString());
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        bool result = await loginAndAuthorizeUser(
+            email: event.email.toString(),
+            role: event.role ?? '',
+            authToken: _userProfileLocalData[0].authorizationToken ?? '');
+
         if (result == true) {
           yield AuthorizedUserSuccess();
         } else {
@@ -293,6 +298,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         throw (e);
       }
     }
+
     // Event to Fetch subjects As per requirements ====
     if (event is FetchSubjectDetails) {
       try {
@@ -712,6 +718,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<String> stateList = extractStateName(stateObjectList: _localData);
         // stateList.add("Common Core");
         yield StateListFetchSuccessfully(stateList: stateList);
+      }
+    }
+
+    if (event is UpdateGradedPlusStudentResult) {
+      try {
+        var result = await updateResultToDashboard(
+            assessmentId: event.assessmentId,
+            oldStudentId: event.oldStudentId,
+            studentId: event.mewStudentId,
+            result: event.result,
+            studentName: event.studentName);
+
+        if (result == true) {
+          yield UpdateResultToDashboardSuccess();
+        } else {
+          yield OcrErrorReceived(err: result.toString());
+        }
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'updateAssessmentToDashboard Event');
+        yield OcrErrorReceived(err: e.toString());
+        // if (e == 'NO_CONNECTION') {
+        //   Utility.currentScreenSnackBar("No Internet Connection", null);
+
+        // }
+        yield OcrErrorReceived(err: e.toString());
+        throw (e);
       }
     }
   }
@@ -1202,82 +1235,73 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> authorizedUserWithDatabase({required String? email}) async {
+  // Future<bool> authorizedUserWithDatabase({required String? email}) async {
+  //   try {
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json;charset=UTF-8',
+  //       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //     };
+  //     final body = {
+  //       "email": email.toString(),
+  //       "DBN": Globals.schoolDbnC,
+  //       "Schoolid": Overrides.SCHOOL_ID,
+  //       "teacherid": await OcrUtility.getTeacherId()
+  //     };
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+  //         body: body,
+  //         headers: headers,
+  //         isGoogleApi: true);
+
+  //     if (response.statusCode == 200) {
+  //       await loginUserWithDatabase(
+  //           email: email); //to update teacher id in shared preference
+  //       var res = response.data;
+  //       var data = res["body"];
+  //       // await OcrUtility.setTeacherId(techerId);
+  //       if (data == true) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+
+  //       // return data;
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, 'verifyUserWithDatabase Method');
+  //     throw (e);
+  //   }
+  // }
+
+  Future<bool> loginAndAuthorizeUser(
+      {required String? email,
+      required String role,
+      required String authToken}) async {
     try {
       Map<String, String> headers = {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
       final body = {
-        "email": email.toString(),
-        "DBN": Globals.schoolDbnC,
-        "Schoolid": Overrides.SCHOOL_ID,
-        "teacherid": Globals.teacherId
+        "email": email,
+        "schoolId": Globals.appSetting.id,
+        "role": role.toLowerCase(),
+        "google_token": authToken
       };
       final ResponseModel response = await _dbServices.postApi(
-          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+          "https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/login",
           body: body,
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var res = response.data;
-        var data = res["body"];
-        if (data == true) {
-          return true;
-        } else {
-          return false;
-        }
-
-        // return data;
-      } else {
-        return false;
-      }
-    } catch (e, s) {
-      FirebaseAnalyticsService.firebaseCrashlytics(
-          e, s, 'verifyUserWithDatabase Method');
-      throw (e);
-    }
-  }
-
-  Future<bool> verifyUserWithDatabase({required String? email}) async {
-    try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-      };
-      final body = {"email": email.toString()};
-      final ResponseModel response = await _dbServices.postApi(
-          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
-          body: body,
-          headers: headers,
-          isGoogleApi: true);
-
-      if (response.statusCode == 200) {
-        var res = response.data;
-        var data = res["body"];
-
-        if (data == false) {
-          bool result =
-              await createContactToSalesforce(email: email.toString());
-          if (!result) {
-            await createContactToSalesforce(email: email.toString());
-          }
-        } else {
-          Globals.teacherId = data['Id'];
-
-          if (data['Assessment_App_User__c'] != 'true') {
-            Globals.teacherId = data['Id'];
-            bool result = await updateContactToSalesforce(recordId: data['Id']);
-            if (!result) {
-              await updateContactToSalesforce(recordId: data['Id']);
-            }
-          }
-        }
+        await OcrUtility.setTeacherId(res["contactId"]);
 
         return true;
-
-        // return data;
       } else {
         return false;
       }
@@ -1319,9 +1343,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        // print(response.data["body"]);
-        Globals.teacherId = response.data["body"]["id"];
-        // print(response.data["body"]["id"]);
+        OcrUtility.setTeacherId(response.data["body"]["id"]);
         return true;
       } else {
         return false;
@@ -1519,6 +1541,41 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
+  Future updateResultToDashboard({
+    required String assessmentId,
+    required String oldStudentId,
+    required String studentId,
+    required String studentName,
+    required String result,
+  }) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+        "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/updateGradedPlusStudentResult",
+        isGoogleApi: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+        },
+        body: {
+          "Assessment_Id": assessmentId,
+          "Student__c_old": oldStudentId,
+          "Student__c": studentId,
+          "Student_Name__c": studentName,
+          "Result__c": result
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'updateResultToDashboard Method');
+      throw (e);
+    }
+  }
+
   Map<String, String> recordToJson(assessmentId, currentDate, pointsEarned,
       studentOsisId, assessmentImageURl, sudentName) {
     try {
@@ -1579,24 +1636,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  _getStandardIdAndsubjectId(
-      {required String grade,
-      required String subjectName,
-      required String subLearningCode}) async {
-    try {
-      final ResponseModel response = await _dbServices.getApiNew(
-          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
-          isCompleteUrl: true);
-      if (response.statusCode == 200) {
-        return response.data['body'].length > 0 ? response.data['body'][0] : '';
-      }
-    } catch (e, s) {
-      FirebaseAnalyticsService.firebaseCrashlytics(
-          e, s, '_getStandardIdAndsubjectId Method');
+  // _getStandardIdAndsubjectId(
+  //     {required String grade,
+  //     required String subjectName,
+  //     required String subLearningCode}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
+  //         isCompleteUrl: true);
+  //     if (response.statusCode == 200) {
+  //       return response.data['body'].length > 0 ? response.data['body'][0] : '';
+  //     }
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, '_getStandardIdAndsubjectId Method');
 
-      throw (e);
-    }
-  }
+  //     throw (e);
+  //   }
+  // }
 
   Future fetchStudentDetails(ossId) async {
     try {
