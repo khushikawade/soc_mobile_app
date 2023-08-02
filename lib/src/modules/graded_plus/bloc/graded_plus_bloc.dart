@@ -1299,6 +1299,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var res = response.data;
+        await OcrUtility.setTeacherId(res["contactId"]);
 
         return true;
       } else {

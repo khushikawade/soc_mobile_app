@@ -913,9 +913,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISStudentNotes>? studentNotesList =
             await getPBIStudentNotesData(student_id: event.studentId);
 
-        if (studentItemIndex >= 0 &&
-            studentNotesList != null &&
-            studentNotesList.isNotEmpty) {
+        if (studentItemIndex >= 0
+            // &&
+            // studentNotesList != null && studentNotesList.isNotEmpty
+            ) {
           // Assuming want to update the notes with the first API data
           _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
 
