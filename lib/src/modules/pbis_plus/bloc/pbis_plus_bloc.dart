@@ -1503,8 +1503,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           required int limit}) async {
     try {
       String url = isStudentPlus == true
-          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&offset=$offset&limit=$limit'
-          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
+          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&school_Id=${Globals.appSetting.id}&offset=$offset&limit=$limit'
+          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&school_Id=${Globals.appSetting.id}&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
       print(url);
       final ResponseModel response = await _dbServices.getApiNew(url,
           headers: {
