@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class BannerImageWidget extends StatefulWidget {
-  final String imageUrl;
+  final String? imageUrl;
   final Color? bgColor;
   final double? bannerHeight;
   final bool? isStaffPage;
@@ -43,11 +43,12 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
           background: widget.isStaffPage == true
               ? Column(
                   children: [
-                    Container(
-                        height: (Utility.displayHeight(context) *
-                            (AppTheme.kBannerHeight / 100)),
-                        child: bannerWidget()),
-                    widget.staffActionWidget!
+                    if (widget.imageUrl != null && widget.imageUrl != '')
+                      Container(
+                          height: (Utility.displayHeight(context) *
+                              (AppTheme.kBannerHeight / 100)),
+                          child: bannerWidget()),
+                    widget.staffActionWidget ?? Container()
                   ],
                 )
               : bannerWidget()),
@@ -58,7 +59,7 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
     return Container(
       color: widget.bgColor,
       child: CachedNetworkImage(
-        imageUrl: widget.imageUrl,
+        imageUrl: widget.imageUrl ?? '',
         // fit: BoxFit.fill,
         placeholder: (BuildContext context, _) => ShimmerLoading(
           isLoading: true,
