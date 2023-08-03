@@ -517,6 +517,8 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkURL: list[index].classroomCourseWorkUrl);
             }
 
+            Globals.shareableLink = list[index].webContentLink ?? '';
+
             Navigator.push(
               context,
               MaterialPageRoute(
