@@ -1091,12 +1091,20 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //Navigate to result summary screen in case of any scan more //recent assessment scan more // history scan more
   Future<void> _navigateToResultSection() async {
+    //this is for close loading popup
     Navigator.of(context).pop();
+
     if (widget.isFromHistoryAssessmentScanMore == true) {
-      Navigator.of(context)
-        ..pop()
-        ..pop()
-        ..pop();
+      //when user tap done without scan a new record need to remove the camera screen first then push and replace the result summary section
+      if (widget.oneTimeCamera == true) {
+        Navigator.of(context).pop();
+      } else {
+        // Here we need to remove camera , scan result screen, and replace the result summary section
+        Navigator.of(context)
+          ..pop()
+          ..pop()
+          ..pop();
+      }
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
