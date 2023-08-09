@@ -286,8 +286,11 @@ class _StaffPageState extends State<StaffPage> {
             // )
 
             NotificationListener<ScrollNotification>(
-                onNotification: onNotification,
-                child: NestedScrollView(
+          onNotification: onNotification,
+          child: (Globals.appSetting.staffBannerImageC != null &&
+                      Globals.appSetting.staffBannerImageC != '' ||
+                  Globals.appSetting.enableGraded != 'false')
+              ? NestedScrollView(
                   controller: _scrollController,
                   // key: _scaffoldKey,
                   headerSliverBuilder:
@@ -297,24 +300,34 @@ class _StaffPageState extends State<StaffPage> {
                           isStaffPage: true,
                           staffActionHeight:
                               Globals.appSetting.staffBannerImageC != null &&
-                                      Globals.appSetting.staffBannerImageC != ''
+                                      Globals.appSetting.staffBannerImageC !=
+                                          '' &&
+                                      Globals.appSetting.enableGraded != 'false'
                                   ? MediaQuery.of(context).size.height * 0.18
-                                  : MediaQuery.of(context).size.height * 0.06,
-                          staffActionWidget: topActionButtonWidget(
-                            height: MediaQuery.of(context).size.height * 0.18,
-                          ),
+                                  : Globals.appSetting.enableGraded ==
+                                          'false' //Disabled Plus Apps
+                                      ? 0
+                                      : MediaQuery.of(context).size.height *
+                                          0.06, //Disabled Banner
+                          staffActionWidget: Globals.appSetting.enableGraded !=
+                                  'false'
+                              ? topActionButtonWidget(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.18,
+                                )
+                              : null,
                           imageUrl: Globals.appSetting.staffBannerImageC ?? '',
-                          bgColor:
-                              Globals.appSetting.studentBannerColorC != null
-                                  ? Utility.getColorFromHex(
-                                      Globals.appSetting.studentBannerColorC!)
-                                  : Colors.transparent),
+                          bgColor: Globals.appSetting.studentBannerColorC !=
+                                  null
+                              ? Utility.getColorFromHex(
+                                  Globals.appSetting.studentBannerColorC!)
+                              : Colors.transparent),
                     ];
                   },
                   body: _body('body1'),
                 )
-                // : _body('body2'),
-                ));
+              : _body('body2'),
+        ));
   }
 
   Future refreshPage() async {
@@ -440,7 +453,7 @@ class _StaffPageState extends State<StaffPage> {
           return Container(
 
               //alignment: AlignmentGeometry(),
-             // padding: EdgeInsets.symmetric(horizontal: 36),
+              // padding: EdgeInsets.symmetric(horizontal: 36),
               height: height,
               width: MediaQuery.of(context).size.height * 1,
               child: Row(
