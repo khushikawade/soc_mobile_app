@@ -1047,8 +1047,8 @@ class _GradedPlusSearchScreenPageState
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
             commonLogoPath:  Color(0xff000000) == Theme.of(context).backgroundColor
-                        ? "assets/images/graded+_dark.png"
-                        : "assets/images/graded+_light.png",
+                        ? "assets/images/graded+_light.png"
+                        : "assets/images/graded+_dark.png",
               refresh: (v) {
                 setState(() {});
               },

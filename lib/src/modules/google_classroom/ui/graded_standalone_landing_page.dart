@@ -185,8 +185,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                               0xff000000) ==
                                                           Theme.of(context)
                                                               .backgroundColor
-                                                      ? "assets/images/graded+_dark.png"
-                                                      : "assets/images/graded+_light.png",
+                                                      ? "assets/images/graded+_light.png"
+                                                      : "assets/images/graded+_dark.png",
                                                   sectionType: "Graded+",
                                                   plusAppName: 'Graded+',
                                                   fromGradedPlus: true,
