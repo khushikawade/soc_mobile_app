@@ -298,15 +298,17 @@ class _StaffPageState extends State<StaffPage> {
                     return <Widget>[
                       BannerImageWidget(
                           isStaffPage: true,
-                          staffActionHeight: Globals
-                                          .appSetting.staffBannerImageC !=
-                                      null &&
-                                  Globals.appSetting.staffBannerImageC != '' &&
-                                  Globals.appSetting.enableGraded != 'false'
-                              ? MediaQuery.of(context).size.height * 0.18
-                              : Globals.appSetting.enableGraded == 'false'
-                                  ? 0
-                                  : MediaQuery.of(context).size.height * 0.06,
+                          staffActionHeight:
+                              Globals.appSetting.staffBannerImageC != null &&
+                                      Globals.appSetting.staffBannerImageC !=
+                                          '' &&
+                                      Globals.appSetting.enableGraded != 'false'
+                                  ? MediaQuery.of(context).size.height * 0.18
+                                  : Globals.appSetting.enableGraded ==
+                                          'false' //Disabled Plus Apps
+                                      ? 0
+                                      : MediaQuery.of(context).size.height *
+                                          0.06, //Disabled Banner
                           staffActionWidget: Globals.appSetting.enableGraded !=
                                   'false'
                               ? topActionButtonWidget(
@@ -325,8 +327,7 @@ class _StaffPageState extends State<StaffPage> {
                   body: _body('body1'),
                 )
               : _body('body2'),
-        )
-        );
+        ));
   }
 
   Future refreshPage() async {
