@@ -34,11 +34,7 @@ class Overrides {
 
 //true in case of graded+ stand-alone app
   static bool STANDALONE_GRADED_APP = false;
-<<<<<<< HEAD
   static String SCHOOL_ID = 'a1f4W000007DR8nQAG'; //'a1f7h000001EjnnAAC'
-=======
-  static String SCHOOL_ID = 'a1f4W000007DQaNQAWcd'; //'a1f7h000001EjnnAAC'
->>>>>>> 631ae1d753db9c31f03d4dc23099014fe464b494
 
   //151 : 'a1f4W000007DQaNQAW' /////////////////// DBN: 07X151
   //Bronx Bears : 'a1f4W000007DR8nQAG'/////////////// DBN:BB0456
