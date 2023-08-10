@@ -349,7 +349,7 @@ class _GradedPlusAssessmentSummaryState
           ? MediaQuery.of(context).size.height * 0.792
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
-        controller: _scrollController,
+        controller: _list.length > 5 ? _scrollController : null,
         shrinkWrap: true,
         // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -517,6 +517,8 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkURL: list[index].classroomCourseWorkUrl);
             }
             //update sharing url in case empty //in case of scan more
+            Globals.shareableLink = list[index].webContentLink ?? '';
+
             Globals.shareableLink = list[index].webContentLink ?? '';
 
             Navigator.push(
