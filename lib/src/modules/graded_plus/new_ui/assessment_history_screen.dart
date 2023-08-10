@@ -114,8 +114,8 @@ class _GradedPlusAssessmentSummaryState
               appBar: CustomOcrAppBarWidget(
                 commonLogoPath:
                     Color(0xff000000) == Theme.of(context).backgroundColor
-                        ? "assets/images/graded+_dark.png"
-                        : "assets/images/graded+_light.png",
+                        ? "assets/images/graded+_light.png"
+                            : "assets/images/graded+_dark.png",
                 refresh: (v) {
                   setState(() {});
                 },
@@ -516,6 +516,8 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkId: list[index].classroomCourseWorkId,
                       courseWorkURL: list[index].classroomCourseWorkUrl);
             }
+            //update sharing url in case empty //in case of scan more
+            Globals.shareableLink = list[index].webContentLink ?? '';
 
             Globals.shareableLink = list[index].webContentLink ?? '';
 
