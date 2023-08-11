@@ -232,7 +232,7 @@ class _ActionInteractionButtonWidgetState
               } else {
                 if (widget.isLoading == true) {
                   Utility.showSnackBar(
-                      scaffoldKey, 'Please wait while loading', context, null);
+                      scaffoldKey, 'Please Wait while loading', context, null);
                 } else {
                   final toLanguageCode = Translations.supportedLanguagesCodes(
                       Globals.selectedLanguage!);

@@ -117,10 +117,8 @@ class GetStudentCourseWorkListByPaginationEvent extends StudentPlusEvent {
 class FetchStudentGradesWithClassroomEvent extends StudentPlusEvent {
   final String? studentId;
   final String? studentEmail;
-  FetchStudentGradesWithClassroomEvent({
-    @required this.studentId,
-    required this.studentEmail
-  });
+  FetchStudentGradesWithClassroomEvent(
+      {@required this.studentId, required this.studentEmail});
 
   @override
   List<Object> get props => [studentId!];
@@ -176,6 +174,16 @@ class GetStudentPlusWorkGooglePresentationDetails extends StudentPlusEvent {
 class GetStudentRegentsList extends StudentPlusEvent {
   final String studentId;
   GetStudentRegentsList({required this.studentId});
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => '';
+}
+
+/* ---------------- Event use to trigger to get student total behaviors counts ---------------- */
+class StudentPlusGetStudentBehaviorsTotalCounts extends StudentPlusEvent {
+  final String studentId;
+  StudentPlusGetStudentBehaviorsTotalCounts({required this.studentId});
   @override
   List<Object> get props => [];
   @override

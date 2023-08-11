@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_student_list_modal.dar
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/plus_common_widgets/common_modal/pbis_course_modal.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -42,28 +43,28 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
     /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
     String firstName;
     //student profile at student notes tabs
-    if (widget.isFromStudentNotes != null &&
-        widget.isFromStudentNotes == true &&
-        widget.studentname!.fullName!.split(' ').length > 0) {
-      firstName = widget.studentname!.fullName!
-          .split(' ')[0]
-          .substring(0, 1)
-          .toUpperCase();
-    }
+    // if (widget.isFromStudentNotes != null &&
+    //     widget.isFromStudentNotes == true &&
+    //     widget.studentname!.fullName!.split(' ').length > 0) {
+    //   firstName = widget.studentname!.fullName!
+    //       .split(' ')[0]
+    //       .substring(0, 1)
+    //       .toUpperCase();
+    // }
     //Student profile at all other places
-    else {
-      firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
-                  .isNotEmpty &&
-              widget.studentValueNotifier!.value.profile!.name!.fullName!
-                      .split(' ')
-                      .length >
-                  0
-          ? widget.studentValueNotifier!.value.profile!.name!.fullName!
-              .split(' ')[0]
-              .substring(0, 1)
-              .toUpperCase()
-          : '';
-    }
+    // else {
+    //   firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //               .isNotEmpty &&
+    //           widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //                   .split(' ')
+    //                   .length >
+    //               0
+    //       ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //           .split(' ')[0]
+    //           .substring(0, 1)
+    //           .toUpperCase()
+    //       : '';
+    // }
     String lastName;
 
     firstName = widget.studentValueNotifier!.value.profile!.name!.fullName!
@@ -77,7 +78,12 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             .substring(0, 1)
             .toUpperCase()
         : '';
+    // print(widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //     .split(' ')
+    //     .length);
 
+    // print(widget.studentValueNotifier!.value.profile!.name!.fullName!
+    //     .split(' ')[1]);
     lastName = widget.studentValueNotifier!.value.profile!.name!.fullName!
                 .isNotEmpty &&
             widget.studentValueNotifier!.value.profile!.name!.fullName!
@@ -85,9 +91,16 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                     .length >
                 1
         ? widget.studentValueNotifier!.value.profile!.name!.fullName!
-            .split(' ')[1]
-            .substring(0, 1)
-            .toUpperCase()
+                        .split(' ')[1] !=
+                    '' &&
+                widget.studentValueNotifier!.value.profile!.name!.fullName!
+                        .split(' ')[1] !=
+                    null
+            ? widget.studentValueNotifier!.value.profile!.name!.fullName!
+                .split(' ')[1]
+                .substring(0, 1)
+                .toUpperCase()
+            : ''
         : '';
 
     /*-------------------------------------------------END--------------------------------------------------------*/
@@ -194,18 +207,16 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                               builder: (BuildContext context,
                                                   ClassroomStudents value,
                                                   Widget? child) {
-                                                return
-                                                    // widget.isLoading == true
-                                                    //     ? ShimmerLoading(
-                                                    //         child: Container(
-                                                    //           height: 10,
-                                                    //           width: 10,
-                                                    //           color: Colors.black,
-                                                    //         ),
-                                                    //         isLoading: widget.isLoading)
-                                                    //     :
-                                                    //TODOPBIS:
-                                                    Text(
+                                                return widget.isLoading == true
+                                                    ? ShimmerLoading(
+                                                        child: Container(
+                                                          height: 10,
+                                                          width: 10,
+                                                          color: Colors.black,
+                                                        ),
+                                                        isLoading:
+                                                            widget.isLoading)
+                                                    : Text(
                                                         PBISPlusUtility.numberAbbreviationFormat(PBISPlusUtility.getStudentTotalCounts(
                                                             student: widget
                                                                 .studentValueNotifier!
@@ -225,8 +236,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                                                                 color: Colors
                                                                     .grey[600],
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold));
+                                                                    FontWeight.bold));
                                               });
                                         });
                                   });

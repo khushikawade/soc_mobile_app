@@ -913,9 +913,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISStudentNotes>? studentNotesList =
             await getPBIStudentNotesData(student_id: event.studentId);
 
-        if (studentItemIndex >= 0 &&
-            studentNotesList != null &&
-            studentNotesList.isNotEmpty) {
+        if (studentItemIndex >= 0
+            // &&
+            // studentNotesList != null && studentNotesList.isNotEmpty
+            ) {
           // Assuming want to update the notes with the first API data
           _pbisPlusNotesStudentsList[studentItemIndex].notes = studentNotesList;
 
@@ -1503,8 +1504,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           required int limit}) async {
     try {
       String url = isStudentPlus == true
-          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&offset=$offset&limit=$limit'
-          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
+          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&school_Id=${Globals.appSetting.id}&offset=$offset&limit=$limit'
+          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/v2/student/$studentId?teacher_email=$teacherEmail&school_Id=${Globals.appSetting.id}&classroom_course_id=$classroomCourseId&offset=$offset&limit=$limit';
       print(url);
       final ResponseModel response = await _dbServices.getApiNew(url,
           headers: {

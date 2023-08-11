@@ -19,6 +19,7 @@ import 'package:audioplayers/audioplayers.dart';
 class PBISPlusActionInteractionButton extends StatefulWidget {
   final PBISPlusCommonBehaviorModal iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
+  bool isBehaviorLoading;
   final bool?
       isFromStudentPlus; // to check it is from pbis plus or student plus
   final bool? isLoading; // to maintain loading when user came from student plus
@@ -42,9 +43,9 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
       required this.isShowCircle,
       required this.size,
       required this.isCustomBehavior,
-      required this.index
+      required this.index,
       // required this.onTapCallback,
-      })
+      this.isBehaviorLoading = false})
       : super(key: key);
 
   @override
@@ -155,21 +156,7 @@ class PBISPlusActionInteractionButtonState
                                     ? Colors.grey[300]
                                     : Colors.transparent,
                               ),
-                              child: widget.isLoading == true
-                                  ? Center(
-                                      child: Utility.textWidget(
-                                          text: '0',
-                                          textAlign: TextAlign.center,
-                                          context: context,
-                                          textTheme: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  color: Colors.grey[600],
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18)),
-                                    )
-                                  : buildCounts());
+                              child: buildCounts());
                         }),
                   )
                 ],
@@ -325,14 +312,22 @@ class PBISPlusActionInteractionButtonState
     return FittedBox(
         child: Padding(
             padding: EdgeInsets.all(3),
-            child: Utility.textWidget(
-                text: getCountsById(widget.iconData.id ?? '').toString(),
-                context: context,
-                textAlign: TextAlign.center,
-                textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14))));
+            child: widget.isBehaviorLoading == false
+                ? Utility.textWidget(
+                    text: getCountsById(widget.iconData.id ?? '').toString(),
+                    context: context,
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14))
+                : ShimmerLoading(
+                    child: Container(
+                      height: 10,
+                      width: 10,
+                      color: Colors.black,
+                    ),
+                    isLoading: true)));
   }
 
   int? getCountsById(String id) {

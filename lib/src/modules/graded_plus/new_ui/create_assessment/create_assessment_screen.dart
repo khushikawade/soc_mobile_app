@@ -153,6 +153,10 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                 refresh: (v) {
                   setState(() {});
                 },
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_light.png"
+                        : "assets/images/graded+_dark.png",
                 iconData: widget.titleIconData,
                 plusAppName: 'GRADED+',
                 fromGradedPlus: true,

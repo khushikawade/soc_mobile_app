@@ -33,11 +33,13 @@ class PlusCustomNavBarWidget extends StatelessWidget {
                     topLeft: Radius.circular(25)),
                 boxShadow: [
                   BoxShadow(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.5),
-                      blurRadius: 10.0)
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.2),
+                    // Colors.grey,
+                    blurRadius: 5.0,
+                  ),
                 ]),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

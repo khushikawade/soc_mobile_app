@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
@@ -44,7 +46,7 @@ class GradedPlusCameraScreen extends StatefulWidget {
   final onlyForPicture;
   final bool isFromHistoryAssessmentScanMore;
   final scaffoldKey;
-  final bool? oneTimeCamera;
+  final bool? noNewScan; //Only accessed Camera scan
   final bool? createdAsPremium;
   final String? questionImageLink;
   final HistoryAssessment? obj;
@@ -63,7 +65,7 @@ class GradedPlusCameraScreen extends StatefulWidget {
       this.questionImageLink,
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
-      this.oneTimeCamera,
+      this.noNewScan,
       this.isMcqSheet,
       this.selectedAnswer,
       this.createdAsPremium,
@@ -715,7 +717,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                     } else {
                                       if (widget.isFromHistoryAssessmentScanMore ==
                                               true &&
-                                          widget.oneTimeCamera == null) {
+                                          widget.noNewScan == null) {
                                         Navigator.of(context)
                                           ..pop()
                                           ..pop();
@@ -1091,12 +1093,20 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //Navigate to result summary screen in case of any scan more //recent assessment scan more // history scan more
   Future<void> _navigateToResultSection() async {
+    //this is for close loading popup
     Navigator.of(context).pop();
+
     if (widget.isFromHistoryAssessmentScanMore == true) {
-      Navigator.of(context)
-        ..pop()
-        ..pop()
-        ..pop();
+      //when user tap done without scan a new record need to remove the camera screen first then push and replace to result summary section
+      if (widget.noNewScan == true) {
+        Navigator.of(context).pop();
+      } else {
+        // Here we need to remove camera , scan result screen, and replace the result summary section since user visited a few screen after scanning new assignment sheets
+        Navigator.of(context)
+          ..pop()
+          ..pop()
+          ..pop();
+      }
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

@@ -253,10 +253,43 @@ class _StaffPageState extends State<StaffPage> {
             setState(() {});
           },
         ),
-        body: NotificationListener<ScrollNotification>(
+        body:
+
+            // NotificationListener<ScrollNotification>(
+            //   onNotification: onNotification,
+            //   child: Globals.appSetting.staffBannerImageC != null &&
+            //           Globals.appSetting.staffBannerImageC != ''
+            //       ? NestedScrollView(
+            //           controller: _scrollController,
+            //           // key: _scaffoldKey,
+            //           headerSliverBuilder:
+            //               (BuildContext context, bool innerBoxIsScrolled) {
+            //             return <Widget>[
+            //               BannerImageWidget(
+            //                   isStaffPage: true,
+            //                   staffActionHeight:
+            //                       MediaQuery.of(context).size.height * 0.18,
+            //                   staffActionWidget: topActionButtonWidget(
+            //                     height: MediaQuery.of(context).size.height * 0.18,
+            //                   ),
+            //                   imageUrl: Globals.appSetting.staffBannerImageC!,
+            //                   bgColor:
+            //                       Globals.appSetting.studentBannerColorC != null
+            //                           ? Utility.getColorFromHex(
+            //                               Globals.appSetting.studentBannerColorC!)
+            //                           : Colors.transparent),
+            //             ];
+            //           },
+            //           body: _body('body1'),
+            //         )
+            //       : _body('body2'),
+            // )
+
+            NotificationListener<ScrollNotification>(
           onNotification: onNotification,
-          child: Globals.appSetting.staffBannerImageC != null &&
-                  Globals.appSetting.staffBannerImageC != ''
+          child: (Globals.appSetting.staffBannerImageC != null &&
+                      Globals.appSetting.staffBannerImageC != '' ||
+                  Globals.appSetting.enableGraded != 'false')
               ? NestedScrollView(
                   controller: _scrollController,
                   // key: _scaffoldKey,
@@ -266,16 +299,29 @@ class _StaffPageState extends State<StaffPage> {
                       BannerImageWidget(
                           isStaffPage: true,
                           staffActionHeight:
-                              MediaQuery.of(context).size.height * 0.18,
-                          staffActionWidget: topActionButtonWidget(
-                            height: MediaQuery.of(context).size.height * 0.18,
-                          ),
-                          imageUrl: Globals.appSetting.staffBannerImageC!,
-                          bgColor:
-                              Globals.appSetting.studentBannerColorC != null
-                                  ? Utility.getColorFromHex(
-                                      Globals.appSetting.studentBannerColorC!)
-                                  : Colors.transparent),
+                              Globals.appSetting.staffBannerImageC != null &&
+                                      Globals.appSetting.staffBannerImageC !=
+                                          '' &&
+                                      Globals.appSetting.enableGraded != 'false'
+                                  ? MediaQuery.of(context).size.height * 0.18
+                                  : Globals.appSetting.enableGraded ==
+                                          'false' //Disabled Plus Apps
+                                      ? 0
+                                      : MediaQuery.of(context).size.height *
+                                          0.06, //Disabled Banner
+                          staffActionWidget: Globals.appSetting.enableGraded !=
+                                  'false'
+                              ? topActionButtonWidget(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.18,
+                                )
+                              : null,
+                          imageUrl: Globals.appSetting.staffBannerImageC ?? '',
+                          bgColor: Globals.appSetting.studentBannerColorC !=
+                                  null
+                              ? Utility.getColorFromHex(
+                                  Globals.appSetting.studentBannerColorC!)
+                              : Colors.transparent),
                     ];
                   },
                   body: _body('body1'),
@@ -334,8 +380,8 @@ class _StaffPageState extends State<StaffPage> {
 
         if (user != null) {
           if (user.email != null && user.email != '') {
-            _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, isAuthorizedUser: true));
+            _ocrBloc.add(
+                AuthorizedUserWithDatabase(email: user.email, role: "Teacher"));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
@@ -405,6 +451,7 @@ class _StaffPageState extends State<StaffPage> {
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
+
               //alignment: AlignmentGeometry(),
               // padding: EdgeInsets.symmetric(horizontal: 36),
               height: height,

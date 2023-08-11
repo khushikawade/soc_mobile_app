@@ -337,6 +337,19 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   }
                 }),
           ),
+          BlocConsumer<PBISPlusBloc, PBISPlusState>(
+              bloc: pBISPlusNotesBloc,
+              builder: (context, state) {
+                return SizedBox.shrink();
+              },
+              listener: (context, state) async {
+                if (state is PBISPlusAddNotesSucess) {
+                  Utility.currentScreenSnackBar(
+                      "Note added successfully", null);
+                } else if (state is PBISErrorState) {
+                  Utility.currentScreenSnackBar(state.error.toString(), null);
+                }
+              }),
         ],
       ),
     );
@@ -453,26 +466,39 @@ class _PBISPlusClassState extends State<PBISPlusClass>
             key: refreshKey,
             onRefresh: refreshPage,
             child: Container(
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
+                height: Globals.deviceType == "phone"
+                    ? MediaQuery.of(context).orientation == Orientation.portrait
                         ? MediaQuery.of(context).size.height * 0.68 //7
-                        : MediaQuery.of(context).size.height * 0.45,
+                        : MediaQuery.of(context).size.height * 0.45
+                    : MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height - 50 //7
+                        : MediaQuery.of(context).size.width - 50,
                 child: screenShotNotifier.value == true
-                    ? SingleChildScrollView(
-                        child: Screenshot(
-                            controller: screenshotController,
-                            child: Container(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                                child: scrollableBuilder(
-                                    googleClassroomCourseList,
-                                    isStudentInteractionLoading,
-                                    isScreenShimmerLoading))),
-                      )
-                    : scrollableBuilder(googleClassroomCourseList,
-                        isStudentInteractionLoading, isScreenShimmerLoading)));
+                    ? LayoutBuilder(builder:
+                        (BuildContext context, BoxConstraints constraint) {
+                        return SingleChildScrollView(
+                          child: Screenshot(
+                              controller: screenshotController,
+                              child: Container(
+                                  color: Color(0xff000000) !=
+                                          Theme.of(context).backgroundColor
+                                      ? Color(0xffF7F8F9)
+                                      : Color(0xff111C20),
+                                  child: scrollableBuilder(
+                                      googleClassroomCourseList,
+                                      isStudentInteractionLoading,
+                                      isScreenShimmerLoading,
+                                      constraint))),
+                        );
+                      })
+                    : LayoutBuilder(builder:
+                        (BuildContext context, BoxConstraints constraint) {
+                        return scrollableBuilder(
+                            googleClassroomCourseList,
+                            isStudentInteractionLoading,
+                            isScreenShimmerLoading,
+                            constraint);
+                      })));
       },
     );
   }
@@ -480,7 +506,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   Widget scrollableBuilder(
       googleClassroomCourseList,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     return ScrollablePositionedList.builder(
         physics: isScreenShimmerLoading ? NeverScrollableScrollPhysics() : null,
         padding: EdgeInsets.only(bottom: Platform.isIOS ? 60 : 30),
@@ -489,7 +516,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
         itemCount: googleClassroomCourseList.length,
         itemBuilder: (context, index) {
           return _buildCourseSeparationList(googleClassroomCourseList, index,
-              isStudentInteractionLoading, isScreenShimmerLoading);
+              isStudentInteractionLoading, isScreenShimmerLoading, constraint);
         });
   }
 
@@ -497,7 +524,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       List<ClassroomCourse> googleClassroomCourseList,
       index,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     return Column(children: [
       Container(
         key: ValueKey(googleClassroomCourseList[index]),
@@ -524,7 +552,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               googleClassroomCourseList[index].id!,
               isStudentInteractionLoading,
               isScreenShimmerLoading,
-            )
+              constraint)
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -548,11 +576,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     String classroomCourseId,
     final bool isStudentInteractionLoading,
     final bool isScreenShimmerLoading,
+    BoxConstraints constraint,
     // final PBISPlusBloc? courseBlocInstance
   ) {
     return GridView.count(
-        padding: EdgeInsets.all(10.0),
-        childAspectRatio: 7.0 / 9.0,
+        padding: EdgeInsets.all(6.0),
+        childAspectRatio: (MediaQuery.of(context).size.width * 0.01) / 5.2,
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 4,
         shrinkWrap: true,
@@ -562,7 +591,8 @@ class _PBISPlusClassState extends State<PBISPlusClass>
               index,
               classroomCourseId,
               isStudentInteractionLoading,
-              isScreenShimmerLoading);
+              isScreenShimmerLoading,
+              constraint);
         }));
 
     //  BlocConsumer(
@@ -612,11 +642,12 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       int index,
       String classroomCourseId,
       final bool isStudentInteractionLoading,
-      final bool isScreenShimmerLoading) {
+      final bool isScreenShimmerLoading,
+      BoxConstraints constraint) {
     String heroTag = "HeroTag_${classroomCourseId}_${index}";
 
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+        builder: (BuildContext context, BoxConstraints constrai) {
       Container BuildStudentCountIndicator = Container(
         padding: EdgeInsets.all(2),
         width: 24,
@@ -656,7 +687,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       return studentCardLayoutBuilder(
           isStudentInteractionLoading,
           isScreenShimmerLoading,
-          constraints,
+          constraint,
           studentValueNotifier,
           heroTag,
           classroomCourseId,
@@ -680,7 +711,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
           return;
         }
 
-        await Navigator.of(context).push(
+        final res = await Navigator.of(context).push(
           HeroDialogRoute(
             builder: (context) => Center(
                 //--------------------------- START //OLD FLOW MAKE BY NIKHAR ------------------------
@@ -763,20 +794,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
-              BlocConsumer<PBISPlusBloc, PBISPlusState>(
-                  bloc: pBISPlusNotesBloc,
-                  builder: (context, state) {
-                    return SizedBox.shrink();
-                  },
-                  listener: (context, state) async {
-                    if (state is PBISPlusAddNotesSucess) {
-                      Utility.currentScreenSnackBar(
-                          "Note added successfully", null);
-                    } else if (state is PBISErrorState) {
-                      Utility.currentScreenSnackBar(
-                          state.error.toString(), null);
-                    }
-                  }),
               if (widget.isGradedPlus != true)
                 Positioned(
                     top: 0,

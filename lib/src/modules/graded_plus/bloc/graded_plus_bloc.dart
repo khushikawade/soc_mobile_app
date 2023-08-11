@@ -262,9 +262,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //  var data =
         yield AuthorizedUserLoading();
-        bool result = event.isAuthorizedUser == true
-            ? await authorizedUserWithDatabase(email: event.email)
-            : await verifyUserWithDatabase(email: event.email.toString());
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        bool result = await loginAndAuthorizeUser(
+            email: event.email.toString(),
+            role: event.role ?? '',
+            authToken: _userProfileLocalData[0].authorizationToken ?? '');
+
         if (result == true) {
           yield AuthorizedUserSuccess();
         } else {
@@ -293,6 +298,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         throw (e);
       }
     }
+
     // Event to Fetch subjects As per requirements ====
     if (event is FetchSubjectDetails) {
       try {
@@ -1229,80 +1235,71 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> authorizedUserWithDatabase({required String? email}) async {
+  // Future<bool> authorizedUserWithDatabase({required String? email}) async {
+  //   try {
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json;charset=UTF-8',
+  //       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //     };
+  //     final body = {
+  //       "email": email.toString(),
+  //       "DBN": Globals.schoolDbnC,
+  //       "Schoolid": Overrides.SCHOOL_ID,
+  //       "teacherid": await OcrUtility.getTeacherId()
+  //     };
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+  //         body: body,
+  //         headers: headers,
+  //         isGoogleApi: true);
+
+  //     if (response.statusCode == 200) {
+  //       await loginUserWithDatabase(
+  //           email: email); //to update teacher id in shared preference
+  //       var res = response.data;
+  //       var data = res["body"];
+  //       // await OcrUtility.setTeacherId(techerId);
+  //       if (data == true) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+
+  //       // return data;
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, 'verifyUserWithDatabase Method');
+  //     throw (e);
+  //   }
+  // }
+
+  Future<bool> loginAndAuthorizeUser(
+      {required String? email,
+      required String role,
+      required String authToken}) async {
     try {
       Map<String, String> headers = {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
       final body = {
-        "email": email.toString(),
-        "DBN": Globals.schoolDbnC,
-        "Schoolid": Overrides.SCHOOL_ID,
-        "teacherid": await OcrUtility.getTeacherId()
+        "email": email,
+        "schoolId": Globals.appSetting.id,
+        "role": role.toLowerCase(),
+        "google_token": authToken
       };
       final ResponseModel response = await _dbServices.postApi(
-          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail",
+          "https://wvl7o182d6.execute-api.us-east-2.amazonaws.com/production/v2/login",
           body: body,
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode == 200) {
-        await verifyUserWithDatabase(
-            email: email); //to update teacher id in shared preference
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var res = response.data;
-        var data = res["body"];
-        // await OcrUtility.setTeacherId(techerId);
-        if (data == true) {
-          return true;
-        } else {
-          return false;
-        }
-
-        // return data;
-      } else {
-        return false;
-      }
-    } catch (e, s) {
-      FirebaseAnalyticsService.firebaseCrashlytics(
-          e, s, 'verifyUserWithDatabase Method');
-      throw (e);
-    }
-  }
-
-  Future<bool> verifyUserWithDatabase({required String? email}) async {
-    try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-      };
-      final body = {"email": email.toString()};
-      final ResponseModel response = await _dbServices.postApi(
-          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
-          body: body,
-          headers: headers,
-          isGoogleApi: true);
-
-      if (response.statusCode == 200) {
-        var res = response.data;
-        var data = res["body"];
-
-        if (data == false) {
-          bool result =
-              await createContactToSalesforce(email: email.toString());
-          if (!result) {
-            await createContactToSalesforce(email: email.toString());
-          }
-        } else {
-          // Globals.teacherId = data['Id'];
-          OcrUtility.setTeacherId(data['Id']);
-          if (data['Assessment_App_User__c'] != 'true') {
-            bool result = await updateContactToSalesforce(recordId: data['Id']);
-            if (!result) {
-              await updateContactToSalesforce(recordId: data['Id']);
-            }
-          }
-        }
+        await OcrUtility.setTeacherId(res["contactId"]);
 
         return true;
       } else {
@@ -1639,24 +1636,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  _getStandardIdAndsubjectId(
-      {required String grade,
-      required String subjectName,
-      required String subLearningCode}) async {
-    try {
-      final ResponseModel response = await _dbServices.getApiNew(
-          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
-          isCompleteUrl: true);
-      if (response.statusCode == 200) {
-        return response.data['body'].length > 0 ? response.data['body'][0] : '';
-      }
-    } catch (e, s) {
-      FirebaseAnalyticsService.firebaseCrashlytics(
-          e, s, '_getStandardIdAndsubjectId Method');
+  // _getStandardIdAndsubjectId(
+  //     {required String grade,
+  //     required String subjectName,
+  //     required String subLearningCode}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
+  //         isCompleteUrl: true);
+  //     if (response.statusCode == 200) {
+  //       return response.data['body'].length > 0 ? response.data['body'][0] : '';
+  //     }
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, '_getStandardIdAndsubjectId Method');
 
-      throw (e);
-    }
-  }
+  //     throw (e);
+  //   }
+  // }
 
   Future fetchStudentDetails(ossId) async {
     try {

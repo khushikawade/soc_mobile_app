@@ -544,7 +544,7 @@ class _StudentPageState extends State<StudentPage> {
 
   void _scheduleEvent(UserInformation studentProfile) {
     if (isCalenderEventCalledAlready) {
-      Utility.currentScreenSnackBar('Please wait..... ', null);
+      Utility.currentScreenSnackBar('Please Wait..... ', null);
     } else {
       isCalenderEventCalledAlready = true;
       _scheduleBloc.add(CalenderPageEvent(
@@ -602,7 +602,7 @@ class _StudentPageState extends State<StudentPage> {
         if (user != null) {
           if (user.email != null && user.email != '') {
             _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, isAuthorizedUser: true));
+                email: user.email, role: 'Student'));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(

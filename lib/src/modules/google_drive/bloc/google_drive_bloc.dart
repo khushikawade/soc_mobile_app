@@ -615,9 +615,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             spreadsheetList = await listSort(spreadsheetList);
           }
 
-          spreadsheetList != null && spreadsheetList.length > 0
-              ? await _localDb.clear()
-              : print("");
+          // spreadsheetList != null && spreadsheetList.length > 0
+          //     ?
+          await _localDb.clear();
+          // : print("");
 
           spreadsheetList.forEach((HistoryAssessment e) async {
             await _localDb.addData(e);

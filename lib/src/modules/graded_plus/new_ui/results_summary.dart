@@ -212,6 +212,10 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              commonLogoPath:
+                  Color(0xff000000) == Theme.of(context).backgroundColor
+                       ? "assets/images/graded+_light.png"
+                            : "assets/images/graded+_dark.png",
               refresh: (v) {
                 setState(() {});
               },
@@ -1924,7 +1928,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
-                oneTimeCamera: widget.assessmentDetailPage!,
+                noNewScan: widget.assessmentDetailPage!,
                 isFromHistoryAssessmentScanMore: widget.assessmentDetailPage!,
                 onlyForPicture: false,
                 isScanMore: true,

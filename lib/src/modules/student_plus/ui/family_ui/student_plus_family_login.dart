@@ -61,7 +61,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
                 ),
                 SpacerWidget(18),
                 textFormFieldWidget(),
-                SpacerWidget(MediaQuery.of(context).viewInsets.bottom / 2.5),
+                SpacerWidget(MediaQuery.of(context).viewInsets.bottom / 10),
                 SpacerWidget(MediaQuery.of(context).size.height * 0.2),
                
               ],
@@ -106,7 +106,7 @@ class _StudentPlusFamilyLogInState extends State<StudentPlusFamilyLogIn> {
           Navigator.pop(context);
         } else if (state is FamilyLoginLoading) {
           Utility.showLoadingDialog(
-              context: context, msg: 'Please wait', isOCR: false);
+              context: context, msg: 'Please Wait', isOCR: false);
         }
       },
     );

@@ -181,6 +181,12 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfilePage(
+                                                  commonLogoPath: Color(
+                                                              0xff000000) ==
+                                                          Theme.of(context)
+                                                              .backgroundColor
+                                                      ? "assets/images/graded+_light.png"
+                                                      : "assets/images/graded+_dark.png",
                                                   sectionType: "Graded+",
                                                   plusAppName: 'Graded+',
                                                   fromGradedPlus: true,
@@ -390,7 +396,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                       List<UserInformation> _userProfileLocalData =
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
-                          _userProfileLocalData);
+                          _userProfileLocalData, 'Teacher');
                       Globals.userEmailId =
                           _userProfileLocalData[0].userEmail!.split('@')[0];
 

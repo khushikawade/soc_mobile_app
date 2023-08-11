@@ -915,15 +915,19 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                         ? _buildHeading(
                             "Recent Searches",
                             Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .copyWith(
-                                    fontSize: 18,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                    fontWeight: FontWeight.w500),
-                          ) //_buildHeading2()
+                                .textTheme
+                                .headline1!
+                                .copyWith(fontWeight: FontWeight.w100)
+                            // Theme.of(context)
+                            //     .appBarTheme
+                            //     .titleTextStyle!
+                            //     .copyWith(
+                            //         fontSize: 18,
+                            //         color: Theme.of(context)
+                            //             .colorScheme
+                            //             .primaryVariant,
+                            //         fontWeight: FontWeight.w500),
+                            ) //_buildHeading2()
                         : SizedBox(height: 0),
                     issuggestionList == false
                         ? _buildRecentItemList()

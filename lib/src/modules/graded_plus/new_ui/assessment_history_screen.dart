@@ -112,6 +112,10 @@ class _GradedPlusAssessmentSummaryState
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                commonLogoPath:
+                    Color(0xff000000) == Theme.of(context).backgroundColor
+                        ? "assets/images/graded+_light.png"
+                            : "assets/images/graded+_dark.png",
                 refresh: (v) {
                   setState(() {});
                 },
@@ -193,7 +197,7 @@ class _GradedPlusAssessmentSummaryState
                 horizontal: MediaQuery.of(context).size.width / 50),
             child: PlusAppSearchBar(
               sectionName: 'GRADED+',
-              hintText:  "Search",
+              hintText: "Search",
               onTap: () async {
                 var result = Navigator.push(
                   context,
@@ -345,7 +349,7 @@ class _GradedPlusAssessmentSummaryState
           ? MediaQuery.of(context).size.height * 0.792
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
-        controller: _scrollController,
+        controller: _list.length > 5 ? _scrollController : null,
         shrinkWrap: true,
         // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -512,6 +516,10 @@ class _GradedPlusAssessmentSummaryState
                       courseWorkId: list[index].classroomCourseWorkId,
                       courseWorkURL: list[index].classroomCourseWorkUrl);
             }
+            //update sharing url in case empty //in case of scan more
+            Globals.shareableLink = list[index].webContentLink ?? '';
+
+            Globals.shareableLink = list[index].webContentLink ?? '';
 
             Navigator.push(
               context,
