@@ -283,7 +283,7 @@ class Authentication {
 
   static Future refreshAuthenticationToken({String? refreshToken}) async {
     var result;
-    if (Globals.appSetting.enableGoogleSSO != "true") {
+    if (Globals.appSetting.enableGoogleSSO != "true" || Globals.appSetting.enableGoogleSSO == "true" ) {
       result = await _toRefreshAuthenticationToken(refreshToken ?? '');
     } else {
       result = await Authentication.refreshToken();

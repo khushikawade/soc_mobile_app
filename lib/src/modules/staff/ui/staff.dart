@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
@@ -23,12 +25,15 @@ import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../../services/user_profile.dart';
@@ -82,6 +87,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
+    listernLink();
     _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
@@ -105,6 +111,23 @@ class _StaffPageState extends State<StaffPage> {
     }
     return true;
   }
+  final _appLinks = AppLinks();
+
+// Subscribe to all events when app is started.
+// (Use allStringLinkStream to get it as [String])
+  listernLink(){
+    _appLinks.allUriLinkStream.listen((uri) async {
+    // Do something (navigation, ...)
+
+    print(uri.toString());
+
+    UserInformation user =  await GoogleLogin.saveUserProfile(uri.toString().split('?')[1], "Teacher");
+     _ocrBloc.add(
+                AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
+});
+
+  }
+
 
   // Future<void> saveUserProfile(String profileData) async {
   //   List<String> profile = profileData.split('+');
@@ -359,13 +382,37 @@ class _StaffPageState extends State<StaffPage> {
           'delete_local_login_details28JUNE', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
-
+      
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
+   
 
     if (_profileData.isEmpty) {
+       
+
+      // if (condition) {
+      //   await launchUrl(Uri.parse("https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth"),mode: LaunchMode.externalApplication);  //
+      // }
       //   // await _launchURL('Google Authentication');
       //   //Google Manual Sign in
+
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+         if (Platform.isIOS) {
+            await launchUrl(Uri.parse(Globals.appSetting.nycDocLoginUrl ??  "https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth?schoolId=${Globals.appSetting.id}"),mode: LaunchMode.externalApplication);  //
+     
+         } else {
+           var value = await GoogleLogin.launchURL(
+            'Google Authentication', context, _scaffoldKey, '', actionName,
+            userType: "Teacher");
+        if (value == true) {
+          navigatorToScreen(actionName: actionName);
+        }
+
+         }
+
+        return;
+     
+      }
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', actionName,
