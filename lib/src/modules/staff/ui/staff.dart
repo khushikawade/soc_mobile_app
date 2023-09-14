@@ -237,7 +237,7 @@ class _StaffPageState extends State<StaffPage> {
         BlocListener<OcrBloc, OcrState>(
           child: Container(),
           bloc: _ocrBloc,
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is AuthorizedUserSuccess) {
               Navigator.pop(context, false);
               navigatorToScreen(actionName: actionName ?? '');
@@ -249,9 +249,10 @@ class _StaffPageState extends State<StaffPage> {
 
             if (state is AuthorizedUserError) {
               Navigator.pop(context, false);
+              await UserGoogleProfile.clearUserProfile();
               if (Globals.appSetting.enableGoogleSSO == "true") {
                 Authentication.signOut(context: context);
-                UserGoogleProfile.clearUserProfile();
+                
               }
               Utility.currentScreenSnackBar(
                   'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
@@ -398,7 +399,7 @@ class _StaffPageState extends State<StaffPage> {
           await launchUrl(
               Uri.parse(Globals.appSetting.nycDocLoginUrl != null
                   ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
-                  : "https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
               mode: LaunchMode.externalApplication); //
         } else {
           var value = await GoogleLogin.launchURL(
