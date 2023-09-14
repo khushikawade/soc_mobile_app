@@ -111,23 +111,23 @@ class _StaffPageState extends State<StaffPage> {
     }
     return true;
   }
+
   final _appLinks = AppLinks();
 
 // Subscribe to all events when app is started.
 // (Use allStringLinkStream to get it as [String])
-  listernLink(){
+  listernLink() {
     _appLinks.allUriLinkStream.listen((uri) async {
-    // Do something (navigation, ...)
+      // Do something (navigation, ...)
 
-    print(uri.toString());
+      print(uri.toString());
 
-    UserInformation user =  await GoogleLogin.saveUserProfile(uri.toString().split('?')[1], "Teacher");
-     _ocrBloc.add(
-                AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
-});
-
+      UserInformation user = await GoogleLogin.saveUserProfile(
+          uri.toString().split('?')[1], "Teacher");
+      _ocrBloc.add(
+          AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
+    });
   }
-
 
   // Future<void> saveUserProfile(String profileData) async {
   //   List<String> profile = profileData.split('+');
@@ -382,14 +382,11 @@ class _StaffPageState extends State<StaffPage> {
           'delete_local_login_details28JUNE', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
-      
+
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
-   
 
     if (_profileData.isEmpty) {
-       
-
       // if (condition) {
       //   await launchUrl(Uri.parse("https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth"),mode: LaunchMode.externalApplication);  //
       // }
@@ -397,21 +394,22 @@ class _StaffPageState extends State<StaffPage> {
       //   //Google Manual Sign in
 
       if (Globals.appSetting.enablenycDocLogin == "true") {
-         if (Platform.isIOS) {
-            await launchUrl(Uri.parse(Globals.appSetting.nycDocLoginUrl ??  "https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth?schoolId=${Globals.appSetting.id}"),mode: LaunchMode.externalApplication);  //
-     
-         } else {
-           var value = await GoogleLogin.launchURL(
-            'Google Authentication', context, _scaffoldKey, '', actionName,
-            userType: "Teacher");
-        if (value == true) {
-          navigatorToScreen(actionName: actionName);
+        if (Platform.isIOS) {
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', actionName,
+              userType: "Teacher");
+          if (value == true) {
+            navigatorToScreen(actionName: actionName);
+          }
         }
 
-         }
-
         return;
-     
       }
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
