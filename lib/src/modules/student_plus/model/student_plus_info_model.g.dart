@@ -95,6 +95,7 @@ class StudentPlusDetailsModelAdapter
       nysElaScore2023C: fields[75] as String?,
       nysMathScore2023C: fields[76] as String?,
       grade22_23: fields[77] as String?,
+      sex: fields[78] as String?,
       studentClassroomId: fields[74] as String?,
     );
   }
@@ -102,7 +103,7 @@ class StudentPlusDetailsModelAdapter
   @override
   void write(BinaryWriter writer, StudentPlusDetailsModel obj) {
     writer
-      ..writeByte(78)
+      ..writeByte(79)
       ..writeByte(0)
       ..write(obj.firstNameC)
       ..writeByte(1)
@@ -258,7 +259,9 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(76)
       ..write(obj.nysMathScore2023C)
       ..writeByte(77)
-      ..write(obj.grade22_23);
+      ..write(obj.grade22_23)
+      ..writeByte(78)
+      ..write(obj.sex);
   }
 
   @override

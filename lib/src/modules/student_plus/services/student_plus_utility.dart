@@ -95,7 +95,7 @@ class StudentPlusUtility {
           label: 'Attend%',
           value: '${studentDetails.currentAttendance ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
+          label: 'Gender', value: '${studentDetails.sex ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity', value: '${studentDetails.ethnicityNameC ?? '-'}'),
       StudentPlusInfoModel(label: 'Age', value: '${studentDetails.age ?? '-'}'),

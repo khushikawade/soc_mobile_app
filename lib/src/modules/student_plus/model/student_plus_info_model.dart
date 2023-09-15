@@ -93,6 +93,7 @@ class StudentPlusDetailsModel {
       this.nysElaScore2023C,
       this.nysMathScore2023C,
       this.grade22_23,
+      this.sex,
       //studentClassroomCourseId //updating with title to compare if student exist in google classroom or not //empty is not added since user can interact without classroom id also
       this.studentClassroomId = ''});
 
@@ -274,113 +275,116 @@ class StudentPlusDetailsModel {
 
   @HiveField(77)
   final String? grade22_23;
+  @HiveField(78)
+  final String? sex;
 
   factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusDetailsModel(
-        firstNameC: json["First_Name__c"],
-        gradeC: json["Grade__c"],
-        lastNameC: json["last_Name__c"],
-        parentPhoneC: json["Parent_Phone__c"],
-        schoolC: json["School__c"],
-        studentIdC: json["Student_ID__c"],
-        id: json["Id"],
-        emailC: json["Email__c"],
-        ellC: json["ELL__c"],
-        ellProficiencyC: json["ELL_Proficiency__c"],
-        classC: json["Class__c"],
-        iepProgramC: json["IEP_Program__c"],
-        genderFullC: json["Gender_Full__c"],
-        dobC: json["DOB__c"],
-        age: json["Age__c"],
+          firstNameC: json["First_Name__c"],
+          gradeC: json["Grade__c"],
+          lastNameC: json["last_Name__c"],
+          parentPhoneC: json["Parent_Phone__c"],
+          schoolC: json["School__c"],
+          studentIdC: json["Student_ID__c"],
+          id: json["Id"],
+          emailC: json["Email__c"],
+          ellC: json["ELL__c"],
+          ellProficiencyC: json["ELL_Proficiency__c"],
+          classC: json["Class__c"],
+          iepProgramC: json["IEP_Program__c"],
+          genderFullC: json["Gender_Full__c"],
+          dobC: json["DOB__c"],
+          age: json["Age__c"],
 
-        /* ------------------------ field use to show grades ------------------------ */
-        grade19_20: json["Grade_19_20__c"],
-        grade20_21: json["Grade_20_21__c"],
-        grade21_22: json["Grade_21_22__c"],
-        grade22_23: json["Grade_22_23__c"],
+          /* ------------------------ field use to show grades ------------------------ */
+          grade19_20: json["Grade_19_20__c"],
+          grade20_21: json["Grade_20_21__c"],
+          grade21_22: json["Grade_21_22__c"],
+          grade22_23: json["Grade_22_23__c"],
 
-        /* ---------------------- Fields use to show NYS graph ---------------------- */
-        nysElaScore2019C: json["NYS_ELA_2019__c"],
-        nysMathScore2019C: json["NYS_Math_2019__c"],
-        nysElaScore2021C: json["NYS_ELA_2021__c"],
-        nysMathScore2021C: json["NYS_Math_2021__c"],
-        nysElaScore2022C: json["NYS_ELA_PR_Score_2022__c"],
-        nysMathScore2022C: json["NYS_Math_PR_Score_2022__c"],
-        nysElaScore2023C: json["NYS_ELA_PR_Score_2023__c"],
-        nysMathScore2023C: json["NYS_Math_PR_Score_2023__c"],
+          /* ---------------------- Fields use to show NYS graph ---------------------- */
+          nysElaScore2019C: json["NYS_ELA_2019__c"],
+          nysMathScore2019C: json["NYS_Math_2019__c"],
+          nysElaScore2021C: json["NYS_ELA_2021__c"],
+          nysMathScore2021C: json["NYS_Math_2021__c"],
+          nysElaScore2022C: json["NYS_ELA_PR_Score_2022__c"],
+          nysMathScore2022C: json["NYS_Math_PR_Score_2022__c"],
+          nysElaScore2023C: json["NYS_ELA_PR_Score_2023__c"],
+          nysMathScore2023C: json["NYS_Math_PR_Score_2023__c"],
+          nysMathPredictionC: json["NYS_Math_Prediction__c"],
+          nysElaPredictionC: json["NYS_ELA_Prediction__c"],
 
-        nysMathPredictionC: json["NYS_Math_Prediction__c"],
-        nysElaPredictionC: json["NYS_ELA_Prediction__c"],
+          /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+          mathPreviousSyEOY: json["iReady_Math_EOY_Previous_SY_ORP_STUDENT__c"],
+          mathCurrentSyBOY: json["IReady_Math_BOY_ORP_STUDENT__c"],
+          mathCurrentSyMOY: json["IReady_Math_MOY_ORP_STUDENT__c"],
+          mathCurrentSyEOY: json["IReady_Math_EOY_ORP_STUDENT__c"],
+          mathPreviousSyEOYPercentile:
+              json["iReady_Math_EOY_Previous_SY_Percentile__c"],
+          mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
+          mathCurrentSyMOYPercentile: json["IReady_MATH_MOY_Percentile__c"],
+          mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
 
-        /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-        mathPreviousSyEOY: json["iReady_Math_EOY_Previous_SY_ORP_STUDENT__c"],
-        mathCurrentSyBOY: json["IReady_Math_BOY_ORP_STUDENT__c"],
-        mathCurrentSyMOY: json["IReady_Math_MOY_ORP_STUDENT__c"],
-        mathCurrentSyEOY: json["IReady_Math_EOY_ORP_STUDENT__c"],
-        mathPreviousSyEOYPercentile:
-            json["iReady_Math_EOY_Previous_SY_Percentile__c"],
-        mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
-        mathCurrentSyMOYPercentile: json["IReady_MATH_MOY_Percentile__c"],
-        mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
+          /* ------------------ Field use in Exams Page - iReady ELA ----------------- */
+          ELAPreviousSyEOY: json["iReady_ELA_EOY_Previous_SY_ORP_STUDENT__c"],
+          ELACurrentSyBOY: json["IReady_ELA_BOY_ORP_STUDENT__c"],
+          ELACurrentSyMOY: json["IReady_ELA_MOY_ORP_STUDENT__c"],
+          ELACurrentSyEOY: json["IReady_ELA_EOY_ORP_STUDENT__c"],
+          ELAPreviousSyEOYPercentile:
+              json["iReady_ELA_EOY_Previous_SY_Percentile__c"],
+          ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
+          ELACurrentSyMOYPercentile: json["IReady_ELA_MOY_Percentile__c"],
+          ELACurrentSyEOYPercentile: json["IReady_ELA_EOY_Percentile__c"],
+          iepYesNoC: json["IEP_Yes_No__c"],
+          teacherProperC: json["Teacher_Proper__c"],
+          ethnicityNameC: json["Ethnicity_Name__c"],
 
-        /* ------------------ Field use in Exams Page - iReady ELA ----------------- */
-        ELAPreviousSyEOY: json["iReady_ELA_EOY_Previous_SY_ORP_STUDENT__c"],
-        ELACurrentSyBOY: json["IReady_ELA_BOY_ORP_STUDENT__c"],
-        ELACurrentSyMOY: json["IReady_ELA_MOY_ORP_STUDENT__c"],
-        ELACurrentSyEOY: json["IReady_ELA_EOY_ORP_STUDENT__c"],
-        ELAPreviousSyEOYPercentile: json["iReady_ELA_EOY_Previous_SY_Percentile__c"],
-        ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
-        ELACurrentSyMOYPercentile: json["IReady_ELA_MOY_Percentile__c"],
-        ELACurrentSyEOYPercentile: json["IReady_ELA_EOY_Percentile__c"],
-        iepYesNoC: json["IEP_Yes_No__c"],
-        teacherProperC: json["Teacher_Proper__c"],
-        ethnicityNameC: json["Ethnicity_Name__c"],
+          /* ------------------------- iReady Math color code ------------------------- */
+          mathPreviousEOYOverallRelPlace: json[
+              "iReady_Math_EOY_Previous_SY_ORP__c"], //iReady_Math_EOY_Previous_SY_ORP_STUDENT__c
+          mathCurrentBOYOverallRelativePlace:
+              json["IReady_Math_BOY_Overall_Relative_Place__c"],
+          mathCurrentMOYOverallRelativePlace:
+              json["Math_IReady_Overall_Relative_Place_MOY__c"],
+          mathCurrentEOYOverallRelativePlace:
+              json["IReady_Math_EOY_Overall_Relative_Place__c"],
 
-        /* ------------------------- iReady Math color code ------------------------- */
-        mathPreviousEOYOverallRelPlace: json[
-            "iReady_Math_EOY_Previous_SY_ORP__c"], //iReady_Math_EOY_Previous_SY_ORP_STUDENT__c
-        mathCurrentBOYOverallRelativePlace:
-            json["IReady_Math_BOY_Overall_Relative_Place__c"],
-        mathCurrentMOYOverallRelativePlace:
-            json["Math_IReady_Overall_Relative_Place_MOY__c"],
-        mathCurrentEOYOverallRelativePlace:
-            json["IReady_Math_EOY_Overall_Relative_Place__c"],
+          /* ------------------------- iReady ELA color code ------------------------- */
+          ELAPreviousEOYOverallRelPlace:
+              json["iReady_ELA_EOY_Previous_SY_ORP__c"],
+          ELACurrentBOYOverallRelativePlace:
+              json["IReady_ELA_BOY_Overall_Relative_Place__c"],
+          ELACurrentMOYOverallRelativePlace:
+              json["ELA_IReady_Overall_Relative_Place_MOY__c"],
+          ELACurrentEOYOverallRelativePlace:
+              json["IReady_ELA_EOY_Overall_Relative_Place__c"],
+          currentAttendance: json["Current_Attendance__c"],
+          studentPhoto: json['Student_photo__c'],
+          studentGooglePresentationId: json['Google_Presentation_Id'] ?? '',
+          studentGooglePresentationUrl: json['Google_Presentation_URL'] ?? '',
 
-        /* ------------------------- iReady ELA color code ------------------------- */
-        ELAPreviousEOYOverallRelPlace:
-            json["iReady_ELA_EOY_Previous_SY_ORP__c"],
-        ELACurrentBOYOverallRelativePlace:
-            json["IReady_ELA_BOY_Overall_Relative_Place__c"],
-        ELACurrentMOYOverallRelativePlace:
-            json["ELA_IReady_Overall_Relative_Place_MOY__c"],
-        ELACurrentEOYOverallRelativePlace:
-            json["IReady_ELA_EOY_Overall_Relative_Place__c"],
-        currentAttendance: json["Current_Attendance__c"],
-        studentPhoto: json['Student_photo__c'],
-        studentGooglePresentationId: json['Google_Presentation_Id'] ?? '',
-        studentGooglePresentationUrl: json['Google_Presentation_URL'] ?? '',
+          /* ------------------ Field use in Exams Page - MAP Math ----------------- */
+          MAPmathPreviousSyEOY: json["MAP_Math_EOY_Previous_SY_Level__c"],
+          MAPmathCurrentSyBOY: json["MAP_Math_BOY_Level__c"],
+          MAPmathCurrentSyMOY: json["MAP_Math_MOY_Level__c"],
+          MAPmathCurrentSyEOY: json["MAP_Math_EOY_Level__c"],
+          MAPmathPreviousSyEOYPercentile:
+              json["MAP_Math_EOY_Previous_SY_Percentile__c"],
+          MAPmathCurrentSyBOYPercentile: json["MAP_MATH_BOY_Percentile__c"],
+          MAPmathCurrentSyMOYPercentile: json["MAP_MATH_MOY_Percentile__c"],
+          MAPmathCurrentSyEOYPercentile: json["MAP_MATH_EOY_Percentile__c"],
 
-        /* ------------------ Field use in Exams Page - MAP Math ----------------- */
-        MAPmathPreviousSyEOY: json["MAP_Math_EOY_Previous_SY_Level__c"],
-        MAPmathCurrentSyBOY: json["MAP_Math_BOY_Level__c"],
-        MAPmathCurrentSyMOY: json["MAP_Math_MOY_Level__c"],
-        MAPmathCurrentSyEOY: json["MAP_Math_EOY_Level__c"],
-        MAPmathPreviousSyEOYPercentile:
-            json["MAP_Math_EOY_Previous_SY_Percentile__c"],
-        MAPmathCurrentSyBOYPercentile: json["MAP_MATH_BOY_Percentile__c"],
-        MAPmathCurrentSyMOYPercentile: json["MAP_MATH_MOY_Percentile__c"],
-        MAPmathCurrentSyEOYPercentile: json["MAP_MATH_EOY_Percentile__c"],
-
-        /* ------------------ Field use in Exams Page - MAP ELA ----------------- */
-        MAPELAPreviousSyEOY: json["MAP_ELA_EOY_Previous_SY_Level__c"],
-        MAPELACurrentSyBOY: json["MAP_ELA_BOY_Level__c"],
-        MAPELACurrentSyMOY: json["MAP_ELA_MOY_Level__c"],
-        MAPELACurrentSyEOY: json["MAP_ELA_EOY_Level__c"],
-        MAPELAPreviousSyEOYPercentile: json["MAP_ELA_EOY_Previous_SY_Percentile__c"],
-        MAPELACurrentSyBOYPercentile: json["MAP_ELA_BOY_Percentile__c"],
-        MAPELACurrentSyMOYPercentile: json["MAP_ELA_MOY_Percentile__c"],
-        MAPELACurrentSyEOYPercentile: json["MAP_ELA_EOY_Percentile__c"],
-      );
+          /* ------------------ Field use in Exams Page - MAP ELA ----------------- */
+          MAPELAPreviousSyEOY: json["MAP_ELA_EOY_Previous_SY_Level__c"],
+          MAPELACurrentSyBOY: json["MAP_ELA_BOY_Level__c"],
+          MAPELACurrentSyMOY: json["MAP_ELA_MOY_Level__c"],
+          MAPELACurrentSyEOY: json["MAP_ELA_EOY_Level__c"],
+          MAPELAPreviousSyEOYPercentile:
+              json["MAP_ELA_EOY_Previous_SY_Percentile__c"],
+          MAPELACurrentSyBOYPercentile: json["MAP_ELA_BOY_Percentile__c"],
+          MAPELACurrentSyMOYPercentile: json["MAP_ELA_MOY_Percentile__c"],
+          MAPELACurrentSyEOYPercentile: json["MAP_ELA_EOY_Percentile__c"],
+          sex: json['Sex__c']);
 
   get nysElaPrScore2021C => null;
 
@@ -421,7 +425,8 @@ class StudentPlusDetailsModel {
         "IReady_Math_BOY_ORP_STUDENT__c": mathCurrentSyBOY,
         "IReady_Math_MOY_ORP_STUDENT__c": mathCurrentSyMOY,
         "IReady_Math_EOY_ORP_STUDENT__c": mathCurrentSyEOY,
-        "iReady_Math_EOY_Previous_SY_Percentile__c": mathPreviousSyEOYPercentile,
+        "iReady_Math_EOY_Previous_SY_Percentile__c":
+            mathPreviousSyEOYPercentile,
         "IReady_MATH_BOY_Percentile__c": mathCurrentSyBOYPercentile,
         "IReady_MATH_MOY_Percentile__c": mathCurrentSyMOYPercentile,
         "IReady_MATH_EOY_Percentile__c": mathCurrentSyEOYPercentile,
@@ -440,8 +445,7 @@ class StudentPlusDetailsModel {
         "Ethnicity_Name__c": ethnicityNameC,
 
         /* ------------------------- iReady Math color code ------------------------- */
-        "iReady_Math_EOY_Previous_SY_ORP__c":
-            mathPreviousEOYOverallRelPlace,
+        "iReady_Math_EOY_Previous_SY_ORP__c": mathPreviousEOYOverallRelPlace,
         "IReady_Math_BOY_Overall_Relative_Place__c":
             mathCurrentBOYOverallRelativePlace,
         "Math_IReady_Overall_Relative_Place_MOY__c":
@@ -450,8 +454,7 @@ class StudentPlusDetailsModel {
             mathCurrentEOYOverallRelativePlace,
 
         /* ------------------------- iReady ELA color code ------------------------- */
-        "iReady_ELA_EOY_Previous_SY_ORP__c":
-            ELAPreviousEOYOverallRelPlace,
+        "iReady_ELA_EOY_Previous_SY_ORP__c": ELAPreviousEOYOverallRelPlace,
         "IReady_ELA_BOY_Overall_Relative_Place__c":
             ELACurrentBOYOverallRelativePlace,
         "ELA_IReady_Overall_Relative_Place_MOY__c":
@@ -474,7 +477,8 @@ class StudentPlusDetailsModel {
         "MAP_Math_BOY_Level__c": MAPmathCurrentSyBOY,
         "MAP_Math_MOY_Level__c": MAPmathCurrentSyMOY,
         "MAP_Math_EOY_Level__c": MAPmathCurrentSyEOY,
-        "MAP_Math_EOY_Previous_SY_Percentile__c": MAPmathPreviousSyEOYPercentile,
+        "MAP_Math_EOY_Previous_SY_Percentile__c":
+            MAPmathPreviousSyEOYPercentile,
         "MAP_MATH_BOY_Percentile__c": MAPmathCurrentSyBOYPercentile,
         "MAP_MATH_MOY_Percentile__c": MAPmathCurrentSyMOYPercentile,
         "MAP_MATH_EOY_Percentile__c": MAPmathCurrentSyEOYPercentile,
@@ -488,6 +492,7 @@ class StudentPlusDetailsModel {
         "MAP_ELA_BOY_Percentile__c": MAPELACurrentSyBOYPercentile,
         "MAP_ELA_MOY_Percentile__c": MAPELACurrentSyMOYPercentile,
         "MAP_ELA_EOY_Percentile__c": MAPELACurrentSyEOYPercentile,
+        "Sex__c": sex
       };
 }
 
