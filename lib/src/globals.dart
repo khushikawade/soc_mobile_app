@@ -127,4 +127,7 @@ class Globals {
       ''; //Used to manage the count increment only in case of id change
 
 //  static EventController scheduleController = EventController();
+
+static bool isStaffSection = true;
+static bool isScheduleSection = false;
 }

@@ -47,6 +47,7 @@ class StaffPage extends StatefulWidget {
       this.language,
       this.customObj,
       required this.isCustomSection,
+      required this.staffOcrBloc,
       required this.isFromOcr})
       : super(key: key);
   final bool? isCustomSection;
@@ -54,6 +55,7 @@ class StaffPage extends StatefulWidget {
   final String? title;
   final String? language;
   final bool isFromOcr;
+  OcrBloc staffOcrBloc;
 
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -72,7 +74,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  OcrBloc _ocrBloc = new OcrBloc();
+ // OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
   // instance for maintaining logs
@@ -87,7 +89,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
-    googleLoginLinkListen();
+   // googleLoginLinkListen();
     _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
@@ -112,22 +114,21 @@ class _StaffPageState extends State<StaffPage> {
     return true;
   }
 
-  final _appLinks = AppLinks();
+ // final _appLinks = AppLinks();
 
 // Subscribe to all events when app is started.
 // (Use allStringLinkStream to get it as [String])
-  googleLoginLinkListen() {
-    _appLinks.allUriLinkStream.listen((uri) async {
-      // Do something (navigation, ...)
+  // googleLoginLinkListen() {
+  //   _appLinks.allUriLinkStream.listen((uri) async {
+  //     // Do something (navigation, ...)
 
-      print(uri.toString());
+  //     print(uri.toString());
 
-      UserInformation user = await GoogleLogin.saveUserProfile(
-          uri.toString().split('?')[1], "Teacher");
-      _ocrBloc.add(
-          AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
-    });
-  }
+  //     UserInformation user = await GoogleLogin.saveUserProfile(
+  //         uri.toString().split('?')[1], "Teacher");
+      
+  //   });
+  // }
 
   // Future<void> saveUserProfile(String profileData) async {
   //   List<String> profile = profileData.split('+');
@@ -236,7 +237,7 @@ class _StaffPageState extends State<StaffPage> {
         //Authorizing user email address with database
         BlocListener<OcrBloc, OcrState>(
           child: Container(),
-          bloc: _ocrBloc,
+          bloc: widget.staffOcrBloc,
           listener: (context, state) async {
             if (state is AuthorizedUserSuccess) {
               Navigator.pop(context, false);
@@ -386,7 +387,7 @@ class _StaffPageState extends State<StaffPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-    if (_profileData.isEmpty) {
+    if (_profileData.isEmpty || _profileData[0].userType.toString().toLowerCase() == 'student') {
       // if (condition) {
       //   await launchUrl(Uri.parse("https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth"),mode: LaunchMode.externalApplication);  //
       // }
@@ -394,6 +395,7 @@ class _StaffPageState extends State<StaffPage> {
       //   //Google Manual Sign in
 
       if (Globals.appSetting.enablenycDocLogin == "true") {
+        Globals.isStaffSection = true;
         if (Platform.isIOS) {
           await launchUrl(
               Uri.parse(Globals.appSetting.nycDocLoginUrl != null
@@ -421,11 +423,11 @@ class _StaffPageState extends State<StaffPage> {
       }
       //Google Single Sign On
       else {
-        User? user = await Authentication.signInWithGoogle(userType: "Teacher");
+        User? user = await Authentication.signInWithGoogle(userType: "Teacher",);
 
         if (user != null) {
           if (user.email != null && user.email != '') {
-            _ocrBloc.add(
+            widget.staffOcrBloc.add(
                 AuthorizedUserWithDatabase(email: user.email, role: "Teacher"));
             //navigatorToScreen(actionName: actionName);
           } else {

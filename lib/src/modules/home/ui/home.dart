@@ -4,19 +4,25 @@ import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
+import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_feeds.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +58,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
-
+  CalenderBloc scheduleBloc = CalenderBloc();
+  OcrBloc studentOcrBloc = OcrBloc();
+  OcrBloc staffOcrBloc = OcrBloc();
   List<Widget> _screens = [];
   List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
   String? _versionNumber;
@@ -133,7 +141,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
-
+    googleLoginLinkListen();
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
@@ -182,6 +190,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             return NewsPage();
           } else if (item.contains('Student')) {
             return StudentPage(
+              scheduleBloc: scheduleBloc,
+              studentOcrBloc: studentOcrBloc,
               homeObj: widget.homeObj,
               isCustomSection: false,
             );
@@ -192,6 +202,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             );
           } else if (item.contains('Staff')) {
             return StaffPage(
+              staffOcrBloc: staffOcrBloc,
               isFromOcr: false,
               isCustomSection: false,
             );
@@ -559,10 +570,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
           _screens.add(StudentPage(
+            scheduleBloc: scheduleBloc,
+            studentOcrBloc: studentOcrBloc,
             isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
-          _screens.add(StaffPage(
+          _screens.add(StaffPage(staffOcrBloc: staffOcrBloc,
             customObj: Globals.customSetting![i],
             isFromOcr: false,
             isCustomSection: true,
@@ -618,5 +631,39 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   addNewsIndex(index) async {
     HiveDbServices _hiveDbServices = HiveDbServices();
     await _hiveDbServices.addSingleData('newsIndex', 'newsIndex', index);
+  }
+
+
+  
+  
+
+  // Listnear for iOS nyc Doe Login
+  final _appLinks = AppLinks();
+  googleLoginLinkListen() {
+    _appLinks.allUriLinkStream.listen((uri) async {
+      // Do something (navigation, ...)
+
+      print(uri.toString());
+
+      UserInformation user = await GoogleLogin.saveUserProfile(
+          uri.toString().split('?')[1], Globals.isStaffSection ? "Teacher" :"Student" ,);
+
+      if (Globals.isStaffSection) {
+        staffOcrBloc.add(
+          AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
+      } else {
+         if (Globals.isScheduleSection != true) {
+        studentOcrBloc.add(
+            AuthorizedUserWithDatabase(email: user.userEmail, role: "Student"));
+      } else {
+        scheduleBloc.add(CalenderPageEvent(
+          studentProfile: user,
+          pullToRefresh: false,
+          isFromStudent: true));
+      }
+      }    
+
+     
+    });
   }
 }

@@ -182,7 +182,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                               .addCustomAnalyticsEvent("logout");
                           await UserGoogleProfile.clearUserProfile();
 
-                          await Authentication.signOut(context: context);
+                         if (Globals.appSetting.enableGoogleSSO == true  && (Globals.appSetting.enablenycDocLogin == false || Globals.appSetting.enablenycDocLogin == null)) {
+                           await Authentication.signOut(context: context);
+                         }
 
                           // Globals.googleDriveFolderId = null;
                           PlusUtility.updateLogs(
@@ -191,13 +193,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        index: 2,
-                                        isFromOcrSection: true,
-                                      )),
-                              (_) => false);
+                          Navigator.of(context).popUntil((route) => route.isFirst);
                           // if (widget.onSignOut != null) {
                           //   widget.onSignOut!();
                           //   return;
