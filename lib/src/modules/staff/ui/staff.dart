@@ -87,7 +87,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
-    listernLink();
+    googleLoginLinkListen();
     _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
@@ -116,7 +116,7 @@ class _StaffPageState extends State<StaffPage> {
 
 // Subscribe to all events when app is started.
 // (Use allStringLinkStream to get it as [String])
-  listernLink() {
+  googleLoginLinkListen() {
     _appLinks.allUriLinkStream.listen((uri) async {
       // Do something (navigation, ...)
 
@@ -252,7 +252,6 @@ class _StaffPageState extends State<StaffPage> {
               await UserGoogleProfile.clearUserProfile();
               if (Globals.appSetting.enableGoogleSSO == "true") {
                 Authentication.signOut(context: context);
-                
               }
               Utility.currentScreenSnackBar(
                   'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',

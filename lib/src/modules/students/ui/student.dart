@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -33,12 +35,14 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../schedule/modal/blackOutDate_modal.dart';
 
@@ -63,6 +67,8 @@ class _StudentPageState extends State<StudentPage> {
   ScrollController _scrollController = ScrollController();
   CalenderBloc _scheduleBloc = CalenderBloc();
 
+  bool isStudentPlus = false;
+
   bool isCalenderEventCalledAlready = false;
   @override
   void initState() {
@@ -78,6 +84,25 @@ class _StudentPageState extends State<StudentPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+  }
+
+  final _appLinks = AppLinks();
+  googleLoginLinkListen() {
+    _appLinks.allUriLinkStream.listen((uri) async {
+      // Do something (navigation, ...)
+
+      print(uri.toString());
+
+      UserInformation user = await GoogleLogin.saveUserProfile(
+          uri.toString().split('?')[1], "Teacher");
+
+      if (isStudentPlus) {
+        _ocrBloc.add(
+            AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
+      } else {
+        _scheduleEvent(user);
+      }
+    });
   }
 
   // _scrollListener() {
@@ -590,6 +615,26 @@ class _StudentPageState extends State<StudentPage> {
 
     if (_profileData.isEmpty) {
       // Condition to check SSO login enable or not
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+        isStudentPlus = true;
+        if (Platform.isIOS) {
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+              userType: "Teacher");
+          if (value == true) {
+            navigateToStudentPlus();
+          }
+        }
+
+        return;
+      }
+
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
@@ -601,8 +646,8 @@ class _StudentPageState extends State<StudentPage> {
         User? user = await Authentication.signInWithGoogle(userType: "Student");
         if (user != null) {
           if (user.email != null && user.email != '') {
-            _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, role: 'Student'));
+            _ocrBloc.add(
+                AuthorizedUserWithDatabase(email: user.email, role: 'Student'));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
@@ -660,6 +705,27 @@ class _StudentPageState extends State<StudentPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
     if (_profileData.isEmpty) {
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+        isStudentPlus = false;
+        if (Platform.isIOS) {
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+              userType: "Teacher");
+          if (value == true) {
+            List<UserInformation> _userProfileData =
+                await UserGoogleProfile.getUserProfile();
+            _scheduleEvent(_userProfileData[0]);
+          }
+        }
+
+        return;
+      }
       // Condition to check SSO login enable or not
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
