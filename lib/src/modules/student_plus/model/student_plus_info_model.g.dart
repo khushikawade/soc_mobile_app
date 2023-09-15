@@ -38,8 +38,8 @@ class StudentPlusDetailsModelAdapter
       nysMathScore2021C: fields[20] as String?,
       nysElaScore2019C: fields[17] as String?,
       nysMathScore2019C: fields[18] as String?,
-      nysMath2023PredictionC: fields[23] as String?,
-      nysEla2023PredictionC: fields[24] as String?,
+      nysMathPredictionC: fields[23] as String?,
+      nysElaPredictionC: fields[24] as String?,
       ELACurrentSyBOY: fields[34] as String?,
       ELACurrentSyBOYPercentile: fields[38] as String?,
       ELACurrentSyEOY: fields[36] as String?,
@@ -75,13 +75,34 @@ class StudentPlusDetailsModelAdapter
       studentPhoto: fields[54] as String?,
       studentGooglePresentationUrl: fields[55] as String?,
       studentGooglePresentationId: fields[56] as String?,
+      MAPELACurrentSyBOY: fields[66] as String?,
+      MAPELACurrentSyBOYPercentile: fields[70] as String?,
+      MAPELACurrentSyEOY: fields[68] as String?,
+      MAPELACurrentSyEOYPercentile: fields[72] as String?,
+      MAPELACurrentSyMOY: fields[67] as String?,
+      MAPELACurrentSyMOYPercentile: fields[71] as String?,
+      MAPELAPreviousSyEOY: fields[65] as String?,
+      MAPELAPreviousSyEOYPercentile: fields[69] as String?,
+      MAPmathCurrentSyBOY: fields[58] as String?,
+      MAPmathCurrentSyBOYPercentile: fields[62] as String?,
+      MAPmathCurrentSyEOY: fields[60] as String?,
+      MAPmathCurrentSyEOYPercentile: fields[64] as String?,
+      MAPmathCurrentSyMOY: fields[59] as String?,
+      MAPmathCurrentSyMOYPercentile: fields[63] as String?,
+      MAPmathPreviousSyEOY: fields[57] as String?,
+      MAPmathPreviousSyEOYPercentile: fields[61] as String?,
+      studentClassroomCourseId: fields[73] as String?,
+      nysElaScore2023C: fields[75] as String?,
+      nysMathScore2023C: fields[76] as String?,
+      grade22_23: fields[77] as String?,
+      studentClassroomId: fields[74] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusDetailsModel obj) {
     writer
-      ..writeByte(57)
+      ..writeByte(78)
       ..writeByte(0)
       ..write(obj.firstNameC)
       ..writeByte(1)
@@ -129,9 +150,9 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(22)
       ..write(obj.nysMathScore2022C)
       ..writeByte(23)
-      ..write(obj.nysMath2023PredictionC)
+      ..write(obj.nysMathPredictionC)
       ..writeByte(24)
-      ..write(obj.nysEla2023PredictionC)
+      ..write(obj.nysElaPredictionC)
       ..writeByte(25)
       ..write(obj.mathPreviousSyEOY)
       ..writeByte(26)
@@ -195,7 +216,49 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(55)
       ..write(obj.studentGooglePresentationUrl)
       ..writeByte(56)
-      ..write(obj.studentGooglePresentationId);
+      ..write(obj.studentGooglePresentationId)
+      ..writeByte(57)
+      ..write(obj.MAPmathPreviousSyEOY)
+      ..writeByte(58)
+      ..write(obj.MAPmathCurrentSyBOY)
+      ..writeByte(59)
+      ..write(obj.MAPmathCurrentSyMOY)
+      ..writeByte(60)
+      ..write(obj.MAPmathCurrentSyEOY)
+      ..writeByte(61)
+      ..write(obj.MAPmathPreviousSyEOYPercentile)
+      ..writeByte(62)
+      ..write(obj.MAPmathCurrentSyBOYPercentile)
+      ..writeByte(63)
+      ..write(obj.MAPmathCurrentSyMOYPercentile)
+      ..writeByte(64)
+      ..write(obj.MAPmathCurrentSyEOYPercentile)
+      ..writeByte(65)
+      ..write(obj.MAPELAPreviousSyEOY)
+      ..writeByte(66)
+      ..write(obj.MAPELACurrentSyBOY)
+      ..writeByte(67)
+      ..write(obj.MAPELACurrentSyMOY)
+      ..writeByte(68)
+      ..write(obj.MAPELACurrentSyEOY)
+      ..writeByte(69)
+      ..write(obj.MAPELAPreviousSyEOYPercentile)
+      ..writeByte(70)
+      ..write(obj.MAPELACurrentSyBOYPercentile)
+      ..writeByte(71)
+      ..write(obj.MAPELACurrentSyMOYPercentile)
+      ..writeByte(72)
+      ..write(obj.MAPELACurrentSyEOYPercentile)
+      ..writeByte(73)
+      ..write(obj.studentClassroomCourseId)
+      ..writeByte(74)
+      ..write(obj.studentClassroomId)
+      ..writeByte(75)
+      ..write(obj.nysElaScore2023C)
+      ..writeByte(76)
+      ..write(obj.nysMathScore2023C)
+      ..writeByte(77)
+      ..write(obj.grade22_23);
   }
 
   @override

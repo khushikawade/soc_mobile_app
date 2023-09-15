@@ -1,5 +1,3 @@
-import 'package:Soc/src/services/utility.dart';
-
 class StudentPlusOverrides {
   /* -------------------------------------------------------------------------- */
   /*                  List of Static word used in student plus                  */
@@ -9,7 +7,7 @@ class StudentPlusOverrides {
       "student_info_recent_search_list1";
   static final String studentWorkList = "student_work_list1";
   static final String studentGradeList = "student_grade_list";
-  static final String studentPlusDetails = "student_plus_details1";
+  static final String studentPlusDetails = "student_plus_details";
   static final String searchTileStaticWord = 'Class';
   static final String recentSearchHeader = "Recent Searches";
   static final String titleSearchPage = 'Search Any Student';
@@ -23,7 +21,7 @@ class StudentPlusOverrides {
   static final String studentPlusExamsTitle = 'Exams';
   static final String studentWorkSnackbar = "No Image Found";
   static final String studentWorkErrorMessage =
-      'Scan student work with GRADED+ in the Staff section of the app';
+      ' Scan student work with GRADED+ in the Staff section of the app ';
   static final String gradesErrorMessage = 'No grades found';
   static final String gradesTitleLeft = 'Subject';
   static final String gradesTitleRight = 'Grades';
@@ -38,4 +36,6 @@ class StudentPlusOverrides {
 
   // static String studentPlusGoogleDriveFolderId = '';
   // static String studentPlusGoogleDriveFolderPath = '';
+
+  static const String kPbisPageSheetTitle = 'Select Class';
 }
