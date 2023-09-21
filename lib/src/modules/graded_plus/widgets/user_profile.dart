@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/google_authentication.dart';
@@ -44,8 +43,6 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  // DateTime currentDateTime = DateTime.now(); //DateTime
-  //   final OcrBloc _ocrBlocLogs = new OcrBloc();
 
   @override
   void initState() {
@@ -76,214 +73,162 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
             elevation: 0,
             backgroundColor: Colors.transparent,
             child: ScaleTransition(
-              scale: scaleAnimation!,
-              child: contentBox(context),
-            )));
+                scale: scaleAnimation!, child: contentBox(context))));
   }
 
   contentBox(context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-            height: widget.height != null
-                ? widget.height
-                : Globals.deviceType == 'phone'
-                    ? MediaQuery.of(context).size.height * 0.28
-                    : MediaQuery.of(context).size.height * 0.22,
-            width: widget.width != null
-                ? widget.width
-                : Globals.deviceType == 'phone'
-                    ? MediaQuery.of(context).size.width * 0.8
-                    : MediaQuery.of(context).size.width * 0.5,
-            padding: EdgeInsets.only(
-                left: 20,
-                top: widget.isUserInfoPop == true ? 45 + 20 : 30,
-                right: 20,
-                bottom: 20),
-            margin: EdgeInsets.only(top: 50),
-            decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Color.fromRGBO(0, 149, 205, 1),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(0, 10),
-                      blurRadius: 10),
-                ]),
-            child: widget.isUserInfoPop == true
-                ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    SizedBox(height: Globals.deviceType == 'phone' ? 2 : 10),
-                    FittedBox(
+    return Stack(children: <Widget>[
+      Container(
+          height: widget.height != null
+              ? widget.height
+              : Globals.deviceType == 'phone'
+                  ? MediaQuery.of(context).size.height * 0.28
+                  : MediaQuery.of(context).size.height * 0.22,
+          width: widget.width != null
+              ? widget.width
+              : Globals.deviceType == 'phone'
+                  ? MediaQuery.of(context).size.width * 0.8
+                  : MediaQuery.of(context).size.width * 0.5,
+          padding: EdgeInsets.only(
+              left: 20,
+              top: widget.isUserInfoPop == true ? 45 + 20 : 30,
+              right: 20,
+              bottom: 20),
+          margin: EdgeInsets.only(top: 50),
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Color.fromRGBO(0, 149, 205, 1)),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black, offset: Offset(0, 10), blurRadius: 10)
+              ]),
+          child: widget.isUserInfoPop == true
+              ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  SizedBox(height: Globals.deviceType == 'phone' ? 2 : 10),
+                  FittedBox(
                       child: Utility.textWidget(
-                        context: context,
-                        text: widget.profileData!.userName!
-                            .replaceAll("%20", " "),
-                        textTheme:
-                            Theme.of(context).textTheme.headline1!.copyWith(
+                          context: context,
+                          text: widget.profileData!.userName!
+                              .replaceAll("%20", " "),
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xff000000) ==
                                           Theme.of(context).backgroundColor
                                       ? Color(0xffFFFFFF)
-                                      : Color(0xff000000),
-                                ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    FittedBox(
+                                      : Color(0xff000000)))),
+                  SizedBox(height: 10),
+                  FittedBox(
                       child: Utility.textWidget(
                           context: context,
                           text: widget.profileData!.userEmail!,
-                          textTheme:
-                              Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    color: Colors.grey.shade500,
-                                  )),
-                    ),
-                    SizedBox(
-                      height: 22,
-                    ),
-                    Container(
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(color: Colors.grey.shade500))),
+                  SizedBox(height: 22),
+                  Container(
                       height: MediaQuery.of(context).size.height * 0.04,
                       width: Globals.deviceType == 'phone'
                           ? MediaQuery.of(context).size.width * 0.35
                           : MediaQuery.of(context).size.width * 0.25,
                       child: ElevatedButton(
-                        child: FittedBox(
-                            child: Utility.textWidget(
-                                context: context,
-                                text: 'Sign Out',
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(
-                                      fontSize: Globals.deviceType == 'phone'
-                                          ? 18
-                                          : 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffFFFFFF)
-                                          : Color(0xff000000),
-                                    ))),
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0),
-                            ),
-                            primary: AppTheme.kSelectedColor),
-                        onPressed: () async {
-                          await FirebaseAnalyticsService
-                              .addCustomAnalyticsEvent("logout");
-                          await UserGoogleProfile.clearUserProfile();
+                          child: FittedBox(
+                              child: Utility.textWidget(
+                                  context: context,
+                                  text: 'Sign Out',
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        fontSize: Globals.deviceType == 'phone'
+                                            ? 18
+                                            : 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xff000000) ==
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Color(0xffFFFFFF)
+                                            : Color(0xff000000),
+                                      ))),
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                              ),
+                              primary: AppTheme.kSelectedColor),
+                          onPressed: () async {
+                            await FirebaseAnalyticsService
+                                .addCustomAnalyticsEvent("logout");
+                            await UserGoogleProfile.clearUserProfile();
 
-                          await Authentication.signOut(context: context);
+                            //Used to manage the Logout of SSO //Since we have separate login profile for SSO and Browser login
+                            if (Globals.appSetting.enableGoogleSSO == true &&
+                                Globals.appSetting.enablenycDocLogin != true) {
+                              await Authentication.signOut(context: context);
+                            }
 
-                          // Globals.googleDriveFolderId = null;
-                          PlusUtility.updateLogs(
-                              activityType: 'Schedule',
-                              userType: 'Student',
-                              activityId: '3',
-                              description: 'User profile logout',
-                              operationResult: 'Success');
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        index: 2,
-                                        isFromOcrSection: true,
-                                      )),
-                              (_) => false);
-                          // if (widget.onSignOut != null) {
-                          //   widget.onSignOut!();
-                          //   return;
-                          // }
-                          // WarningPopupModel();
-                          // UserGoogleProfile.clearUserProfile();
-                          // GoogleClassroom.clearClassroomCourses();
-                          // Utility.updateLogs(
-                          //     activityType: widget.activityType,
-                          //     activityId: '3',
-                          //     description: 'User profile logout',
-                          //     operationResult: 'Success');
-                          // // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                          // if (Overrides.STANDALONE_GRADED_APP) {
-                          //   Navigator.of(context).pushAndRemoveUntil(
-                          //       MaterialPageRoute(
-                          //           builder: (context) => GradedLandingPage(
-                          //                 isFromLogoutPage: true,
-                          //               )),
-                          //       (_) => false);
-                          // } else {
-                          //   // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                          //   Navigator.of(context)
-                          //       .popUntil((route) => route.isFirst);
-                          // }
-                        },
-                      ),
-                    ),
-                  ])
-                : studentInfoWidget(
-                    studentAssessmentInfo: widget.studentAssessmentInfo!)),
-        // if (widget.isUserInfoPop == true)
-        widget.isUserInfoPop == true
-            ? Positioned(
-                left: 20,
-                right: 20,
-                child: CircleAvatar(
+                            // Globals.googleDriveFolderId = null;
+                            PlusUtility.updateLogs(
+                                activityType: 'Schedule',
+                                userType: 'Student',
+                                activityId: '3',
+                                description: 'User profile logout',
+                                operationResult: 'Success');
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          }))
+                ])
+              : studentInfoWidget(
+                  studentAssessmentInfo: widget.studentAssessmentInfo!)),
+      // if (widget.isUserInfoPop == true)
+      widget.isUserInfoPop == true
+          ? Positioned(
+              left: 20,
+              right: 20,
+              child: CircleAvatar(
                   backgroundColor: AppTheme.kSelectedColor,
                   radius: 52,
                   child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 70,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(80),
-                      ),
-                      child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                          imageUrl: widget.profileData!.profilePicture!,
-                          placeholder: (context, url) => Center(
-                                child: CupertinoActivityIndicator(),
-                              )),
-                    ),
-                  ),
-                ),
-              )
-            : Positioned(
-                right: 10,
-                top: 60,
-                // left: 20,
-                // right: 20,
-                child: InkWell(
+                      backgroundColor: Colors.transparent,
+                      radius: 70,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(80)),
+                          child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              height: 100,
+                              width: 100,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              imageUrl: widget.profileData!.profilePicture!,
+                              placeholder: (context, url) => Center(
+                                  child: CupertinoActivityIndicator()))))))
+          : Positioned(
+              right: 10,
+              top: 60,
+              // left: 20,
+              // right: 20,
+              child: InkWell(
                   onTap: () {
                     Navigator.pop(context);
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
-                  child: Icon(
-                    Icons.clear,
-                    color: AppTheme.kButtonColor,
-                    size: Globals.deviceType == "phone" ? 28 : 36,
-                  ),
-                ),
-              ),
-      ],
-    );
+                  child: Icon(Icons.clear,
+                      color: AppTheme.kButtonColor,
+                      size: Globals.deviceType == "phone" ? 28 : 36)))
+    ]);
   }
 
   Widget studentInfoWidget(
       {required StudentAssessmentInfo studentAssessmentInfo}) {
     return Container(
-      child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-        FittedBox(
+        child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+      FittedBox(
           child: Utility.textWidget(
               text: widget.title!,
               context: context,
@@ -292,9 +237,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
               textTheme: Theme.of(context)
                   .textTheme
                   .headline2!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
-        ),
-        FittedBox(
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 20))),
+      FittedBox(
           child: Utility.textWidget(
               text: widget.isMcqSheet == true
                   ? 'Multiple Choice'
@@ -302,44 +246,33 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
               context: context,
               maxLines: 2,
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context).textTheme.headline3!),
-        ),
-        Expanded(
+              textTheme: Theme.of(context).textTheme.headline3!)),
+      Expanded(
           child: ListView(physics: BouncingScrollPhysics(), children: <Widget>[
-            // _headingWidget(
-            //     title: 'Assessment Type',
-            //     value: widget.isMcqSheet == true
-            //         ? 'Multiple Choice'
-            //         : 'Constructed Response'),
-            _headingWidget(
-                title: 'Subject',
-                value: studentAssessmentInfo.subject ?? 'Subject'),
-            _headingWidget(
-                title: 'Grade', value: studentAssessmentInfo.grade ?? 'Grade'),
-            _headingWidget(
-                title: 'Class',
-                value: studentAssessmentInfo.className ?? 'Class'),
-            _headingWidget(
-                title: 'Domain',
-                value: studentAssessmentInfo.learningStandard ?? 'Domain'),
-            _headingWidget(
-                title: 'Sub-Domain',
-                value:
-                    studentAssessmentInfo.subLearningStandard ?? 'Sub-Domain'),
-          ]),
-        )
-      ]),
-    );
+        _headingWidget(
+            title: 'Subject',
+            value: studentAssessmentInfo.subject ?? 'Subject'),
+        _headingWidget(
+            title: 'Grade', value: studentAssessmentInfo.grade ?? 'Grade'),
+        _headingWidget(
+            title: 'Class', value: studentAssessmentInfo.className ?? 'Class'),
+        _headingWidget(
+            title: 'Domain',
+            value: studentAssessmentInfo.learningStandard ?? 'Domain'),
+        _headingWidget(
+            title: 'Sub-Domain',
+            value: studentAssessmentInfo.subLearningStandard ?? 'Sub-Domain')
+      ]))
+    ]));
     // ]);
   }
 
   Widget _headingWidget({required String title, required String value}) {
     return Container(
-      child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Utility.textWidget(
                   text: title,
                   context: context,
@@ -351,9 +284,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                   text: value,
                   context: context,
                   textAlign: TextAlign.left,
-                  textTheme: Theme.of(context).textTheme.headline2!),
-            ],
-          )),
-    );
+                  textTheme: Theme.of(context).textTheme.headline2!)
+            ])));
   }
 }

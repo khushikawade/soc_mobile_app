@@ -94,8 +94,7 @@ class StudentPlusUtility {
       StudentPlusInfoModel(
           label: 'Attend%',
           value: '${studentDetails.currentAttendance ?? '-'}'),
-      StudentPlusInfoModel(
-          label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
+      StudentPlusInfoModel(label: 'Sex', value: '${studentDetails.sex ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity', value: '${studentDetails.ethnicityNameC ?? '-'}'),
       StudentPlusInfoModel(label: 'Age', value: '${studentDetails.age ?? '-'}'),
@@ -113,7 +112,7 @@ class StudentPlusUtility {
           label: 'ELL Level',
           value: '${studentDetails.ellProficiencyC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? '-'}'),
+          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? '-'}')
     ];
     return studentInfoList;
   }

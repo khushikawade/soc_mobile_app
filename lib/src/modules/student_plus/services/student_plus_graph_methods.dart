@@ -11,26 +11,31 @@ class StudentPlusGraphMethod {
 
   static List<LineChartBarData> graphLineBarsData(
       {required BuildContext context,
-      required bool isIReadyGraph,
+      required String graphType,
       required StudentPlusDetailsModel studentDetails,
       required bool isMathSection}) {
     return [
       LineChartBarData(
           showingIndicators: showingIndicators(),
-          spots: isIReadyGraph == true
-              ? listIReadyFlPoint(
-                  isMathsSection: isMathSection, studentDetails: studentDetails)
-              : listNysFlPoint(
+          spots: graphType == 'nys'
+              ? listNysFlPoint(
                   removeLast: false,
                   studentDetails: studentDetails,
-                  isMathsSection: isMathSection),
+                  isMathsSection: isMathSection)
+              : (graphType == 'iready'
+                  ? listIReadyFlPoint(
+                      isMathsSection: isMathSection,
+                      studentDetails: studentDetails)
+                  : listMAPFlPoint(
+                      isMathsSection: isMathSection,
+                      studentDetails: studentDetails)),
           isCurved: false,
           barWidth: 2,
           color: StudentPlusUtility.oppositeBackgroundColor(context: context),
           dotData: FlDotData(
             show: true,
             getDotPainter: (p0, p1, p2, p3) {
-              if (isIReadyGraph == true) {
+              if (graphType != 'nys') {
                 return FlDotCirclePainter(
                   radius: 3,
                   color: Theme.of(context).colorScheme.background,
@@ -47,15 +52,24 @@ class StudentPlusGraphMethod {
               }
             },
           ),
-          dashArray: [8]),
+          dashArray: studentDetails.nysMathPredictionC == null ? null : [8]),
       LineChartBarData(
-        spots: isIReadyGraph == true
-            ? listIReadyFlPoint(
-                isMathsSection: isMathSection, studentDetails: studentDetails)
-            : listNysFlPoint(
+        spots: graphType == 'nys'
+            ? listNysFlPoint(
                 removeLast: true,
                 studentDetails: studentDetails,
-                isMathsSection: isMathSection),
+                isMathsSection: isMathSection)
+            : (graphType == 'iready'
+                ? listIReadyFlPoint(
+                    isMathsSection: isMathSection,
+                    studentDetails: studentDetails)
+                : listMAPFlPoint(
+                    studentDetails: studentDetails,
+                    isMathsSection: isMathSection)),
+
+        //  isIReadyGraph == true
+        //     ?
+        //     :
         isCurved: false,
         barWidth: 2,
         color: StudentPlusUtility.oppositeBackgroundColor(context: context),
@@ -202,8 +216,13 @@ class StudentPlusGraphMethod {
     addScoreData(
         2023,
         isMathsSection
-            ? studentDetails.nysMath2023PredictionC
-            : studentDetails.nysEla2023PredictionC);
+            ? studentDetails.nysMathScore2023C
+            : studentDetails.nysElaScore2023C);
+    addScoreData(
+        2024,
+        isMathsSection
+            ? studentDetails.nysMathPredictionC
+            : studentDetails.nysElaPredictionC);
 
     if (removeLast && list.length > 1) {
       list.removeLast();
@@ -275,34 +294,74 @@ class StudentPlusGraphMethod {
     }
 
     return list;
+  }
 
-    // old condition(pull 0 in graph in case of null)
-    // return [
-    //   FlSpot(
-    //       0,
-    //       double.parse((isMathsSection == true
-    //               ? studentDetails.mathPreviousSyEOYPercentile
-    //               : studentDetails.ELAPreviousSyEOYPercentile) ??
-    //           "0.00")),
-    //   FlSpot(
-    //       1,
-    //       double.parse((isMathsSection == true
-    //               ? studentDetails.mathCurrentSyBOYPercentile
-    //               : studentDetails.ELACurrentSyBOYPercentile) ??
-    //           "0.00")),
-    //   FlSpot(
-    //       2,
-    //       double.parse((isMathsSection == true
-    //               ? studentDetails.mathCurrentSyMOYPercentile
-    //               : studentDetails.ELACurrentSyMOYPercentile) ??
-    //           "0.00")),
-    //   FlSpot(
-    //       3,
-    //       double.parse((isMathsSection == true
-    //               ? studentDetails.mathCurrentSyEOYPercentile
-    //               : studentDetails.ELACurrentSyEOYPercentile) ??
-    //           "0.00")),
-    // ];
+  /* -------------------------------------------------------------------------- */
+  /*                             Return MAP graph points                     */
+  /* -------------------------------------------------------------------------- */
+
+  static List<FlSpot> listMAPFlPoint(
+      {required StudentPlusDetailsModel studentDetails,
+      required bool isMathsSection}) {
+    List<FlSpot> list = [];
+
+    // condition to remove null value from the graph
+    //----------------------------Previous------------------------
+    if ((isMathsSection == true
+            ? studentDetails.MAPmathPreviousSyEOYPercentile
+            : studentDetails.MAPELAPreviousSyEOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            0,
+            double.parse((isMathsSection == true
+                    ? studentDetails.MAPmathPreviousSyEOYPercentile
+                    : studentDetails.MAPELAPreviousSyEOYPercentile) ??
+                "0.00")),
+      );
+    }
+    //----------------------------Current BOY------------------------
+    if ((isMathsSection == true
+            ? studentDetails.MAPmathCurrentSyBOYPercentile
+            : studentDetails.MAPELACurrentSyBOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            1,
+            double.parse((isMathsSection == true
+                    ? studentDetails.MAPmathCurrentSyBOYPercentile
+                    : studentDetails.MAPELACurrentSyBOYPercentile) ??
+                "0.00")),
+      );
+    }
+    //----------------------------Current MOY------------------------
+    if ((isMathsSection == true
+            ? studentDetails.MAPmathCurrentSyMOYPercentile
+            : studentDetails.MAPELACurrentSyMOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            2,
+            double.parse((isMathsSection == true
+                    ? studentDetails.MAPmathCurrentSyMOYPercentile
+                    : studentDetails.MAPELACurrentSyMOYPercentile) ??
+                "0.00")),
+      );
+    }
+    //----------------------------Current EOY------------------------
+    if ((isMathsSection == true
+            ? studentDetails.MAPmathCurrentSyEOYPercentile
+            : studentDetails.MAPELACurrentSyEOYPercentile) !=
+        null) {
+      list.add(FlSpot(
+          3,
+          double.parse((isMathsSection == true
+                  ? studentDetails.MAPmathCurrentSyEOYPercentile
+                  : studentDetails.MAPELACurrentSyEOYPercentile) ??
+              "0.00")));
+    }
+
+    return list;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -311,45 +370,50 @@ class StudentPlusGraphMethod {
 
   static List<ShowingTooltipIndicators> showingTooltipIndicators(
       {required BuildContext context,
-      required bool isIReadyGraph,
+      required String graphType,
       required StudentPlusDetailsModel studentDetails,
       required bool isMathSection}) {
     List<ShowingTooltipIndicators> list = [];
 
-    //length should be dynamic because every graph have different number of tooltips
+    //length should be dynamic because every graph have different number of tooltips //plotting values
     for (var i = 0;
         i <
-            (isIReadyGraph == true
-                ? (listIReadyFlPoint(
-                        isMathsSection: isMathSection,
-                        studentDetails: studentDetails)
-                    .length)
-                : (listNysFlPoint(
+            (graphType == 'nys'
+                ? listNysFlPoint(
                         isMathsSection: isMathSection,
                         removeLast: false,
                         studentDetails: studentDetails)
-                    .length));
+                    .length
+                : (graphType == 'iready'
+                    ? listIReadyFlPoint(
+                            isMathsSection: isMathSection,
+                            studentDetails: studentDetails)
+                        .length
+                    : listMAPFlPoint(
+                            isMathsSection: isMathSection,
+                            studentDetails: studentDetails)
+                        .length));
         i++) {
       list.add(ShowingTooltipIndicators([
         LineBarSpot(
             StudentPlusGraphMethod.graphLineBarsData(
                 context: context,
-                isIReadyGraph: isIReadyGraph,
+                graphType: graphType,
                 isMathSection: isMathSection,
                 studentDetails: studentDetails)[0],
             StudentPlusGraphMethod.graphLineBarsData(
                     context: context,
-                    isIReadyGraph: isIReadyGraph,
+                    graphType: graphType,
                     isMathSection: isMathSection,
                     studentDetails: studentDetails)
                 .indexOf(StudentPlusGraphMethod.graphLineBarsData(
                     context: context,
-                    isIReadyGraph: isIReadyGraph,
+                    graphType: graphType,
                     isMathSection: isMathSection,
                     studentDetails: studentDetails)[0]),
             StudentPlusGraphMethod.graphLineBarsData(
                     context: context,
-                    isIReadyGraph: isIReadyGraph,
+                    graphType: graphType,
                     isMathSection: isMathSection,
                     studentDetails: studentDetails)[0]
                 .spots[i]),
@@ -411,6 +475,32 @@ class StudentPlusGraphMethod {
     return color;
   }
 
+  static Color mapTooltipColor({
+    required String value,
+  }) {
+    Color color = Colors.black;
+    switch (value) {
+      case "Level I":
+        color = Color(0xffe57373);
+        break;
+      case "Level II":
+        color = Color(0xffffd54f);
+        ;
+        break;
+      case "Level III":
+        color = Color(0xff7ac36a);
+        break;
+      case "Level IV":
+        color = Color(0xff64b5f6);
+        break;
+
+      default:
+        color = Color(0xff737373);
+    }
+
+    return color;
+  }
+
   /* ------------ Function to get field for colors in iReady graph ------------ */
   static String iReadyColorValue(
       {required double x,
@@ -433,6 +523,32 @@ class StudentPlusGraphMethod {
       value = isMathsSection == true
           ? studentInfo.mathCurrentEOYOverallRelativePlace ?? ''
           : studentInfo.ELACurrentEOYOverallRelativePlace ?? '';
+    }
+    return value;
+  }
+
+  static String mapColorValue(
+      {required double x,
+      required bool isMathsSection,
+      required StudentPlusDetailsModel studentInfo}) {
+    String value = '';
+
+    if (x == 0.0) {
+      value = isMathsSection == true
+          ? studentInfo.MAPmathPreviousSyEOY ?? ''
+          : studentInfo.MAPELAPreviousSyEOY ?? '';
+    } else if (x == 1.0) {
+      value = isMathsSection == true
+          ? studentInfo.MAPmathCurrentSyBOY ?? ''
+          : studentInfo.MAPELACurrentSyBOY ?? '';
+    } else if (x == 2.0) {
+      value = isMathsSection == true
+          ? studentInfo.MAPmathCurrentSyMOY ?? ''
+          : studentInfo.MAPELACurrentSyMOY ?? '';
+    } else {
+      value = isMathsSection == true
+          ? studentInfo.MAPmathCurrentSyEOY ?? ''
+          : studentInfo.MAPELACurrentSyEOY ?? '';
     }
     return value;
   }

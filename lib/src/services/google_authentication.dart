@@ -179,7 +179,7 @@ class Authentication {
           print('Google Auth User::::::: ${userDetails.profile}');
           // Retrieve the refresh token
           // Access the refresh token from the UserCredential
-          final String? refreshToken = userCredential.user!.refreshToken!;
+          final String? refreshToken = userCredential.user!.refreshToken;
 
           if (refreshToken != null) {
             // Use the refresh token as needed
@@ -283,7 +283,8 @@ class Authentication {
 
   static Future refreshAuthenticationToken({String? refreshToken}) async {
     var result;
-    if (Globals.appSetting.enableGoogleSSO != "true") {
+    if (Globals.appSetting.enableGoogleSSO != "true" ||
+        Globals.appSetting.enablenycDocLogin == "true") {
       result = await _toRefreshAuthenticationToken(refreshToken ?? '');
     } else {
       result = await Authentication.refreshToken();

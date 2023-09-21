@@ -114,7 +114,7 @@ class GoogleLogin {
     }
   }
 
-  static Future<void> saveUserProfile(
+  static Future saveUserProfile(
       String profileData, String userType) async {
     List<String> profile = profileData.split('+');
     UserInformation _userInformation = UserInformation(
@@ -129,6 +129,7 @@ class GoogleLogin {
     //Save user profile to locally
     //UPDATE CURRENT GOOGLE USER PROFILE
     await UserGoogleProfile.updateUserProfile(_userInformation);
+    return _userInformation;
   }
 
   static verifyUserAndGetDriveFolder(

@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 
 class CommonLineGraphWidget extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  final bool isIReadyGraph;
+
+  final String graphType;
   final bool isMathsSection;
 
   const CommonLineGraphWidget(
       {Key? key,
-      required this.isIReadyGraph,
       required this.studentDetails,
+      required this.graphType,
       required this.isMathsSection})
       : super(key: key);
 
@@ -31,14 +32,14 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           titlesData: FlTitlesData(
               show: true,
               bottomTitles: AxisTitles(
-                  sideTitles: widget.isIReadyGraph == true
-                      ? _iReadyBottomTitles
-                      : _nycGraphBottomTitles,
+                  sideTitles: widget.graphType == 'nys'
+                      ? _nycGraphBottomTitles
+                      : _iReadyBottomTitles,
                   drawBehindEverything: true),
               leftTitles: AxisTitles(
-                sideTitles: widget.isIReadyGraph == true
-                    ? _iReadyLeftTitles
-                    : _nycGraphLeftTitles,
+                sideTitles: widget.graphType == 'nys'
+                    ? _nycGraphLeftTitles
+                    : _iReadyLeftTitles,
               ),
               topTitles: AxisTitles(drawBehindEverything: false),
               rightTitles: AxisTitles(drawBehindEverything: false)),
@@ -51,14 +52,22 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                               : Color(0xffF7F8F9),
                       width: 1)),
               show: true),
-          maxX: widget.isIReadyGraph == true ? 3 : 2023,
-          minX: widget.isIReadyGraph == true ? 0 : 2021,
-          maxY: widget.isIReadyGraph == true ? 110 : 5,
-          minY: widget.isIReadyGraph == true ? 0 : 0.5,
+          maxX: widget.graphType == 'nys'
+              ? 2024
+              : 3, //  widget.isIReadyGraph == true ? 3 : 2023,
+          minX: widget.graphType == 'nys'
+              ? 2021
+              : 0, // widget.isIReadyGraph == true ? 0 : 2021,
+          maxY: widget.graphType == 'nys'
+              ? 5
+              : 110, // widget.isIReadyGraph == true ? 110 : 5,
+          minY: widget.graphType == 'nys'
+              ? 0.5
+              : 0, // widget.isIReadyGraph == true ? 0 : 0.5,
           showingTooltipIndicators:
               StudentPlusGraphMethod.showingTooltipIndicators(
             context: context,
-            isIReadyGraph: widget.isIReadyGraph,
+            graphType: widget.graphType,
             isMathSection: widget.isMathsSection,
             studentDetails: widget.studentDetails,
           ),
@@ -84,7 +93,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                 );
               }).toList();
             },
-            touchTooltipData: widget.isIReadyGraph == true
+            touchTooltipData: widget.graphType != 'nys'
                 ? LineTouchTooltipData(
                     tooltipBgColor: AppTheme.kButtonColor
                         .withOpacity(0.2), // Color(0xFFE9E9E9),
@@ -99,15 +108,28 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                         return LineTooltipItem(
                           lineBarSpot.y.toInt().toString(),
                           Theme.of(context).textTheme.headline4!.copyWith(
-                              color: StudentPlusGraphMethod.iReadyTooltipColor(
-                                  type: lineBarSpot.x == 1.0
-                                      ? 'BOY'
-                                      : (lineBarSpot.x == 2.0 ? 'MOY' : 'EOY'),
-                                  value:
-                                      StudentPlusGraphMethod.iReadyColorValue(
-                                          x: lineBarSpot.x,
-                                          isMathsSection: widget.isMathsSection,
-                                          studentInfo: widget.studentDetails))),
+                              color: widget.graphType == 'map'
+                                  ? StudentPlusGraphMethod.mapTooltipColor(
+                                      value: StudentPlusGraphMethod
+                                          .mapColorValue(
+                                              x: lineBarSpot.x,
+                                              isMathsSection:
+                                                  widget.isMathsSection,
+                                              studentInfo:
+                                                  widget.studentDetails))
+                                  : StudentPlusGraphMethod.iReadyTooltipColor(
+                                      type: lineBarSpot.x == 1.0
+                                          ? 'BOY'
+                                          : (lineBarSpot.x == 2.0
+                                              ? 'MOY'
+                                              : 'EOY'),
+                                      value: StudentPlusGraphMethod
+                                          .iReadyColorValue(
+                                              x: lineBarSpot.x,
+                                              isMathsSection:
+                                                  widget.isMathsSection,
+                                              studentInfo:
+                                                  widget.studentDetails))),
                         );
                       }).toList();
                     },
@@ -136,13 +158,16 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                                         fontWeight: FontWeight.bold),
                               ),
                               lineBarSpot.y ==
-                                      (widget.isMathsSection == true
-                                          ? double.parse(widget.studentDetails
-                                                  .nysMath2023PredictionC ??
-                                              '0')
-                                          : double.parse(widget.studentDetails
-                                                  .nysEla2023PredictionC ??
-                                              '0'))
+                                          (widget.isMathsSection == true
+                                              ? double.parse(widget
+                                                      .studentDetails
+                                                      .nysMathPredictionC ??
+                                                  '0')
+                                              : double.parse(widget
+                                                      .studentDetails
+                                                      .nysElaPredictionC ??
+                                                  '0')) &&
+                                      (lineBarSpot.x == 2024.0)
                                   ? TextSpan(
                                       text: '\n' + 'Prediction',
                                       style: Theme.of(context)
@@ -157,7 +182,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           ),
           lineBarsData: StudentPlusGraphMethod.graphLineBarsData(
               context: context,
-              isIReadyGraph: widget.isIReadyGraph,
+              graphType: widget.graphType,
               isMathSection: widget.isMathsSection,
               studentDetails: widget.studentDetails)),
     );
@@ -189,6 +214,10 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
               break;
             case '2023.0':
               text = '22-23';
+              grade = "grade ${widget.studentDetails.grade22_23 ?? ''}";
+              break;
+            case '2024.0':
+              text = '23-24';
               grade = "grade ${widget.studentDetails.gradeC ?? ''}";
               break;
           }
@@ -243,16 +272,16 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
 
           switch (value.toString()) {
             case '0.0':
-              text = '21-22' + "\n" + ' EOY';
+              text = '22-23' + "\n" + ' EOY';
               break;
             case '1.0':
-              text = '22-23' + "\n" + ' BOY';
+              text = '23-24' + "\n" + ' BOY';
               break;
             case '2.0':
-              text = '22-23' + "\n" + ' MOY';
+              text = '23-24' + "\n" + ' MOY';
               break;
             case '3.0':
-              text = '22-23' + "\n" + ' EOY';
+              text = '23-24' + "\n" + ' EOY';
               break;
           }
           return FittedBox(

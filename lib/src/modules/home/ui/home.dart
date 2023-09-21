@@ -4,19 +4,25 @@ import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
+import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_feeds.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,24 +53,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
-
-  List<Widget> _screens = [];
-  List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
   String? _versionNumber;
+  int previousIndex = 0;
+  List<Widget> _screens = [];
+//---------------------------------------------------------
 
+  CalenderBloc scheduleBloc = CalenderBloc(); //Standard Student Section
+  OcrBloc studentPlusOcrBloc = OcrBloc(); //Standard Student Section
+  OcrBloc staffOcrBloc = OcrBloc(); //Standard Staff Section
+  final NewsBloc _newsBloc = new NewsBloc();
+  final NewsBloc _bloc = new NewsBloc();
+  //---------------------------------------------------------
+
+  List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
-
   late PersistentTabController _controller;
-  final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
-  int previousIndex = 0;
+  final _appLinks = AppLinks();
 
+//---------------------------------------------------------
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
       _notification = state;
@@ -133,10 +145,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
-
+    googleLoginLinkListen();
+//---------------------------------------------------------
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
+    //---------------------------------------------------------
     restart();
+    //---------------------------------------------------------
     Globals.controller = PersistentTabController(
         initialIndex: widget.index != null
             ? widget.index ?? 2
@@ -145,10 +160,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 : (widget.isFromOcrSection == true
                     ? Globals.lastIndex
                     : Globals.homeIndex ?? 0));
+    //---------------------------------------------------------
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance.addObserver(this);
+    //---------------------------------------------------------
     //To manage the recall of staff screen and avoid of showing new version popup
     if (widget.isFromOcrSection != true && widget.index != 4) {
       _checkNewVersion();
@@ -181,7 +198,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           if (item.contains('News')) {
             return NewsPage();
           } else if (item.contains('Student')) {
+            //Instance created at Home screen to manage Schedule Bloc and STUDENT+ NYC Login only //The same bloc will use in the specific screen for all other operations
             return StudentPage(
+              scheduleBloc: scheduleBloc,
+              studentOcrBloc: studentPlusOcrBloc,
               homeObj: widget.homeObj,
               isCustomSection: false,
             );
@@ -191,7 +211,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               isCustomSection: false,
             );
           } else if (item.contains('Staff')) {
+            //Instance created at Home screen to manage Bloc for NYC Login only //The same bloc will use in the specific screen for all other operations
             return StaffPage(
+              staffOcrBloc: staffOcrBloc,
               isFromOcr: false,
               isCustomSection: false,
             );
@@ -428,50 +450,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Widget mainbody() {
     return Scaffold(
-      body: Stack(
-        children: [
-          // ValueListenableBuilder(
-          //   builder: (context, value, _) {
-          //     return _tabBarBody();
-          //   },
-          //   valueListenable: Globals.isbottomNavbar,
-          //   child: Container(),
-          // ),
-          _tabBarBody(),
-          ValueListenableBuilder<bool>(
-              valueListenable: Globals.hasShowcaseInitialised,
-              builder: (context, value, _) {
-                if (Globals.hasShowcaseInitialised.value == true)
-                  return Container();
-                return
-                    // Container(
-                    //     // margin: EdgeInsets.only(left: 20, right: 20),
-                    //     child: ClipRect(
-                    //   clipBehavior: Clip.antiAliasWithSaveLayer,
-                    //   child: BackdropFilter(
-                    //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                    //     child: Container(
-                    //         margin: EdgeInsets.only(
-                    //           top: MediaQuery.of(context).size.height * 0.1,
-                    //         ),
-                    //         alignment: Alignment.center,
-                    //         height: MediaQuery.of(context).size.height * 0.8,
-                    //         // width: 80,
-                    //         color: Color(0xff000000) !=
-                    //                 Theme.of(context).backgroundColor
-                    //             ? Color(0xffFFFFFF).withOpacity(0.6)
-                    //             : Color(0xff000000).withOpacity(0.6),
-                    //         child: _continueShowCaseInstructions(
-                    //             'Tap anywhere on the screen to continue.')),
-                    //   ),
-                    // ));
-                    Center(
-                        child: _continueShowCaseInstructions(
-                            'Tap anywhere on the screen to continue.'));
-              }),
-        ],
-      ),
-    );
+        body: Stack(children: [
+      _tabBarBody(),
+      ValueListenableBuilder<bool>(
+          valueListenable: Globals.hasShowcaseInitialised,
+          builder: (context, value, _) {
+            if (Globals.hasShowcaseInitialised.value == true)
+              return Container();
+            return Center(
+                child: _continueShowCaseInstructions(
+                    'Tap anywhere on the screen to continue.'));
+          })
+    ]));
   }
 
   _onBackPressed() {
@@ -558,11 +548,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
+          //Instance created at Home screen to manage Schedule Bloc and STUDENT+ NYC Login only //The same bloc will use in the specific screen for all other operations
           _screens.add(StudentPage(
+            scheduleBloc: scheduleBloc,
+            studentOcrBloc: studentPlusOcrBloc,
             isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
+          //Instance created at Home screen to manage Bloc for NYC Login only //The same bloc will use in the specific screen for all other operations
           _screens.add(StaffPage(
+            staffOcrBloc: staffOcrBloc,
             customObj: Globals.customSetting![i],
             isFromOcr: false,
             isCustomSection: true,
@@ -618,5 +613,29 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   addNewsIndex(index) async {
     HiveDbServices _hiveDbServices = HiveDbServices();
     await _hiveDbServices.addSingleData('newsIndex', 'newsIndex', index);
+  }
+
+  // Listener for iOS NYC DOE Login //Browser Login
+  googleLoginLinkListen() {
+    _appLinks.allUriLinkStream.listen((uri) async {
+      UserInformation user = await GoogleLogin.saveUserProfile(
+        uri.toString().split('?')[1],
+        Globals.isStaffSection ? "Teacher" : "Student",
+      );
+
+      //Navigate to the specific section as per the user onTap
+      if (Globals.isStaffSection) {
+        staffOcrBloc.add(
+            AuthorizedUserWithDatabase(email: user.userEmail, role: "Teacher"));
+      } else {
+        if (Globals.isStudentScheduleApp != true) {
+          studentPlusOcrBloc.add(AuthorizedUserWithDatabase(
+              email: user.userEmail, role: "Student"));
+        } else {
+          scheduleBloc.add(CalenderPageEvent(
+              studentProfile: user, pullToRefresh: false, isFromStudent: true));
+        }
+      }
+    });
   }
 }

@@ -36,7 +36,7 @@ class _PlusSplashScreenState extends State<PlusSplashScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.sectionType == 'Family'
+      future: widget.sectionType == 'Family' || Globals.appSetting.enablenycDocLogin == "true"
           ? delaySplash()
           : googleAutoLogin(), // delay in case of family
       builder: (context, snapshot) {

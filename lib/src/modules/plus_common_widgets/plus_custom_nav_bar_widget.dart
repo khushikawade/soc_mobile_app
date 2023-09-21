@@ -38,6 +38,7 @@ class PlusCustomNavBarWidget extends StatelessWidget {
                         .primaryVariant
                         .withOpacity(0.2),
                     // Colors.grey,
+                    offset: Offset(0, -5),
                     blurRadius: 5.0,
                   ),
                 ]),

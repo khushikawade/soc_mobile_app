@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
@@ -23,12 +25,15 @@ import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../../services/user_profile.dart';
@@ -42,6 +47,7 @@ class StaffPage extends StatefulWidget {
       this.language,
       this.customObj,
       required this.isCustomSection,
+      required this.staffOcrBloc,
       required this.isFromOcr})
       : super(key: key);
   final bool? isCustomSection;
@@ -49,6 +55,7 @@ class StaffPage extends StatefulWidget {
   final String? title;
   final String? language;
   final bool isFromOcr;
+  OcrBloc staffOcrBloc;
 
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -67,7 +74,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  OcrBloc _ocrBloc = new OcrBloc();
+  // OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
   // instance for maintaining logs
@@ -82,6 +89,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
+    // googleLoginLinkListen();
     _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
@@ -105,22 +113,6 @@ class _StaffPageState extends State<StaffPage> {
     }
     return true;
   }
-
-  // Future<void> saveUserProfile(String profileData) async {
-  //   List<String> profile = profileData.split('+');
-  //   UserInformation _userInformation = UserInformation(
-  //       userName: profile[0].toString().split('=')[1],
-  //       userEmail: profile[1].toString().split('=')[1],
-  //       profilePicture: profile[2].toString().split('=')[1],
-  //       authorizationToken:
-  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
-  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
-
-  //   //Save user profile to local
-  //   ////UPDATE CURRENT GOOGLE USER PROFILEly
-
-  //   UserGoogleProfile.updateUserProfile(_userInformation);
-  // }
 
   Widget _body(String key) => Stack(children: [
         OfflineBuilder(
@@ -213,8 +205,8 @@ class _StaffPageState extends State<StaffPage> {
         //Authorizing user email address with database
         BlocListener<OcrBloc, OcrState>(
           child: Container(),
-          bloc: _ocrBloc,
-          listener: (context, state) {
+          bloc: widget.staffOcrBloc,
+          listener: (context, state) async {
             if (state is AuthorizedUserSuccess) {
               Navigator.pop(context, false);
               navigatorToScreen(actionName: actionName ?? '');
@@ -226,9 +218,10 @@ class _StaffPageState extends State<StaffPage> {
 
             if (state is AuthorizedUserError) {
               Navigator.pop(context, false);
-              if (Globals.appSetting.enableGoogleSSO == "true") {
+              await UserGoogleProfile.clearUserProfile();
+              if (Globals.appSetting.enableGoogleSSO == "true" &&
+                  Globals.appSetting.enablenycDocLogin != "true") {
                 Authentication.signOut(context: context);
-                UserGoogleProfile.clearUserProfile();
               }
               Utility.currentScreenSnackBar(
                   'You Are Not Authorized To Access The Feature. Please Use The Authorized Account.',
@@ -363,9 +356,33 @@ class _StaffPageState extends State<StaffPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-    if (_profileData.isEmpty) {
-      //   // await _launchURL('Google Authentication');
-      //   //Google Manual Sign in
+    //Allow login if profile is already empty or if student is currently logged in //clears the already saved profile and override the latest login details
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'student') {
+      // Google Manual Sign in
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+        Globals.isStaffSection = true;
+
+        if (Platform.isIOS) {
+          //Launch Safari Browser on iOS
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          //Launch in App Browser on Android
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', actionName,
+              userType: "Teacher");
+          if (value == true) {
+            navigatorToScreen(actionName: actionName);
+          }
+        }
+
+        return;
+      }
+
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', actionName,
@@ -380,7 +397,7 @@ class _StaffPageState extends State<StaffPage> {
 
         if (user != null) {
           if (user.email != null && user.email != '') {
-            _ocrBloc.add(
+            widget.staffOcrBloc.add(
                 AuthorizedUserWithDatabase(email: user.email, role: "Teacher"));
             //navigatorToScreen(actionName: actionName);
           } else {
@@ -407,22 +424,8 @@ class _StaffPageState extends State<StaffPage> {
             operationResult: 'Success');
 
         staffActionIconsOnTap(actionName: actionName);
-        // popupModal(
-        //     message:
-        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
-      // Utility.showLoadingDialog(
-      //     context: context, msg: "Please Wait", isOCR: false);
-      // await Authentication.refreshAuthenticationToken(
-      //     refreshToken: _profileData[0].refreshToken);
-      // await GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-
-      // //Creating fresh sessionID
-      // Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
-      // if (Navigator.of(context).canPop()) {
-      //   Navigator.pop(context, true);
-      // }
 
       navigatorToScreen(actionName: actionName);
     }

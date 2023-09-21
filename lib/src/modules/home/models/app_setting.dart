@@ -127,6 +127,11 @@ class AppSetting {
   @HiveField(60)
   String? enableGoogleSSO;
 
+  @HiveField(61)
+  String? enablenycDocLogin;
+  @HiveField(62)
+  String? nycDocLoginUrl; //NYCDOE
+
   AppSetting(
       {this.attributes,
       this.id,
@@ -189,7 +194,9 @@ class AppSetting {
       // this.calendarBannerColor,this.dashboardUrlC//Dashboard_URL__c
       this.calendarBannerColor,
       this.dashboardUrlC,
-      this.enableGoogleSSO});
+      this.enableGoogleSSO,
+      this.enablenycDocLogin,
+      this.nycDocLoginUrl});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
       attributes: json['attributes'] == null
@@ -271,7 +278,9 @@ class AppSetting {
       calendarBannerImage: json['Calendar_Banner_Image__c'],
       calendarBannerColor: json['Calendar_Banner_Color__c'],
       dashboardUrlC: json['Dashboard_URL__c'],
-      enableGoogleSSO: json['Enable_Google_SSO__c'] as String?);
+      enableGoogleSSO: json['Enable_Google_SSO__c'] as String?,
+      enablenycDocLogin: json["Enable_NYC_DOE__c"],
+      nycDocLoginUrl: json['NYC_DOE_Google_Login_URL__c']);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -334,7 +343,9 @@ class AppSetting {
         'Calendar_Banner_Image__c': calendarBannerImage,
         'Calendar_Banner_Color__c': calendarBannerColor,
         'Dashboard_URL__c': dashboardUrlC,
-        'Enable_Google_SSO__c': enableGoogleSSO
+        'Enable_Google_SSO__c': enableGoogleSSO,
+        'Enable_NYC_DOE__c': enablenycDocLogin,
+        'NYC_DOE_Google_Login_URL__c': nycDocLoginUrl
       };
 
   AppSetting copyWith(

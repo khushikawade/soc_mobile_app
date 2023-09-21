@@ -127,4 +127,10 @@ class Globals {
       ''; //Used to manage the count increment only in case of id change
 
 //  static EventController scheduleController = EventController();
+
+// ----------------------------//Used for NYC-DOE browser login //only in iOS // To manage profiles----------------------------
+  static bool isStaffSection = true;
+//isScheduleSection  //Used to manage the login and navigation in the Standard Student Section // The var manage the STUDENT+ navigation and Schedule navigation inside Student Section of Standard App
+  //If already login in either of the section - STUDENT+/Schedule this will manage to not to ask login again
+  static bool isStudentScheduleApp = false;
 }

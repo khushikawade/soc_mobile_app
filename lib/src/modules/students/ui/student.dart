@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -13,8 +15,6 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_utility.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
-import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
-import 'package:Soc/src/modules/student_plus/ui/student_plus_ui/student_plus_home.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
@@ -33,20 +33,29 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../schedule/modal/blackOutDate_modal.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
   final bool? isCustomSection;
+  CalenderBloc scheduleBloc;
+  OcrBloc studentOcrBloc;
 
-  StudentPage({Key? key, this.homeObj, required this.isCustomSection})
+  StudentPage(
+      {Key? key,
+      this.homeObj,
+      required this.isCustomSection,
+      required this.scheduleBloc,
+      required this.studentOcrBloc})
       : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
@@ -58,10 +67,10 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? isErrorState = false;
-  OcrBloc _ocrBloc = new OcrBloc();
+  // OcrBloc _ocrBloc = new OcrBloc();
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
-  CalenderBloc _scheduleBloc = CalenderBloc();
+  // CalenderBloc _scheduleBloc = CalenderBloc();
 
   bool isCalenderEventCalledAlready = false;
   @override
@@ -144,7 +153,7 @@ class _StudentPageState extends State<StudentPage> {
   Widget _buildGrid(
       List<StudentApp> list, List<StudentApp> subList, String key) {
     return BlocListener(
-      bloc: _scheduleBloc,
+      bloc: widget.scheduleBloc,
       listener: (context, state) {
         // print(state);
         if (state is CalenderLoading) {
@@ -393,7 +402,7 @@ class _StudentPageState extends State<StudentPage> {
                     width: 0,
                     child: BlocListener<OcrBloc, OcrState>(
                       child: Container(),
-                      bloc: _ocrBloc,
+                      bloc: widget.studentOcrBloc,
                       listener: (context, state) {
                         if (state is AuthorizedUserSuccess) {
                           Navigator.pop(context, false);
@@ -528,16 +537,26 @@ class _StudentPageState extends State<StudentPage> {
       {required UserInformation studentProfile,
       required List<Schedule> schedulesList,
       required List<BlackoutDate> blackoutDateList}) async {
-    await Navigator.push(
+    pushNewScreen(
       context,
-      MaterialPageRoute(
-          builder: (context) => DayViewPage(
-                date: ValueNotifier(DateTime.now()),
-                studentProfile: studentProfile,
-                blackoutDateList: blackoutDateList ?? [],
-                schedulesList: schedulesList ?? [],
-              )),
+      screen: DayViewPage(
+        date: ValueNotifier(DateTime.now()),
+        studentProfile: studentProfile,
+        blackoutDateList: blackoutDateList ?? [],
+        schedulesList: schedulesList ?? [],
+      ),
+      withNavBar: false,
     );
+    // await Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => DayViewPage(
+    //             date: ValueNotifier(DateTime.now()),
+    //             studentProfile: studentProfile,
+    //             blackoutDateList: blackoutDateList ?? [],
+    //             schedulesList: schedulesList ?? [],
+    //           )),
+    // );
 
     isCalenderEventCalledAlready = false;
   }
@@ -547,7 +566,7 @@ class _StudentPageState extends State<StudentPage> {
       Utility.currentScreenSnackBar('Please Wait..... ', null);
     } else {
       isCalenderEventCalledAlready = true;
-      _scheduleBloc.add(CalenderPageEvent(
+      widget.scheduleBloc.add(CalenderPageEvent(
           studentProfile: studentProfile,
           pullToRefresh: false,
           isFromStudent: true));
@@ -588,8 +607,30 @@ class _StudentPageState extends State<StudentPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-    if (_profileData.isEmpty) {
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'teacher') {
       // Condition to check SSO login enable or not
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+        Globals.isStaffSection = false;
+        Globals.isStudentScheduleApp = false;
+        if (Platform.isIOS) {
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+              userType: "Teacher");
+          if (value == true) {
+            navigateToStudentPlus();
+          }
+        }
+
+        return;
+      }
+
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
@@ -598,11 +639,13 @@ class _StudentPageState extends State<StudentPage> {
           navigateToStudentPlus();
         }
       } else {
-        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        User? user = await Authentication.signInWithGoogle(
+          userType: "Student",
+        );
         if (user != null) {
           if (user.email != null && user.email != '') {
-            _ocrBloc.add(AuthorizedUserWithDatabase(
-                email: user.email, role: 'Student'));
+            widget.studentOcrBloc.add(
+                AuthorizedUserWithDatabase(email: user.email, role: 'Student'));
             //navigatorToScreen(actionName: actionName);
           } else {
             Utility.currentScreenSnackBar(
@@ -659,7 +702,35 @@ class _StudentPageState extends State<StudentPage> {
     /* ---- Clear login local data base once because we added classroom scope --- */
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
-    if (_profileData.isEmpty) {
+
+    //Allow login if profile is already empty or if teacher is currently logged in //clears the already saved profile and override the latest login details
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'teacher') {
+      if (Globals.appSetting.enablenycDocLogin == "true") {
+        Globals.isStaffSection = false;
+        Globals.isStudentScheduleApp = true;
+
+        if (Platform.isIOS) {
+          //Launch Safari Browser on iOS
+          await launchUrl(
+              Uri.parse(Globals.appSetting.nycDocLoginUrl != null
+                  ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
+                  : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
+              mode: LaunchMode.externalApplication); //
+        } else {
+          //Launch in App Browser on Android
+          var value = await GoogleLogin.launchURL(
+              'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
+              userType: "Teacher");
+          if (value == true) {
+            List<UserInformation> _userProfileData =
+                await UserGoogleProfile.getUserProfile();
+            _scheduleEvent(_userProfileData[0]);
+          }
+        }
+
+        return;
+      }
       // Condition to check SSO login enable or not
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
@@ -671,7 +742,9 @@ class _StudentPageState extends State<StudentPage> {
           _scheduleEvent(_userProfileData[0]);
         }
       } else {
-        User? user = await Authentication.signInWithGoogle(userType: "Student");
+        User? user = await Authentication.signInWithGoogle(
+          userType: "Student",
+        );
         if (user != null) {
           if (user.email != null && user.email != '') {
             List<UserInformation> _userProfileData =
@@ -687,19 +760,5 @@ class _StudentPageState extends State<StudentPage> {
     } else {
       _scheduleEvent(_profileData[0]);
     }
-
-    // LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
-
-    // List<UserInformation> _userInformation = await _localDb.getData();
-
-    // if (_userInformation.isEmpty) {
-    //   UserInformation result = await _launchLoginUrl('Student Login');
-
-    //   if (result.userEmail != null) {
-    //     _scheduleEvent(result);
-    //   }
-    // } else {
-    //   _scheduleEvent(_userInformation[0]);
-    // }
   }
 }
