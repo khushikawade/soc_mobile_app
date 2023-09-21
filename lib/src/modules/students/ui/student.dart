@@ -50,7 +50,12 @@ class StudentPage extends StatefulWidget {
   CalenderBloc scheduleBloc;
   OcrBloc studentOcrBloc;
 
-  StudentPage({Key? key, this.homeObj, required this.isCustomSection,required this.scheduleBloc,required this.studentOcrBloc})
+  StudentPage(
+      {Key? key,
+      this.homeObj,
+      required this.isCustomSection,
+      required this.scheduleBloc,
+      required this.studentOcrBloc})
       : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
@@ -66,8 +71,6 @@ class _StudentPageState extends State<StudentPage> {
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
   // CalenderBloc _scheduleBloc = CalenderBloc();
-
-
 
   bool isCalenderEventCalledAlready = false;
   @override
@@ -85,8 +88,6 @@ class _StudentPageState extends State<StudentPage> {
     // TODO: implement dispose
     super.dispose();
   }
-
-  
 
   // _scrollListener() {
   //   ////print(_controller.position.extentAfter);
@@ -536,18 +537,16 @@ class _StudentPageState extends State<StudentPage> {
       {required UserInformation studentProfile,
       required List<Schedule> schedulesList,
       required List<BlackoutDate> blackoutDateList}) async {
-
-
-     pushNewScreen(
+    pushNewScreen(
       context,
       screen: DayViewPage(
-                date: ValueNotifier(DateTime.now()),
-                studentProfile: studentProfile,
-                blackoutDateList: blackoutDateList ?? [],
-                schedulesList: schedulesList ?? [],
-              ),
+        date: ValueNotifier(DateTime.now()),
+        studentProfile: studentProfile,
+        blackoutDateList: blackoutDateList ?? [],
+        schedulesList: schedulesList ?? [],
+      ),
       withNavBar: false,
-    );    
+    );
     // await Navigator.push(
     //   context,
     //   MaterialPageRoute(
@@ -608,12 +607,12 @@ class _StudentPageState extends State<StudentPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-
-    if (_profileData. isEmpty || _profileData[0].userType.toString().toLowerCase() == 'teacher') {
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'teacher') {
       // Condition to check SSO login enable or not
       if (Globals.appSetting.enablenycDocLogin == "true") {
-       Globals.isStaffSection = false;
-       Globals.isScheduleSection = false;
+        Globals.isStaffSection = false;
+        Globals.isStudentScheduleApp = false;
         if (Platform.isIOS) {
           await launchUrl(
               Uri.parse(Globals.appSetting.nycDocLoginUrl != null
@@ -640,7 +639,9 @@ class _StudentPageState extends State<StudentPage> {
           navigateToStudentPlus();
         }
       } else {
-        User? user = await Authentication.signInWithGoogle(userType: "Student",);
+        User? user = await Authentication.signInWithGoogle(
+          userType: "Student",
+        );
         if (user != null) {
           if (user.email != null && user.email != '') {
             widget.studentOcrBloc.add(
@@ -701,17 +702,23 @@ class _StudentPageState extends State<StudentPage> {
     /* ---- Clear login local data base once because we added classroom scope --- */
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
-    if (_profileData.isEmpty || _profileData[0].userType.toString().toLowerCase() == 'teacher' ) {
+
+    //Allow login if profile is already empty or if teacher is currently logged in //clears the already saved profile and override the latest login details
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'teacher') {
       if (Globals.appSetting.enablenycDocLogin == "true") {
         Globals.isStaffSection = false;
-        Globals.isScheduleSection = true;
+        Globals.isStudentScheduleApp = true;
+
         if (Platform.isIOS) {
+          //Launch Safari Browser on iOS
           await launchUrl(
               Uri.parse(Globals.appSetting.nycDocLoginUrl != null
                   ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
                   : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
               mode: LaunchMode.externalApplication); //
         } else {
+          //Launch in App Browser on Android
           var value = await GoogleLogin.launchURL(
               'Google Authentication', context, _scaffoldKey, '', "STUDENT+",
               userType: "Teacher");
@@ -735,7 +742,9 @@ class _StudentPageState extends State<StudentPage> {
           _scheduleEvent(_userProfileData[0]);
         }
       } else {
-        User? user = await Authentication.signInWithGoogle(userType: "Student",);
+        User? user = await Authentication.signInWithGoogle(
+          userType: "Student",
+        );
         if (user != null) {
           if (user.email != null && user.email != '') {
             List<UserInformation> _userProfileData =
@@ -751,19 +760,5 @@ class _StudentPageState extends State<StudentPage> {
     } else {
       _scheduleEvent(_profileData[0]);
     }
-
-    // LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
-
-    // List<UserInformation> _userInformation = await _localDb.getData();
-
-    // if (_userInformation.isEmpty) {
-    //   UserInformation result = await _launchLoginUrl('Student Login');
-
-    //   if (result.userEmail != null) {
-    //     _scheduleEvent(result);
-    //   }
-    // } else {
-    //   _scheduleEvent(_userInformation[0]);
-    // }
   }
 }

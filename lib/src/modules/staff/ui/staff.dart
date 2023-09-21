@@ -74,7 +74,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
- // OcrBloc _ocrBloc = new OcrBloc();
+  // OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
   // instance for maintaining logs
@@ -89,7 +89,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
-   // googleLoginLinkListen();
+    // googleLoginLinkListen();
     _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
@@ -113,38 +113,6 @@ class _StaffPageState extends State<StaffPage> {
     }
     return true;
   }
-
- // final _appLinks = AppLinks();
-
-// Subscribe to all events when app is started.
-// (Use allStringLinkStream to get it as [String])
-  // googleLoginLinkListen() {
-  //   _appLinks.allUriLinkStream.listen((uri) async {
-  //     // Do something (navigation, ...)
-
-  //     print(uri.toString());
-
-  //     UserInformation user = await GoogleLogin.saveUserProfile(
-  //         uri.toString().split('?')[1], "Teacher");
-      
-  //   });
-  // }
-
-  // Future<void> saveUserProfile(String profileData) async {
-  //   List<String> profile = profileData.split('+');
-  //   UserInformation _userInformation = UserInformation(
-  //       userName: profile[0].toString().split('=')[1],
-  //       userEmail: profile[1].toString().split('=')[1],
-  //       profilePicture: profile[2].toString().split('=')[1],
-  //       authorizationToken:
-  //           profile[3].toString().split('=')[1].replaceAll('#', ''),
-  //       refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
-
-  //   //Save user profile to local
-  //   ////UPDATE CURRENT GOOGLE USER PROFILEly
-
-  //   UserGoogleProfile.updateUserProfile(_userInformation);
-  // }
 
   Widget _body(String key) => Stack(children: [
         OfflineBuilder(
@@ -251,7 +219,8 @@ class _StaffPageState extends State<StaffPage> {
             if (state is AuthorizedUserError) {
               Navigator.pop(context, false);
               await UserGoogleProfile.clearUserProfile();
-              if (Globals.appSetting.enableGoogleSSO == "true") {
+              if (Globals.appSetting.enableGoogleSSO == "true" &&
+                  Globals.appSetting.enablenycDocLogin != "true") {
                 Authentication.signOut(context: context);
               }
               Utility.currentScreenSnackBar(
@@ -387,22 +356,22 @@ class _StaffPageState extends State<StaffPage> {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
-    if (_profileData.isEmpty || _profileData[0].userType.toString().toLowerCase() == 'student') {
-      // if (condition) {
-      //   await launchUrl(Uri.parse("https://jjbznvc0fb.execute-api.us-east-2.amazonaws.com/dev/secure-login/auth"),mode: LaunchMode.externalApplication);  //
-      // }
-      //   // await _launchURL('Google Authentication');
-      //   //Google Manual Sign in
-
+    //Allow login if profile is already empty or if student is currently logged in //clears the already saved profile and override the latest login details
+    if (_profileData.isEmpty ||
+        _profileData[0].userType.toString().toLowerCase() == 'student') {
+      // Google Manual Sign in
       if (Globals.appSetting.enablenycDocLogin == "true") {
         Globals.isStaffSection = true;
+
         if (Platform.isIOS) {
+          //Launch Safari Browser on iOS
           await launchUrl(
               Uri.parse(Globals.appSetting.nycDocLoginUrl != null
                   ? "${Globals.appSetting.nycDocLoginUrl}?schoolId=${Globals.appSetting.id}"
                   : "https://c2timoenib.execute-api.us-east-2.amazonaws.com/production/secure-login/auth?schoolId=${Globals.appSetting.id}"),
               mode: LaunchMode.externalApplication); //
         } else {
+          //Launch in App Browser on Android
           var value = await GoogleLogin.launchURL(
               'Google Authentication', context, _scaffoldKey, '', actionName,
               userType: "Teacher");
@@ -413,6 +382,7 @@ class _StaffPageState extends State<StaffPage> {
 
         return;
       }
+
       if (Globals.appSetting.enableGoogleSSO != "true") {
         var value = await GoogleLogin.launchURL(
             'Google Authentication', context, _scaffoldKey, '', actionName,
@@ -423,7 +393,7 @@ class _StaffPageState extends State<StaffPage> {
       }
       //Google Single Sign On
       else {
-        User? user = await Authentication.signInWithGoogle(userType: "Teacher",);
+        User? user = await Authentication.signInWithGoogle(userType: "Teacher");
 
         if (user != null) {
           if (user.email != null && user.email != '') {
@@ -454,22 +424,8 @@ class _StaffPageState extends State<StaffPage> {
             operationResult: 'Success');
 
         staffActionIconsOnTap(actionName: actionName);
-        // popupModal(
-        //     message:
-        //         "You are already logged in as '${_profileData[0].userType}'. To access the ${actionName} here, you will be logged out from the existing Student section. Do you still wants to continue?");
         return;
       }
-      // Utility.showLoadingDialog(
-      //     context: context, msg: "Please Wait", isOCR: false);
-      // await Authentication.refreshAuthenticationToken(
-      //     refreshToken: _profileData[0].refreshToken);
-      // await GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-
-      // //Creating fresh sessionID
-      // Globals.sessionId = await PlusUtility.updateUserLogsSessionId();
-      // if (Navigator.of(context).canPop()) {
-      //   Navigator.pop(context, true);
-      // }
 
       navigatorToScreen(actionName: actionName);
     }
